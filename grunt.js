@@ -24,6 +24,12 @@ module.exports = function(grunt) {
 		lint: {
 			files: ['grunt.js'].concat(SRC)
 		},
+		concat: {
+			dist: {
+				src: ['<banner:meta.banner>'].concat(SRC),
+				dest: 'dist/<%= pkg.name %>.js'
+			}
+		},
 		jshint: {
 			options: {
 				curly: true,
@@ -55,6 +61,6 @@ module.exports = function(grunt) {
 	});
 
 	// Default task.
-	grunt.registerTask('default', 'lint min');
+	grunt.registerTask('default', 'lint concat min');
 
 };
