@@ -1,4 +1,4 @@
-All source code included in this jQuery Plugin
+All source code included in this Javascript Framework
 archive is, unless otherwise specified, released under the MIT license as
 follows:
 
