@@ -9,7 +9,7 @@
  /*
  * Browser Support/Detection
  */
-(function ($, undefined) {
+;(function ($, undefined) {
 	
 	"use strict";
 	
@@ -286,6 +286,7 @@
 	});
 	
 })(jQuery);
+
 /**
  * @author Deux Huit Huit
  * 
