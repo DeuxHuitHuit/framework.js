@@ -147,64 +147,71 @@
 	},
 	
 	inQueue = function (url) {
-		var isIn = false;
-		$.each(assets, function _eachAsset () {
-			if (this.url == url) {
-				isIn = true;
-				return false;
+		var foundIndex = -1;
+		$.each(assets, function _eachAsset(index, asset) {
+			if (asset.url === url) {
+				foundIndex = index;
+				return false; // early exit
 			}
 			return true;
 		});
-		return isIn;
+		return foundIndex;
+	},
+	
+	_recursiveLoad = function () {
+		if (!!assets.length) {
+			// start next one
+			_loadOneAsset();
+		} else {
+			// work is done
+			loadIsWorking = false;
+		}
 	},
 	
 	_loadOneAsset = function () {
-		var asset = assets.shift(), // grab first item
-			param = $.extend({}, asset, {
-				success: function () {
-					// clear pointer
-					currentUrl = null;
-					
-					if (!!assets.length) {
-						// start next one
-						_loadOneAsset();
-					} else {
-						// work is done
-						loadIsWorking = false;
-					}
-					App.callback.call(this, asset.success, arguments);
-				},
-				error: function () {
-					// clear pointer
-					currentUrl = null;
-					
-					App.log({args:['Error loading url %s', asset.url], me:'Loader'});
-					
-					// if no vip access is granted
-					if (!asset.vip) { 
-						// decrease priority
-						// this avoids looping for a unload-able asset
-						asset.priority += ++asset.retries; // out of bounds checking is done later
-					}
-					
-					// @todo: check for the error code
-					// and do something smart with it
-					// 404 will sometimes wait for timeout, so it's better to skip it fast
-					
-					// work is done
-					if (!assets.length) {
-						loadIsWorking = false;
-					}
-					
-					// if we already re-tried x times
-					if (asset.retries <= asset.maxRetries) {
-						// push it back into the queue and retry
-						loadAsset(asset);
-					}
-					
-					App.callback.call(this, asset.error, arguments);
+		var 
+		asset = assets.shift(), // grab first item
+		param = $.extend({}, asset, {
+			success: function () {
+				// clear pointer
+				currentUrl = null;
+				
+				// register next
+				_recursiveLoad();
+				
+				// callback
+				App.callback.call(this, asset.success, arguments);
+			},
+			error: function () {
+				// clear pointer
+				currentUrl = null;
+				
+				App.log({args:['Error loading url %s', asset.url], me:'Loader'});
+				
+				// if no vip access is granted
+				if (!asset.vip) { 
+					// decrease priority
+					// this avoids looping for a unload-able asset
+					asset.priority += ++asset.retries; // out of bounds checking is done later
 				}
-			});
+				
+				// @todo: check for the error code
+				// and do something smart with it
+				// 404 will sometimes wait for timeout, so it's better to skip it fast
+				
+				// if we already re-tried  less than x times
+				if (asset.retries <= asset.maxRetries) {
+					// push it back into the queue and retry
+					loadAsset(asset);
+				}
+				
+				// next
+				_recursiveLoad();
+				
+				// callback
+				App.callback.call(this, asset.error, arguments);
+			}
+		});
 		
 		// actual loading
 		$.ajax(param);
@@ -250,7 +257,7 @@
 		var index = inQueue(url.url);
 		
 		// ensure that asset is not in the queue
-		if (!!~index) {
+		if (!~index) {
 			// insert in array
 			assets.splice(url.priority, 1, url);
 			App.log({args:['Url %s has been insert at %s', url.url, url.priority], me:'Loader'});
@@ -271,6 +278,7 @@
 		if (!loadIsWorking) {
 			loadIsWorking = true;
 			_loadOneAsset();
+			App.log({args:'Load worker has been started', me:'Loader'});
 		}
 		
 		return this;

@@ -20,15 +20,15 @@
 	},
 	
 	inQueue = function (url) {
-		var isIn = false;
-		$.each(assets, function _eachAsset () {
-			if (this.url == url) {
-				isIn = true;
-				return false;
+		var foundIndex = -1;
+		$.each(assets, function _eachAsset(index, asset) {
+			if (asset.url === url) {
+				foundIndex = index;
+				return false; // early exit
 			}
 			return true;
 		});
-		return isIn;
+		return foundIndex;
 	},
 	
 	_recursiveLoad = function () {
@@ -127,10 +127,10 @@
 			return this;
 		}
 		
-		var urlIsInQueue = inQueue(url.url);
+		var index = inQueue(url.url);
 		
 		// ensure that asset is not in the queue
-		if (!urlIsInQueue) {
+		if (!~index) {
 			// insert in array
 			assets.splice(url.priority, 1, url);
 			App.log({args:['Url %s has been insert at %s', url.url, url.priority], me:'Loader'});
