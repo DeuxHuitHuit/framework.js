@@ -648,7 +648,7 @@
 				leavingPage = null;
 				
 				//notify all module
-				notifyModules('page.leave');
+				notifyModules('page.leave', {page: previousPage});
 			});
 			currentPage = null;  // clean currentPage pointer,this will block all interactions
 			
