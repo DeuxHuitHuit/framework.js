@@ -1,6 +1,6 @@
-/*! framework.js - v1.0.0 - 2012-12-19
+/*! framework.js - v1.0.0 - 2013-01-10
 * https://github.com/DeuxHuitHuit/framework.js
-* Copyright (c) 2012 Deux Huit Huit; Licensed MIT */
+* Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 
 /**
  * @author Deux Huit Huit
@@ -442,7 +442,7 @@
 					// wildcard replace
 					// avoid overloading routes with regex
 					if (testRoute.indexOf('*')) {
-						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/-]*');
+						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/-?]*');
 					}
 					
 					var regex = new RegExp(testRoute);
