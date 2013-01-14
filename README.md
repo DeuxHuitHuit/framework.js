@@ -19,32 +19,32 @@ $.mobile : true when ios is true or userAgent contain 'Android','mobile' or 'pho
 
 
 Loader
-	load(url, priority)
-	isLoading(url)
-	inQueue(url)
-	working()
+	load(url, priority) 
+	isLoading(url) 
+	inQueue(url) 
+	working() 
 	
-App
-	root()
-	callback(fx,args)
-	debug(value)
-	run(
-	log(
-	logs()
-	mediator :
-		notify(
-		goto(
-		toggle(
-	pages :
-		_matchRoute(route,routes)
-		getPageForRoute(route)
-		page(keyOrRoute)
-		create(page)
-		export(key,page)
-		notify(key,data,e)
-	modules
-		create(module)
-		export(key,module)
-		notify(key,data,e)
+App 
+	root() 
+	callback(fx,args) 
+	debug(value) 
+	run( 
+	log( 
+	logs() 
+	mediator : 
+		notify( 
+		goto( 
+		toggle( 
+	pages : 
+		_matchRoute(route,routes) 
+		getPageForRoute(route) 
+		page(keyOrRoute) 
+		create(page) 
+		export(key,page) 
+		notify(key,data,e) 
+	modules 
+		create(module) 
+		export(key,module) 
+		notify(key,data,e) 
 		
 	
