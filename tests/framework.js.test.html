@@ -136,7 +136,11 @@
 				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
 				route = '/c';
 				ok(!~App.pages._matchRoute(route, routes), '! ' + route + ' regexp');
+				
 				route = '/test/?test=test';
+				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				
+				route = '/test/article/test-test/';
 				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
 			});
 			
