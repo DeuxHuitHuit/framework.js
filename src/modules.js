@@ -525,9 +525,9 @@
 		pages: {
 			// private
 			_matchRoute: _matchRoute,
-			getPageForRoute: _getPageForRoute,
 			
 			// public
+			getPageForRoute: _getPageForRoute,
 			page: function (keyOrRoute) {
 				if (keyOrRoute[0] == '/') {
 					return _getPageForRoute(keyOrRoute);
