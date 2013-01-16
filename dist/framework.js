@@ -1,4 +1,4 @@
-/*! framework.js - v1.0.0 - 2013-01-14
+/*! framework.js - v1.0.0 - 2013-01-16
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 
@@ -703,6 +703,7 @@
 			if(_canEnterNextPage(nextPage)) {
 				if (nextPage === currentPage) {
 					log('next page is the current one');
+					notifyModules('pages.navigateToCurrent',{page: nextPage, route: route});
 				}else {
 					if (!nextPage.loaded()) {
 						notifyModules('pages.loading');

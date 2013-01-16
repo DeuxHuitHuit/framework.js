@@ -406,6 +406,7 @@
 			if(_canEnterNextPage(nextPage)) {
 				if (nextPage === currentPage) {
 					log('next page is the current one');
+					notifyModules('pages.navigateToCurrent',{page: nextPage, route: route});
 				}else {
 					if (!nextPage.loaded()) {
 						notifyModules('pages.loading');
