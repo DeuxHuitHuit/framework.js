@@ -153,7 +153,7 @@
 					// wildcard replace
 					// avoid overloading routes with regex
 					if (testRoute.indexOf('*')) {
-						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/\\-=?]*');
+						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/\\-=?&]*');
 					}
 					
 					var regex = new RegExp(testRoute);
@@ -463,7 +463,9 @@
 		
 		// init each Page already loaded
 		$.each(pages, function _initPage() {
-			var docRoute = document.location.pathname;
+			var 
+			route = document.location.href,
+			docRoute = route.substring(document.location.origin.length);
 			if (!!this.loaded()) {
 				// init page
 				this.init();
