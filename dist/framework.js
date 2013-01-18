@@ -367,7 +367,9 @@
 				if (!!console[a.fx].apply) {
 					console[a.fx].apply(console, a.args);
 				} else {
-					console[a.fx](console, a.args);
+					$.each(a.args, function _logArgs(index, arg) {
+						console[a.fx](arg);
+					});
 				}
 			}
 			
