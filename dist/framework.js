@@ -1,4 +1,4 @@
-/*! framework.js - v1.0.0 - 2013-01-17
+/*! framework.js - v1.0.0 - 2013-01-18
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 
@@ -761,8 +761,7 @@
 		// init each Page already loaded
 		$.each(pages, function _initPage() {
 			var 
-			route = document.location.href,
-			docRoute = route.substring(document.location.origin.length);
+			docRoute = document.location.pathname;
 			if (!!this.loaded()) {
 				// init page
 				this.init();

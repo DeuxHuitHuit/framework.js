@@ -464,8 +464,7 @@
 		// init each Page already loaded
 		$.each(pages, function _initPage() {
 			var 
-			route = document.location.href,
-			docRoute = route.substring(document.location.origin.length);
+			docRoute = document.location.pathname;
 			if (!!this.loaded()) {
 				// init page
 				this.init();
