@@ -67,7 +67,7 @@
 					a.fx = 'log';
 				}
 				// call it
-				if (!console[a.fx].apply) {
+				if (!!console[a.fx].apply) {
 					console[a.fx].apply(console, a.args);
 				} else {
 					console[a.fx](console, a.args);
