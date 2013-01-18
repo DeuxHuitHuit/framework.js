@@ -67,7 +67,11 @@
 					a.fx = 'log';
 				}
 				// call it
-				console[a.fx].apply(console, a.args);
+				if (!console[a.fx].apply) {
+					console[a.fx].apply(console, a.args);
+				} else {
+					console[a.fx](console, a.args);
+				}
 			}
 			
 			logs.push(a);
