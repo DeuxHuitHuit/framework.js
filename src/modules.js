@@ -145,6 +145,9 @@
 					// be sure to escape uri
 					route = decodeURIComponent(route);
 					
+					// be sure we do not have hashed in the route
+					route = route.split('#')[0];
+					
 					// avoid RegExp if possible
 					if (testRoute == route) {
 						return found(i);
