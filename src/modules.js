@@ -163,7 +163,7 @@
 					// wildcard replace
 					// avoid overloading routes with regex
 					if (testRoute.indexOf('*')) {
-						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/\\-=?&\\[\\]]*');
+						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/\\-=?&\\[\\]\\\\]*');
 					}
 					
 					try {
