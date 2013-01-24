@@ -226,6 +226,8 @@
 	},
 	
 	/** Mediator **/
+	mediatorIsLoadingPage = false,
+	
 	_callAction = function (actions, key, data, e) {
 		if (!!actions) {
 			var tempFx = actions[key];
@@ -275,14 +277,11 @@
 	},
 	
 	_validateMediatorState = function() {
-		var result = true;
-		
-		if (false /* check if the loader is not loading a page */) {
+		if (mediatorIsLoadingPage) {
 			log({args:'Mediator is busy waiting for a page load.', fx:'error'});
-			result = false;
 		}
 		
-		return result;
+		return !mediatorIsLoadingPage;
 	},
 	
 	_validateNextPage = function(nextPage) {
@@ -325,7 +324,7 @@
 	/**
 	*  Notify all registered component and page
 	*
-	*  @see: AER in http://addyosmani.com/largescalejavascript/
+	*  @see AER in http://addyosmani.com/largescalejavascript/
 	*  @see pub/sub http://freshbrewedcode.com/jimcowart/tag/pubsub/
 	*/
 	notifyAll = function (key, data, e) {
@@ -346,7 +345,7 @@
 	gotoPage = function (obj) {
 		var 
 		nextPage ,
-		route = "",
+		route = '',
 		enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable 
 			//The currentPage pointer will be cleared after the next call
@@ -374,8 +373,10 @@
 			nextPage.enter(function _enterNext() {
 				// set the new Page as the current one
 				currentPage = nextPage;
-				//notify all module;
+				// notify all module
 				notifyModules('page.enter',{page: nextPage, route: route});
+				// Put down the flag since we are finished
+				mediatorIsLoadingPage = false;
 			});
 		},
 		loadSucess = function (data, textStatus, jqXHR) {
@@ -405,12 +406,12 @@
 		}; 
 		//end var
 		
-		if(typeof(obj)=='string') {
+		if($.type(obj)==='string') {
 			if (_canLeaveCurrentPage() &&  _validateMediatorState()) {
 				nextPage = _getPageForRoute(obj);
 				route = obj;
 			}
-		}else {
+		} else {
 			nextPage = obj;
 		}
 			
@@ -421,7 +422,11 @@
 				if (nextPage === currentPage) {
 					log('next page is the current one');
 					notifyModules('pages.navigateToCurrent',{page: nextPage, route: route});
-				}else {
+				} else {
+					// Raise the flag to mark we are in the process
+					// of loading a new page
+					mediatorIsLoadingPage = true;
+					// Load from xhr or uise cache copy
 					if (!nextPage.loaded()) {
 						notifyModules('pages.loading');
 						Loader.load({
