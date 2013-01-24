@@ -131,7 +131,8 @@
 		
 		if (!!route && !!routes) {
 			$.each(routes, function _matchOneRoute(i) {
-				var testRoute = this,
+				var regex,
+					testRoute = this,
 					routeType = $.type(testRoute);
 				
 				if (routeType == 'regexp') {
@@ -155,7 +156,7 @@
 					}
 					
 					// assure we are testing until the end
-					if (testRoute.indexOf('^') != testRoute.length-1) {
+					if (testRoute.indexOf('^') !== testRoute.length-1) {
 						testRoute = testRoute + '$';
 					}
 					
@@ -165,9 +166,13 @@
 						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/\\-=?&\\[\\]]*');
 					}
 					
-					var regex = new RegExp(testRoute);
+					try {
+						regex = new RegExp(testRoute);
+					} catch (ex) {
+						log({args:['Error while creating RegExp %s.\n%s', testRoute, ex], fx:'error'});
+					}
 					
-					if (regex.test(route)) {
+					if (!!regex && regex.test(route)) {
 						return found(i);
 					}
 					
