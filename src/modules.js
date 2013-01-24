@@ -227,6 +227,7 @@
 	
 	/** Mediator **/
 	mediatorIsLoadingPage = false,
+	currentRouteUrl = document.location.pathname,
 	
 	_callAction = function (actions, key, data, e) {
 		if (!!actions) {
@@ -263,7 +264,6 @@
 	},
 	
 	// Validation
-	
 	_validateRoute = function(route) {
 		var result = false;
 		
@@ -419,7 +419,7 @@
 			log({args:['Route "%s" was not found.', obj], fx:'error'});
 		}else {
 			if(_canEnterNextPage(nextPage)) {
-				if (nextPage === currentPage) {
+				if (nextPage === currentPage && currentRouteUrl === route) {
 					log('next page is the current one');
 					notifyModules('pages.navigateToCurrent',{page: nextPage, route: route});
 				} else {
@@ -482,22 +482,20 @@
 		
 		// init each Page already loaded
 		$.each(pages, function _initPage() {
-			var 
-			docRoute = document.location.pathname;
 			if (!!this.loaded()) {
 				// init page
 				this.init();
 				
 				// find if this is our current page
 				// current route found ?
-				if (!!~_matchRoute(docRoute, this.routes())) {
+				if (!!~_matchRoute(currentRouteUrl, this.routes())) {
 					//initialise page variable
 					currentPage = this;
 					previousPage = this; //Set the same for the first time
-					notifyModules('page.entering',{page: currentPage, route: docRoute});
+					notifyModules('page.entering',{page: currentPage, route: currentRouteUrl});
 					//enter the page right now
 					currentPage.enter(function() {
-						notifyModules('page.enter', {page: currentPage, route: docRoute});
+						notifyModules('page.enter', {page: currentPage, route: currentRouteUrl});
 					});
 				}
 			}
