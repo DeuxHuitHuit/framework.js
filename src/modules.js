@@ -140,6 +140,9 @@
 					}
 					
 				} else if (routeType == 'string') {
+				
+					// be sure to escape uri
+					route = decodeURIComponent(route);
 					
 					// avoid RegExp if possible
 					if (testRoute == route) {
