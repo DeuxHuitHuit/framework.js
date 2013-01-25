@@ -116,9 +116,13 @@
 		return $.extend(_createAbstractPage(), page);
 	},
 	
-	exportPage = function (key, page) {
+	exportPage = function (key, page, override) {
 		var newPage = createPage(page);
-		pages[key] = newPage;
+		if (!!pages[key] && !override) {
+			log({args:['Overwriting page key %s is not allowed', key], fx:'error'});
+		} else {
+			pages[key] = newPage;
+		}
 		return newPage;
 	},
 	
@@ -222,9 +226,13 @@
 		return $.extend(_createAbstractModule(), module);
 	},
 	
-	exportModule = function (key, module) {
+	exportModule = function (key, module, override) {
 		var newModule = createModule(module);
-		modules[key] = newModule;
+		if (!!pages[key] && !override) {
+			log({args:['Overwriting module key %s is not allowed', key], fx:'error'});
+		} else {
+			modules[key] = newModule;
+		}
 		return newModule;
 	},
 	
