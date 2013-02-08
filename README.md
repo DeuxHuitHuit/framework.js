@@ -1,5 +1,6 @@
-framework.js
-============
+# framework.js
+
+#### Version 1.1
 
 Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
