@@ -117,7 +117,7 @@
 			return key;
 		}
 		$.each(window.keys, function (index, value) {
-			if (code == value) {
+			if (code === value) {
 				key = index;
 				return false;
 			}

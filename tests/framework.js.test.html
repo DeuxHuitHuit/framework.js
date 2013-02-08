@@ -15,10 +15,10 @@
 			// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
 			var u = {},
 				e,
-		        a = /\+/g,  // Regex for replacing addition symbol with a space
-		        r = /([^&=]+)=?([^&]*)/g,
-		        d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
-		        q = w.location.search.substring(1),
+				a = /\+/g,  // Regex for replacing addition symbol with a space
+				r = /([^&=]+)=?([^&]*)/g,
+				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+				q = w.location.search.substring(1),
 				v = '1.8';
 
 			while (e = r.exec(q)) {
@@ -46,7 +46,7 @@
 	<script src="../src/loader.js"></script>
 	
 	<script>
-	(function ($) {
+	(function ($, w) {
 		
 		"use strict";
 		
@@ -55,6 +55,15 @@
 		runTests = function  () {
 			
 			App.debug(true); // adds verbose
+			
+			module('window');
+			
+			test('isChar', function isCharTest() {
+				ok(w.isChar(w.keys.space_bar), 'space_bar');
+				ok(!w.isChar(w.keys.backspace), 'backspace');
+				ok(w.isChar(w.keys.a), 'a');
+				ok(w.isChar(w.keys.z), 'z');
+			});
 			
 			module('App.modules');
 			
@@ -205,9 +214,9 @@
 			
 		}; // end run tests
 		
-		$(window).load(runTests);
+		$(w).load(runTests);
 		
-	})(jQuery);
+	})(jQuery, window);
 	</script>
 </body>
 </html>
