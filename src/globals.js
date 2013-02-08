@@ -127,4 +127,9 @@
 		return key;
 	};
 	
+	// Chars
+	window.isChar = function (char) {
+		return char === window.keys.space_bar || (char > window.keys['0'] && window.keys.z);
+	};
+	
  })(jQuery);
