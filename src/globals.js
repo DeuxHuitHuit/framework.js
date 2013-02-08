@@ -80,8 +80,13 @@
 	};
 	
 	window.pd = function (e) {
-		if (e && $.isFunction(e.preventDefault)) {
-			e.preventDefault();
+		if (!!e) {
+			if ($.isFunction(e.preventDefault)) {
+				e.preventDefault();
+			}
+			if ($.isFunction(e.stopPropagation)) {
+				e.stopPropagation();
+			}
 		}
 		return false;
 	};
