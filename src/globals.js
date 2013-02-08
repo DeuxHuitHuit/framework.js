@@ -54,7 +54,10 @@
 	
 	// console support
 	if (!window.console) {
-		console.log = console.warn = console.error = console.info = console.dir = $.noop;
+		window.console = {};
+		window.console.log = window.console.warn = window.console.error = 
+			window.console.info = window.console.dir = window.console.time = 
+			window.console.timeEnd = $.noop;
 	}
 	
 })(jQuery);
