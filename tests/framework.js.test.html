@@ -78,10 +78,10 @@
 							}
 						}
 					};
-				App.modules.export('moduleA', testModule);
-				App.modules.export('moduleB', testModule);
-				App.modules.export('moduleC', testModule);
-				App.modules.export('moduleD', {});
+				App.modules.exports('moduleA', testModule);
+				App.modules.exports('moduleB', testModule);
+				App.modules.exports('moduleC', testModule);
+				App.modules.exports('moduleD', {});
 				
 				App.modules.notify('test');
 				
@@ -105,10 +105,10 @@
 					};
 					
 				// erase previous modules
-				App.modules.export('moduleA', testModule);
-				App.modules.export('moduleB', {});
-				App.modules.export('moduleC', {});
-				App.modules.export('moduleD', {});
+				App.modules.exports('moduleA', testModule);
+				App.modules.exports('moduleB', {});
+				App.modules.exports('moduleC', {});
+				App.modules.exports('moduleD', {});
 				
 				App.modules.notify('JSONPath.test.fx');
 				
@@ -160,11 +160,11 @@
 			});
 			
 			test('getPageForRoute', function appPages_getPageForRouteTest () {
-				App.pages.export('page1', {
+				App.pages.exports('page1', {
 					key: function () { return 'page 1'; },
 					routes: function () { return ['page-1']; }
 				});
-				App.pages.export('page2', {
+				App.pages.exports('page2', {
 					key: function () { return 'page 2'; },
 					routes: function () { return ['page-2']; }
 				});

@@ -1,4 +1,4 @@
-/*! framework.js - v1.0.0 - 2013-02-08
+/*! framework.js - v1.0.0 - 2013-02-13
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 
@@ -876,14 +876,14 @@
 				}
 			},
 			create: createPage,
-			'export': exportPage,
+			exports: exportPage,
 			notify: notifyPage
 		},
 		
 		// Modules
 		modules: {
 			create: createModule,
-			'export': exportModule,
+			exports: exportModule,
 			notify: notifyModules
 		}
 	
