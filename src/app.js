@@ -566,14 +566,14 @@
 				}
 			},
 			create: createPage,
-			'export': exportPage,
+			exports: exportPage,
 			notify: notifyPage
 		},
 		
 		// Modules
 		modules: {
 			create: createModule,
-			'export': exportModule,
+			exports: exportModule,
 			notify: notifyModules
 		}
 	
