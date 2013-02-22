@@ -9,8 +9,23 @@
 	
 	"use strict";
 	
-	var ua = navigator.userAgent;
+	// Query string
+	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
+	var ua = navigator.userAgent,
+		u = {},
+		e,
+		a = /\+/g,  // Regex for replacing addition symbol with a space
+		r = /([^&=]+)=?([^&]*)/g,
+		d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+		q = w.location.search.substring(1);
+
+	while (e = r.exec(q)) {
+		u[d(e[1])] = d(e[2]);
+	}
 	
+	window.QS = u;
+	
+	// UA parsing
 	$.unsupported = !$.browser || ($.browser.msie && parseInt($.browser.version, 10) < 9);
 	
 	$.iphone =  !!ua && 
