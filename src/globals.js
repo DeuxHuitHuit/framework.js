@@ -5,7 +5,7 @@
  /*
  * Browser Support/Detection
  */
-;(function ($, undefined) {
+;(function ($, w, undefined) {
 	
 	"use strict";
 	
@@ -19,13 +19,14 @@
 		d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
 		q = w.location.search.substring(1);
 
-	while (e = r.exec(q)) {
+	while ((e = r.exec(q))) {
 		u[d(e[1])] = d(e[2]);
 	}
 	
-	window.QS = u;
+	w.QS = u;
 	
 	// UA parsing
+	// TODO: REPLACE THIS LINE since browser is deprecated
 	$.unsupported = !$.browser || ($.browser.msie && parseInt($.browser.version, 10) < 9);
 	
 	$.iphone =  !!ua && 
@@ -41,7 +42,7 @@
 					ua.match(/Android/i) ||
 					ua.match(/mobile/i) ||
 					ua.match(/phone/i)));
-})(jQuery);
+})(jQuery, window);
 	
 /**
  * General customisation for mobile and default easing
