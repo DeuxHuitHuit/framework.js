@@ -1,4 +1,4 @@
-/*! framework.js - v1.0.0 - 2013-01-24
+/*! framework.js - v1.0.0 - 2013-02-13
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 
@@ -58,7 +58,10 @@
 	
 	// console support
 	if (!window.console) {
-		console.log = console.warn = console.error = console.info = console.dir = $.noop;
+		window.console = {};
+		window.console.log = window.console.warn = window.console.error = 
+			window.console.info = window.console.dir = window.console.time = 
+			window.console.timeEnd = $.noop;
 	}
 	
 })(jQuery);
@@ -84,8 +87,13 @@
 	};
 	
 	window.pd = function (e) {
-		if (e && $.isFunction(e.preventDefault)) {
-			e.preventDefault();
+		if (!!e) {
+			if ($.isFunction(e.preventDefault)) {
+				e.preventDefault();
+			}
+			if ($.isFunction(e.stopPropagation)) {
+				e.stopPropagation();
+			}
 		}
 		return false;
 	};
@@ -113,7 +121,7 @@
 			return key;
 		}
 		$.each(window.keys, function (index, value) {
-			if (code == value) {
+			if (code === value) {
 				key = index;
 				return false;
 			}
@@ -121,6 +129,11 @@
 			return true;
 		});
 		return key;
+	};
+	
+	// Chars
+	window.isChar = function (char) {
+		return char === window.keys.space_bar || (char > window.keys['0'] && window.keys.z);
 	};
 	
  })(jQuery);
@@ -413,9 +426,13 @@
 		return $.extend(_createAbstractPage(), page);
 	},
 	
-	exportPage = function (key, page) {
+	exportPage = function (key, page, override) {
 		var newPage = createPage(page);
-		pages[key] = newPage;
+		if (!!pages[key] && !override) {
+			log({args:['Overwriting page key %s is not allowed', key], fx:'error'});
+		} else {
+			pages[key] = newPage;
+		}
 		return newPage;
 	},
 	
@@ -442,6 +459,9 @@
 					// be sure to escape uri
 					route = decodeURIComponent(route);
 					
+					// be sure we do not have hashed in the route
+					route = route.split('#')[0];
+					
 					// avoid RegExp if possible
 					if (testRoute == route) {
 						return found(i);
@@ -460,7 +480,7 @@
 					// wildcard replace
 					// avoid overloading routes with regex
 					if (testRoute.indexOf('*')) {
-						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/\\-=?&\\[\\]\\\\#]*');
+						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/\\-=?&\\[\\]\\\\]*');
 					}
 					
 					try {
@@ -516,15 +536,19 @@
 		return $.extend(_createAbstractModule(), module);
 	},
 	
-	exportModule = function (key, module) {
+	exportModule = function (key, module, override) {
 		var newModule = createModule(module);
-		modules[key] = newModule;
+		if (!!pages[key] && !override) {
+			log({args:['Overwriting module key %s is not allowed', key], fx:'error'});
+		} else {
+			modules[key] = newModule;
+		}
 		return newModule;
 	},
 	
 	/** Mediator **/
 	mediatorIsLoadingPage = false,
-	currentRouteUrl = document.location.href.substring((document.location.protocol + '//' + document.location.host).length),
+	currentRouteUrl = document.location.pathname,
 	
 	_callAction = function (actions, key, data, e) {
 		if (!!actions) {
@@ -852,14 +876,14 @@
 				}
 			},
 			create: createPage,
-			'export': exportPage,
+			exports: exportPage,
 			notify: notifyPage
 		},
 		
 		// Modules
 		modules: {
 			create: createModule,
-			'export': exportModule,
+			exports: exportModule,
 			notify: notifyModules
 		}
 	

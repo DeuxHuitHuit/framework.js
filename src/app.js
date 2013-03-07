@@ -116,9 +116,13 @@
 		return $.extend(_createAbstractPage(), page);
 	},
 	
-	exportPage = function (key, page) {
+	exportPage = function (key, page, override) {
 		var newPage = createPage(page);
-		pages[key] = newPage;
+		if (!!pages[key] && !override) {
+			log({args:['Overwriting page key %s is not allowed', key], fx:'error'});
+		} else {
+			pages[key] = newPage;
+		}
 		return newPage;
 	},
 	
@@ -144,6 +148,9 @@
 				
 					// be sure to escape uri
 					route = decodeURIComponent(route);
+					
+					// be sure we do not have hashed in the route
+					route = route.split('#')[0];
 					
 					// avoid RegExp if possible
 					if (testRoute == route) {
@@ -219,9 +226,13 @@
 		return $.extend(_createAbstractModule(), module);
 	},
 	
-	exportModule = function (key, module) {
+	exportModule = function (key, module, override) {
 		var newModule = createModule(module);
-		modules[key] = newModule;
+		if (!!pages[key] && !override) {
+			log({args:['Overwriting module key %s is not allowed', key], fx:'error'});
+		} else {
+			modules[key] = newModule;
+		}
 		return newModule;
 	},
 	
@@ -555,14 +566,14 @@
 				}
 			},
 			create: createPage,
-			'export': exportPage,
+			exports: exportPage,
 			notify: notifyPage
 		},
 		
 		// Modules
 		modules: {
 			create: createModule,
-			'export': exportModule,
+			exports: exportModule,
 			notify: notifyModules
 		}
 	

@@ -54,7 +54,10 @@
 	
 	// console support
 	if (!window.console) {
-		console.log = console.warn = console.error = console.info = console.dir = $.noop;
+		window.console = {};
+		window.console.log = window.console.warn = window.console.error = 
+			window.console.info = window.console.dir = window.console.time = 
+			window.console.timeEnd = $.noop;
 	}
 	
 })(jQuery);
@@ -80,8 +83,13 @@
 	};
 	
 	window.pd = function (e) {
-		if (e && $.isFunction(e.preventDefault)) {
-			e.preventDefault();
+		if (!!e) {
+			if ($.isFunction(e.preventDefault)) {
+				e.preventDefault();
+			}
+			if ($.isFunction(e.stopPropagation)) {
+				e.stopPropagation();
+			}
 		}
 		return false;
 	};
@@ -109,7 +117,7 @@
 			return key;
 		}
 		$.each(window.keys, function (index, value) {
-			if (code == value) {
+			if (code === value) {
 				key = index;
 				return false;
 			}
@@ -117,6 +125,11 @@
 			return true;
 		});
 		return key;
+	};
+	
+	// Chars
+	window.isChar = function (char) {
+		return char === window.keys.space_bar || (char > window.keys['0'] && window.keys.z);
 	};
 	
  })(jQuery);

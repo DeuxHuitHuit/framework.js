@@ -3,7 +3,11 @@ module.exports = function(grunt) {
 
 	"use strict";
 	
-	var SRC = ['src/globals.js', 'src/loader.js', 'src/modules.js' ];
+	var
+	SRC = ['src/globals.js', 'src/loader.js', 'src/app.js' ],
+	serverPort = 8080,
+	server = 'http://localhost:' + serverPort,
+	testFile = server + '/tests/framework.js.test.html?noglobals=true';
 	
 	// Project configuration.
 	grunt.initConfig({
@@ -29,6 +33,9 @@ module.exports = function(grunt) {
 				src: ['<banner:meta.banner>'].concat(SRC),
 				dest: 'dist/<%= pkg.name %>.js'
 			}
+		},
+		qunit: {
+			files: [testFile, testFile + '&jquery=1.8', testFile + '&jquery=1.7']
 		},
 		jshint: {
 			options: {
@@ -57,10 +64,14 @@ module.exports = function(grunt) {
 				Loader: true
 			}
 		},
-		uglify: {}
+		uglify: {},
+		server: {
+			port: serverPort,
+			base: '.'
+		}
 	});
 
 	// Default task.
-	grunt.registerTask('default', 'lint concat min');
+	grunt.registerTask('default', 'lint server qunit concat min');
 
 };
