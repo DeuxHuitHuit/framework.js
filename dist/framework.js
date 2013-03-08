@@ -1,4 +1,4 @@
-/*! framework.js - v1.0.0 - 2013-02-13
+/*! framework.js - v1.0.0 - 2013-03-08
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 
@@ -480,7 +480,7 @@
 					// wildcard replace
 					// avoid overloading routes with regex
 					if (testRoute.indexOf('*')) {
-						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/\\-=?&\\[\\]\\\\]*');
+						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9_/\\-=?&\\[\\]\\\\#]*');
 					}
 					
 					try {
@@ -548,7 +548,7 @@
 	
 	/** Mediator **/
 	mediatorIsLoadingPage = false,
-	currentRouteUrl = document.location.pathname,
+	currentRouteUrl = document.location.href.substring((document.location.protocol + '//' + document.location.host).length),
 	
 	_callAction = function (actions, key, data, e) {
 		if (!!actions) {
