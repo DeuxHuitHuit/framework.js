@@ -674,48 +674,73 @@
 	},
 	
 	/** Pages **/
-	pages = {},
+	pageModels = {},
+	pageInstances = {},
 	
-	_createAbstractPage = function () {
+	_createPageModel = function (key, model) {
 		var
 		ftrue = function () {
 			return true;
 		},
 		key = function () {
-			return 'abstract';
+			return _key;
+		},
+		routes = function () {
+			return _routes;
 		},
 		loaded = function () {
 			return !!$(this.key()).length;
 		},
 		enterLeave = function (next) {
 			callback(next);
+		},
+		
+		factory = function () {
+			return $.extend({
+				actions: $.noop,
+				key: key, // css selector
+				loaded: loaded,
+				init: $.noop,
+				enter: enterLeave,
+				leave: enterLeave,
+				canEnter: ftrue,
+				canLeave: ftrue,
+				routes: routes,
+				addRoute: function (route) {
+					_routes.push(route);
+				},
+				addRoutes: function (r) {
+					$.each(r, function _addRoute(index, route) {
+						_routes.push(route);
+					});
+				}
+			}, model);
 		};
-	
-		return {
-			actions: $.noop,
-			key: key, // css selector
-			loaded: loaded,
-			init: $.noop,
-			enter: enterLeave,
-			leave: enterLeave,
-			canEnter: ftrue,
-			canLeave: ftrue,
-			routes: $.noop
-		};
+		
+		factory.key = key;
+		
+		return factory;
 	},
 	
-	createPage = function (page) {
-		return $.extend(_createAbstractPage(), page);
-	},
-	
-	exportPage = function (key, page, override) {
-		var newPage = createPage(page);
-		if (!!pages[key] && !override) {
-			log({args:['Overwriting page key %s is not allowed', key], fx:'error'});
-		} else {
-			pages[key] = newPage;
+	createPage = function (page, model) {
+		var 
+		pageModel = pageModels[model],
+		pageInst;
+		
+		if (!pageModel) {
+			log({args:['Model %s not found', model], fx:'error'});
 		}
-		return newPage;
+		pageInst = $.extend(pageModel(page), pageModel);
+		pageInstances[pageKey] = pageInst;
+	},
+	
+	exportPage = function (key, override) {
+		var pageModel = _createPageModel(key);
+		if (!!pageModels[key] && !override) {
+			log({args:['Overwriting page model key %s is not allowed', key], fx:'error'});
+		} else {
+			pageModels[key] = pageModel;
+		}
 	},
 	
 	_matchRoute = function (route, routes) {
@@ -872,7 +897,7 @@
 		
 		if (!route) {
 			log({args:'No route set.', fx:'error'});
-		}else {
+		} else {
 			result = true;
 		}
 		
@@ -925,10 +950,10 @@
 	//Actions
 	
 	/**
-	*  Notify all registered component and page
+	* Notify all registered component and page
 	*
-	*  @see AER in http://addyosmani.com/largescalejavascript/
-	*  @see pub/sub http://freshbrewedcode.com/jimcowart/tag/pubsub/
+	* @see AER in http://addyosmani.com/largescalejavascript/
+	* @see pub/sub http://freshbrewedcode.com/jimcowart/tag/pubsub/
 	*/
 	notifyAll = function (key, data, e) {
 		
@@ -942,8 +967,8 @@
 	},
 	
 	/** 
-	*	Change the current page to the requested route
-	*	Do nothing if the current page is already the requested route
+	* Change the current page to the requested route
+	* Do nothing if the current page is already the requested route
 	*/
 	gotoPage = function (obj) {
 		var 
@@ -1009,7 +1034,7 @@
 		}; 
 		//end var
 		
-		if($.type(obj)==='string') {
+		if ($.type(obj)==='string') {
 			if (_canLeaveCurrentPage() &&  _validateMediatorState()) {
 				nextPage = _getPageForRoute(obj);
 				route = obj;
@@ -1020,7 +1045,7 @@
 			
 		if (!_validateNextPage(nextPage)) {
 			log({args:['Route "%s" was not found.', obj], fx:'error'});
-		}else {
+		} else {
 			if(_canEnterNextPage(nextPage)) {
 				if (nextPage === currentPage && currentRouteUrl === route.substring(0,currentRouteUrl.length)) {
 					log('next page is the current one');
@@ -1067,9 +1092,9 @@
 	},
 	
 	/** 
-	*  Init All the applications
-	*  Assign root variable
-	*  Call init on all registered page and modules
+	* Init All the applications
+	* Assign root variable
+	* Call init on all registered page and modules
 	*/
 	initApplication = function(root) {
 		
@@ -1092,12 +1117,12 @@
 				// find if this is our current page
 				// current route found ?
 				if (!!~_matchRoute(currentRouteUrl, this.routes())) {
-					//initialise page variable
+					// initialise page variable
 					currentPage = this;
-					previousPage = this; //Set the same for the first time
+					previousPage = this; // Set the same for the first time
 					notifyModules('page.entering',{page: currentPage, route: currentRouteUrl});
-					//enter the page right now
-					currentPage.enter(function() {
+					// enter the page right now
+					currentPage.enter(function _currentPageEnterCallback() {
 						notifyModules('page.enter', {page: currentPage, route: currentRouteUrl});
 					});
 				}

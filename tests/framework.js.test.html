@@ -204,6 +204,19 @@
 				equal(page, null, 'page 3');
 			});
 			
+			test('App.pages.exports', function appPages_matchRouteTest () {
+				var PageClass = App.pages.exports({
+					
+				}),
+				page = App.pages.create('PageClass', {
+					//key: ...
+					routes: {}
+				});
+				
+				page.addRoute('/fr/');
+				page.addRoutes(['/en/','/es/']);
+			});
+			
 			module('Loader');
 			
 			test('load', function loaderLoadTest () {
