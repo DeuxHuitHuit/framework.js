@@ -609,8 +609,8 @@
 			if ($.isFunction(fx)) {
 				return fx.apply(this, args);
 			}
-		} catch (e) {
-			log({args:e, fx:'error'});
+		} catch (err) {
+			log({args:err.message, fx:'error'});
 		}
 		return null;
 	},
