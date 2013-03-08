@@ -605,8 +605,12 @@
 	
 	/** Utility **/
 	callback = function (fx, args) {
-		if ($.isFunction(fx)) {
-			return fx.apply(this, args);
+		try {
+			if ($.isFunction(fx)) {
+				return fx.apply(this, args);
+			}
+		} catch (e) {
+			log({args:e, fx:'error'});
 		}
 		return null;
 	},
