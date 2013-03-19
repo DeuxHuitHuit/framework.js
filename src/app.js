@@ -607,7 +607,7 @@
 	callback = function (fx, args) {
 		try {
 			if ($.isFunction(fx)) {
-				return fx.apply(this, args);
+				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
 			}
 		} catch (err) {
 			log({args:err.message, fx:'error'});
