@@ -56,24 +56,26 @@
 				App.callback.call(this, asset.success, arguments);
 			},
 			error: function () {
+				var maxRetriesFactor = !!asset.vip ? 2 : 1;
+				
 				// clear pointer
 				currentUrl = null;
 				
 				App.log({args:['Error loading url %s', asset.url], me:'Loader'});
 				
 				// if no vip access is granted
-				if (!asset.vip) { 
+				//if (!asset.vip) { 
 					// decrease priority
 					// this avoids looping for a unload-able asset
 					asset.priority += ++asset.retries; // out of bounds checking is done later
-				}
+				//}
 				
 				// @todo: check for the error code
 				// and do something smart with it
 				// 404 will sometimes wait for timeout, so it's better to skip it fast
 				
 				// if we already re-tried  less than x times
-				if (asset.retries <= asset.maxRetries) {
+				if (asset.retries <= (asset.maxRetries * maxRetriesFactor)) {
 					// push it back into the queue and retry
 					loadAsset(asset);
 				}
