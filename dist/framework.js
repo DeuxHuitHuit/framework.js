@@ -823,6 +823,11 @@
 				}
 			}
 		});
+		
+		// warning, no page found!
+		if (!currentPage) {
+			log({args:['Route "%s" was not found on init.', currentRouteUrl], fx:'error'});
+		}
 	},
 	
 	/** App **/
