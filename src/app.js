@@ -612,21 +612,24 @@
 	},
 	
 	/** Debug **/
-	d = false,
+	isDebuging = false,
 	debug = function (value) {
+		
 		if (value === true || value === false) {
-			d = value;
-			return this;
+			//Set from a boolean
+			isDebuging = value;
+			return isDebuging;
 		} else if (value === '!') {
-			d = !d;
-			return this;
+			//Reverse set
+			isDebuging = !isDebuging;
+			return isDebuging;
 		}
-		return d;
+		return isDebuging;
 	},
 	
 	logs = [],
 	log = function (arg) {
-		if (d) {
+		if (isDebuging) {
 			// no args, exit
 			if (!arg) {
 				return this;

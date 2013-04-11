@@ -58,6 +58,29 @@
 			
 			module('window');
 			
+			test('QS',function QSTest() {
+				ok($.isPlainObject(w.QS), 'w.QS is plain object');
+			});
+			
+			test('BrowserDetector.isUnsupported', function broserDetecteurIsIphoneTest() {
+				//test for empty string
+				ok(w.BrowserDetector.isUnsupported('') == true,'empty ua is unsupported');
+				
+			});
+			
+			test('BrowserDetector.isIphone', function broserDetecteurIsIphoneTest() {
+				//test for empty string
+				ok(w.BrowserDetector.isIphone('') == false,'empty ua is not an iphone');
+				
+				//test for iphone regex
+				ok(w.BrowserDetector.isIphone('iphone') == true,'iphone text ua is an iphone');
+				ok(w.BrowserDetector.isIphone('sdfdg-iphonesdf') == true,'ua contains iphone then is an iphone');
+				
+				//Test for ipad regex
+				ok(w.BrowserDetector.isIphone('ipod') == true,'ipod text ua is an iphone');
+				ok(w.BrowserDetector.isIphone('sdfdg-ipodesdf') == true,'ua contains ipod then is an iphone');
+			});
+			
 			test('isChar', function isCharTest() {
 				ok(w.isChar(w.keys.space_bar), 'space_bar');
 				ok(!w.isChar(w.keys.backspace), 'backspace');

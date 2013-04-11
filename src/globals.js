@@ -8,40 +8,122 @@
 ;(function ($, w, undefined) {
 	
 	"use strict";
-	
-	// Query string
-	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
-	var ua = navigator.userAgent,
-		u = {},
-		e,
+
+	var 
+	QueryStringParserConstructor = function() {
+		var
 		a = /\+/g,  // Regex for replacing addition symbol with a space
 		r = /([^&=]+)=?([^&]*)/g,
 		d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
-		q = w.location.search.substring(1);
+		
+		_parse = function(qs) {
+			var 
+			u = {},
+			e,
+			q;
+			
+			//if we dont have the parameter qs, use the window location search value
+			if(qs != "" && !!!qs) {
+				qs = w.location.search 
+			}
+			
+			//remove the first caracter (?)
+			q = qs.substring(1);
 
-	while ((e = r.exec(q))) {
-		u[d(e[1])] = d(e[2]);
-	}
+			while ((e = r.exec(q))) {
+				u[d(e[1])] = d(e[2]);
+			}
+			
+			return u;
+		};
+		
+		return {
+			parse : _parse
+		}
+	},
 	
-	w.QS = u;
+	BrowserDetectorConstructor = function() {
+		var
+		getUserAgent = function(userAgent) {
+			if(userAgent != "" && !!!userAgent) {
+				userAgent = navigator.userAgent;
+			}
+			return userAgent;
+		};
+		
 	
-	// UA parsing
-	// TODO: REPLACE THIS LINE since browser is deprecated
-	$.unsupported = !$.browser || ($.browser.msie && parseInt($.browser.version, 10) < 9);
+		return {
 	
-	$.iphone =  !!ua && 
-					(ua.match(/iPhone/i) || 
-					 ua.match(/iPod/i)); 
+			isIos : function(userAgent) {
+				return w.BrowserDetector.isIphone(userAgent) || w.BrowserDetector.isIpad(userAgent)
+			},
+			
+			isIphone : function(userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return !!(userAgent.match(/iPhone/i) || userAgent.match(/iPod/i));
+			},
+			
+			isIpad : function(userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return !!(userAgent.match(/iPad/i));
+			},
+			
+			isAndroid : function(userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return !!(userAgent.match(/Android/i));
+			},
+			
+			isOtherMobile : function(userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return !!(userAgent.match(/mobile/i) || userAgent.match(/phone/i));
+			},
+			
+			isMobile : function(userAgent) {
+				return w.BrowserDetector.isIos(userAgent) || w.BrowserDetector.isAndroid(userAgent) || w.BrowserDetector.isOtherMobile(userAgent);
+			},
+			
+			isMsie : function(userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return $.uaMatch(userAgent).browser == 'msie';
+			},
+			
+			isUnsupported : function(userAgent) {
+				var 
+				b;
+				
+				if(userAgent != "" && !!!userAgent) {
+					userAgent = navigator.userAgent;
+				}
+				b = $.uaMatch(userAgent);
+				
+				return b.browser == "" || b.browser == 'msie' && parseInt(b.browser.version) < 9;
+			}
+			
+		}
+	};
 	
-	$.ios    =  $.iphone || 
-					(!!ua &&
-					ua.match(/iPad/i)); 
+	// Query string Parser
+	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
+	w.QueryStringParser = QueryStringParserConstructor();
 	
-	$.mobile =  $.ios || 
-					(!!ua && (
-					ua.match(/Android/i) ||
-					ua.match(/mobile/i) ||
-					ua.match(/phone/i)));
+	//Store a copy of the result in the window object
+	w.QS = w.QueryStringParser.parse();
+	
+	
+	// Browser detector
+	w.BrowserDetector = BrowserDetectorConstructor();
+	
+	// User Agent parsing
+	$.unsupported = w.BrowserDetector.isUnsupported();
+	
+	$.iphone =  w.BrowserDetector.isIphone();
+	
+	$.ipad =  w.BrowserDetector.isIpad();
+	
+	$.ios    =  w.BrowserDetector.isIos();
+	
+	$.mobile =  w.BrowserDetector.isMobile();
+	
 })(jQuery, window);
 	
 /**
