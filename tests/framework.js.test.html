@@ -138,19 +138,19 @@
 				equal(count, 1, '1 modules got called');
 			});
 			
-			module('App.pages');
+			//module('App.pages');
 			
-			test('_matchRoute', function appPages_matchRouteTest () {
-				var routes = { // can also use array
-					root: '/',
-					contactFR: '/fr/contact/',
-					contactEN: '/en/contact/',
-					wildcard: '/test/*/view',
-					questionWildcard: '/test/*',
-					regex: /[ab]/
-				},
-				route = '';
-			
+			//test('_matchRoute', function appPages_matchRouteTest () {
+			//	var routes = { // can also use array
+			//		root: '/',
+			//		contactFR: '/fr/contact/',
+			//		contactEN: '/en/contact/',
+			//		wildcard: '/test/*/view',
+			//		questionWildcard: '/test/*',
+			//		regex: /[ab]/
+			//	},
+			//	route = '';
+			/*
 				route = routes.root;
 				ok(!!~App.pages._matchRoute(route, routes), route);
 				route = routes.contactFR;
@@ -216,7 +216,7 @@
 				page.addRoute('/fr/');
 				page.addRoutes(['/en/','/es/']);
 			});
-			
+			*/
 			module('Loader');
 			
 			test('load', function loaderLoadTest () {
