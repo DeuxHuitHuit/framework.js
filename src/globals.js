@@ -23,8 +23,8 @@
 			q;
 			
 			//if we dont have the parameter qs, use the window location search value
-			if(qs != "" && !!!qs) {
-				qs = w.location.search 
+			if(qs !== "" && !!!qs) {
+				qs = w.location.search;
 			}
 			
 			//remove the first caracter (?)
@@ -39,13 +39,13 @@
 		
 		return {
 			parse : _parse
-		}
+		};
 	},
 	
 	BrowserDetectorConstructor = function() {
 		var
 		getUserAgent = function(userAgent) {
-			if(userAgent != "" && !!!userAgent) {
+			if(userAgent !== "" && !!!userAgent) {
 				userAgent = navigator.userAgent;
 			}
 			return userAgent;
@@ -55,7 +55,7 @@
 		return {
 	
 			isIos : function(userAgent) {
-				return w.BrowserDetector.isIphone(userAgent) || w.BrowserDetector.isIpad(userAgent)
+				return w.BrowserDetector.isIphone(userAgent) || w.BrowserDetector.isIpad(userAgent);
 			},
 			
 			isIphone : function(userAgent) {
@@ -90,16 +90,12 @@
 			isUnsupported : function(userAgent) {
 				var 
 				b;
-				
-				if(userAgent != "" && !!!userAgent) {
-					userAgent = navigator.userAgent;
-				}
+				userAgent = getUserAgent(userAgent);
 				b = $.uaMatch(userAgent);
 				
-				return b.browser == "" || b.browser == 'msie' && parseInt(b.browser.version) < 9;
+				return b.browser === "" || (b.browser == 'msie' && parseInt(b.browser.version,10)) < 9;
 			}
-			
-		}
+		};
 	};
 	
 	// Query string Parser
