@@ -93,7 +93,7 @@
 				userAgent = getUserAgent(userAgent);
 				b = $.uaMatch(userAgent);
 				
-				return b.browser === "" || (b.browser == 'msie' && parseInt(b.browser.version,10)) < 9;
+				return b.browser === "" || (b.browser == 'msie' && parseInt(b.version,10)) < 9;
 			}
 		};
 	};

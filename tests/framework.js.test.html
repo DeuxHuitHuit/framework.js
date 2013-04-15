@@ -54,21 +54,41 @@
 		
 		runTests = function  () {
 			
-			App.debug(true); // adds verbose
+			module('App.debug');
 			
-			module('window');
-			
-			test('QS',function QSTest() {
-				ok($.isPlainObject(w.QS), 'w.QS is plain object');
+			test('Test debug() get/set', function AppDebug() {
+				//test for initial value
+				ok(!App.debug(), 'App.debug() is false by default'); // Should be false
+				
+				//Test for set true
+				App.debug(true);
+				ok(App.debug(), 'Setter and getter of App.debug() work has expected with true set');	//should be true
+				ok(!App.debug(false), 'Setter and getter of App.debug() work has expected with false set');	//should be false
+				ok(App.debug('!'), 'Setter App.debug("!") work has expected with inverted flag');	//should be true
+				
+				//Make sure we got verbose for other test
+				App.debug(true); // adds verbose
 			});
+
+			module('window.BrowserDetector');
 			
-			test('BrowserDetector.isUnsupported', function broserDetecteurIsIphoneTest() {
+			test('isUnsupported', function browserDetectorIsUnsupported() {
+			
 				//test for empty string
-				ok(w.BrowserDetector.isUnsupported('') == true,'empty ua is unsupported');
+				ok(w.BrowserDetector.isUnsupported('') == true,'empty ua is an unsupported');
+			
+				//test for msie with version 7
+				ok(w.BrowserDetector.isUnsupported('Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)') == true,'msie v7 is unsupported');
+				
+				//test for msie with version 8
+				ok(w.BrowserDetector.isUnsupported('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)') == true,'msie v8 is unsupported');
+				
+				//test for msie with version 9
+				ok(!w.BrowserDetector.isUnsupported('Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)') == true,'msie v9 is supported');
 				
 			});
 			
-			test('BrowserDetector.isIphone', function broserDetecteurIsIphoneTest() {
+			test('isIphone', function browserDetectorIsIphoneTest() {
 				//test for empty string
 				ok(w.BrowserDetector.isIphone('') == false,'empty ua is not an iphone');
 				
@@ -81,6 +101,28 @@
 				ok(w.BrowserDetector.isIphone('sdfdg-ipodesdf') == true,'ua contains ipod then is an iphone');
 			});
 			
+			//test('is')
+			
+			module('QueryStringParser');
+			
+			test('parse',function QSTest() {
+				var result;
+				
+				//Test 1
+				result = w.QueryStringParser.parse('?q=test');
+				ok(result.q === 'test','parse ?q.test is parsed successfully');
+				
+				//Test 2
+				result = w.QueryStringParser.parse('?q=test&r=2');
+				ok(result.q === 'test' && result.r == 2,'parse ?q=test&r=2 is parsed successfully');
+			});
+			
+			module('window');
+			
+			test('QS',function QSTest() {
+				ok($.isPlainObject(w.QS), 'w.QS is plain object');
+			});
+		
 			test('isChar', function isCharTest() {
 				ok(w.isChar(w.keys.space_bar), 'space_bar');
 				ok(!w.isChar(w.keys.backspace), 'backspace');
@@ -136,6 +178,38 @@
 				App.modules.notify('JSONPath.test.fx');
 				
 				equal(count, 1, '1 modules got called');
+			});
+			
+			
+			module('Loader');
+			
+			test('load', function loaderLoadTest () {
+				var count = 0;
+				
+				Loader
+					.load('framework.js.test.html')
+					.load({
+						url: '1.html',
+						success: function () {
+							count++; // should not get called
+						}
+					})
+					.load({
+						url: '2.html',
+						complete: function () {
+							count++;
+							
+							// do let the retries do that
+							if (count <= 1) {
+								start();
+								
+								equal(count, 1);
+							}
+						}
+					});
+				
+				stop();
+				
 			});
 			
 			//module('App.pages');
@@ -217,36 +291,7 @@
 				page.addRoutes(['/en/','/es/']);
 			});
 			*/
-			module('Loader');
 			
-			test('load', function loaderLoadTest () {
-				var count = 0;
-				
-				Loader
-					.load('framework.js.test.html')
-					.load({
-						url: '1.html',
-						success: function () {
-							count++; // should not get called
-						}
-					})
-					.load({
-						url: '2.html',
-						complete: function () {
-							count++;
-							
-							// do let the retries do that
-							if (count <= 1) {
-								start();
-								
-								equal(count, 1);
-							}
-						}
-					});
-				
-				stop();
-				
-			});
 			
 		}; // end run tests
 		
