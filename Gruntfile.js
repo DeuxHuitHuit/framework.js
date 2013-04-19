@@ -81,7 +81,7 @@ module.exports = function(grunt) {
 			options: {
 				//banner: '<% meta.banner %>',
 				sourceMap: 'dist/framework.map.js',
-				sourceMapRoot: '.',
+				sourceMappingURL: 'framework.map.js',
 				report: 'gzip',
 				compress: {
 					global_defs: {
