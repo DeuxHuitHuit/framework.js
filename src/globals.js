@@ -123,9 +123,9 @@
 })(jQuery, window);
 	
 /**
- * General customisation for mobile and default easing
+ * General customization for mobile and default easing
  */
-(function ($, undefined) {
+;(function ($, undefined) {
 	
 	"use strict";
 	
@@ -142,7 +142,7 @@
 /**
  * Global tools for debug
  */
- (function ($, undefined) {
+;(function ($, undefined) {
 	
 	"use strict";
 	
@@ -159,7 +159,7 @@
 /**
  * Global window tools
  */
- (function ($, undefined) {
+;(function ($, undefined) {
 	
 	"use strict";
 	
@@ -222,8 +222,8 @@
 	};
 	
 	// Chars
-	window.isChar = function (char) {
-		return char === window.keys.space_bar || (char > window.keys['0'] && window.keys.z);
+	window.isChar = function (c) {
+		return c === window.keys.space_bar || (c > window.keys['0'] && c <= window.keys.z);
 	};
 	
- })(jQuery);
+})(jQuery);

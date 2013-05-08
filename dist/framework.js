@@ -1,7 +1,6 @@
-/*! framework.js - v1.0.0 - 2013-04-09
+/*! framework.js - v1.0.0 - 2013-04-22
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
-
 /**
  * @author Deux Huit Huit
  */
@@ -33,9 +32,9 @@
 })(jQuery);
 	
 /**
- * General customisation for mobile and default easing
+ * General customization for mobile and default easing
  */
-(function ($, undefined) {
+;(function ($, undefined) {
 	
 	"use strict";
 	
@@ -52,7 +51,7 @@
 /**
  * Global tools for debug
  */
- (function ($, undefined) {
+;(function ($, undefined) {
 	
 	"use strict";
 	
@@ -69,7 +68,7 @@
 /**
  * Global window tools
  */
- (function ($, undefined) {
+;(function ($, undefined) {
 	
 	"use strict";
 	
@@ -132,11 +131,11 @@
 	};
 	
 	// Chars
-	window.isChar = function (char) {
-		return char === window.keys.space_bar || (char > window.keys['0'] && window.keys.z);
+	window.isChar = function (c) {
+		return c === window.keys.space_bar || (c > window.keys['0'] && c <= window.keys.z);
 	};
 	
- })(jQuery);
+})(jQuery);
 
 /**
  * @author Deux Huit Huit
@@ -482,7 +481,7 @@
 					// wildcard replace
 					// avoid overloading routes with regex
 					if (testRoute.indexOf('*')) {
-						testRoute = testRoute.replace(new RegExp('\\*','g'), '[a-zA-Z0-9|—_/\\-=?&\\[\\]\\\\#]*');
+						testRoute = testRoute.replace(new RegExp('\\*','g'), '.*'); // a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
 					}
 					
 					try {
