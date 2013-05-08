@@ -11,11 +11,15 @@
 	
 	//Default value
 	ROOT = 'body',
+	
+	//Store ref to the current page object
 	currentPage = null,
+	
+	//Store ref to the previous page object
 	previousPage = null,
 	
 	/** Utility **/
-	callback = function (fx, args) {
+	/*callback = function (fx, args) {
 		try {
 			if ($.isFunction(fx)) {
 				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
@@ -24,7 +28,7 @@
 			log({args:err.message, fx:'error'});
 		}
 		return null;
-	},
+	},*/
 	
 	/** Debug **/
 	isDebuging = false,
@@ -554,23 +558,30 @@
 	
 	/** Public Interfaces **/
 	window.App = $.extend(window.App, {
+		
 		// root node for the pages
 		root: function() {
 			return ROOT;
 		},
+		
 		// callback utility
-		callback: callback,
+		//callback: callback,
+		
 		// get/set the debug flag
 		debug: debug,
+		
 		// main entrance
 		run: run,
+		
 		// log
 		log: log,
+		
 		// logs
 		logs: function () {return logs;},
 		
 		// mediator object
 		mediator: {
+			
 			// event dispatcher to the
 			// current Page and Modules
 			notify: notifyAll,
@@ -591,6 +602,7 @@
 			
 			// public
 			getPageForRoute: _getPageForRoute,
+			
 			page: function (keyOrRoute) {
 				if (keyOrRoute[0] == '/') {
 					return _getPageForRoute(keyOrRoute);
@@ -598,15 +610,21 @@
 					return pageInstances[keyOrRoute];
 				}
 			},
+			
 			create: createPage,
+			
 			exports: exportPage,
+			
 			notify: notifyPage
 		},
 		
 		// Modules
 		modules: {
+		
 			create: createModule,
+			
 			exports: exportModule,
+			
 			notify: notifyModules
 		}
 	

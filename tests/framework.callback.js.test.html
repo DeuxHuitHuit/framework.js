@@ -1,0 +1,72 @@
+<!DOCTYPE html public "✰"> 
+<html lang="en"> 
+<head> 
+	<meta charset="utf-8" /> 
+	<title>framework.js test suite</title> 
+	
+	<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css" type="text/css"/>
+	
+	<style type="text/css">
+
+	</style>
+	
+	<script>
+		(function (w, doc,co) {
+			// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
+			var u = {},
+				e,
+				a = /\+/g,  // Regex for replacing addition symbol with a space
+				r = /([^&=]+)=?([^&]*)/g,
+				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+				q = w.location.search.substring(1),
+				v = '1.8';
+
+			while (e = r.exec(q)) {
+				u[d(e[1])] = d(e[2]);
+			}
+			
+			if (!!u.jquery) {
+				v = u.jquery;
+			}	
+
+			doc.write('<script src="http://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + "<" + '/' + 'script>');
+			co.log('\nLoading jQuery v' + v + '\n');
+		})(window, document, console);
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">framework.callback.js</h1>  
+	<h2 id="qunit-banner"></h2>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	
+	<script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
+	<!--script src="../src/globals.js"></script-->
+	<!--script src="../src/loader.js"></script>-->
+	<script src="../src/app-callback.js"></script>
+	
+	<script>
+	(function ($, w) {
+		
+		"use strict";
+		
+		var 
+		
+		runTests = function  () {
+			
+			module('App.callback');
+			
+			test('', function AppDebug() {
+				//test for initial value
+				ok(!!window.App, 'window.App is defined'); 
+				ok(!!window.App.callback, 'window.App.callback is defined'); 
+			});
+			
+		}; // end run tests
+		
+		$(w).load(runTests);
+		
+	})(jQuery, window);
+	</script>
+</body>
+</html>
