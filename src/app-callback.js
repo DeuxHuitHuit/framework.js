@@ -17,7 +17,9 @@
 				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
 			}
 		} catch (err) {
-			App.log({args:err.message, fx:'error'});
+			if($.isFunction(App.log)){
+				App.log({args:err.message || err, fx:'error'});
+			}
 		}
 		return null;
 	};

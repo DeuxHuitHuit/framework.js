@@ -44,6 +44,7 @@
 	<script src="../src/globals.js"></script>
 	<script src="../src/loader.js"></script> 
 	<script src="../src/app.js"></script>
+	<script src="../src/app-callback.js"></script>
 	
 	<script>
 	(function ($, w) {
@@ -54,25 +55,9 @@
 		
 		runTests = function  () {
 			
-			module('App.debug');
-			
-			test('Test debug() get/set', function AppDebug() {
-				//test for initial value
-				ok(!App.debug(), 'App.debug() is false by default'); // Should be false
-				
-				//Test for set true
-				App.debug(true);
-				ok(App.debug(), 'Setter and getter of App.debug() work has expected with true set');	//should be true
-				ok(!App.debug(false), 'Setter and getter of App.debug() work has expected with false set');	//should be false
-				ok(App.debug('!'), 'Setter App.debug("!") work has expected with inverted flag');	//should be true
-				
-				//Make sure we got verbose for other test
-				App.debug(true); // adds verbose
-			});
-
 			module('window.BrowserDetector');
 			
-			test('isUnsupported', function browserDetectorIsUnsupported() {
+			/*test('isUnsupported', function browserDetectorIsUnsupported() {
 			
 				//test for empty string
 				ok(w.BrowserDetector.isUnsupported('') == true,'empty ua is an unsupported');
@@ -86,7 +71,7 @@
 				//test for msie with version 9
 				ok(!w.BrowserDetector.isUnsupported('Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)') == true,'msie v9 is supported');
 				
-			});
+			});*/
 			
 			test('isIphone', function browserDetectorIsIphoneTest() {
 				//test for empty string
@@ -179,7 +164,6 @@
 				
 				equal(count, 1, '1 modules got called');
 			});
-			
 			
 			module('Loader');
 			

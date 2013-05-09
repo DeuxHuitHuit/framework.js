@@ -18,80 +18,6 @@
 	//Store ref to the previous page object
 	previousPage = null,
 	
-	/** Utility **/
-	/*callback = function (fx, args) {
-		try {
-			if ($.isFunction(fx)) {
-				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
-			}
-		} catch (err) {
-			log({args:err.message, fx:'error'});
-		}
-		return null;
-	},*/
-	
-	/** Debug **/
-	isDebuging = false,
-	debug = function (value) {
-		
-		if (value === true || value === false) {
-			//Set from a boolean
-			isDebuging = value;
-			return isDebuging;
-		} else if (value === '!') {
-			//Reverse set
-			isDebuging = !isDebuging;
-			return isDebuging;
-		}
-		return isDebuging;
-	},
-	
-	logs = [],
-	log = function (arg) {
-		if (isDebuging) {
-			// no args, exit
-			if (!arg) {
-				return this;
-			}
-			
-			// ensure that args is an array
-			if (!!arg.args && !$.isArray(arg.args)) {
-				arg.args = [arg.args];
-			}
-			
-			// our copy
-			var a = {
-				args: arg.args || arguments,
-				fx: arg.fx || 'warn',
-				me: arg.me || 'App'
-			},
-			t1 = $.type(a.args[0]);
-			
-			if (t1  === 'string' || t1 === 'number' || t1 == 'boolean') {
-				// append me before a.args[0]
-				a.args[0] = '[' + a.me + '] ' + a.args[0];
-			}
-			
-			if (!!console) {
-				// make sure fx exists
-				if (!$.isFunction(console[a.fx])) {
-					a.fx = 'log';
-				}
-				// call it
-				if (!!console[a.fx].apply) {
-					console[a.fx].apply(console, a.args);
-				} else {
-					$.each(a.args, function _logArgs(index, arg) {
-						console[a.fx](arg);
-					});
-				}
-			}
-			
-			logs.push(a);
-		}
-		return this;
-	},
-	
 	/** Pages **/
 	pageModels = {},
 	pageInstances = {},
@@ -293,7 +219,7 @@
 				});
 			}
 			
-			callback(tempFx, [key, data, e]);
+			App.callback(tempFx, [key, data, e]);
 		}
 	},
 	
@@ -553,7 +479,7 @@
 	/** App **/
 	run = function (root) {
 		initApplication(root);
-		return this;
+		return App;
 	};
 	
 	/** Public Interfaces **/
@@ -563,22 +489,10 @@
 		root: function() {
 			return ROOT;
 		},
-		
-		// callback utility
-		//callback: callback,
-		
-		// get/set the debug flag
-		debug: debug,
-		
+
 		// main entrance
 		run: run,
-		
-		// log
-		log: log,
-		
-		// logs
-		logs: function () {return logs;},
-		
+
 		// mediator object
 		mediator: {
 			

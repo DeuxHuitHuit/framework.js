@@ -84,34 +84,31 @@
 			
 			isMsie : function(userAgent) {
 				userAgent = getUserAgent(userAgent);
-				return $.uaMatch(userAgent).browser == 'msie';
-			},
+				return !!(userAgent.match(/msie/i));//$.uaMatch(userAgent).browser == 'msie';
+			}
 			
-			isUnsupported : function(userAgent) {
+			/*isUnsupported : function(userAgent) {
 				var 
 				b;
 				userAgent = getUserAgent(userAgent);
 				b = $.uaMatch(userAgent);
 				
 				return b.browser === "" || (b.browser == 'msie' && parseInt(b.version,10)) < 9;
-			}
+			}*/
 		};
 	};
 	
 	// Query string Parser
 	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
-	w.QueryStringParser = QueryStringParserConstructor();
+	window.QueryStringParser = QueryStringParserConstructor();
 	
-	//Store a copy of the result in the window object
-	w.QS = w.QueryStringParser.parse();
-	
+	//Parse the query string and store a copy of the result in the window object
+	window.QS = w.QueryStringParser.parse();
 	
 	// Browser detector
-	w.BrowserDetector = BrowserDetectorConstructor();
+	window.BrowserDetector = BrowserDetectorConstructor();
 	
 	// User Agent parsing
-	$.unsupported = w.BrowserDetector.isUnsupported();
-	
 	$.iphone =  w.BrowserDetector.isIphone();
 	
 	$.ipad =  w.BrowserDetector.isIpad();

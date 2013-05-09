@@ -2,7 +2,7 @@
 <html lang="en"> 
 <head> 
 	<meta charset="utf-8" /> 
-	<title>framework.js test suite</title> 
+	<title>app-callback.js test suite</title> 
 	
 	<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css" type="text/css"/>
 	
@@ -56,10 +56,57 @@
 			
 			module('App.callback');
 			
-			test('', function AppDebug() {
+			test('Callback exist', function AppDebug() {
 				//test for initial value
 				ok(!!window.App, 'window.App is defined'); 
 				ok(!!window.App.callback, 'window.App.callback is defined'); 
+			});
+			
+			test('Callback work good with wrong value', function AppDebug() {
+				//test for initial value
+				var 
+				testCallbackWithNumber = 1;
+				
+				ok(App.callback(testCallbackWithNumber) === null);
+			});
+			
+			test('Callback handle exception', function AppDebug() {
+				//test for initial value
+				var 
+				testCallbackWithException = function() {
+					throw "Exception";
+				},
+				logResult;
+				
+				ok(App.callback(testCallbackWithException) === null, "okay with no logger");
+				
+				/* Create a fake logger to test */ 
+				
+				window.App = $.extend(window.App, {
+					
+					// callback utility
+					log: function (arg) {
+						logResult = arg;
+					}
+					
+				});
+				
+				App.callback(testCallbackWithException);
+				
+				ok(logResult.fx == "error" && logResult.args == "Exception", "okay with logger, exception logged");
+				
+				
+			});
+			
+			test('Callback work and return value', function AppDebug() {
+				//test for initial value
+				var 
+				returnedValue = "test",
+				testCallbackReturn = function() {
+					return returnedValue;
+				};
+				
+				ok(App.callback(testCallbackReturn) === returnedValue, "Is returning the callback value");
 			});
 			
 		}; // end run tests
