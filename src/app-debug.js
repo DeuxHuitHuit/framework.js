@@ -13,15 +13,10 @@
 	/** Debug **/
 	isDebuging = false,
 	debug = function (value) {
-		
 		if (value === true || value === false) {
-			//Set from a boolean
 			isDebuging = value;
-			return isDebuging;
 		} else if (value === '!') {
-			//Reverse set
 			isDebuging = !isDebuging;
-			return isDebuging;
 		}
 		return isDebuging;
 	},

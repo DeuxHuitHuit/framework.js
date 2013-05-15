@@ -22,70 +22,88 @@
 	pageModels = {},
 	pageInstances = {},
 	
-	_createPageModel = function (key, model) {
+	_createPageModel = function (key, model, override) {
 		var
-		_routes,
+		
 		
 		ftrue = function () {
 			return true;
 		},
 		
-		_key = function () {
-			return key;
-		},
-		routes = function () {
-			return _routes;
-		},
-		loaded = function () {
-			return !!$(this.key()).length;
-		},
-		enterLeave = function (next) {
-			callback(next);
+		_enterLeave = function (next) {
+			App.callback(next);
 		},
 		
-		factory = function () {
+		factory = function (pageData) {
+		
+			var
+			
+			_pageData = pageData,
+			
+			_key = function () {
+				return _pageData.key;
+			},
+			
+			_routes = function () {
+				return _pageData.routes;
+			},
+			
+			_loaded = function () {
+				return !!$(this.key()).length;
+			};
+			
 			return $.extend({
 				actions: $.noop,
 				key: _key, // css selector
-				loaded: loaded,
+				loaded: _loaded,
 				init: $.noop,
-				enter: enterLeave,
-				leave: enterLeave,
+				enter: _enterLeave,
+				leave: _enterLeave,
 				canEnter: ftrue,
 				canLeave: ftrue,
-				routes: routes,
-				addRoute: function (route) {
-					_routes.push(route);
-				},
-				addRoutes: function (r) {
-					$.each(r, function _addRoute(index, route) {
-						_routes.push(route);
-					});
-				}
+				routes: _routes
 			}, model);
 		};
 		
 		return factory;
 	},
 	
-	createPage = function (pageData, model) {
+	createPage = function (pageData, keyModel,override) {
 		var 
-		pageModel = pageModels[model],
+		//Find the page model associated
+		pageModel = pageModels[keyModel],
 		pageInst;
 		
 		if (!pageModel) {
-			log({args:['Model %s not found', model], fx:'error'});
+			App.log({args:['Model %s not found', keyModel], fx:'error'});
+			return false;
+		}else {
+			//Check to not overide an existing page
+			if(!!pageInstances[pageData.key] && !override) {
+				App.log({args:['Overwriting page key %s is not allowed', pageData.key], fx:'error'});
+			}else {
+				pageInst = pageModel(pageData);
+				//pageInst = $.extend(pageModel(pageData), pageModel);
+				pageInstances[pageData.key] = pageInst;
+				return true;
+			}
 		}
-		pageInst = $.extend(pageModel(pageData), pageModel);
-		pageInstances[pageData.key] = pageInst;
 	},
 	
-	exportPage = function (key, override) {
-		var pageModel = _createPageModel(key);
+	/* Create a function to create a new page */
+	exportPage = function (key, model, override) {
+		
+		var pageModel = _createPageModel(key,model);
+		
+		//find an existing page and cannot override it
 		if (!!pageModels[key] && !override) {
-			log({args:['Overwriting page model key %s is not allowed', key], fx:'error'});
+			//error, should not override an existing key
+			App.log({args:['Overwriting page model key %s is not allowed', key], fx:'error'});
+			return false;
 		} else {
+			//Store page to the list
 			pageModels[key] = pageModel;
+			return true;
 		}
 	},
 	
@@ -139,7 +157,7 @@
 					try {
 						regex = new RegExp(testRoute);
 					} catch (ex) {
-						log({args:['Error while creating RegExp %s.\n%s', testRoute, ex], fx:'error'});
+						App.log({args:['Error while creating RegExp %s.\n%s', testRoute, ex], fx:'error'});
 					}
 					
 					if (!!regex && regex.test(route)) {
@@ -168,7 +186,7 @@
 					page = this;
 					return false; // exit
 				}
-				return true;
+				//return true;
 			});
 		}
 		return page;
@@ -190,13 +208,12 @@
 	},
 	
 	exportModule = function (key, module, override) {
-		var newModule = createModule(module);
 		if (!!pageInstances[key] && !override) {
-			log({args:['Overwriting module key %s is not allowed', key], fx:'error'});
+			App.log({args:['Overwriting module key %s is not allowed', key], fx:'error'});
 		} else {
-			modules[key] = newModule;
+			modules[key] = createModule(module);
 		}
-		return newModule;
+		return modules[key];
 	},
 	
 	/** Mediator **/
@@ -242,7 +259,7 @@
 		var result = false;
 		
 		if (!route) {
-			log({args:'No route set.', fx:'error'});
+			App.log({args:'No route set.', fx:'error'});
 		} else {
 			result = true;
 		}
@@ -252,7 +269,7 @@
 	
 	_validateMediatorState = function() {
 		if (mediatorIsLoadingPage) {
-			log({args:'Mediator is busy waiting for a page load.', fx:'error'});
+			App.log({args:'Mediator is busy waiting for a page load.', fx:'error'});
 		}
 		
 		return !mediatorIsLoadingPage;
@@ -272,7 +289,7 @@
 		var result = true;
 		
 		if (!nextPage.canEnter()) {
-			log('Cannot enter page %s.', nextPage.key());
+			App.log('Cannot enter page %s.', nextPage.key());
 			result = false;
 		} 
 		
@@ -283,9 +300,9 @@
 		var result = false;
 		
 		if (!currentPage) {
-			log({args:'No current page set.', fx:'error'});
+			App.log({args:'No current page set.', fx:'error'});
 		} else if (!currentPage.canLeave()) {
-			log('Cannot leave page %s.', currentPage.key());
+			App.log('Cannot leave page %s.', currentPage.key());
 		} else {
 			result = true;
 		}
@@ -358,7 +375,7 @@
 			var node = $(data).find(nextPage.key());
 			
 			if (!node.length) {
-				log({args:['Could not find "%s" in xhr data.', nextPage.key()], fx:'error'});
+				App.log({args:['Could not find "%s" in xhr data.', nextPage.key()], fx:'error'});
 				
 			} else {
 				
@@ -390,11 +407,11 @@
 		}
 			
 		if (!_validateNextPage(nextPage)) {
-			log({args:['Route "%s" was not found.', obj], fx:'error'});
+			App.log({args:['Route "%s" was not found.', obj], fx:'error'});
 		} else {
 			if(_canEnterNextPage(nextPage)) {
 				if (nextPage === currentPage && currentRouteUrl === route.substring(0,currentRouteUrl.length)) {
-					log('next page is the current one');
+					App.log('next page is the current one');
 					notifyModules('pages.navigateToCurrent',{page: nextPage, route: route});
 				} else {
 					// Raise the flag to mark we are in the process
@@ -518,15 +535,23 @@
 			getPageForRoute: _getPageForRoute,
 			
 			page: function (keyOrRoute) {
+				var result = pageInstances[keyOrRoute];
+				
+				if(!!!result) {
+					result = _getPageForRoute(keyOrRoute);
+				}
+				/*
 				if (keyOrRoute[0] == '/') {
 					return _getPageForRoute(keyOrRoute);
 				} else {
 					return pageInstances[keyOrRoute];
-				}
+				}*/
+				return result;
 			},
 			
 			create: createPage,
 			
+			//Add a new template to the list of page templates exports(key,model,override)
 			exports: exportPage,
 			
 			notify: notifyPage
@@ -535,7 +560,7 @@
 		// Modules
 		modules: {
 		
-			create: createModule,
+			//create: createModule,
 			
 			exports: exportModule,
 			

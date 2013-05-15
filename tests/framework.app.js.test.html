@@ -1,0 +1,178 @@
+<!DOCTYPE html public "✰"> 
+<html lang="en"> 
+<head> 
+	<meta charset="utf-8" /> 
+	<title>framework-app.js test suite</title> 
+	
+	<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css" type="text/css"/>
+	
+	<style type="text/css">
+
+	</style>
+	
+	<script>
+		(function (w, doc,co) {
+			// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
+			var u = {},
+				e,
+				a = /\+/g,  // Regex for replacing addition symbol with a space
+				r = /([^&=]+)=?([^&]*)/g,
+				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+				q = w.location.search.substring(1),
+				v = '1';
+
+			while (e = r.exec(q)) {
+				u[d(e[1])] = d(e[2]);
+			}
+			
+			if (!!u.jquery) {
+				v = u.jquery;
+			}	
+
+			doc.write('<script src="http://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + "<" + '/' + 'script>');
+			co.log('\nLoading jQuery v' + v + '\n');
+		})(window, document, console);
+	</script>
+</head>
+<body>
+	<h1 id="qunit-header">framework-app.js</h1>  
+	<h2 id="qunit-banner"></h2>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+	
+	<script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
+	<script src="../src/globals.js"></script>
+	<script src="../src/app-debug.js"></script>
+	<script src="../src/app.js"></script>
+	
+	<script>
+	(function ($, w) {
+		
+		"use strict";
+		
+		var 
+		
+		runTests = function  () {
+		
+			//Enable debug
+			App.debug(true);
+			
+			module('App.Pages');
+			
+			test('exportsPage and createPage', function exportPagesTest() {
+				var modelKey = "m1",
+				f = function() {
+				
+					return {
+						
+					}
+				}
+				
+				
+				ok(App.pages.exports(modelKey,f), "page exports work");
+				
+				ok(!App.pages.exports(modelKey,f), "page exports dont allow override by default");
+				
+				ok(!App.pages.exports(modelKey,f,false), "page exports dont allow override with false override");
+				
+				ok(App.pages.exports(modelKey,f,true), "page exports allow override with true override");
+				
+				var routes = [ "/en/test/","/fr/test/"];
+				
+				ok(App.pages.create({
+					key: "test", 
+					routes: routes
+				},modelKey), "Page create worked");
+				
+				var page = App.pages.page('test');
+				ok(page.key() == 'test');
+				ok(page.routes() == routes);
+				
+				ok(!App.pages.create({
+					key: "test", 
+					routes: ["/en/test/","/fr/test/"]
+				},modelKey), "page create dont allow override existing page");
+				
+				ok(App.pages.create({
+					key: "test", 
+					routes: ["/en/test/","/fr/test/"]
+				},modelKey,true), "page create allow override existing page with true override");
+				
+				ok(!App.pages.create({
+					key: "test2",
+					routes: ["/en/test/", "/fr/test/"]
+				},"m3"), "page create dont find the model");
+				
+			});
+			
+			test('_matchRoute', function appPages_matchRouteTest () {
+				var routes = { // can also use array
+					root: '/',
+					contactFR: '/fr/contact/',
+					contactEN: '/en/contact/',
+					wildcard: '/test/*/view',
+					questionWildcard: '/test/*',
+					regex: /[ab]/
+				},
+				route = '';
+			
+				route = routes.root;
+				ok(!!~App.pages._matchRoute(route, routes), route);
+				route = routes.contactFR;
+				ok(!!~App.pages._matchRoute(route, routes), route);
+				route = routes.contactEN;
+				ok(!!~App.pages._matchRoute(route, routes), route);
+				equal(App.pages._matchRoute(route, routes), 'contactEN', route + ' index');
+				route = '///kldkslds';
+				ok(!~App.pages._matchRoute(route, routes), '! ' + route);
+				route = '/fr/test/super-cheap/view';
+				ok(!!~App.pages._matchRoute(route, routes), route + ' widlcard');
+				route = '/a';
+				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				route = '/b';
+				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				route = '/c';
+				ok(!~App.pages._matchRoute(route, routes), '! ' + route + ' regexp');
+				
+				route = '/test/?test=test';
+				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				
+				route = '/test/article/test-test/';
+				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				
+				route = '/test/article/test-test/#sasasas';
+				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				
+				route = '/test/?test[super/\]=test#43434';
+				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+			});
+			
+			test('getPageForRoute', function appPages_getPageForRouteTest () {
+				App.pages.exports('page1', function(){
+					return {};
+				});
+				
+				App.pages.create({key: "page 1", routes: ['page-1']},'page1');
+				App.pages.create({key: "page 2", routes: ['page-2']},'page1');
+				
+				var page;
+				
+				page = App.pages.getPageForRoute(null);
+				equal(page, null, 'null page');
+				page = App.pages.getPageForRoute('page-1');
+				equal(page.key(), 'page 1', 'page 1');
+				page = App.pages.getPageForRoute('page-2');
+				equal(page.key(), 'page 2', 'page 2');
+				page = App.pages.getPageForRoute('page-3');
+				equal(page, null, 'page 3');
+			});
+			
+			
+		}; // end run tests
+		
+		$(w).load(runTests);
+		
+	})(jQuery, window);
+	</script>
+</body>
+</html>

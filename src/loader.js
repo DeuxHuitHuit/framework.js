@@ -94,12 +94,7 @@
 		currentUrl = param.url;
 	},
 	
-	loadAsset = function (url, priority) {
-		if (!url) {
-			App.log({args:'No url given', me:'Loader'});
-			return this;
-		}
-		
+	validateUrlArgs = function(url,priority) {
 		// ensure we are dealing with an object
 		if (!$.isPlainObject(url)) {
 			url = {url: url};
@@ -122,6 +117,15 @@
 		if (!$.isNumeric(url.maxRetries)) {
 			url.maxRetries = 2;
 		}
+	},
+	
+	loadAsset = function (url, priority) {
+		if (!url) {
+			App.log({args:'No url given', me:'Loader'});
+			return this;
+		}
+		
+		validateUrlArgs(url,priority);
 		
 		// ensure that asset is not current
 		if (isLoading(url.url)) {
@@ -149,14 +153,18 @@
 			App.log({args:['Url %s was shifted from %s to %s', url.url, oldAsset.priority, url.priority], me:'Loader'});
 		}
 		
+		launchLoad();
+		
+		return this;
+	},
+	
+	launchLoad = function() {
 		// start now if nothing is loading
 		if (!loadIsWorking) {
 			loadIsWorking = true;
 			_loadOneAsset();
 			App.log({args:'Load worker has been started', me:'Loader'});
 		}
-		
-		return this;
 	};
 	
 	window.Loader = $.extend(window.Loader, {

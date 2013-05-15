@@ -7,13 +7,14 @@ module.exports = function(grunt) {
 	SRC = ['src/globals.js', 'src/loader.js', 'src/app.js' ],
 	serverPort = 8080,
 	server = 'http://localhost:' + serverPort,
-	testFile = server + '/tests/framework.js.test.html?noglobals=true';
+	testFile = server + '/tests/framework.app.js.test.html?noglobals=true';
 	
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-qunit');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-complexity');
 	
 	// Project configuration.
 	grunt.initConfig({
@@ -98,10 +99,24 @@ module.exports = function(grunt) {
 					base: '.'
 				}
 			}
-		}
+		},
+		complexity: {
+            generic: {
+                src: ['src/*'],
+                options: {
+                    jsLintXML: 'report.xml', // create XML JSLint-like report
+                    errorsOnly: false, // show only maintainability errors
+                    cyclomatic: 8,
+                    halstead: 20,
+                    maintainability: 100
+                }
+            }
+        }
+
 	});
 
 	// Default task.
-	grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'concat', 'uglify']);
+	grunt.registerTask('default', ['jshint', 'connect', 'qunit','complexity', 'concat', 'uglify']);
+	grunt.registerTask('debug', ['jshint', 'connect', 'qunit', 'complexity']);
 
 };
