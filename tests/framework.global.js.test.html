@@ -42,9 +42,6 @@
 	
 	<script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
 	<script src="../src/globals.js"></script>
-	<script src="../src/loader.js"></script> 
-	<script src="../src/app.js"></script>
-	<script src="../src/app-callback.js"></script>
 	
 	<script>
 	(function ($, w) {
@@ -114,57 +111,6 @@
 				ok(w.isChar(w.keys.a), 'a');
 				ok(w.isChar(w.keys.z), 'z');
 			});
-			
-			module('App.modules');
-			
-			test('notify', function appModuleNotifyTest () {
-				var count = 0,
-					testModule = {
-						actions: function () {
-							return {
-								test: function () {
-									count++;
-								}
-							}
-						}
-					};
-				App.modules.exports('moduleA', testModule);
-				App.modules.exports('moduleB', testModule);
-				App.modules.exports('moduleC', testModule);
-				App.modules.exports('moduleD', {});
-				
-				App.modules.notify('test');
-				
-				equal(count, 3, '3 modules got called');
-			});
-			
-			test('notify - JSON Path', function appModuleNotifyJsonPathTest () {
-				var count = 0,
-					testModule = {
-						actions: function () {
-							return {
-								JSONPath: {
-									test: {
-										fx: function () {
-											count++;
-										}
-									}
-								}
-							}
-						}
-					};
-					
-				// erase previous modules
-				App.modules.exports('moduleA', testModule);
-				App.modules.exports('moduleB', {});
-				App.modules.exports('moduleC', {});
-				App.modules.exports('moduleD', {});
-				
-				App.modules.notify('JSONPath.test.fx');
-				
-				equal(count, 1, '1 modules got called');
-			});
-
 			
 		}; // end run tests
 		

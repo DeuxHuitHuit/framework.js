@@ -42,9 +42,10 @@
 	
 	<script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
 	<script src="../src/globals.js"></script>
+	<script src="../src/app-debug.js"></script> 
 	<script src="../src/app-callback.js"></script> 
 	<script src="../src/loader.js"></script> 
-	<script src="../src/app-debug.js"></script> 
+	
 	
 	
 	<script>
@@ -76,15 +77,15 @@
 							count++;
 							
 							// do let the retries do that
-							if (count <= 1) {
+							if (count > 2) {
 								start();
 								
-								equal(count, 1);
+								equal(count,3);
 							}
 						}
 					});
 				
-				//stop();
+				stop();
 				
 			});
 			

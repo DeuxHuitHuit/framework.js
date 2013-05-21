@@ -1,4 +1,4 @@
-/*! framework.js - v1.0.0 - 2013-04-22
+/*! framework.js - v1.1.0 - 2013-05-17
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -8,28 +8,119 @@
  /*
  * Browser Support/Detection
  */
-;(function ($, undefined) {
+;(function ($, w, undefined) {
 	
 	"use strict";
+
+	var 
+	QueryStringParserConstructor = function() {
+		var
+		a = /\+/g,  // Regex for replacing addition symbol with a space
+		r = /([^&=]+)=?([^&]*)/g,
+		d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+		
+		_parse = function(qs) {
+			var 
+			u = {},
+			e,
+			q;
+			
+			//if we dont have the parameter qs, use the window location search value
+			if(qs !== "" && !!!qs) {
+				qs = w.location.search;
+			}
+			
+			//remove the first caracter (?)
+			q = qs.substring(1);
+
+			while ((e = r.exec(q))) {
+				u[d(e[1])] = d(e[2]);
+			}
+			
+			return u;
+		};
+		
+		return {
+			parse : _parse
+		};
+	},
 	
-	var ua = navigator.userAgent;
+	BrowserDetectorConstructor = function() {
+		var
+		getUserAgent = function(userAgent) {
+			if(userAgent !== "" && !!!userAgent) {
+				userAgent = navigator.userAgent;
+			}
+			return userAgent;
+		};
+		
 	
-	$.unsupported = !$.browser || ($.browser.msie && parseInt($.browser.version, 10) < 9);
+		return {
 	
-	$.iphone =  !!ua && 
-					(ua.match(/iPhone/i) || 
-					 ua.match(/iPod/i)); 
+			isIos : function(userAgent) {
+				return w.BrowserDetector.isIphone(userAgent) || w.BrowserDetector.isIpad(userAgent);
+			},
+			
+			isIphone : function(userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return !!(userAgent.match(/iPhone/i) || userAgent.match(/iPod/i));
+			},
+			
+			isIpad : function(userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return !!(userAgent.match(/iPad/i));
+			},
+			
+			isAndroid : function(userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return !!(userAgent.match(/Android/i));
+			},
+			
+			isOtherMobile : function(userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return !!(userAgent.match(/mobile/i) || userAgent.match(/phone/i));
+			},
+			
+			isMobile : function(userAgent) {
+				return w.BrowserDetector.isIos(userAgent) || w.BrowserDetector.isAndroid(userAgent) || w.BrowserDetector.isOtherMobile(userAgent);
+			},
+			
+			isMsie : function(userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return !!(userAgent.match(/msie/i));//$.uaMatch(userAgent).browser == 'msie';
+			}
+			
+			/*isUnsupported : function(userAgent) {
+				var 
+				b;
+				userAgent = getUserAgent(userAgent);
+				b = $.uaMatch(userAgent);
+				
+				return b.browser === "" || (b.browser == 'msie' && parseInt(b.version,10)) < 9;
+			}*/
+		};
+	};
 	
-	$.ios    =  $.iphone || 
-					(!!ua &&
-					ua.match(/iPad/i)); 
+	// Query string Parser
+	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
+	window.QueryStringParser = QueryStringParserConstructor();
 	
-	$.mobile =  $.ios || 
-					(!!ua && (
-					ua.match(/Android/i) ||
-					ua.match(/mobile/i) ||
-					ua.match(/phone/i)));
-})(jQuery);
+	//Parse the query string and store a copy of the result in the window object
+	window.QS = w.QueryStringParser.parse();
+	
+	// Browser detector
+	window.BrowserDetector = BrowserDetectorConstructor();
+	
+	// User Agent parsing
+	$.iphone =  w.BrowserDetector.isIphone();
+	
+	$.ipad =  w.BrowserDetector.isIpad();
+	
+	$.ios    =  w.BrowserDetector.isIos();
+	
+	$.mobile =  w.BrowserDetector.isMobile();
+	
+})(jQuery, window);
 	
 /**
  * General customization for mobile and default easing
@@ -140,6 +231,129 @@
 /**
  * @author Deux Huit Huit
  * 
+ * App Callback functionnality
+ *
+ */
+;(function ($, undefined) {
+
+	"use strict";
+	
+	var 
+	
+	/** Debug **/
+	isDebuging = false,
+	debug = function (value) {
+		if (value === true || value === false) {
+			isDebuging = value;
+		} else if (value === '!') {
+			isDebuging = !isDebuging;
+		}
+		return isDebuging;
+	},
+	
+	logs = [],
+	log = function (arg) {
+		if (isDebuging) {
+			// no args, exit
+			if (!arg) {
+				return this;
+			}
+			
+			// ensure that args is an array
+			if (!!arg.args && !$.isArray(arg.args)) {
+				arg.args = [arg.args];
+			}
+			
+			// our copy
+			var a = {
+				args: arg.args || arguments,
+				fx: arg.fx || 'warn',
+				me: arg.me || 'App'
+			},
+			t1 = $.type(a.args[0]);
+			
+			if (t1  === 'string' || t1 === 'number' || t1 == 'boolean') {
+				// append me before a.args[0]
+				a.args[0] = '[' + a.me + '] ' + a.args[0];
+			}
+			
+			if (!!console) {
+				// make sure fx exists
+				if (!$.isFunction(console[a.fx])) {
+					a.fx = 'log';
+				}
+				// call it
+				if (!!console[a.fx].apply) {
+					console[a.fx].apply(console, a.args);
+				} else {
+					$.each(a.args, function _logArgs(index, arg) {
+						console[a.fx](arg);
+					});
+				}
+			}
+			
+			logs.push(a);
+		}
+		return this;
+	};
+	
+	/** Public Interfaces **/
+	window.App = $.extend(window.App, {
+		
+		// get/set the debug flag
+		debug: debug,
+		
+		// log
+		log: log,
+		
+		// logs
+		logs: function () {return logs;}
+		
+	});
+	
+})(jQuery);
+
+/**
+ * @author Deux Huit Huit
+ * 
+ * App Callback functionnality
+ *
+ */
+;(function ($, undefined) {
+
+	"use strict";
+	
+	var 
+	
+	/** Utility **/
+	callback = function (fx, args) {
+		try {
+			if ($.isFunction(fx)) {
+				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
+			}
+		} catch (err) {
+			App.log({args:err.message || err, fx:'error'});
+		}
+		return null;
+	};
+	
+	if(!!!window.App || !$.isFunction(window.App.debug)) {
+		window.alert('App-debug is needed for App-callback');
+	}else {
+		/** Public Interfaces **/
+		window.App = $.extend(window.App, {
+			
+			// callback utility
+			callback: callback
+			
+		});
+	}
+	
+})(jQuery);
+
+/**
+ * @author Deux Huit Huit
+ * 
  * Assets loader
  */
 ;(function ($, undefined) {
@@ -233,12 +447,7 @@
 		currentUrl = param.url;
 	},
 	
-	loadAsset = function (url, priority) {
-		if (!url) {
-			App.log({args:'No url given', me:'Loader'});
-			return this;
-		}
-		
+	validateUrlArgs = function(url,priority) {
 		// ensure we are dealing with an object
 		if (!$.isPlainObject(url)) {
 			url = {url: url};
@@ -261,6 +470,15 @@
 		if (!$.isNumeric(url.maxRetries)) {
 			url.maxRetries = 2;
 		}
+	},
+	
+	loadAsset = function (url, priority) {
+		if (!url) {
+			App.log({args:'No url given', me:'Loader'});
+			return this;
+		}
+		
+		validateUrlArgs(url,priority);
 		
 		// ensure that asset is not current
 		if (isLoading(url.url)) {
@@ -288,14 +506,18 @@
 			App.log({args:['Url %s was shifted from %s to %s', url.url, oldAsset.priority, url.priority], me:'Loader'});
 		}
 		
+		launchLoad();
+		
+		return this;
+	},
+	
+	launchLoad = function() {
 		// start now if nothing is loading
 		if (!loadIsWorking) {
 			loadIsWorking = true;
 			_loadOneAsset();
 			App.log({args:'Load worker has been started', me:'Loader'});
 		}
-		
-		return this;
 	};
 	
 	window.Loader = $.extend(window.Loader, {
@@ -322,119 +544,100 @@
 	
 	//Default value
 	ROOT = 'body',
+	
+	//Store ref to the current page object
 	currentPage = null,
+	
+	//Store ref to the previous page object
 	previousPage = null,
 	
-	/** Utility **/
-	callback = function (fx, args) {
-		if ($.isFunction(fx)) {
-			return fx.apply(this, args);
-		}
-		return null;
-	},
-	
-	/** Debug **/
-	d = false,
-	debug = function (value) {
-		if (value === true || value === false) {
-			d = value;
-			return this;
-		} else if (value === '!') {
-			d = !d;
-			return this;
-		}
-		return d;
-	},
-	
-	logs = [],
-	log = function (arg) {
-		if (d) {
-			// no args, exit
-			if (!arg) {
-				return this;
-			}
-			
-			// ensure that args is an array
-			if (!!arg.args && !$.isArray(arg.args)) {
-				arg.args = [arg.args];
-			}
-			
-			// our copy
-			var a = {
-				args: arg.args || arguments,
-				fx: arg.fx || 'warn',
-				me: arg.me || 'App'
-			},
-			t1 = $.type(a.args[0]);
-			
-			if (t1  === 'string' || t1 === 'number' || t1 == 'boolean') {
-				// append me before a.args[0]
-				a.args[0] = '[' + a.me + '] ' + a.args[0];
-			}
-			
-			if (!!console) {
-				// make sure fx exists
-				if (!$.isFunction(console[a.fx])) {
-					a.fx = 'log';
-				}
-				// call it
-				if (!!console[a.fx].apply) {
-					console[a.fx].apply(console, a.args);
-				} else {
-					$.each(a.args, function _logArgs(index, arg) {
-						console[a.fx](arg);
-					});
-				}
-			}
-			
-			logs.push(a);
-		}
-		return this;
-	},
-	
 	/** Pages **/
-	pages = {},
+	pageModels = {},
+	pageInstances = {},
 	
-	_createAbstractPage = function () {
+	_createPageModel = function (key, model, override) {
 		var
+		
+		
 		ftrue = function () {
 			return true;
 		},
-		key = function () {
-			return 'abstract';
+		
+		_enterLeave = function (next) {
+			App.callback(next);
 		},
-		loaded = function () {
-			return !!$(this.key()).length;
-		},
-		enterLeave = function (next) {
-			callback(next);
+		
+		factory = function (pageData) {
+		
+			var
+			
+			_pageData = pageData,
+			
+			_key = function () {
+				return _pageData.key;
+			},
+			
+			_routes = function () {
+				return _pageData.routes;
+			},
+			
+			_loaded = function () {
+				return !!$(this.key()).length;
+			};
+			
+			return $.extend({
+				actions: $.noop,
+				key: _key, // css selector
+				loaded: _loaded,
+				init: $.noop,
+				enter: _enterLeave,
+				leave: _enterLeave,
+				canEnter: ftrue,
+				canLeave: ftrue,
+				routes: _routes
+			}, model);
 		};
-	
-		return {
-			actions: $.noop,
-			key: key, // css selector
-			loaded: loaded,
-			init: $.noop,
-			enter: enterLeave,
-			leave: enterLeave,
-			canEnter: ftrue,
-			canLeave: ftrue,
-			routes: $.noop
-		};
+		
+		return factory;
 	},
 	
-	createPage = function (page) {
-		return $.extend(_createAbstractPage(), page);
-	},
-	
-	exportPage = function (key, page, override) {
-		var newPage = createPage(page);
-		if (!!pages[key] && !override) {
-			log({args:['Overwriting page key %s is not allowed', key], fx:'error'});
-		} else {
-			pages[key] = newPage;
+	createPage = function (pageData, keyModel,override) {
+		var 
+		//Find the page model associated
+		pageModel = pageModels[keyModel],
+		pageInst;
+		
+		if (!pageModel) {
+			App.log({args:['Model %s not found', keyModel], fx:'error'});
+			return false;
+		}else {
+			//Check to not overide an existing page
+			if(!!pageInstances[pageData.key] && !override) {
+				App.log({args:['Overwriting page key %s is not allowed', pageData.key], fx:'error'});
+			}else {
+				pageInst = pageModel(pageData);
+				//pageInst = $.extend(pageModel(pageData), pageModel);
+				pageInstances[pageData.key] = pageInst;
+				return true;
+			}
 		}
-		return newPage;
+	},
+	
+	/* Create a function to create a new page */
+	exportPage = function (key, model, override) {
+		
+		var pageModel = _createPageModel(key,model);
+		
+		//find an existing page and cannot override it
+		if (!!pageModels[key] && !override) {
+			//error, should not override an existing key
+			App.log({args:['Overwriting page model key %s is not allowed', key], fx:'error'});
+			return false;
+		} else {
+			//Store page to the list
+			pageModels[key] = pageModel;
+			return true;
+		}
 	},
 	
 	_matchRoute = function (route, routes) {
@@ -487,7 +690,7 @@
 					try {
 						regex = new RegExp(testRoute);
 					} catch (ex) {
-						log({args:['Error while creating RegExp %s.\n%s', testRoute, ex], fx:'error'});
+						App.log({args:['Error while creating RegExp %s.\n%s', testRoute, ex], fx:'error'});
 					}
 					
 					if (!!regex && regex.test(route)) {
@@ -509,14 +712,14 @@
 	_getPageForRoute = function (route) {
 		var page = null;
 		if (_validateRoute(route)) {
-			$.each(pages, function _walkPage() {
+			$.each(pageInstances, function _walkPage() {
 				var routes = this.routes();
 				// route found ?
 				if (!!~_matchRoute(route, routes)) {
 					page = this;
 					return false; // exit
 				}
-				return true;
+				//return true;
 			});
 		}
 		return page;
@@ -538,18 +741,17 @@
 	},
 	
 	exportModule = function (key, module, override) {
-		var newModule = createModule(module);
-		if (!!pages[key] && !override) {
-			log({args:['Overwriting module key %s is not allowed', key], fx:'error'});
+		if (!!pageInstances[key] && !override) {
+			App.log({args:['Overwriting module key %s is not allowed', key], fx:'error'});
 		} else {
-			modules[key] = newModule;
+			modules[key] = createModule(module);
 		}
-		return newModule;
+		return modules[key];
 	},
 	
 	/** Mediator **/
 	mediatorIsLoadingPage = false,
-	currentRouteUrl = document.location.href.substring((document.location.protocol + '//' + document.location.host).length),
+	currentRouteUrl = document.location.pathname,
 	
 	_callAction = function (actions, key, data, e) {
 		if (!!actions) {
@@ -567,7 +769,7 @@
 				});
 			}
 			
-			callback(tempFx, [key, data, e]);
+			App.callback(tempFx, [key, data, e]);
 		}
 	},
 	
@@ -590,8 +792,8 @@
 		var result = false;
 		
 		if (!route) {
-			log({args:'No route set.', fx:'error'});
-		}else {
+			App.log({args:'No route set.', fx:'error'});
+		} else {
 			result = true;
 		}
 		
@@ -600,7 +802,7 @@
 	
 	_validateMediatorState = function() {
 		if (mediatorIsLoadingPage) {
-			log({args:'Mediator is busy waiting for a page load.', fx:'error'});
+			App.log({args:'Mediator is busy waiting for a page load.', fx:'error'});
 		}
 		
 		return !mediatorIsLoadingPage;
@@ -620,7 +822,7 @@
 		var result = true;
 		
 		if (!nextPage.canEnter()) {
-			log('Cannot enter page %s.', nextPage.key());
+			App.log('Cannot enter page %s.', nextPage.key());
 			result = false;
 		} 
 		
@@ -631,9 +833,9 @@
 		var result = false;
 		
 		if (!currentPage) {
-			log({args:'No current page set.', fx:'error'});
+			App.log({args:'No current page set.', fx:'error'});
 		} else if (!currentPage.canLeave()) {
-			log('Cannot leave page %s.', currentPage.key());
+			App.log('Cannot leave page %s.', currentPage.key());
 		} else {
 			result = true;
 		}
@@ -644,10 +846,10 @@
 	//Actions
 	
 	/**
-	*  Notify all registered component and page
+	* Notify all registered component and page
 	*
-	*  @see AER in http://addyosmani.com/largescalejavascript/
-	*  @see pub/sub http://freshbrewedcode.com/jimcowart/tag/pubsub/
+	* @see AER in http://addyosmani.com/largescalejavascript/
+	* @see pub/sub http://freshbrewedcode.com/jimcowart/tag/pubsub/
 	*/
 	notifyAll = function (key, data, e) {
 		
@@ -661,8 +863,8 @@
 	},
 	
 	/** 
-	*	Change the current page to the requested route
-	*	Do nothing if the current page is already the requested route
+	* Change the current page to the requested route
+	* Do nothing if the current page is already the requested route
 	*/
 	gotoPage = function (obj) {
 		var 
@@ -706,7 +908,7 @@
 			var node = $(data).find(nextPage.key());
 			
 			if (!node.length) {
-				log({args:['Could not find "%s" in xhr data.', nextPage.key()], fx:'error'});
+				App.log({args:['Could not find "%s" in xhr data.', nextPage.key()], fx:'error'});
 				
 			} else {
 				
@@ -728,7 +930,7 @@
 		}; 
 		//end var
 		
-		if($.type(obj)==='string') {
+		if ($.type(obj)==='string') {
 			if (_canLeaveCurrentPage() &&  _validateMediatorState()) {
 				nextPage = _getPageForRoute(obj);
 				route = obj;
@@ -738,11 +940,11 @@
 		}
 			
 		if (!_validateNextPage(nextPage)) {
-			log({args:['Route "%s" was not found.', obj], fx:'error'});
-		}else {
+			App.log({args:['Route "%s" was not found.', obj], fx:'error'});
+		} else {
 			if(_canEnterNextPage(nextPage)) {
-				if (nextPage === currentPage && currentRouteUrl === route) {
-					log('next page is the current one');
+				if (nextPage === currentPage && currentRouteUrl === route.substring(0,currentRouteUrl.length)) {
+					App.log('next page is the current one');
 					notifyModules('pages.navigateToCurrent',{page: nextPage, route: route});
 				} else {
 					// Raise the flag to mark we are in the process
@@ -786,9 +988,9 @@
 	},
 	
 	/** 
-	*  Init All the applications
-	*  Assign root variable
-	*  Call init on all registered page and modules
+	* Init All the applications
+	* Assign root variable
+	* Call init on all registered page and modules
 	*/
 	initApplication = function(root) {
 		
@@ -803,7 +1005,7 @@
 		});
 		
 		// init each Page already loaded
-		$.each(pages, function _initPage() {
+		$.each(pageInstances, function _initPage() {
 			if (!!this.loaded()) {
 				// init page
 				this.init();
@@ -811,49 +1013,39 @@
 				// find if this is our current page
 				// current route found ?
 				if (!!~_matchRoute(currentRouteUrl, this.routes())) {
-					//initialise page variable
+					// initialise page variable
 					currentPage = this;
-					previousPage = this; //Set the same for the first time
+					previousPage = this; // Set the same for the first time
 					notifyModules('page.entering',{page: currentPage, route: currentRouteUrl});
-					//enter the page right now
-					currentPage.enter(function() {
+					// enter the page right now
+					currentPage.enter(function _currentPageEnterCallback() {
 						notifyModules('page.enter', {page: currentPage, route: currentRouteUrl});
 					});
 				}
 			}
 		});
-		
-		// warning, no page found!
-		if (!currentPage) {
-			log({args:['Route "%s" was not found on init.', currentRouteUrl], fx:'error'});
-		}
 	},
 	
 	/** App **/
 	run = function (root) {
 		initApplication(root);
-		return this;
+		return App;
 	};
 	
 	/** Public Interfaces **/
 	window.App = $.extend(window.App, {
+		
 		// root node for the pages
 		root: function() {
 			return ROOT;
 		},
-		// callback utility
-		callback: callback,
-		// get/set the debug flag
-		debug: debug,
+
 		// main entrance
 		run: run,
-		// log
-		log: log,
-		// logs
-		logs: function () {return logs;},
-		
+
 		// mediator object
 		mediator: {
+			
 			// event dispatcher to the
 			// current Page and Modules
 			notify: notifyAll,
@@ -874,22 +1066,37 @@
 			
 			// public
 			getPageForRoute: _getPageForRoute,
+			
 			page: function (keyOrRoute) {
+				var result = pageInstances[keyOrRoute];
+				
+				if(!!!result) {
+					result = _getPageForRoute(keyOrRoute);
+				}
+				/*
 				if (keyOrRoute[0] == '/') {
 					return _getPageForRoute(keyOrRoute);
 				} else {
-					return pages[keyOrRoute];
-				}
+					return pageInstances[keyOrRoute];
+				}*/
+				return result;
 			},
+			
 			create: createPage,
+			
+			//Add a new template to the list of page templates exports(key,model,override)
 			exports: exportPage,
+			
 			notify: notifyPage
 		},
 		
 		// Modules
 		modules: {
-			create: createModule,
+		
+			//create: createModule,
+			
 			exports: exportModule,
+			
 			notify: notifyModules
 		}
 	

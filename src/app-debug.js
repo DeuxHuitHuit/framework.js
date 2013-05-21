@@ -77,7 +77,7 @@
 		log: log,
 		
 		// logs
-		logs: function () {return logs;},
+		logs: function () {return logs;}
 		
 	});
 	

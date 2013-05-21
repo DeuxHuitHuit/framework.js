@@ -340,15 +340,13 @@
 		enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable 
 			//The currentPage pointer will be cleared after the next call
-			var leavingPage = currentPage;
+			var 
+			leavingPage = currentPage,
 			
-			//notify all module
-			notifyModules('page.leaving',{page: leavingPage});
-				
-			//Leave the current page
-			currentPage.leave(function _leaveCurrent() {
+			_leaveCurrent = function() {
 				//ensure the leaving page is hidden
-				$(leavingPage.key()).hide();
+				//$(leavingPage.key()).hide();
+				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
 				//clear leavingPage
@@ -356,19 +354,39 @@
 				
 				//notify all module
 				notifyModules('page.leave', {page: previousPage});
-			});
-			currentPage = null;  // clean currentPage pointer,this will block all interactions
-			
-			notifyModules('page.entering',{page: nextPage, route: route});
-			
-			nextPage.enter(function _enterNext() {
+			},
+			_enterNext = function() {
 				// set the new Page as the current one
 				currentPage = nextPage;
 				// notify all module
 				notifyModules('page.enter',{page: nextPage, route: route});
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			});
+			};
+			
+			currentPage = null;  // clean currentPage pointer,this will block all interactions
+			
+			//Try to find a module to make transition between page
+			//if not, return to classic code
+			if(!notifyModules(
+					'page.requestPageTransition', {
+						currentPage : currentPage,
+						nextPage : nextPage,
+						leaveCurrent : _leaveCurrent,
+						enterNext : _enterNext
+					}
+				) {
+				//Leave to page the transition job
+				
+				//notify all module
+				notifyModules('page.leaving',{page: leavingPage});
+					
+				//Leave the current page
+				leavingPage.leave(_leaveCurrent);
+				
+				notifyModules('page.entering',{page: nextPage, route: route});
+				
+				nextPage.enter(_enterNext);
 		},
 		loadSucess = function (data, textStatus, jqXHR) {
 			// get the node

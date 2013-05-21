@@ -22,12 +22,16 @@
 		return null;
 	};
 	
-	/** Public Interfaces **/
-	window.App = $.extend(window.App, {
-		
-		// callback utility
-		callback: callback
-		
-	});
+	if(!!!window.App || !$.isFunction(window.App.debug)) {
+		window.alert('App-debug is needed for App-callback');
+	}else {
+		/** Public Interfaces **/
+		window.App = $.extend(window.App, {
+			
+			// callback utility
+			callback: callback
+			
+		});
+	}
 	
 })(jQuery);

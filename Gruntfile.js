@@ -4,10 +4,23 @@ module.exports = function(grunt) {
 	"use strict";
 	
 	var
-	SRC = ['src/globals.js', 'src/loader.js', 'src/app.js' ],
+	SRC = ['src/globals.js','src/app-debug.js', 'src/app-callback.js', 'src/loader.js', 'src/app.js' ],
 	serverPort = 8080,
 	server = 'http://localhost:' + serverPort,
-	testFile = server + '/tests/framework.app.js.test.html?noglobals=true';
+	testFile = [server + '/tests/framework.global.js.test.html?noglobals=true',
+				server + '/tests/framework.debug.js.test.html?noglobals=true',
+				server + '/tests/framework.callback.js.test.html?noglobals=true',
+				server + '/tests/framework.app.js.test.html?noglobals=true'/*,
+				server + '/tests/loader.js.test?noglobals=true'*/],
+	
+	testUrls = [];
+	
+	for(var c = 0; c < testFile.length; c++) {
+		testUrls.push(testFile[c]);
+		testUrls.push(testFile[c] + '&jquery=1.9.1');
+		testUrls.push(testFile[c] + '&jquery=1.8');
+		testUrls.push(testFile[c] + '&jquery=1.7');
+	}
 	
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -39,7 +52,7 @@ module.exports = function(grunt) {
 		qunit: {
 			all: {
 				options: {
-					urls: [testFile, testFile + '&jquery=1.8', testFile + '&jquery=1.7']
+					urls: testUrls
 				}
 			}
 		},
@@ -84,12 +97,16 @@ module.exports = function(grunt) {
 				sourceMap: 'dist/framework.map',
 				sourceMappingURL: 'framework.map',
 				report: 'gzip',
+				mangle: true,
 				compress: {
 					global_defs: {
 						"DEBUG": false
 					},
-					dead_code: true
-				}
+					dead_code: true,
+					unused: true,
+					warnings: true
+				},
+				preserveComments: false
 			}
 		},
 		connect: {
@@ -106,8 +123,8 @@ module.exports = function(grunt) {
                 options: {
                     jsLintXML: 'report.xml', // create XML JSLint-like report
                     errorsOnly: false, // show only maintainability errors
-                    cyclomatic: 8,
-                    halstead: 20,
+                    cyclomatic: 10,
+                    halstead: 25,
                     maintainability: 100
                 }
             }
@@ -118,5 +135,6 @@ module.exports = function(grunt) {
 	// Default task.
 	grunt.registerTask('default', ['jshint', 'connect', 'qunit','complexity', 'concat', 'uglify']);
 	grunt.registerTask('debug', ['jshint', 'connect', 'qunit', 'complexity']);
+	grunt.registerTask('compile', ['jshint', 'concat', 'uglify']);
 
 };

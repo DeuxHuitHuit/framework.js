@@ -43,6 +43,7 @@
 	<script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
 	<script src="../src/globals.js"></script>
 	<script src="../src/app-debug.js"></script>
+	<script src="../src/app-callback.js"></script>
 	<script src="../src/app.js"></script>
 	
 	<script>
@@ -54,6 +55,10 @@
 		
 		runTests = function  () {
 		
+			var initTest = function() {
+				ok(true);
+			};
+		
 			//Enable debug
 			App.debug(true);
 			
@@ -61,13 +66,9 @@
 			
 			test('exportsPage and createPage', function exportPagesTest() {
 				var modelKey = "m1",
-				f = function() {
-				
-					return {
-						
-					}
-				}
-				
+				f = {
+						init: initTest
+					};
 				
 				ok(App.pages.exports(modelKey,f), "page exports work");
 				
@@ -148,8 +149,8 @@
 			});
 			
 			test('getPageForRoute', function appPages_getPageForRouteTest () {
-				App.pages.exports('page1', function(){
-					return {};
+				App.pages.exports('page1', {
+					init : initTest
 				});
 				
 				App.pages.create({key: "page 1", routes: ['page-1']},'page1');
@@ -163,8 +164,61 @@
 				equal(page.key(), 'page 1', 'page 1');
 				page = App.pages.getPageForRoute('page-2');
 				equal(page.key(), 'page 2', 'page 2');
+				
+				page.init();
+				
 				page = App.pages.getPageForRoute('page-3');
 				equal(page, null, 'page 3');
+			});
+			
+			module('App.modules');
+			
+			test('notify', function appModuleNotifyTest () {
+				var count = 0,
+					testModule = {
+						actions: function () {
+							return {
+								test: function () {
+									count++;
+								}
+							}
+						}
+					};
+				App.modules.exports('moduleA', testModule);
+				App.modules.exports('moduleB', testModule);
+				App.modules.exports('moduleC', testModule);
+				App.modules.exports('moduleD', {});
+				
+				App.modules.notify('test');
+				
+				equal(count, 3, '3 modules got called');
+			});
+			
+			test('notify - JSON Path', function appModuleNotifyJsonPathTest () {
+				var count = 0,
+					testModule = {
+						actions: function () {
+							return {
+								JSONPath: {
+									test: {
+										fx: function () {
+											count++;
+										}
+									}
+								}
+							}
+						}
+					};
+					
+				// erase previous modules
+				App.modules.exports('moduleA', testModule);
+				App.modules.exports('moduleB', {});
+				App.modules.exports('moduleC', {});
+				App.modules.exports('moduleD', {});
+				
+				App.modules.notify('JSONPath.test.fx');
+				
+				equal(count, 1, '1 modules got called');
 			});
 			
 			
