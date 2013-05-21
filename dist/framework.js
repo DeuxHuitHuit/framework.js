@@ -1,4 +1,4 @@
-/*! framework.js - v1.1.0 - 2013-05-17
+/*! framework.js - v1.1.0 - 2013-05-21
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -873,15 +873,13 @@
 		enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable 
 			//The currentPage pointer will be cleared after the next call
-			var leavingPage = currentPage;
+			var 
+			leavingPage = currentPage,
 			
-			//notify all module
-			notifyModules('page.leaving',{page: leavingPage});
-				
-			//Leave the current page
-			currentPage.leave(function _leaveCurrent() {
+			_leaveCurrent = function() {
 				//ensure the leaving page is hidden
-				$(leavingPage.key()).hide();
+				//$(leavingPage.key()).hide();
+				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
 				//clear leavingPage
@@ -889,19 +887,42 @@
 				
 				//notify all module
 				notifyModules('page.leave', {page: previousPage});
-			});
-			currentPage = null;  // clean currentPage pointer,this will block all interactions
-			
-			notifyModules('page.entering',{page: nextPage, route: route});
-			
-			nextPage.enter(function _enterNext() {
+			},
+			_enterNext = function() {
 				// set the new Page as the current one
 				currentPage = nextPage;
 				// notify all module
 				notifyModules('page.enter',{page: nextPage, route: route});
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			});
+			},
+			pageTransitionData = {
+				currentPage : currentPage,
+				nextPage : nextPage,
+				leaveCurrent : _leaveCurrent,
+				enterNext : _enterNext,
+				isHandled : false
+			};
+			
+			currentPage = null;  // clean currentPage pointer,this will block all interactions
+			
+			//Try to find a module to handle page transition
+			notifyModules('page.requestPageTransition', pageTransitionData);
+			
+			//if not, return to classic code
+			if(!pageTransitionData.isHandled) {
+				//Leave to page the transition job
+				
+				//notify all module
+				notifyModules('page.leaving',{page: leavingPage});
+					
+				//Leave the current page
+				leavingPage.leave(_leaveCurrent);
+				
+				notifyModules('page.entering',{page: nextPage, route: route});
+				
+				nextPage.enter(_enterNext);
+			}
 		},
 		loadSucess = function (data, textStatus, jqXHR) {
 			// get the node

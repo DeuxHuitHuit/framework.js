@@ -362,20 +362,22 @@
 				notifyModules('page.enter',{page: nextPage, route: route});
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
+			},
+			pageTransitionData = {
+				currentPage : currentPage,
+				nextPage : nextPage,
+				leaveCurrent : _leaveCurrent,
+				enterNext : _enterNext,
+				isHandled : false
 			};
 			
 			currentPage = null;  // clean currentPage pointer,this will block all interactions
 			
-			//Try to find a module to make transition between page
+			//Try to find a module to handle page transition
+			notifyModules('page.requestPageTransition', pageTransitionData);
+			
 			//if not, return to classic code
-			if(!notifyModules(
-					'page.requestPageTransition', {
-						currentPage : currentPage,
-						nextPage : nextPage,
-						leaveCurrent : _leaveCurrent,
-						enterNext : _enterNext
-					}
-				) {
+			if(!pageTransitionData.isHandled) {
 				//Leave to page the transition job
 				
 				//notify all module
@@ -387,6 +389,7 @@
 				notifyModules('page.entering',{page: nextPage, route: route});
 				
 				nextPage.enter(_enterNext);
+			}
 		},
 		loadSucess = function (data, textStatus, jqXHR) {
 			// get the node
