@@ -901,13 +901,14 @@
 				nextPage : nextPage,
 				leaveCurrent : _leaveCurrent,
 				enterNext : _enterNext,
+				route : route,
 				isHandled : false
 			};
 			
 			currentPage = null;  // clean currentPage pointer,this will block all interactions
 			
 			//Try to find a module to handle page transition
-			notifyModules('page.requestPageTransition', pageTransitionData);
+			notifyModules('pages.requestPageTransition', pageTransitionData);
 			
 			//if not, return to classic code
 			if(!pageTransitionData.isHandled) {
