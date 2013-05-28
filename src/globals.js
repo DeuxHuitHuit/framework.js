@@ -173,12 +173,13 @@
 		return hex(hexa[1]) + hex(hexa[2]) + hex(hexa[3]);
 	};
 	
-	window.pd = function (e) {
+	// prevent default macro
+	window.pd = function (e, stop) {
 		if (!!e) {
 			if ($.isFunction(e.preventDefault)) {
 				e.preventDefault();
 			}
-			if ($.isFunction(e.stopPropagation)) {
+			if (stop === true && $.isFunction(e.stopPropagation)) {
 				e.stopPropagation();
 			}
 		}
