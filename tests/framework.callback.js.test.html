@@ -75,7 +75,7 @@
 				//test for initial value
 				var 
 				testCallbackWithException = function() {
-					throw "Exception";
+					throw new Error('Exception');
 				},
 				logResult;
 				
@@ -94,8 +94,9 @@
 				
 				App.callback(testCallbackWithException);
 				
-				ok(logResult.fx == "error" && logResult.args == "Exception", "okay with logger, exception logged");
-				
+				equal(logResult.fx, 'error', "okay with logger, exception logged");
+				equal(logResult.args[0], 'Exception', 'exception message is present');
+				equal(typeof logResult.args[1], 'object', 'Error object is an object');
 				
 			});
 			

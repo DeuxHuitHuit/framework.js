@@ -17,14 +17,18 @@
 				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
 			}
 		} catch (err) {
-			App.log({args:err.message || err, fx:'error'});
+			var 
+			stack = App.debug() && err.stack,
+			msg = (err.message || err) +  (stack || '');
+			
+			App.log({args:[msg, err], fx:'error'});
 		}
 		return null;
 	};
 	
-	if(!!!window.App || !$.isFunction(window.App.debug)) {
+	if(!window.App || !$.isFunction(window.App.debug)) {
 		window.alert('App-debug is needed for App-callback');
-	}else {
+	} else {
 		/** Public Interfaces **/
 		window.App = $.extend(window.App, {
 			

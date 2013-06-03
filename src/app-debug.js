@@ -1,7 +1,7 @@
 /**
  * @author Deux Huit Huit
  * 
- * App Callback functionnality
+ * App Debug and Log
  *
  */
 ;(function ($, undefined) {
@@ -47,17 +47,17 @@
 				a.args[0] = '[' + a.me + '] ' + a.args[0];
 			}
 			
-			if (!!console) {
+			if (!!window.console) {
 				// make sure fx exists
 				if (!$.isFunction(console[a.fx])) {
 					a.fx = 'log';
 				}
 				// call it
-				if (!!console[a.fx].apply) {
-					console[a.fx].apply(console, a.args);
+				if (!!window.console[a.fx].apply) {
+					window.console[a.fx].apply(window.console, a.args);
 				} else {
 					$.each(a.args, function _logArgs(index, arg) {
-						console[a.fx](arg);
+						window.console[a.fx](arg);
 					});
 				}
 			}
