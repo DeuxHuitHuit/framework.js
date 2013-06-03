@@ -61,7 +61,10 @@
 				leave: _enterLeave,
 				canEnter: ftrue,
 				canLeave: ftrue,
-				routes: _routes
+				routes: _routes,
+				data : function() {
+					return _pageData;
+				}
 			}, model);
 		};
 		

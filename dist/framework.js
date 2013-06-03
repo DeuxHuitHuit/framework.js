@@ -1,4 +1,4 @@
-/*! framework.js - v1.1.0 - 2013-05-21
+/*! framework.js - v1.1.0 - 2013-06-03
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -176,12 +176,13 @@
 		return hex(hexa[1]) + hex(hexa[2]) + hex(hexa[3]);
 	};
 	
-	window.pd = function (e) {
+	// prevent default macro
+	window.pd = function (e, stop) {
 		if (!!e) {
 			if ($.isFunction(e.preventDefault)) {
 				e.preventDefault();
 			}
-			if ($.isFunction(e.stopPropagation)) {
+			if (stop === true && $.isFunction(e.stopPropagation)) {
 				e.stopPropagation();
 			}
 		}
@@ -594,7 +595,10 @@
 				leave: _enterLeave,
 				canEnter: ftrue,
 				canLeave: ftrue,
-				routes: _routes
+				routes: _routes,
+				data : function() {
+					return _pageData;
+				}
 			}, model);
 		};
 		
