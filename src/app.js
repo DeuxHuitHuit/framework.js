@@ -221,7 +221,7 @@
 	
 	/** Mediator **/
 	mediatorIsLoadingPage = false,
-	currentRouteUrl = document.location.pathname,
+	currentRouteUrl = document.location.href.substring(document.location.protocol.length + 2 + document.location.host.length),
 	
 	_callAction = function (actions, key, data, e) {
 		if (!!actions) {
