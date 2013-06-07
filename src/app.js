@@ -17,7 +17,7 @@
 	
 	//Store ref to the previous page object
 	previousPage = null,
-	
+	previousUrl = "",
 	/** Pages **/
 	pageModels = {},
 	pageInstances = {},
@@ -352,6 +352,7 @@
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
+				previousUrl = document.location.href.substring(document.location.protocol.length + 2 + document.location.host.length);
 				//clear leavingPage
 				leavingPage = null;
 				
@@ -468,11 +469,11 @@
 			var 
 			nextPage = _getPageForRoute(route);
 			
-			if(_validateNextPage(nextPage) && _canEnterNextPage(nextPage)) {
+			if (_validateNextPage(nextPage) && _canEnterNextPage(nextPage)) {
 				if(nextPage !== currentPage) {
 					gotoPage(route);
 				} else {
-					gotoPage(previousPage);
+					gotoPage(previousUrl);
 				}
 			}
 		}
@@ -560,17 +561,14 @@
 			getPageForRoute: _getPageForRoute,
 			
 			page: function (keyOrRoute) {
+				//Try to get the page by the key
 				var result = pageInstances[keyOrRoute];
 				
+				//if no result found try with the route
 				if(!!!result) {
 					result = _getPageForRoute(keyOrRoute);
 				}
-				/*
-				if (keyOrRoute[0] == '/') {
-					return _getPageForRoute(keyOrRoute);
-				} else {
-					return pageInstances[keyOrRoute];
-				}*/
+				
 				return result;
 			},
 			
