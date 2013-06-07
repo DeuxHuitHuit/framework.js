@@ -1,4 +1,4 @@
-/*! framework.js - v1.1.0 - 2013-06-03
+/*! framework.js - v1.1.0 - 2013-06-07
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -759,7 +759,7 @@
 	
 	/** Mediator **/
 	mediatorIsLoadingPage = false,
-	currentRouteUrl = document.location.pathname,
+	currentRouteUrl = document.location.href.substring(document.location.protocol.length + 2 + document.location.host.length),
 	
 	_callAction = function (actions, key, data, e) {
 		if (!!actions) {
