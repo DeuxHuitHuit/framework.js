@@ -1,4 +1,4 @@
-/*! framework.js - v1.1.0 - 2013-06-07
+/*! framework.js - v1.1.0 - 2013-06-10
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -974,7 +974,7 @@
 			App.log({args:['Route "%s" was not found.', obj], fx:'error'});
 		} else {
 			if(_canEnterNextPage(nextPage)) {
-				if (nextPage === currentPage && currentRouteUrl === route.substring(0,currentRouteUrl.length)) {
+				if (nextPage === currentPage) {
 					App.log('next page is the current one');
 					notifyModules('pages.navigateToCurrent',{page: nextPage, route: route});
 				} else {

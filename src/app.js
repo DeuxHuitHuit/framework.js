@@ -436,7 +436,7 @@
 			App.log({args:['Route "%s" was not found.', obj], fx:'error'});
 		} else {
 			if(_canEnterNextPage(nextPage)) {
-				if (nextPage === currentPage && currentRouteUrl === route.substring(0,currentRouteUrl.length)) {
+				if (nextPage === currentPage) {
 					App.log('next page is the current one');
 					notifyModules('pages.navigateToCurrent',{page: nextPage, route: route});
 				} else {
