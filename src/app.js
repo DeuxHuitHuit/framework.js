@@ -414,7 +414,7 @@
 				nextPage.init();
 				
 				node.hide();
-				notifyModules('pages.loaded', {elem:elem});
+				notifyModules('pages.loaded', {elem:elem, data : data, url: obj});
 				
 				// actual goto
 				enterLeave();
@@ -501,7 +501,7 @@
 		$.each(pageInstances, function _initPage() {
 			if (!!this.loaded()) {
 				// init page
-				this.init();
+				this.init({firstTime: true});
 				
 				// find if this is our current page
 				// current route found ?

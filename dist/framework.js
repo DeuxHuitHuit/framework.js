@@ -1,4 +1,4 @@
-/*! framework.js - v1.1.0 - 2013-06-10
+/*! framework.js - v1.1.0 - 2013-07-30
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -952,7 +952,7 @@
 				nextPage.init();
 				
 				node.hide();
-				notifyModules('pages.loaded', {elem:elem});
+				notifyModules('pages.loaded', {elem:elem, data : data, url: obj});
 				
 				// actual goto
 				enterLeave();
@@ -1039,7 +1039,7 @@
 		$.each(pageInstances, function _initPage() {
 			if (!!this.loaded()) {
 				// init page
-				this.init();
+				this.init({firstTime: true});
 				
 				// find if this is our current page
 				// current route found ?
