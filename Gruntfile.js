@@ -166,6 +166,11 @@ module.exports = function fxGruntConfig(grunt) {
 					//configFile: 'karma.conf.js',
 					runnerPort: SERVER_PORT,
 					singleRun: true,
+					browsers: ['PhantomJS']
+				},
+				linux: {
+					runnerPort: SERVER_PORT,
+					singleRun: true,
 					browsers: ['Chrome', 'PhantomJS']
 				}
 			}
