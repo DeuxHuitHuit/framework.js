@@ -171,7 +171,17 @@ module.exports = function fxGruntConfig(grunt) {
 				linux: {
 					runnerPort: SERVER_PORT,
 					singleRun: true,
-					browsers: ['Chrome', 'PhantomJS']
+					browsers: ['Chrome', 'Firefox', 'PhantomJS']
+				},
+				win: {
+					runnerPort: SERVER_PORT,
+					singleRun: true,
+					browsers: ['Chrome', 'Firefox', 'IE']
+				},
+				mac: {
+					runnerPort: SERVER_PORT,
+					singleRun: true,
+					browsers: ['Chrome', 'Firefox', 'Safari', 'PhantomJS']
 				}
 			}
 		});
