@@ -188,7 +188,7 @@ module.exports = function fxGruntConfig(grunt) {
 
 		// Default task.
 		grunt.registerTask('default',   ['jshint', 'connect', 'qunit', 'complexity', 'concat', 'uglify']);
-		grunt.registerTask('debug',     ['jshint', 'connect', 'qunit', 'complexity']);
+		grunt.registerTask('dev',       ['jshint', 'connect', 'qunit', 'complexity']);
 		grunt.registerTask('build',     ['jshint', 'concat', 'uglify']);
 		grunt.registerTask('test',      ['jshint', 'connect', 'qunit']);
 
