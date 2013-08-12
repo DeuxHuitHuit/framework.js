@@ -164,6 +164,8 @@ module.exports = function fxGruntConfig(grunt) {
 			karma: {
 				unit: {
 					//configFile: 'karma.conf.js',
+					files: TEST_URIS,
+					framework: ['qunit'],
 					runnerPort: SERVER_PORT,
 					singleRun: true,
 					browsers: ['PhantomJS']
