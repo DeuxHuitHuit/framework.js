@@ -33,6 +33,7 @@ module.exports = function fxGruntConfig(grunt) {
 		grunt.loadNpmTasks('grunt-contrib-qunit');
 		grunt.loadNpmTasks('grunt-contrib-concat');
 		grunt.loadNpmTasks('grunt-complexity');
+		grunt.loadNpmTasks('grunt-karma');
 	};
 
 	var createSrcFiles = function () {
@@ -159,14 +160,27 @@ module.exports = function fxGruntConfig(grunt) {
 						maintainability: 100
 					}
 				}
+			},
+			karma: {
+				unit: {
+					//configFile: 'karma.conf.js',
+					runnerPort: SERVER_PORT,
+					singleRun: true,
+					browsers: ['Chrome', 'PhantomJS']
+				}
 			}
 		});
 
 		// Default task.
-		grunt.registerTask('default', ['jshint', 'connect', 'qunit','complexity', 'concat', 'uglify']);
-		grunt.registerTask('debug',   ['jshint', 'connect', 'qunit', 'complexity']);
-		grunt.registerTask('compile', ['jshint', 'concat', 'uglify']);
-		grunt.registerTask('test',    ['jshint', 'qunit']);
+		grunt.registerTask('default',   ['jshint', 'connect', 'qunit', 'complexity', 'concat', 'uglify']);
+		grunt.registerTask('debug',     ['jshint', 'connect', 'qunit', 'complexity']);
+		grunt.registerTask('build',     ['jshint', 'concat', 'uglify']);
+		grunt.registerTask('test',      ['jshint', 'connect', 'qunit']);
+
+		// karma requires some env variables
+		// export PHANTOMJS_BIN=/usr/bin/phantomjs
+		// export CHROME_BIN=/usr/bin/chromium-browser
+		grunt.registerTask('karma-test',['jshint', 'karma']);
 	};
 
 	var load = function (grunt) {
