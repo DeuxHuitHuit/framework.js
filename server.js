@@ -23,7 +23,8 @@ app.configure(function _configureAll() {
   app.set('ip', process.env.IP || argv.ip || 'localhost');
   app.set('port', process.env.PORT || argv.port || 3000);
 
-  app.use(express.static(path.join(__dirname, 'tests')));
+  app.use(express.static(__dirname));
+  app.use(express.directory(__dirname));
   app.use(express.errorHandler());
 });
 
