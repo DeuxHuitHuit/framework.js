@@ -17,13 +17,14 @@ module.exports = function fxGruntConfig(grunt) {
 	var SERVER_PORT = 8080;
 	var SERVER_URI = 'http://localhost:' + SERVER_PORT;
 	var TEST_PATHS = [
-				SERVER_URI + '/tests/framework.global.js.test.html?noglobals=true',
-				SERVER_URI + '/tests/framework.debug.js.test.html?noglobals=true',
-				SERVER_URI + '/tests/framework.callback.js.test.html?noglobals=true',
-				SERVER_URI + '/tests/framework.app.js.test.html?noglobals=true'/*,
-				SERVER_URI + '/tests/loader.js.test?noglobals=true'*/];
+				'/tests/framework.global.js.test.html?noglobals=true',
+				'/tests/framework.debug.js.test.html?noglobals=true',
+				'/tests/framework.callback.js.test.html?noglobals=true',
+				'/tests/framework.app.js.test.html?noglobals=true'/*,
+				'/tests/loader.js.test?noglobals=true'*/];
 	
-	var TEST_URIS = [];
+	var TEST_FILES = [];
+    var TEST_URIS = [];
 
 	// load grunt task
 	var loadGruntTasks = function (grunt) {
@@ -47,12 +48,23 @@ module.exports = function fxGruntConfig(grunt) {
 		});
 	};
 
+    // for karma
+    var createTestFiles = function () {
+    	for(var c = 0; c < TEST_PATHS.length; c++) {
+			TEST_FILES.push(TEST_PATHS[c]);
+			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.9.1');
+			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.8');
+			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.7');
+		}
+	};
+
+    // for qunit
 	var createTestUris = function () {
 		for(var c = 0; c < TEST_PATHS.length; c++) {
-			TEST_URIS.push(TEST_PATHS[c]);
-			TEST_URIS.push(TEST_PATHS[c] + '&jquery=1.9.1');
-			TEST_URIS.push(TEST_PATHS[c] + '&jquery=1.8');
-			TEST_URIS.push(TEST_PATHS[c] + '&jquery=1.7');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c]);
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.9.1');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.8');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.7');
 		}
 	};
 	
@@ -164,7 +176,7 @@ module.exports = function fxGruntConfig(grunt) {
 			karma: {
 				unit: {
 					//configFile: 'karma.conf.js',
-					files: TEST_URIS,
+					files: TEST_FILES,
 					framework: ['qunit'],
 					runnerPort: SERVER_PORT,
 					singleRun: true,
@@ -175,12 +187,12 @@ module.exports = function fxGruntConfig(grunt) {
 					singleRun: true,
 					browsers: ['Chrome', 'Firefox', 'PhantomJS']
 				},
-				win: {
+				win32: {
 					runnerPort: SERVER_PORT,
 					singleRun: true,
 					browsers: ['Chrome', 'Firefox', 'IE']
 				},
-				mac: {
+				darwin: {
 					runnerPort: SERVER_PORT,
 					singleRun: true,
 					browsers: ['Chrome', 'Firefox', 'Safari', 'PhantomJS']
@@ -197,7 +209,7 @@ module.exports = function fxGruntConfig(grunt) {
 		// karma requires some env variables
 		// export PHANTOMJS_BIN=/usr/bin/phantomjs
 		// export CHROME_BIN=/usr/bin/chromium-browser
-		grunt.registerTask('karma-test',['jshint', 'karma']);
+		grunt.registerTask('karma',['jshint', 'karma:' + process.platform || 'unit']);
 	};
 
 	var load = function (grunt) {
@@ -207,6 +219,8 @@ module.exports = function fxGruntConfig(grunt) {
 		createTestUris();
 
 		init(grunt);
+        
+        console.log('Running grunt on ' + process.platform);
 	};
 
 	// load the set-up
