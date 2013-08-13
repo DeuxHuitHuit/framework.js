@@ -35,7 +35,7 @@
     "karma-script-launcher": "~0.1.0",
     "karma-chrome-launcher": "~0.1.0",
     "karma-firefox-launcher": "~0.1.0",
-    "karma-requirejs": "~0.1.0",
+    "karma-ie-launcher": "~0.1.1",
     "karma-phantomjs-launcher": "~0.1.0",
     "karma": "~0.10.1",
     "karma-qunit": "~0.1.0",

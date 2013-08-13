@@ -2,6 +2,7 @@
 
 var fs = module.require('fs');
 var path = module.require('path');
+var os = module.require('os');
 
 module.exports = function fxGruntConfig(grunt) {
 
@@ -50,7 +51,7 @@ module.exports = function fxGruntConfig(grunt) {
 
     // for karma
     var createTestFiles = function () {
-    	for(var c = 0; c < TEST_PATHS.length; c++) {
+		for(var c = 0; c < TEST_PATHS.length; c++) {
 			TEST_FILES.push(TEST_PATHS[c]);
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.9.1');
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.8');
@@ -177,22 +178,29 @@ module.exports = function fxGruntConfig(grunt) {
 				unit: {
 					//configFile: 'karma.conf.js',
 					files: TEST_FILES,
-					framework: ['qunit'],
+					frameworks: ['qunit'],
 					runnerPort: SERVER_PORT,
 					singleRun: true,
 					browsers: ['PhantomJS']
 				},
 				linux: {
+					files: TEST_FILES,
+					frameworks: ['qunit'],
 					runnerPort: SERVER_PORT,
 					singleRun: true,
 					browsers: ['Chrome', 'Firefox', 'PhantomJS']
 				},
 				win32: {
-					runnerPort: SERVER_PORT,
+					files: TEST_FILES,
+					frameworks: ['qunit'],
+					//runnerPort: SERVER_PORT,
 					singleRun: true,
+					basePath: '',
 					browsers: ['Chrome', 'Firefox', 'IE']
 				},
 				darwin: {
+					files: TEST_FILES,
+					frameworks: ['qunit'],
 					runnerPort: SERVER_PORT,
 					singleRun: true,
 					browsers: ['Chrome', 'Firefox', 'Safari', 'PhantomJS']
@@ -209,7 +217,11 @@ module.exports = function fxGruntConfig(grunt) {
 		// karma requires some env variables
 		// export PHANTOMJS_BIN=/usr/bin/phantomjs
 		// export CHROME_BIN=/usr/bin/chromium-browser
-		grunt.registerTask('karma',['jshint', 'karma:' + process.platform || 'unit']);
+
+		// IE requires ENV VAR on Windows too
+		// SETX IE_BIN "C:\Program Files\Internet Explorer\iexplore.exe"
+		// SETX FIREFOX_BIN "C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
+		grunt.registerTask('karma-test', ['jshint', 'karma:' + os.platform() || 'unit']);
 	};
 
 	var load = function (grunt) {
@@ -217,10 +229,11 @@ module.exports = function fxGruntConfig(grunt) {
 
 		createSrcFiles();
 		createTestUris();
+		createTestFiles();
 
 		init(grunt);
         
-        console.log('Running grunt on ' + process.platform);
+        console.log('Running grunt on ' + os.platform());
 	};
 
 	// load the set-up
