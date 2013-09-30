@@ -20,26 +20,26 @@
 				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
 			}
 		} catch (err) {
-			var 
-			stack = App.debug() && err.stack,
-			msg = (err.message || err) +  (stack || '');
-			
-			App.log({args:[msg, err], fx:'error'});
+			if(!window.App || !$.isFunction(window.App.debug)) {
+				window.alert(err.message || err);
+			}else {
+				var 
+				stack = App.debug() && err.stack,
+				msg = (err.message || err) +  (stack || '');
+				
+				App.log({args:[msg, err], fx:'error'});
+			}
 		}
 		return null;
 	};
 	
-	//if(!window.App || !$.isFunction(window.App.debug)) {
-		//window.alert('App-debug is needed for App-callback');
-	//} else {
-		/** Public Interfaces **/
-		window.App = $.extend(window.App, {
-			
-			// callback utility
-			callback: callback
-			
-		});
-	//}
+	/** Public Interfaces **/
+	window.App = $.extend(window.App, {
+		
+		// callback utility
+		callback: callback
+		
+	});
 	
 })(jQuery);
 
