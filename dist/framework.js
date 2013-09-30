@@ -29,9 +29,9 @@
 		return null;
 	};
 	
-	if(!window.App || !$.isFunction(window.App.debug)) {
-		window.alert('App-debug is needed for App-callback');
-	} else {
+	//if(!window.App || !$.isFunction(window.App.debug)) {
+		//window.alert('App-debug is needed for App-callback');
+	//} else {
 		/** Public Interfaces **/
 		window.App = $.extend(window.App, {
 			
@@ -39,7 +39,7 @@
 			callback: callback
 			
 		});
-	}
+	//}
 	
 })(jQuery);
 
