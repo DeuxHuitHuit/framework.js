@@ -86,7 +86,6 @@
 				App.log({args:['Overwriting page key %s is not allowed', pageData.key], fx:'error'});
 			}else {
 				pageInst = pageModel(pageData);
-				//pageInst = $.extend(pageModel(pageData), pageModel);
 				pageInstances[pageData.key] = pageInst;
 				return true;
 			}
@@ -189,7 +188,6 @@
 					page = this;
 					return false; // exit
 				}
-				//return true;
 			});
 		}
 		return page;
@@ -472,8 +470,10 @@
 			if (_validateNextPage(nextPage) && _canEnterNextPage(nextPage)) {
 				if(nextPage !== currentPage) {
 					gotoPage(route);
-				} else {
+				} else if(previousUrl !== ''){
 					gotoPage(previousUrl);
+				} else {
+					notifyModules('page.toggleNoPreviousUrl');
 				}
 			}
 		}

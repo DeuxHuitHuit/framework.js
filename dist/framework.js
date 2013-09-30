@@ -1,4 +1,4 @@
-/*! framework.js - v1.1.0 - 2013-07-30
+/*! framework.js - v1.1.0 - 2013-09-30
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -624,7 +624,6 @@
 				App.log({args:['Overwriting page key %s is not allowed', pageData.key], fx:'error'});
 			}else {
 				pageInst = pageModel(pageData);
-				//pageInst = $.extend(pageModel(pageData), pageModel);
 				pageInstances[pageData.key] = pageInst;
 				return true;
 			}
@@ -727,7 +726,6 @@
 					page = this;
 					return false; // exit
 				}
-				//return true;
 			});
 		}
 		return page;
@@ -1010,8 +1008,10 @@
 			if (_validateNextPage(nextPage) && _canEnterNextPage(nextPage)) {
 				if(nextPage !== currentPage) {
 					gotoPage(route);
-				} else {
+				} else if(previousUrl !== ''){
 					gotoPage(previousUrl);
+				} else {
+					notifyModules('page.toggleNoPreviousUrl');
 				}
 			}
 		}
