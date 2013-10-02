@@ -19,7 +19,7 @@
 				r = /([^&=]+)=?([^&]*)/g,
 				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
 				q = w.location.search.substring(1),
-				v = '1';
+				v = '2.0.3';
 
 			while (e = r.exec(q)) {
 				u[d(e[1])] = d(e[2]);
@@ -63,6 +63,8 @@
 			test('load', function loaderLoadTest () {
 				var count = 0;
 				
+				stop();
+				
 				Loader
 					.load('framework.js.test.html')
 					.load({
@@ -76,98 +78,16 @@
 						complete: function () {
 							count++;
 							
-							// do let the retries do that
+							// don't let the retries do that
 							if (count > 2) {
 								start();
 								
-								equal(count,3);
+								equal(count, 3);
 							}
 						}
 					});
 				
-				stop();
-				
 			});
-			
-			//module('App.pages');
-			
-			//test('_matchRoute', function appPages_matchRouteTest () {
-			//	var routes = { // can also use array
-			//		root: '/',
-			//		contactFR: '/fr/contact/',
-			//		contactEN: '/en/contact/',
-			//		wildcard: '/test/*/view',
-			//		questionWildcard: '/test/*',
-			//		regex: /[ab]/
-			//	},
-			//	route = '';
-			/*
-				route = routes.root;
-				ok(!!~App.pages._matchRoute(route, routes), route);
-				route = routes.contactFR;
-				ok(!!~App.pages._matchRoute(route, routes), route);
-				route = routes.contactEN;
-				ok(!!~App.pages._matchRoute(route, routes), route);
-				equal(App.pages._matchRoute(route, routes), 'contactEN', route + ' index');
-				route = '///kldkslds';
-				ok(!~App.pages._matchRoute(route, routes), '! ' + route);
-				route = '/fr/test/super-cheap/view';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' widlcard');
-				route = '/a';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
-				route = '/b';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
-				route = '/c';
-				ok(!~App.pages._matchRoute(route, routes), '! ' + route + ' regexp');
-				
-				route = '/test/?test=test';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
-				
-				route = '/test/article/test-test/';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
-				
-				route = '/test/article/test-test/#sasasas';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
-				
-				route = '/test/?test[super/\]=test#43434';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
-			});
-			
-			test('getPageForRoute', function appPages_getPageForRouteTest () {
-				App.pages.exports('page1', {
-					key: function () { return 'page 1'; },
-					routes: function () { return ['page-1']; }
-				});
-				App.pages.exports('page2', {
-					key: function () { return 'page 2'; },
-					routes: function () { return ['page-2']; }
-				});
-				
-				var page;
-				
-				page = App.pages.getPageForRoute(null);
-				equal(page, null, 'null page');
-				page = App.pages.getPageForRoute('page-1');
-				equal(page.key(), 'page 1', 'page 1');
-				page = App.pages.getPageForRoute('page-2');
-				equal(page.key(), 'page 2', 'page 2');
-				page = App.pages.getPageForRoute('page-3');
-				equal(page, null, 'page 3');
-			});
-			
-			test('App.pages.exports', function appPages_matchRouteTest () {
-				var PageClass = App.pages.exports({
-					
-				}),
-				page = App.pages.create('PageClass', {
-					//key: ...
-					routes: {}
-				});
-				
-				page.addRoute('/fr/');
-				page.addRoutes(['/en/','/es/']);
-			});
-			*/
 			
 			
 		}; // end run tests

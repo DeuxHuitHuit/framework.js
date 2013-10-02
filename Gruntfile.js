@@ -21,8 +21,8 @@ module.exports = function fxGruntConfig(grunt) {
 				'/tests/framework.global.js.test.html?noglobals=true',
 				'/tests/framework.debug.js.test.html?noglobals=true',
 				'/tests/framework.callback.js.test.html?noglobals=true',
-				'/tests/framework.app.js.test.html?noglobals=true'/*,
-				'/tests/loader.js.test?noglobals=true'*/];
+				'/tests/framework.app.js.test.html?noglobals=true',
+				'/tests/loader.js.test.html?noglobals=true'];
 	
 	var TEST_FILES = [];
 	var TEST_URIS = [];
@@ -53,6 +53,7 @@ module.exports = function fxGruntConfig(grunt) {
 	var createTestFiles = function () {
 		for(var c = 0; c < TEST_PATHS.length; c++) {
 			TEST_FILES.push(TEST_PATHS[c]);
+			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.10.2');
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.9.1');
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.8');
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.7');
@@ -63,6 +64,7 @@ module.exports = function fxGruntConfig(grunt) {
 	var createTestUris = function () {
 		for(var c = 0; c < TEST_PATHS.length; c++) {
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c]);
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.10.2');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.9.1');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.8');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.7');
@@ -166,11 +168,11 @@ module.exports = function fxGruntConfig(grunt) {
 				generic: {
 					src: SRC_FILES.concat(GRUNT_FILE),
 					options: {
-						jsLintXML: 'report.xml', // create XML JSLint-like report
+						//jsLintXML: 'report.xml', // create XML JSLint-like report
 						errorsOnly: false, // show only maintainability errors
 						cyclomatic: 10,
 						halstead: 25,
-						maintainability: 100
+						maintainability: 90
 					}
 				}
 			},
