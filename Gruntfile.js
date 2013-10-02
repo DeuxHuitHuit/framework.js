@@ -25,7 +25,7 @@ module.exports = function fxGruntConfig(grunt) {
 				'/tests/loader.js.test?noglobals=true'*/];
 	
 	var TEST_FILES = [];
-    var TEST_URIS = [];
+	var TEST_URIS = [];
 
 	// load grunt task
 	var loadGruntTasks = function (grunt) {
@@ -49,8 +49,8 @@ module.exports = function fxGruntConfig(grunt) {
 		});
 	};
 
-    // for karma
-    var createTestFiles = function () {
+	// for karma
+	var createTestFiles = function () {
 		for(var c = 0; c < TEST_PATHS.length; c++) {
 			TEST_FILES.push(TEST_PATHS[c]);
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.9.1');
@@ -59,7 +59,7 @@ module.exports = function fxGruntConfig(grunt) {
 		}
 	};
 
-    // for qunit
+	// for qunit
 	var createTestUris = function () {
 		for(var c = 0; c < TEST_PATHS.length; c++) {
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c]);
@@ -210,9 +210,9 @@ module.exports = function fxGruntConfig(grunt) {
 
 		// Default task.
 		grunt.registerTask('default',   ['jshint', 'connect', 'qunit', 'complexity', 'concat', 'uglify']);
-		grunt.registerTask('dev',       ['jshint', 'connect', 'qunit', 'complexity']);
-		grunt.registerTask('build',     ['jshint', 'concat', 'uglify']);
-		grunt.registerTask('test',      ['jshint', 'connect', 'qunit']);
+		grunt.registerTask('dev',	   ['jshint', 'connect', 'qunit', 'complexity']);
+		grunt.registerTask('build',	 ['jshint', 'concat', 'uglify']);
+		grunt.registerTask('test',	  ['jshint', 'connect', 'qunit']);
 
 		// karma requires some env variables
 		// export PHANTOMJS_BIN=/usr/bin/phantomjs
@@ -232,8 +232,8 @@ module.exports = function fxGruntConfig(grunt) {
 		createTestFiles();
 
 		init(grunt);
-        
-        console.log('Running grunt on ' + os.platform());
+		
+		console.log('Running grunt on ' + os.platform());
 	};
 
 	// load the set-up

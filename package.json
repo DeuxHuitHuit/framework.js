@@ -1,7 +1,7 @@
 {
   "name": "framework",
   "title": "framework.js",
-  "description": "",
+  "description": "Deux Huit Huit javascript framwork",
   "version": "1.1.0",
   "homepage": "https://github.com/DeuxHuitHuit/framework.js",
   "author": {
@@ -18,7 +18,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/DeuxHuitHuit/framework.js/master/LICENSE.txt"
+      "url": "http://deuxhuithuit.mit-license.org/"
     }
   ],
   "dependencies": {},
