@@ -473,7 +473,7 @@
 				} else if(previousUrl !== ''){
 					gotoPage(previousUrl);
 				} else {
-					notifyModules('page.toggleNoPreviousUrl',{currentPage = nextPage});
+					notifyModules('page.toggleNoPreviousUrl',{currentPage : nextPage});
 				}
 			}
 		}
