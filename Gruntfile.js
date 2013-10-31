@@ -210,10 +210,26 @@ module.exports = function fxGruntConfig(grunt) {
 			}
 		});
 
+		// fix source map url
+		grunt.registerTask('fix-source-map', 'Fix the wrong file path in the source map', function() {
+			var sourceMapPath = grunt.template.process('<%= uglify.options.sourceMap %>');
+			var sourceMapUrl = grunt.template.process('<%= uglify.options.sourceMappingURL %>');
+			var diff = sourceMapPath.replace(sourceMapUrl, '');
+			var sourceMap = grunt.file.readJSON(sourceMapPath);
+			sourceMap.file = sourceMap.file.replace(diff, '');
+			var newSources = [];
+			sourceMap.sources.forEach(function (elem) {
+				newSources.push(elem.replace(diff, ''));
+			});
+			sourceMap.sources = newSources;
+			grunt.log.write(sourceMap.sources);
+			grunt.file.write(sourceMapPath, JSON.stringify(sourceMap));
+		});
+
 		// Default task.
-		grunt.registerTask('default',   ['jshint', 'connect', 'qunit', 'complexity', 'concat', 'uglify']);
+		grunt.registerTask('default',   ['dev', 'build']);
 		grunt.registerTask('dev',	   ['jshint', 'connect', 'qunit', 'complexity']);
-		grunt.registerTask('build',	 ['jshint', 'concat', 'uglify']);
+		grunt.registerTask('build',	 ['concat', 'uglify', 'fix-source-map']);
 		grunt.registerTask('test',	  ['jshint', 'connect', 'qunit']);
 
 		// karma requires some env variables
