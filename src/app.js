@@ -80,11 +80,11 @@
 		if (!pageModel) {
 			App.log({args:['Model %s not found', keyModel], fx:'error'});
 			return false;
-		}else {
+		} else {
 			//Check to not overide an existing page
-			if(!!pageInstances[pageData.key] && !override) {
+			if (!!pageInstances[pageData.key] && !override) {
 				App.log({args:['Overwriting page key %s is not allowed', pageData.key], fx:'error'});
-			}else {
+			} else {
 				pageInst = pageModel(pageData);
 				pageInstances[pageData.key] = pageInst;
 				return true;

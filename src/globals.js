@@ -137,19 +137,30 @@
 })(jQuery);
 	
 /**
- * Global tools for debug
+ * Patching console object.
  */
 ;(function ($, undefined) {
 	
 	"use strict";
 	
+	// see: https://developers.google.com/chrome-developer-tools/docs/console-api
+	/*
+	 * Snippet
+    var c=[];
+    $('ol.toc li').each(function () {var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])})
+    console.log(c);
+	 */
+	
+	var consoleFx = ["assert", "clear", "count", "debug", "dir", "dirxml", "error", "group", "group", "group", "info", "log", "profile", "profile", "time", "time", "time", "trace", "warn"];
+	
 	// console support
 	if (!window.console) {
 		window.console = {};
-		window.console.log = window.console.warn = window.console.error = 
-			window.console.info = window.console.dir = window.console.time = 
-			window.console.timeEnd = $.noop;
 	}
+	
+	$.each(consoleFx, function (i, key) {
+        window.console[key] = window.console[key] || $.noop;
+	});
 	
 })(jQuery);
 
