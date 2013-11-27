@@ -84,7 +84,7 @@
 			
 			isMsie : function(userAgent) {
 				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/msie/i));//$.uaMatch(userAgent).browser == 'msie';
+				return userAgent.match(/msie/gi) || userAgent.match(/trident/gi);
 			}
 			
 			/*isUnsupported : function(userAgent) {
