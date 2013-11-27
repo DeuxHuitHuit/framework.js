@@ -1,4 +1,4 @@
-/*! framework.js - v1.1.0 - 2013-10-31
+/*! framework.js - v1.1.0 - 2013-11-27
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -210,11 +210,11 @@
 		if (!pageModel) {
 			App.log({args:['Model %s not found', keyModel], fx:'error'});
 			return false;
-		}else {
+		} else {
 			//Check to not overide an existing page
-			if(!!pageInstances[pageData.key] && !override) {
+			if (!!pageInstances[pageData.key] && !override) {
 				App.log({args:['Overwriting page key %s is not allowed', pageData.key], fx:'error'});
-			}else {
+			} else {
 				pageInst = pageModel(pageData);
 				pageInstances[pageData.key] = pageInst;
 				return true;
@@ -810,7 +810,7 @@
 			
 			isMsie : function(userAgent) {
 				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/msie/i));//$.uaMatch(userAgent).browser == 'msie';
+				return userAgent.match(/msie/gi) || userAgent.match(/trident/gi);
 			}
 			
 			/*isUnsupported : function(userAgent) {
@@ -863,19 +863,30 @@
 })(jQuery);
 	
 /**
- * Global tools for debug
+ * Patching console object.
  */
 ;(function ($, undefined) {
 	
 	"use strict";
 	
+	// see: https://developers.google.com/chrome-developer-tools/docs/console-api
+	/*
+	 * Snippet
+    var c=[];
+    $('ol.toc li').each(function () {var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])})
+    console.log(c);
+	 */
+	
+	var consoleFx = ["assert", "clear", "count", "debug", "dir", "dirxml", "error", "group", "group", "group", "info", "log", "profile", "profile", "time", "time", "time", "trace", "warn"];
+	
 	// console support
 	if (!window.console) {
 		window.console = {};
-		window.console.log = window.console.warn = window.console.error = 
-			window.console.info = window.console.dir = window.console.time = 
-			window.console.timeEnd = $.noop;
 	}
+	
+	$.each(consoleFx, function (i, key) {
+        window.console[key] = window.console[key] || $.noop;
+	});
 	
 })(jQuery);
 
