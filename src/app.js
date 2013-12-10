@@ -15,7 +15,7 @@
 	//Store ref to the current page object
 	currentPage = null,
 	//Store The current page used by the notification system
-	currentNotifiedPage = null;
+	currentNotifiedPage = null,
 	
 	//Store ref to the previous page object
 	previousPage = null,
@@ -244,8 +244,8 @@
 	},
 	
 	notifyPage = function (key, data, e) {
-		if (!!currentNotifiedgPage) {
-			_callAction(currentNotifiedgPage.actions(), key, data, e);
+		if (!!currentNotifiedPage) {
+			_callAction(currentNotifiedPage.actions(), key, data, e);
 		}
 		return this;
 	},
