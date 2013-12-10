@@ -14,6 +14,8 @@
 	
 	//Store ref to the current page object
 	currentPage = null,
+	//Store The current page used by the notification system
+	currentNotifiedPage = null;
 	
 	//Store ref to the previous page object
 	previousPage = null,
@@ -242,8 +244,8 @@
 	},
 	
 	notifyPage = function (key, data, e) {
-		if (!!currentPage) {
-			_callAction(currentPage.actions(), key, data, e);
+		if (!!currentNotifiedgPage) {
+			_callAction(currentNotifiedgPage.actions(), key, data, e);
 		}
 		return this;
 	},
@@ -345,9 +347,6 @@
 			leavingPage = currentPage,
 			
 			_leaveCurrent = function() {
-				//ensure the leaving page is hidden
-				//$(leavingPage.key()).hide();
-				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
 				previousUrl = document.location.href.substring(document.location.protocol.length + 2 + document.location.host.length);
@@ -360,6 +359,7 @@
 			_enterNext = function() {
 				// set the new Page as the current one
 				currentPage = nextPage;
+				currentNotifiedPage = nextPage;
 				// notify all module
 				notifyModules('page.enter',{page: nextPage, route: route});
 				// Put down the flag since we are finished
@@ -374,7 +374,8 @@
 				isHandled : false
 			};
 			
-			currentPage = null;  // clean currentPage pointer,this will block all interactions
+			// clean currentPage pointer,this will block all interactions
+			currentPage = null;  
 			
 			//Try to find a module to handle page transition
 			notifyModules('pages.requestPageTransition', pageTransitionData);
@@ -508,6 +509,7 @@
 				if (!!~_matchRoute(currentRouteUrl, this.routes())) {
 					// initialise page variable
 					currentPage = this;
+					currentNotifiedPage = this;
 					previousPage = this; // Set the same for the first time
 					notifyModules('page.entering',{page: currentPage, route: currentRouteUrl});
 					// enter the page right now
