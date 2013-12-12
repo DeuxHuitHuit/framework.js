@@ -1,4 +1,4 @@
-/*! framework.js - v1.1.0 - 2013-12-12
+/*! framework.js - v1.2.0 - 2013-12-12
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
