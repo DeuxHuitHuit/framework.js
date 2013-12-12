@@ -4,11 +4,11 @@
 
 Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
-The framework use jQuery and extends some functionnality.
+The framework use jQuery and extends some functionality.
 
 Global.js :
 
-Add some flag value on the jquery object to detect de browser used
+Add some flag value on the jquery object to detect the browser used
 
 $.unsupported : true if it's MSIE less than version 9
 
@@ -19,33 +19,41 @@ $.ios : true when iPhone is true or userAgent contain 'iPad'
 $.mobile : true when ios is true or userAgent contain 'Android','mobile' or 'phone'
 
 
-Loader
+Loader:
 	load(url, priority) 
 	isLoading(url) 
 	inQueue(url) 
 	working() 
 	
-App 
-	root() 
-	callback(fx,args) 
-	debug(value) 
-	run( 
-	log( 
+App:
+	_callAction()
+	root()
+	callback(fx,args)
+	debug(value)
+	run()
+	log()
 	logs() 
-	mediator : 
-		notify( 
-		goto( 
-		toggle( 
-	pages : 
-		_matchRoute(route,routes) 
+	mediator: 
+		notify(key,data,e)
+		notifyCurrentPage(key,data,e)
+		goto()
+		toggle()
+	pages: 
+		_matchRoute(route,routes)
+		_validateRoute()
+		instances()
 		getPageForRoute(route) 
 		page(keyOrRoute) 
 		create(page) 
 		export(key,page) 
 		notify(key,data,e) 
-	modules 
+	modules:
+		models()
 		create(module) 
 		export(key,module) 
 		notify(key,data,e) 
+	components:
+		models()
+		create()
+		exports()
 		
-	
