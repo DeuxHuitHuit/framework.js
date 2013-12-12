@@ -2,6 +2,7 @@
  * @author Deux Huit Huit
  * 
  * Components
+ * Components are factory method that will generate a instance of a component.
  */
 ;(function ($, global, undefined) {
 
@@ -16,7 +17,7 @@
 		};
 	};
 	
-	var createComponentModel = function (component) {
+	var extendComponent = function (component) {
 		return $.extend(_createAbstractComponent(), component);
 	};
 	
@@ -24,7 +25,7 @@
 		if (!!components[key] && !override) {
 			App.log({args:['Overwriting component key %s is not allowed', key], fx:'error'});
 		} else {
-			components[key] = createComponentModel(component);
+			components[key] = component;
 		}
 		return components[key];
 	};
@@ -36,7 +37,7 @@
 		
 		var c = components[key];
 		
-		return c.call(c, options);
+		return extendComponent(c.call(c, options));
 	};
 	
 	/** Public Interfaces **/
