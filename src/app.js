@@ -130,13 +130,13 @@
 				//$(leavingPage.key()).hide();
 				
 				//set leaving page to be previous one
-				App.pages.previous(leavingPage);
+				previous = leavingPage;
 				previousUrl = document.location.href.substring(document.location.protocol.length + 2 + document.location.host.length);
 				//clear leavingPage
 				leavingPage = null;
 				
 				//notify all module
-				App.modules.notify('page.leave', {page: App.pages.previous()});
+				App.modules.notify('page.leave', {page: previous});
 			},
 			_enterNext = function() {
 				// set the new Page as the current one
