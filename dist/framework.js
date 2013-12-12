@@ -1,4 +1,4 @@
-/*! framework.js - v1.1.0 - 2013-12-11
+/*! framework.js - v1.1.0 - 2013-12-12
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -47,6 +47,7 @@
  * @author Deux Huit Huit
  * 
  * Components
+ * Components are factory method that will generate a instance of a component.
  */
 ;(function ($, global, undefined) {
 
@@ -61,7 +62,7 @@
 		};
 	};
 	
-	var createComponentModel = function (component) {
+	var extendComponent = function (component) {
 		return $.extend(_createAbstractComponent(), component);
 	};
 	
@@ -69,7 +70,7 @@
 		if (!!components[key] && !override) {
 			App.log({args:['Overwriting component key %s is not allowed', key], fx:'error'});
 		} else {
-			components[key] = createComponentModel(component);
+			components[key] = component;
 		}
 		return components[key];
 	};
@@ -81,7 +82,7 @@
 		
 		var c = components[key];
 		
-		return c.call(c, options);
+		return extendComponent(c.call(c, options));
 	};
 	
 	/** Public Interfaces **/
@@ -621,13 +622,13 @@
 				//$(leavingPage.key()).hide();
 				
 				//set leaving page to be previous one
-				App.pages.previous(leavingPage);
+				previousPage = leavingPage;
 				previousUrl = document.location.href.substring(document.location.protocol.length + 2 + document.location.host.length);
 				//clear leavingPage
 				leavingPage = null;
 				
 				//notify all module
-				App.modules.notify('page.leave', {page: App.pages.previous()});
+				App.modules.notify('page.leave', {page: previousPage});
 			},
 			_enterNext = function() {
 				// set the new Page as the current one
