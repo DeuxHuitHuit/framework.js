@@ -5,7 +5,7 @@
  /*
  * Browser Support/Detection
  */
-;(function ($, w, undefined) {
+;(function ($, global, undefined) {
 	
 	"use strict";
 
@@ -24,7 +24,7 @@
 			
 			//if we dont have the parameter qs, use the window location search value
 			if(qs !== "" && !!!qs) {
-				qs = w.location.search;
+				qs = window.location.search;
 			}
 			
 			//remove the first caracter (?)
@@ -55,7 +55,7 @@
 		return {
 	
 			isIos : function(userAgent) {
-				return w.BrowserDetector.isIphone(userAgent) || w.BrowserDetector.isIpad(userAgent);
+				return window.BrowserDetector.isIphone(userAgent) || window.BrowserDetector.isIpad(userAgent);
 			},
 			
 			isIphone : function(userAgent) {
@@ -79,7 +79,7 @@
 			},
 			
 			isMobile : function(userAgent) {
-				return w.BrowserDetector.isIos(userAgent) || w.BrowserDetector.isAndroid(userAgent) || w.BrowserDetector.isOtherMobile(userAgent);
+				return window.BrowserDetector.isIos(userAgent) || window.BrowserDetector.isAndroid(userAgent) || window.BrowserDetector.isOtherMobile(userAgent);
 			},
 			
 			isMsie : function(userAgent) {
@@ -99,32 +99,28 @@
 	};
 	
 	// Query string Parser
-	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
-	window.QueryStringParser = QueryStringParserConstructor();
+	// http://stackoverflowindow.com/questions/901115/get-query-string-values-in-javascript
+	global.QueryStringParser = QueryStringParserConstructor();
 	
 	//Parse the query string and store a copy of the result in the window object
-	window.QS = w.QueryStringParser.parse();
+	global.QS = global.QueryStringParser.parse();
 	
 	// Browser detector
-	window.BrowserDetector = BrowserDetectorConstructor();
+	global.BrowserDetector = BrowserDetectorConstructor();
 	
 	// User Agent parsing
-	$.iphone =  w.BrowserDetector.isIphone();
+	$.iphone =  global.BrowserDetector.isIphone();
 	
-	$.ipad =  w.BrowserDetector.isIpad();
+	$.ipad =  global.BrowserDetector.isIpad();
 	
-	$.ios    =  w.BrowserDetector.isIos();
+	$.ios    =  global.BrowserDetector.isIos();
 	
-	$.mobile =  w.BrowserDetector.isMobile();
+	$.mobile =  global.BrowserDetector.isMobile();
 	
-})(jQuery, window);
 	
 /**
  * General customization for mobile and default easing
  */
-;(function ($, undefined) {
-	
-	"use strict";
 	
 	// add mobile css class to html
 	if ($.mobile) {
@@ -134,21 +130,17 @@
 	// easing support
 	$.easing.def = ($.mobile ? 'linear' : 'easeOutQuad');
 	
-})(jQuery);
 	
 /**
  * Patching console object.
  */
-;(function ($, undefined) {
-	
-	"use strict";
 	
 	// see: https://developers.google.com/chrome-developer-tools/docs/console-api
 	/*
 	 * Snippet
-    var c=[];
-    $('ol.toc li').each(function () {var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])})
-    console.log(c);
+	var c=[];
+	$('ol.toc li').each(function () {var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])})
+	console.log(c);
 	 */
 	
 	var consoleFx = ["assert", "clear", "count", "debug", "dir", "dirxml", "error", "group", "group", "group", "info", "log", "profile", "profile", "time", "time", "time", "trace", "warn"];
@@ -159,24 +151,20 @@
 	}
 	
 	$.each(consoleFx, function (i, key) {
-        window.console[key] = window.console[key] || $.noop;
+		window.console[key] = window.console[key] || $.noop;
 	});
 	
-})(jQuery);
 
 /**
  * Global window tools
  */
-;(function ($, undefined) {
-	
-	"use strict";
 	
 	var 
 	hex = function(x) {
 		return ("0" + parseInt(x, 10).toString(16)).slice(-2);
 	};
 		
-	window.rgb2hex = function (rgb) {
+	global.rgb2hex = function (rgb) {
 		var hexa = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
 		if (!hexa) {
 			return rgb;
@@ -185,7 +173,7 @@
 	};
 	
 	// prevent default macro
-	window.pd = function (e, stop) {
+	global.pd = function (e, stop) {
 		if (!!e) {
 			if ($.isFunction(e.preventDefault)) {
 				e.preventDefault();
@@ -201,7 +189,7 @@
 	 * Keyboard keys
 	 */
 	// from https://github.com/drobati/django-homepage/blob/1a75e9ba31c24cb77d87ff3eb435333932056af7/media/js/jquery.keyNav.js
-	window.keys = {"?": 0,"backspace": 8,"tab": 9,"enter": 13,"shift": 16,"ctrl": 17,"alt": 18,"pause_break": 19,
+	global.keys = {"?": 0,"backspace": 8,"tab": 9,"enter": 13,"shift": 16,"ctrl": 17,"alt": 18,"pause_break": 19,
 			"caps_lock": 20,"escape": 27,"space_bar": 32, "page_up": 33,"page_down": 34,"end": 35,"home": 36,"left_arrow": 37,
 			"up_arrow": 38,"right_arrow": 39,"down_arrow": 40,"insert": 45,"delete": 46,"0": 48,"1": 49,"2": 50,
 			"3": 51,"4": 52,"5": 53,"6": 54,"7": 55,"8": 56,"9": 57,"a": 65,"b": 66,"c": 67,"d": 68,"e": 69,"f": 70,
@@ -214,7 +202,7 @@
 			";": 186,"=": 187,"equal_sign": 187,"comma": 188,",": 188,"dash": 189,".": 190,"period": 190,"forward_slash": 191,
 			"/": 191,"grave_accent": 192,"open_bracket": 219,"back_slash": 220,"\\": 220,"close_braket": 221,"single_quote":222};
 
-	window.keyFromCode = function (code) {
+	global.keyFromCode = function (code) {
 		var key = '?';
 		if (!code) {
 			return key;
@@ -224,15 +212,15 @@
 				key = index;
 				return false;
 			}
-				
+			
 			return true;
 		});
 		return key;
 	};
 	
 	// Chars
-	window.isChar = function (c) {
+	global.isChar = function (c) {
 		return c === window.keys.space_bar || (c > window.keys['0'] && c <= window.keys.z);
 	};
 	
-})(jQuery);
+})(jQuery, window);

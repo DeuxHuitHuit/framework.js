@@ -4,7 +4,7 @@
  * App Debug and Log
  *
  */
-;(function ($, undefined) {
+;(function ($, global, undefined) {
 
 	"use strict";
 	
@@ -68,7 +68,7 @@
 	};
 	
 	/** Public Interfaces **/
-	window.App = $.extend(window.App, {
+	global.App = $.extend(global.App, {
 		
 		// get/set the debug flag
 		debug: debug,
@@ -81,4 +81,4 @@
 		
 	});
 	
-})(jQuery);
+})(jQuery, window);
