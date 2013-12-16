@@ -45,6 +45,8 @@
 	<script src="../src/app-debug.js"></script>
 	<script src="../src/app-callback.js"></script>
 	<script src="../src/app.js"></script>
+	<script src="../src/app-pages.js"></script>
+	<script src="../src/app-modules.js"></script>
 	
 	<script>
 	(function ($, w) {
@@ -211,10 +213,10 @@
 					};
 					
 				// erase previous modules
-				App.modules.exports('moduleA', testModule);
-				App.modules.exports('moduleB', {});
-				App.modules.exports('moduleC', {});
-				App.modules.exports('moduleD', {});
+				App.modules.exports('moduleA', testModule, true);
+				App.modules.exports('moduleB', {}, true);
+				App.modules.exports('moduleC', {}, true);
+				App.modules.exports('moduleD', {}, true);
 				
 				App.modules.notify('JSONPath.test.fx');
 				

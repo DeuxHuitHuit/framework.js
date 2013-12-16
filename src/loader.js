@@ -3,7 +3,7 @@
  * 
  * Assets loader
  */
-;(function ($, undefined) {
+;(function ($, global, undefined) {
 	
 	"use strict";
 	
@@ -167,7 +167,7 @@
 		}
 	};
 	
-	window.Loader = $.extend(window.Loader, {
+	global.Loader = $.extend(global.Loader, {
 		load: loadAsset,
 		isLoading: isLoading,
 		inQueue: inQueue,
@@ -176,4 +176,4 @@
 		}
 	});
 	
-})(jQuery);
+})(jQuery, window);

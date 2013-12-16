@@ -4,7 +4,7 @@
  * App Callback functionnality
  *
  */
-;(function ($, undefined) {
+;(function ($, global, undefined) {
 
 	"use strict";
 	
@@ -17,7 +17,7 @@
 				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
 			}
 		} catch (err) {
-			if(!window.App || !$.isFunction(window.App.debug)) {
+			if(!global.App || !$.isFunction(global.App.debug)) {
 				window.alert(err.message || err);
 			}else {
 				var 
@@ -31,11 +31,11 @@
 	};
 	
 	/** Public Interfaces **/
-	window.App = $.extend(window.App, {
+	global.App = $.extend(global.App, {
 		
 		// callback utility
 		callback: callback
 		
 	});
 	
-})(jQuery);
+})(jQuery, window);
