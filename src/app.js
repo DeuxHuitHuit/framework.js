@@ -126,8 +126,7 @@
 			leavingPage = currentPage,
 			
 			_leaveCurrent = function() {
-				//ensure the leaving page is hidden
-				//$(leavingPage.key()).hide();
+				currentPage = null;  // clean currentPage pointer,this will block all interactions
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
@@ -154,8 +153,6 @@
 				route : route,
 				isHandled : false
 			};
-			
-			currentPage = null;  // clean currentPage pointer,this will block all interactions
 			
 			//Try to find a module to handle page transition
 			App.modules.notify('pages.requestPageTransition', pageTransitionData);
