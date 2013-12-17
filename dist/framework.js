@@ -1,4 +1,4 @@
-/*! framework.js - v1.2.1 - 2013-12-16
+/*! framework.js - v1.2.2 - 2013-12-13
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -81,6 +81,11 @@
 		}
 		
 		var c = components[key];
+		
+		if (!$.isFunction(c)) {
+			App.log({args:['Component %s is not a function', key], fx:'error'});
+			return  extendComponent({});
+		}
 		
 		return extendComponent(c.call(c, options));
 	};

@@ -143,7 +143,9 @@
 	console.log(c);
 	 */
 	
-	var consoleFx = ["assert", "clear", "count", "debug", "dir", "dirxml", "error", "group", "group", "group", "info", "log", "profile", "profile", "time", "time", "time", "trace", "warn"];
+	var consoleFx = ["assert", "clear", "count", "debug", "dir", "dirxml", "error", "group", 
+		"group", "group", "info", "log", "profile", "profile", "time", "time", "time", 
+		"trace", "warn"];
 	
 	// console support
 	if (!window.console) {
@@ -173,12 +175,12 @@
 	};
 	
 	// prevent default macro
-	global.pd = function (e, stop) {
+	global.pd = function (e, donotstop) {
 		if (!!e) {
 			if ($.isFunction(e.preventDefault)) {
 				e.preventDefault();
 			}
-			if (stop === true && $.isFunction(e.stopPropagation)) {
+			if (donotstop !== false && $.isFunction(e.stopPropagation)) {
 				e.stopPropagation();
 			}
 		}

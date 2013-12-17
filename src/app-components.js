@@ -37,6 +37,11 @@
 		
 		var c = components[key];
 		
+		if (!$.isFunction(c)) {
+			App.log({args:['Component %s is not a function', key], fx:'error'});
+			return  extendComponent({});
+		}
+		
 		return extendComponent(c.call(c, options));
 	};
 	

@@ -23,47 +23,45 @@
 	
 	logs = [],
 	log = function (arg) {
-		if (isDebuging) {
-			// no args, exit
-			if (!arg) {
-				return this;
-			}
-			
-			// ensure that args is an array
-			if (!!arg.args && !$.isArray(arg.args)) {
-				arg.args = [arg.args];
-			}
-			
-			// our copy
-			var a = {
-				args: arg.args || arguments,
-				fx: arg.fx || 'warn',
-				me: arg.me || 'App'
-			},
-			t1 = $.type(a.args[0]);
-			
-			if (t1  === 'string' || t1 === 'number' || t1 == 'boolean') {
-				// append me before a.args[0]
-				a.args[0] = '[' + a.me + '] ' + a.args[0];
-			}
-			
-			if (!!window.console) {
-				// make sure fx exists
-				if (!$.isFunction(console[a.fx])) {
-					a.fx = 'log';
-				}
-				// call it
-				if (!!window.console[a.fx].apply) {
-					window.console[a.fx].apply(window.console, a.args);
-				} else {
-					$.each(a.args, function _logArgs(index, arg) {
-						window.console[a.fx](arg);
-					});
-				}
-			}
-			
-			logs.push(a);
+		// no args, exit
+		if (!arg) {
+			return this;
 		}
+		
+		// ensure that args is an array
+		if (!!arg.args && !$.isArray(arg.args)) {
+			arg.args = [arg.args];
+		}
+		
+		// our copy
+		var a = {
+			args: arg.args || arguments,
+			fx: arg.fx || 'warn',
+			me: arg.me || 'App'
+		},
+		t1 = $.type(a.args[0]);
+		
+		if (t1  === 'string' || t1 === 'number' || t1 == 'boolean') {
+			// append me before a.args[0]
+			a.args[0] = '[' + a.me + '] ' + a.args[0];
+		}
+		
+		if (isDebuging) {
+			// make sure fx exists
+			if (!$.isFunction(console[a.fx])) {
+				a.fx = 'log';
+			}
+			// call it
+			if (!!window.console[a.fx].apply) {
+				window.console[a.fx].apply(window.console, a.args);
+			} else {
+				$.each(a.args, function _logArgs(index, arg) {
+					window.console[a.fx](arg);
+				});
+			}
+		}
+		logs.push(a);
+		
 		return this;
 	};
 	
