@@ -143,7 +143,9 @@
 	console.log(c);
 	 */
 	
-	var consoleFx = ["assert", "clear", "count", "debug", "dir", "dirxml", "error", "group", "group", "group", "info", "log", "profile", "profile", "time", "time", "time", "trace", "warn"];
+	var consoleFx = ["assert", "clear", "count", "debug", "dir", "dirxml", "error", "group", 
+		"group", "group", "info", "log", "profile", "profile", "time", "time", "time", 
+		"trace", "warn"];
 	
 	// console support
 	if (!window.console) {
