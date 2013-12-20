@@ -12,17 +12,17 @@ The framework use jQuery and extends some functionality.
 
 Adds some flag value on the jquery object to detect the browser used
 
-* $.unsupported: true if it's MSIE less than version 9
-* $.iphone: true for userAgent containing 'iPhone' or 'iPod'
-* $.ios: true when iPhone is true or userAgent contain 'iPad'
-* $.mobile: true when ios is true or userAgent contain 'Android','mobile' or 'phone'
+* `$.unsupported` true if it's MSIE less than version 9
+* `$.iphone` true for userAgent containing 'iPhone' or 'iPod'
+* `$.ios` true when iPhone is true or userAgent contain 'iPad'
+* `$.mobile` true when ios is true or userAgent contain 'Android','mobile' or 'phone'
 
 **Loader**
 
-* load(url, priority)
-* isLoading(url)
-* inQueue(url)
-* working()
+* `load(url, priority)`
+* `isLoading(url)`
+* `inQueue(url)`
+* `working()`
 	
 	
 **App**
@@ -36,36 +36,36 @@ Adds some flag value on the jquery object to detect the browser used
 * `logs()`
 * `mediator:`
 
-	* notify(key, data, cb(key, res))
-	* notifyCurrentPage(key, data, cb(key, res))
-	* goto()
-	* toggle()
+	* `notify(key, data, cb(key, res))`
+	* `notifyCurrentPage(key, data, cb(key, res))`
+	* `goto()`
+	* `toggle()`
 	
-* pages: 
+* `pages`
 
-	* _matchRoute(route, routes)
-	* _validateRoute()
-	* models()
-	* instances()
-	* getPageForRoute(route)
-	* page(keyOrRoute)
-	* create(page)
-	* export(key, page)
-	* notify(key, data, cb(key, res))
+	* `_matchRoute(route, routes)`
+	* `_validateRoute()`
+	* `models()`
+	* `instances()`
+	* `getPageForRoute(route)`
+	* `page(keyOrRoute)`
+	* `create(page)`
+	* `export(key, page)`
+	* `notify(key, data, cb(key, res))`
 	
-* modules:
+* `modules`
 
-	* models()
-	* create(module)
-	* export(key, module)
-	* notify(key, data, cb(key, res))
+	* `models()`
+	* `create(module)`
+	* `export(key, module)`
+	* `notify(key, data, cb(key, res))`
 	
-* components:
+* `components`
 
-	* models()
-	* instances()
-	* create()
-	* exports()
+	* `models()`
+	* `instances()`
+	* `create()`
+	* `exports()`
 		
 		
 ## History
