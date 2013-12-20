@@ -30,9 +30,9 @@
 		return modules[key];
 	};
 	
-	var notifyModules = function (key, data, e) {
+	var notifyModules = function (key, data) {
 		$.each(modules, function _actionToAllModules() {
-			App._callAction(this.actions(), key, data, e);
+			App._callAction(this.actions(), key, data);
 		});
 		return this;
 	};

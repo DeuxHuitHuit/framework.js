@@ -204,10 +204,10 @@
 	};
 	
 	// Should notify all pages ??
-	var notifyPage = function (key, data, e) {
+	var notifyPage = function (key, data) {
 		App.log({
 			args: 'This method is deprecated in favor of App.mediator.notifyCurrentPage',
-			fx: 'error'
+			fx: 'info'
 		});
 	};
 	

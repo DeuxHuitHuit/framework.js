@@ -12,18 +12,14 @@
 	var callback = function (fx, args) {
 		try {
 			if ($.isFunction(fx)) {
-				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
+				// IE8 does not allow null/undefined args
+				return fx.apply(this, args || []);
 			}
 		} catch (err) {
-			if (!global.App || !$.isFunction(global.App.debug)) {
-				window.alert(err.message || err);
-			} else {
-				var 
-				stack = App.debug() && err.stack,
-				msg = (err.message || err) +  (stack || '');
-				
-				App.log({args: [msg, err], fx: 'error'});
-			}
+			var stack = err.stack;
+			var msg = (err.message || err) + '\n' + (stack || '');
+			
+			App.log({args: [msg, err], fx: 'error'});
 		}
 		return null;
 	};

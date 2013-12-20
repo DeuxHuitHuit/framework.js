@@ -82,7 +82,6 @@
 				ok(App.callback(testCallbackWithException) === null, "okay with no logger");
 				
 				/* Create a fake logger to test */ 
-				
 				window.App = $.extend(window.App, {
 					
 					// callback utility
@@ -95,7 +94,7 @@
 				App.callback(testCallbackWithException);
 				
 				equal(logResult.fx, 'error', "okay with logger, exception logged");
-				equal(logResult.args[0], 'Exception', 'exception message is present');
+				equal(typeof logResult.args[0], 'string', 'Exception message is present');
 				equal(typeof logResult.args[1], 'object', 'Error object is an object');
 				
 			});

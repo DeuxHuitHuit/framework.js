@@ -23,7 +23,7 @@
 	var previousPage = null;
 	var previousUrl = '';
 	
-	var _callAction = function (actions, key, data, e) {
+	var _callAction = function (actions, key, data) {
 		if (!!actions) {
 			var tempFx = actions[key];
 			
@@ -39,13 +39,16 @@
 				});
 			}
 			
-			App.callback(tempFx, [key, data, e]);
+			App.callback(tempFx, [key, data]);
+			
+		} else {
+			App.log({args: '`actions` is null.', fx: 'error'});
 		}
 	};
 	
-	var notifyPage = function (key, data, e) {
+	var notifyPage = function (key, data) {
 		if (!!currentPage) {
-			App._callAction(currentPage.actions(), key, data, e);
+			App._callAction(currentPage.actions(), key, data);
 		}
 		return this;
 	};
@@ -102,13 +105,13 @@
 	* @see AER in http://addyosmani.com/largescalejavascript/
 	* @see pub/sub http://freshbrewedcode.com/jimcowart/tag/pubsub/
 	*/
-	var notifyAll = function (key, data, e) {
+	var notifyAll = function (key, data) {
 		
 		// propagate action to current page only
-		notifyPage(key, data, e);
+		notifyPage(key, data);
 		
 		// propagate action to all modules
-		App.modules.notify(key, data, e);
+		App.modules.notify(key, data);
 		
 		return this;
 	};
