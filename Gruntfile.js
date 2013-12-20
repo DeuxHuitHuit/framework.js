@@ -107,23 +107,41 @@ module.exports = function fxGruntConfig(grunt) {
 				files: SRC_FILES.concat(GRUNT_FILE),
 				//force: true,
 				options: {
+						bitwise: true,
+					camelcase: false,
 					curly: true,
 					eqeqeq: false, // allow ==
+					forin: true,
+					//freeze: true,
 					immed: false, //
-					latedef: false, // late definition
-					newcap: false, // capitalize ctos
+					latedef: true, // late definition
+					newcap: true, // capitalize ctos
+					noempty: true,
 					nonew: true, // no new ..()
 					noarg: true, 
-					sub: true,
+					plusplus: false,
+					quotmark: 'single',
 					undef: true,
+					maxparams: 5,
+					maxdepth: 5,
+					maxstatements: 30,
+					maxlen: 100,
+					//maxcomplexity: 10,
+					
+					// relax options
 					//boss: true,
-					eqnull: true, // relax
-					browser: true,
+					//eqnull: true, 
+					esnext: true,
 					regexp: true,
 					strict: true,
 					trailing: false,
+					sub: true, // [] notation
 					smarttabs: true,
-					lastsemic: true,
+					lastsemic: false, // enforce semicolons
+					white: true,
+					
+					// env
+					browser: true,
 					
 					globals: {
 						jQuery: true,
@@ -147,7 +165,7 @@ module.exports = function fxGruntConfig(grunt) {
 					mangle: true,
 					compress: {
 						global_defs: {
-							"DEBUG": false
+							DEBUG: false
 						},
 						dead_code: true,
 						unused: true,
