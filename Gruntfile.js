@@ -5,7 +5,7 @@ var path = module.require('path');
 var os = module.require('os');
 
 module.exports = function fxGruntConfig(grunt) {
-
+	
 	'use strict';
 	
 	// VAR
@@ -13,7 +13,7 @@ module.exports = function fxGruntConfig(grunt) {
 	
 	var SRC_FOLDERS = ['./src/'];
 	var SRC_FILES = [];
-
+	
 	// TESTS
 	var SERVER_PORT = 8080;
 	var SERVER_URI = 'http://localhost:' + SERVER_PORT;
@@ -27,7 +27,7 @@ module.exports = function fxGruntConfig(grunt) {
 	
 	var TEST_FILES = [];
 	var TEST_URIS = [];
-
+	
 	// load grunt task
 	var loadGruntTasks = function (grunt) {
 		grunt.loadNpmTasks('grunt-contrib-connect');
@@ -38,7 +38,7 @@ module.exports = function fxGruntConfig(grunt) {
 		grunt.loadNpmTasks('grunt-complexity');
 		grunt.loadNpmTasks('grunt-karma');
 	};
-
+	
 	var createSrcFiles = function () {
 		SRC_FOLDERS.forEach(function (folder) {
 			var p = path.normalize(folder);
@@ -49,7 +49,7 @@ module.exports = function fxGruntConfig(grunt) {
 			});
 		});
 	};
-
+	
 	// for karma
 	var createTestFiles = function () {
 		for (var c = 0; c < TEST_PATHS.length; c++) {
@@ -59,7 +59,7 @@ module.exports = function fxGruntConfig(grunt) {
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.8');
 		}
 	};
-
+	
 	// for qunit
 	var createTestUris = function () {
 		for (var c = 0; c < TEST_PATHS.length; c++) {
@@ -226,7 +226,7 @@ module.exports = function fxGruntConfig(grunt) {
 				}
 			}
 		});
-
+		
 		// fix source map url
 		grunt.registerTask('fix-source-map', 
 			'Fixes the wrong file path in the source map', function () {
@@ -243,35 +243,35 @@ module.exports = function fxGruntConfig(grunt) {
 			grunt.log.write(sourceMap.sources);
 			grunt.file.write(sourceMapPath, JSON.stringify(sourceMap));
 		});
-
+		
 		// Default task.
 		grunt.registerTask('default',   ['dev', 'build']);
 		grunt.registerTask('dev',	   ['jshint', 'connect', 'qunit', 'complexity']);
 		grunt.registerTask('build',	 ['concat', 'uglify', 'fix-source-map']);
 		grunt.registerTask('test',	  ['jshint', 'connect', 'qunit']);
-
+		
 		// karma requires some env variables
 		// export PHANTOMJS_BIN=/usr/bin/phantomjs
 		// export CHROME_BIN=/usr/bin/chromium-browser
-
+		
 		// IE requires ENV VAR on Windows too
 		// SETX IE_BIN "C:\Program Files\Internet Explorer\iexplore.exe"
 		// SETX FIREFOX_BIN "C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
 		grunt.registerTask('karma-test', ['jshint', 'karma:' + os.platform() || 'unit']);
 	};
-
+	
 	var load = function (grunt) {
 		loadGruntTasks(grunt);
-
+		
 		createSrcFiles();
 		createTestUris();
 		createTestFiles();
-
+		
 		init(grunt);
 		
 		console.log('Running grunt on ' + os.platform());
 	};
-
+	
 	// load the set-up
 	load(grunt);
 };
