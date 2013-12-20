@@ -57,7 +57,6 @@ module.exports = function fxGruntConfig(grunt) {
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.10.2');
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.9.1');
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.8');
-			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.7');
 		}
 	};
 
@@ -68,7 +67,6 @@ module.exports = function fxGruntConfig(grunt) {
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.10.2');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.9.1');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.8');
-			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.7');
 		}
 	};
 	
