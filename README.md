@@ -71,13 +71,11 @@ Adds some flag value on the jquery object to detect the browser used
 ## History
 
 * **1.3**
-
 	* Added callback support for actions functions.
 	* Removed the `e` parameter on notifies.
 	* Added the `cb` parameter on notifies.
 	* Refactored the syntax a bit with new jshint rules.
 	* Route matching will remove the query string from the match.
-	
 * **1.2**: Added support for components
 * **1.1**: Patch update
 * **1.0**: Initial release
