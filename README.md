@@ -12,10 +12,10 @@ The framework use jQuery and extends some functionality.
 
 Adds some flag value on the jquery object to detect the browser used
 
-	* $.unsupported : true if it's MSIE less than version 9
-	* $.iphone : true for userAgent containing 'iPhone' or 'iPod'
-	* $.ios : true when iPhone is true or userAgent contain 'iPad'
-	* $.mobile : true when ios is true or userAgent contain 'Android','mobile' or 'phone'
+	* $.unsupported: true if it's MSIE less than version 9
+	* $.iphone: true for userAgent containing 'iPhone' or 'iPod'
+	* $.ios: true when iPhone is true or userAgent contain 'iPad'
+	* $.mobile: true when ios is true or userAgent contain 'Android','mobile' or 'phone'
 
 **Loader:**
 
@@ -29,39 +29,41 @@ Adds some flag value on the jquery object to detect the browser used
 
 	* _callAction()
 	* root()
-	* callback(fx,args)
+	* callback(fx, args)
 	* debug(value)
 	* run()
 	* log()
 	* logs()
 	* mediator:
 	
-		* notify(key,data,e)
-		* notifyCurrentPage(key,data,e)
+		* notify(key, data, cb(key, res))
+		* notifyCurrentPage(key, data, cb(key, res))
 		* goto()
 		* toggle()
 		
 	* pages: 
 	
-		* _matchRoute(route,routes)
+		* _matchRoute(route, routes)
 		* _validateRoute()
+		* models()
 		* instances()
 		* getPageForRoute(route)
 		* page(keyOrRoute)
 		* create(page)
-		* export(key,page)
-		* notify(key,data,e)
+		* export(key, page)
+		* notify(key, data, cb(key, res))
 		
 	* modules:
 	
 		* models()
 		* create(module)
-		* export(key,module)
-		* notify(key,data,e)
+		* export(key, module)
+		* notify(key, data, cb(key, res))
 		
 	* components:
 	
 		* models()
+		* instances()
 		* create()
 		* exports()
 		
@@ -82,5 +84,5 @@ Adds some flag value on the jquery object to detect the browser used
 
 # Copyrights and license
 
-(c) 2013-2014 Deux Huit Huit: <http://deuxhuithu.it>    
+(c) 2013-2014 Deux Huit Huit: <http://deuxhuithu.it>, <http://deuxhuithuit.github.io>    
 <http://deuxhuithuit.mit-license.org>
