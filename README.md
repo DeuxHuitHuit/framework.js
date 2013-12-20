@@ -27,14 +27,14 @@ Adds some flag value on the jquery object to detect the browser used
 	
 **App**
 
-* 	_callAction()
-* 	root()
-* 	callback(fx, args)
-* 	debug(value)
-* 	run()
-* 	log()
-* 	logs()
-* 	mediator:
+* `_callAction()`
+* `root()`
+* `callback(fx, args)`
+* `debug(value)`
+* `run()`
+* `log()`
+* `logs()`
+* `mediator:`
 
 	* notify(key, data, cb(key, res))
 	* notifyCurrentPage(key, data, cb(key, res))
