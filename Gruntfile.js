@@ -18,11 +18,12 @@ module.exports = function fxGruntConfig(grunt) {
 	var SERVER_PORT = 8080;
 	var SERVER_URI = 'http://localhost:' + SERVER_PORT;
 	var TEST_PATHS = [
-				'/tests/framework.global.js.test.html?noglobals=true',
-				'/tests/framework.debug.js.test.html?noglobals=true',
-				'/tests/framework.callback.js.test.html?noglobals=true',
-				'/tests/framework.app.js.test.html?noglobals=true',
-				'/tests/loader.js.test.html?noglobals=true'];
+		'/tests/framework.global.js.test.html?noglobals=true',
+		'/tests/framework.debug.js.test.html?noglobals=true',
+		'/tests/framework.callback.js.test.html?noglobals=true',
+		'/tests/framework.app.js.test.html?noglobals=true',
+		'/tests/loader.js.test.html?noglobals=true'
+	];
 	
 	var TEST_FILES = [];
 	var TEST_URIS = [];
@@ -51,7 +52,7 @@ module.exports = function fxGruntConfig(grunt) {
 
 	// for karma
 	var createTestFiles = function () {
-		for(var c = 0; c < TEST_PATHS.length; c++) {
+		for (var c = 0; c < TEST_PATHS.length; c++) {
 			TEST_FILES.push(TEST_PATHS[c]);
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.10.2');
 			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.9.1');
@@ -62,7 +63,7 @@ module.exports = function fxGruntConfig(grunt) {
 
 	// for qunit
 	var createTestUris = function () {
-		for(var c = 0; c < TEST_PATHS.length; c++) {
+		for (var c = 0; c < TEST_PATHS.length; c++) {
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c]);
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.10.2');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.9.1');
@@ -101,13 +102,13 @@ module.exports = function fxGruntConfig(grunt) {
 			},
 			watch: {
 				files: SRC_FILES.concat(GRUNT_FILE),
-				tasks: ['jshint','complexity']
+				tasks: ['jshint', 'complexity']
 			},
 			jshint: {
 				files: SRC_FILES.concat(GRUNT_FILE),
 				//force: true,
 				options: {
-						bitwise: true,
+					bitwise: false,
 					camelcase: false,
 					curly: true,
 					eqeqeq: false, // allow ==
@@ -229,7 +230,8 @@ module.exports = function fxGruntConfig(grunt) {
 		});
 
 		// fix source map url
-		grunt.registerTask('fix-source-map', 'Fix the wrong file path in the source map', function() {
+		grunt.registerTask('fix-source-map', 
+			'Fixes the wrong file path in the source map', function () {
 			var sourceMapPath = grunt.template.process('<%= uglify.options.sourceMap %>');
 			var sourceMapUrl = grunt.template.process('<%= uglify.options.sourceMappingURL %>');
 			var diff = sourceMapPath.replace(sourceMapUrl, '');

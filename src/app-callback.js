@@ -4,27 +4,25 @@
  * App Callback functionnality
  *
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 
-	"use strict";
-	
-	var 
+	'use strict';
 	
 	/** Utility **/
-	callback = function (fx, args) {
+	var callback = function (fx, args) {
 		try {
 			if ($.isFunction(fx)) {
 				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
 			}
 		} catch (err) {
-			if(!global.App || !$.isFunction(global.App.debug)) {
+			if (!global.App || !$.isFunction(global.App.debug)) {
 				window.alert(err.message || err);
-			}else {
+			} else {
 				var 
 				stack = App.debug() && err.stack,
 				msg = (err.message || err) +  (stack || '');
 				
-				App.log({args:[msg, err], fx:'error'});
+				App.log({args: [msg, err], fx: 'error'});
 			}
 		}
 		return null;

@@ -3,9 +3,9 @@
  * 
  * Modules
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 
-	"use strict";
+	'use strict';
 	
 	/** Modules **/
 	var modules = {};
@@ -23,7 +23,7 @@
 	
 	var exportModule = function (key, module, override) {
 		if (!!modules[key] && !override) {
-			App.log({args:['Overwriting module key %s is not allowed', key], fx:'error'});
+			App.log({args: ['Overwriting module key %s is not allowed', key], fx: 'error'});
 		} else {
 			modules[key] = createModule(module);
 		}
@@ -31,7 +31,7 @@
 	};
 	
 	var notifyModules = function (key, data, e) {
-		$.each(modules, function _actionToAllModules () {
+		$.each(modules, function _actionToAllModules() {
 			App._callAction(this.actions(), key, data, e);
 		});
 		return this;

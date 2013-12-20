@@ -3,9 +3,9 @@
  * 
  * Assets loader
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 	
-	"use strict";
+	'use strict';
 	
 	var
 	
@@ -61,13 +61,13 @@
 				// clear pointer
 				currentUrl = null;
 				
-				App.log({args:['Error loading url %s', asset.url], me:'Loader'});
+				App.log({args: ['Error loading url %s', asset.url], me: 'Loader'});
 				
 				// if no vip access is granted
 				//if (!asset.vip) { 
 					// decrease priority
 					// this avoids looping for a unload-able asset
-					asset.priority += ++asset.retries; // out of bounds checking is done later
+				asset.priority += ++asset.retries; // out of bounds checking is done later
 				//}
 				
 				// @todo: check for the error code
@@ -94,7 +94,7 @@
 		currentUrl = param.url;
 	},
 	
-	validateUrlArgs = function(url,priority) {
+	validateUrlArgs = function (url, priority) {
 		// ensure we are dealing with an object
 		if (!$.isPlainObject(url)) {
 			url = {url: url};
@@ -121,15 +121,15 @@
 	
 	loadAsset = function (url, priority) {
 		if (!url) {
-			App.log({args:'No url given', me:'Loader'});
+			App.log({args: 'No url given', me: 'Loader'});
 			return this;
 		}
 		
-		validateUrlArgs(url,priority);
+		validateUrlArgs(url, priority);
 		
 		// ensure that asset is not current
 		if (isLoading(url.url)) {
-			App.log({args:['Url %s is already loading', url.url], me:'Loader'});
+			App.log({args: ['Url %s is already loading', url.url], me: 'Loader'});
 			return this;
 		}
 		
@@ -139,7 +139,7 @@
 		if (!~index) {
 			// insert in array
 			assets.splice(url.priority, 1, url);
-			App.log({args:['Url %s has been insert at %s', url.url, url.priority], me:'Loader'});
+			App.log({args: ['Url %s has been insert at %s', url.url, url.priority], me: 'Loader'});
 			
 		} else {
 			// promote if new priority is different
@@ -150,7 +150,14 @@
 				// add
 				assets.splice(url.priority, 1, url);
 			}
-			App.log({args:['Url %s was shifted from %s to %s', url.url, oldAsset.priority, url.priority], me:'Loader'});
+			App.log({
+				args: [
+					'Url %s was shifted from %s to %s',
+					url.url,
+					oldAsset.priority, url.priority
+				],
+				me: 'Loader'
+			});
 		}
 		
 		launchLoad();
@@ -158,12 +165,12 @@
 		return this;
 	},
 	
-	launchLoad = function() {
+	launchLoad = function () {
 		// start now if nothing is loading
 		if (!loadIsWorking) {
 			loadIsWorking = true;
 			_loadOneAsset();
-			App.log({args:'Load worker has been started', me:'Loader'});
+			App.log({args: 'Load worker has been started', me: 'Loader'});
 		}
 	};
 	

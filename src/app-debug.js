@@ -4,25 +4,24 @@
  * App Debug and Log
  *
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 
-	"use strict";
-	
-	var 
+	'use strict';
 	
 	/** Debug **/
-	isDebuging = false,
-	debug = function (value) {
+	var isDebuging = false;
+	
+	var debug = function (value) {
 		if (value === true || value === false) {
 			isDebuging = value;
 		} else if (value === '!') {
 			isDebuging = !isDebuging;
 		}
 		return isDebuging;
-	},
+	};
 	
-	logs = [],
-	log = function (arg) {
+	var logs = [];
+	var log = function (arg) {
 		// no args, exit
 		if (!arg) {
 			return this;
@@ -75,8 +74,9 @@
 		log: log,
 		
 		// logs
-		logs: function () {return logs;}
-		
+		logs: function () {
+			return logs;
+		}
 	});
 	
 })(jQuery, window);

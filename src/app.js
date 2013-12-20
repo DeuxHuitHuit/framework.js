@@ -3,23 +3,25 @@
  * 
  * Superlight App Framework
  */
-;(function ($, global, undefined) {
-
-	"use strict";
+(function ($, global, undefined) {
+	
+	'use strict';
 	
 	//Default value
 	var ROOT = 'body';
 	
 	/** Mediator **/
 	var mediatorIsLoadingPage = false;
-	var currentRouteUrl = document.location.href.substring(document.location.protocol.length + 2 + document.location.host.length);
+	var currentRouteUrl = document.location.href.substring(
+		document.location.protocol.length + 2 + document.location.host.length
+	);
 	
 	//Store ref to the current page object
 	var currentPage = null;
 	
 	//Store ref to the previous page object
 	var previousPage = null;
-	var previousUrl = "";
+	var previousUrl = '';
 	
 	var _callAction = function (actions, key, data, e) {
 		if (!!actions) {
@@ -29,7 +31,7 @@
 				tempFx = actions;
 				// try JSONPath style...
 				var paths = key.split('.');
-				$.each(paths, function _eachPath () {
+				$.each(paths, function _eachPath() {
 					tempFx = tempFx[this];
 					if (!$.isPlainObject(tempFx)) {
 						return false;
@@ -49,15 +51,15 @@
 	};
 	
 	// Validation
-	var _validateMediatorState = function() {
+	var _validateMediatorState = function () {
 		if (mediatorIsLoadingPage) {
-			App.log({args:'Mediator is busy waiting for a page load.', fx:'error'});
+			App.log({args: 'Mediator is busy waiting for a page load.', fx: 'error'});
 		}
 		
 		return !mediatorIsLoadingPage;
 	};
 	
-	var _validateNextPage = function(nextPage) {
+	var _validateNextPage = function (nextPage) {
 		var result = true;
 			
 		if (!nextPage) {
@@ -67,7 +69,7 @@
 		return result;
 	};
 	
-	var _canEnterNextPage = function(nextPage) {
+	var _canEnterNextPage = function (nextPage) {
 		var result = true;
 		
 		if (!nextPage.canEnter()) {
@@ -78,11 +80,11 @@
 		return result;
 	};
 	
-	var _canLeaveCurrentPage = function() {
+	var _canLeaveCurrentPage = function () {
 		var result = false;
 		
 		if (!currentPage) {
-			App.log({args:'No current page set.', fx:'error'});
+			App.log({args: 'No current page set.', fx: 'error'});
 		} else if (!currentPage.canLeave()) {
 			App.log('Cannot leave page %s.', currentPage.key());
 		} else {
@@ -117,7 +119,7 @@
 	*/
 	var gotoPage = function (obj) {
 		var 
-		nextPage ,
+		nextPage,
 		route = '',
 		enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable 
@@ -125,49 +127,51 @@
 			var 
 			leavingPage = currentPage,
 			
-			_leaveCurrent = function() {
+			_leaveCurrent = function () {
 				currentPage = null;  // clean currentPage pointer,this will block all interactions
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
-				previousUrl = document.location.href.substring(document.location.protocol.length + 2 + document.location.host.length);
+				previousUrl = document.location.href.substring(
+					document.location.protocol.length + 2 + document.location.host.length
+				);
 				//clear leavingPage
 				leavingPage = null;
 				
 				//notify all module
 				App.modules.notify('page.leave', {page: previousPage});
 			},
-			_enterNext = function() {
+			_enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
 				// notify all module
-				App.modules.notify('page.enter',{page: nextPage, route: route});
+				App.modules.notify('page.enter', {page: nextPage, route: route});
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
 			},
 			pageTransitionData = {
-				currentPage : currentPage,
-				nextPage : nextPage,
-				leaveCurrent : _leaveCurrent,
-				enterNext : _enterNext,
-				route : route,
-				isHandled : false
+				currentPage: currentPage,
+				nextPage: nextPage,
+				leaveCurrent: _leaveCurrent,
+				enterNext: _enterNext,
+				route: route,
+				isHandled: false
 			};
 			
 			//Try to find a module to handle page transition
 			App.modules.notify('pages.requestPageTransition', pageTransitionData);
 			
 			//if not, return to classic code
-			if(!pageTransitionData.isHandled) {
+			if (!pageTransitionData.isHandled) {
 				//Leave to page the transition job
 				
 				//notify all module
-				App.modules.notify('page.leaving',{page: leavingPage});
+				App.modules.notify('page.leaving', {page: leavingPage});
 					
 				//Leave the current page
 				leavingPage.leave(_leaveCurrent);
 				
-				App.modules.notify('page.entering',{page: nextPage, route: route});
+				App.modules.notify('page.entering', {page: nextPage, route: route});
 				
 				nextPage.enter(_enterNext);
 			}
@@ -177,20 +181,20 @@
 			var node = $(data).find(nextPage.key());
 			
 			if (!node.length) {
-				App.log({args:['Could not find "%s" in xhr data.', nextPage.key()], fx:'error'});
+				App.log({args: ['Could not find "%s" in xhr data.', nextPage.key()], fx: 'error'});
 				
 			} else {
 				
 				var elem = $(ROOT);
 				
 				// append it to the doc, hidden
-				elem.append(node.css({opacity:0}));
+				elem.append(node.css({opacity: 0}));
 				
 				// init page
 				nextPage.init();
 				
 				node.hide();
-				App.modules.notify('pages.loaded', {elem:elem, data : data, url: obj});
+				App.modules.notify('pages.loaded', {elem: elem, data: data, url: obj});
 				
 				// actual goto
 				enterLeave();
@@ -209,12 +213,12 @@
 		}
 			
 		if (!_validateNextPage(nextPage)) {
-			App.log({args:['Route "%s" was not found.', obj], fx:'error'});
+			App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
 		} else {
-			if(_canEnterNextPage(nextPage)) {
+			if (_canEnterNextPage(nextPage)) {
 				if (nextPage === currentPage) {
 					App.log('next page is the current one');
-					App.modules.notify('pages.navigateToCurrent',{page: nextPage, route: route});
+					App.modules.notify('pages.navigateToCurrent', {page: nextPage, route: route});
 				} else {
 					// Raise the flag to mark we are in the process
 					// of loading a new page
@@ -240,7 +244,7 @@
 		return this;
 	};
 	
-	var togglePage = function(route) {
+	var togglePage = function (route) {
 		if (!!currentPage && _validateMediatorState()) {
 			var 
 			nextPage = App.pages.getPageForRoute(route);
@@ -263,7 +267,7 @@
 	* Assign root variable
 	* Call init on all registered page and modules
 	*/
-	var initApplication = function(root) {
+	var initApplication = function (root) {
 		
 		// assure root node
 		if (!!root && !!$(root).length) {
@@ -287,10 +291,16 @@
 					// initialise page variable
 					currentPage = this;
 					previousPage = this; // Set the same for the first time
-					App.modules.notify('page.entering',{page: currentPage, route: currentRouteUrl});
+					App.modules.notify('page.entering', {
+						page: currentPage,
+						route: currentRouteUrl
+					});
 					// enter the page right now
 					currentPage.enter(function _currentPageEnterCallback() {
-						App.modules.notify('page.enter', {page: currentPage, route: currentRouteUrl});
+						App.modules.notify('page.enter', {
+							page: currentPage,
+							route: currentRouteUrl
+						});
 					});
 				}
 			}
@@ -309,7 +319,7 @@
 		_callAction: _callAction,
 		
 		// root node for the pages
-		root: function() {
+		root: function () {
 			return ROOT;
 		},
 		

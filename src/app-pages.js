@@ -3,16 +3,15 @@
  * 
  * Pages
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 
-	"use strict";
+	'use strict';
 	
 	var pageModels = {};
 	var pageInstances = {};
 	
 	var _createPageModel = function (key, model, override) {
 		var
-		
 		
 		ftrue = function () {
 			return true;
@@ -50,7 +49,7 @@
 				canEnter: ftrue,
 				canLeave: ftrue,
 				routes: _routes,
-				data : function() {
+				data: function () {
 					return _pageData;
 				}
 			}, model);
@@ -59,19 +58,22 @@
 		return factory;
 	};
 	
-	var createPage = function (pageData, keyModel,override) {
+	var createPage = function (pageData, keyModel, override) {
 		var 
 		//Find the page model associated
 		pageModel = pageModels[keyModel],
 		pageInst;
 		
 		if (!pageModel) {
-			App.log({args:['Model %s not found', keyModel], fx:'error'});
+			App.log({args: ['Model %s not found', keyModel], fx: 'error'});
 			return false;
 		} else {
 			//Check to not overide an existing page
 			if (!!pageInstances[pageData.key] && !override) {
-				App.log({args:['Overwriting page key %s is not allowed', pageData.key], fx:'error'});
+				App.log({
+					args: ['Overwriting page key %s is not allowed', pageData.key],
+					fx: 'error'
+				});
 			} else {
 				pageInst = pageModel(pageData);
 				pageInstances[pageData.key] = pageInst;
@@ -83,12 +85,15 @@
 	/* Create a function to create a new page */
 	var exportPage = function (key, model, override) {
 		
-		var pageModel = _createPageModel(key,model);
+		var pageModel = _createPageModel(key, model);
 		
 		//find an existing page and cannot override it
 		if (!!pageModels[key] && !override) {
 			//error, should not override an existing key
-			App.log({args:['Overwriting page model key %s is not allowed', key], fx:'error'});
+			App.log({
+				args: ['Overwriting page model key %s is not allowed', key],
+				fx: 'error'
+			});
 			return false;
 		} else {
 			//Store page to the list
@@ -98,11 +103,11 @@
 	};
 	
 	 // Validation
-	var _validateRoute = function(route) {
+	var _validateRoute = function (route) {
 		var result = false;
 		
 		if (!route) {
-			App.log({args:'No route set.', fx:'error'});
+			App.log({args: 'No route set.', fx: 'error'});
 		} else {
 			result = true;
 		}
@@ -148,26 +153,29 @@
 					}
 					
 					// assure we are testing until the end
-					if (testRoute.indexOf('^') !== testRoute.length-1) {
+					if (testRoute.indexOf('^') !== testRoute.length - 1) {
 						testRoute = testRoute + '$';
 					}
 					
 					// wildcard replace
 					// avoid overloading routes with regex
 					if (testRoute.indexOf('*')) {
-						testRoute = testRoute.replace(new RegExp('\\*','g'), '.*'); // a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
+						 // a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
+						testRoute = testRoute.replace(new RegExp('\\*', 'gi'), '.*');
 					}
 					
 					try {
 						regex = new RegExp(testRoute);
 					} catch (ex) {
-						App.log({args:['Error while creating RegExp %s.\n%s', testRoute, ex], fx:'error'});
+						App.log({
+							args: ['Error while creating RegExp %s.\n%s', testRoute, ex],
+							fx: 'error'
+						});
 					}
 					
 					if (!!regex && regex.test(route)) {
 						return found(i);
 					}
-					
 				} else {
 					if (testRoute === route) {
 						return found(i);
@@ -197,7 +205,10 @@
 	
 	// Should notify all pages ??
 	var notifyPage = function (key, data, e) {
-		App.log({args:'This method is deprecated in favor of App.mediator.notifyCurrentPage', fx:'error'});
+		App.log({
+			args: 'This method is deprecated in favor of App.mediator.notifyCurrentPage',
+			fx: 'error'
+		});
 	};
 	
 	/** Public Interfaces **/
@@ -222,7 +233,7 @@
 				var result = pageInstances[keyOrRoute];
 				
 				//if no result found try with the route
-				if(!!!result) {
+				if (!!!result) {
 					result = _getPageForRoute(keyOrRoute);
 				}
 				
