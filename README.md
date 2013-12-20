@@ -1,23 +1,19 @@
 # framework.js
 
-#### Version 1.2
+#### Version 1.3
 
 Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
 The framework use jQuery and extends some functionality.
 
-Global.js :
+**Global**
 
-Add some flag value on the jquery object to detect the browser used
+Adds some flag value on the jquery object to detect the browser used
 
-$.unsupported : true if it's MSIE less than version 9
-
-$.iphone : true for userAgent containing 'iPhone' or 'iPod'
-
-$.ios : true when iPhone is true or userAgent contain 'iPad'
-
-$.mobile : true when ios is true or userAgent contain 'Android','mobile' or 'phone'
-
+	* $.unsupported : true if it's MSIE less than version 9
+	* $.iphone : true for userAgent containing 'iPhone' or 'iPod'
+	* $.ios : true when iPhone is true or userAgent contain 'iPad'
+	* $.mobile : true when ios is true or userAgent contain 'Android','mobile' or 'phone'
 
 **Loader:**
 
@@ -25,6 +21,7 @@ $.mobile : true when ios is true or userAgent contain 'Android','mobile' or 'pho
 	* isLoading(url)
 	* inQueue(url)
 	* working()
+	
 	
 **App:**
 
