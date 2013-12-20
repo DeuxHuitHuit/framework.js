@@ -119,11 +119,20 @@
 	
 	
 	var _matchRoute = function (route, routes) {
-		var index = -1,
-			found = function (i) {
-				index = i;
-				return false; // exit each
-			};
+		var index = -1;
+		var found = function (i) {
+			index = i;
+			return false; // exit each
+		};
+		
+		if ($.type(route) !== 'string') {
+			App.log({args: '`route` must be a string', fx: 'error'});
+			return index;
+		}
+		
+		if (!!~route.indexOf('?')) {
+			route = route.split('?')[0];
+		}
 		
 		if (!!route && !!routes) {
 			$.each(routes, function _matchOneRoute(i) {

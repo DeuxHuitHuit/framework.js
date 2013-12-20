@@ -115,25 +115,33 @@
 					contactEN: '/en/contact/',
 					wildcard: '/test/*/view',
 					questionWildcard: '/test/*',
+					routeWithQueryString: '/query-string',
 					regex: /[ab]/
 				},
 				route = '';
 			
 				route = routes.root;
 				ok(!!~App.pages._matchRoute(route, routes), route);
+				
 				route = routes.contactFR;
 				ok(!!~App.pages._matchRoute(route, routes), route);
+				
 				route = routes.contactEN;
 				ok(!!~App.pages._matchRoute(route, routes), route);
 				equal(App.pages._matchRoute(route, routes), 'contactEN', route + ' index');
+				
 				route = '///kldkslds';
 				ok(!~App.pages._matchRoute(route, routes), '! ' + route);
+				
 				route = '/fr/test/super-cheap/view';
 				ok(!!~App.pages._matchRoute(route, routes), route + ' widlcard');
+				
 				route = '/a';
 				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				
 				route = '/b';
 				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				
 				route = '/c';
 				ok(!~App.pages._matchRoute(route, routes), '! ' + route + ' regexp');
 				
@@ -148,6 +156,12 @@
 				
 				route = '/test/?test[super/\]=test#43434';
 				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				
+				route = '/query-string?with-a-query-string';
+				ok(!!~App.pages._matchRoute(route, routes), route + ' with a query string');
+				
+				route = '/query-string?with-a-query-string?and=another';
+				ok(!!~App.pages._matchRoute(route, routes), route + ' with 2 query strings');
 			});
 			
 			test('getPageForRoute', function appPages_getPageForRouteTest () {
