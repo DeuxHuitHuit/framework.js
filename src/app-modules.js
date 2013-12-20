@@ -22,7 +22,9 @@
 	};
 	
 	var exportModule = function (key, module, override) {
-		if (!!modules[key] && !override) {
+		if (!$.type(key)) {
+			App.log({args: ['`key` must be a string', key], fx: 'error'});
+		} else if (!!modules[key] && !override) {
 			App.log({args: ['Overwriting module key %s is not allowed', key], fx: 'error'});
 		} else {
 			modules[key] = createModule(module);
@@ -30,9 +32,12 @@
 		return modules[key];
 	};
 	
-	var notifyModules = function (key, data) {
-		$.each(modules, function _actionToAllModules() {
-			App._callAction(this.actions(), key, data);
+	var notifyModules = function (key, data, cb) {
+		$.each(modules, function _actionToAllModules(index) {
+			var res = App._callAction(this.actions(), key, data, cb);
+			if (res !== undefined) {
+				App.callback(cb, [index, res]);
+			}
 		});
 		return this;
 	};

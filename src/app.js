@@ -34,21 +34,25 @@
 				$.each(paths, function _eachPath() {
 					tempFx = tempFx[this];
 					if (!$.isPlainObject(tempFx)) {
-						return false;
+						return false; // exit
 					}
+					return true;
 				});
 			}
 			
-			App.callback(tempFx, [key, data]);
+			return App.callback(tempFx, [key, data]);
 			
-		} else {
+		} /*else {
 			App.log({args: '`actions` is null.', fx: 'error'});
-		}
+		}*/
 	};
 	
-	var notifyPage = function (key, data) {
+	var notifyPage = function (key, data, cb) {
 		if (!!currentPage) {
-			App._callAction(currentPage.actions(), key, data);
+			var res = App._callAction(currentPage.actions(), key, data);
+			if (res !== undefined) {
+				App.callback(cb, [currentPage.key(), res]);
+			}
 		}
 		return this;
 	};
@@ -105,13 +109,13 @@
 	* @see AER in http://addyosmani.com/largescalejavascript/
 	* @see pub/sub http://freshbrewedcode.com/jimcowart/tag/pubsub/
 	*/
-	var notifyAll = function (key, data) {
+	var notifyAll = function (key, data, cb) {
 		
 		// propagate action to current page only
-		notifyPage(key, data);
+		notifyPage(key, data, cb);
 		
 		// propagate action to all modules
-		App.modules.notify(key, data);
+		App.modules.notify(key, data, cb);
 		
 		return this;
 	};
@@ -331,6 +335,13 @@
 		
 		// mediator object
 		mediator: {
+			// private
+			_currentPage: function (page) {
+				if (!!page) {
+					currentPage = page;
+				}
+				return currentPage;
+			},
 			
 			// event dispatcher to the
 			// current Page and Modules

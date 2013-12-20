@@ -22,12 +22,15 @@
 	};
 	
 	var exportComponent = function (key, component, override) {
-		if (!!components[key] && !override) {
+		if (!$.type(key)) {
+			App.log({args: ['`key` must be a string', key], fx: 'error'});
+		} else if (!!components[key] && !override) {
 			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
 		} else {
 			components[key] = component;
+			return component;
 		}
-		return components[key];
+		return false;
 	};
 	
 	var createComponent = function (key, options) {

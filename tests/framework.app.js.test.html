@@ -176,20 +176,20 @@
 			module('App.modules');
 			
 			test('notify', function appModuleNotifyTest () {
-				var count = 0,
-					testModule = {
-						actions: function () {
-							return {
-								test: function () {
-									count++;
-								}
+				var count = 0;
+				var testModule = {
+					actions: function () {
+						return {
+							test: function () {
+								count++;
 							}
 						}
-					};
-				App.modules.exports('moduleA', testModule);
-				App.modules.exports('moduleB', testModule);
-				App.modules.exports('moduleC', testModule);
-				App.modules.exports('moduleD', {});
+					}
+				};
+				App.modules.exports('moduleA', testModule, true);
+				App.modules.exports('moduleB', testModule, true);
+				App.modules.exports('moduleC', testModule, true);
+				App.modules.exports('moduleD', {}, true);
 				
 				App.modules.notify('test');
 				
@@ -197,20 +197,20 @@
 			});
 			
 			test('notify - JSON Path', function appModuleNotifyJsonPathTest () {
-				var count = 0,
-					testModule = {
-						actions: function () {
-							return {
-								JSONPath: {
-									test: {
-										fx: function () {
-											count++;
-										}
+				var count = 0;
+				var testModule = {
+					actions: function () {
+						return {
+							JSONPath: {
+								test: {
+									fx: function () {
+										count++;
 									}
 								}
 							}
 						}
-					};
+					}
+				};
 					
 				// erase previous modules
 				App.modules.exports('moduleA', testModule, true);
@@ -223,6 +223,47 @@
 				equal(count, 1, '1 modules got called');
 			});
 			
+			test('notify - callback', function appModuleNotifyCallbackTest () {
+				var counter = 0;
+				
+				var cb = function (key, res) {
+					equal($.type(key), 'string', 'key ' + key + ' is a string');
+					equal(res, true, 'res is true');
+					counter++;
+				};
+				
+				App.pages.exports('page-cb', {
+					actions: function () {
+						return {
+							cb: function () {
+								return true;
+							}
+						};
+					}
+				});
+				
+				var p = App.pages.create({key: 'page callback', routes: ['page-callback']}, 'page-cb');
+				
+				App.mediator._currentPage(p);
+				
+				App.modules.exports('callback', {
+					actions: function () {
+						return {
+							cb: function () {
+								return true;
+							}
+						};
+					}
+				}, true);
+				
+				App.modules.notify('cb', null, cb);
+				
+				equal(counter, 1, 'Callback was called 1 time');
+				
+				App.mediator.notify('cb', null, cb);
+				
+				equal(counter, 3, 'Callback was called 3 times');
+			});
 			
 		}; // end run tests
 		

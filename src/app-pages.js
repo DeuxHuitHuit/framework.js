@@ -66,7 +66,6 @@
 		
 		if (!pageModel) {
 			App.log({args: ['Model %s not found', keyModel], fx: 'error'});
-			return false;
 		} else {
 			//Check to not overide an existing page
 			if (!!pageInstances[pageData.key] && !override) {
@@ -77,9 +76,10 @@
 			} else {
 				pageInst = pageModel(pageData);
 				pageInstances[pageData.key] = pageInst;
-				return true;
+				return pageInst;
 			}
 		}
+		return false;
 	};
 	
 	/* Create a function to create a new page */
@@ -87,19 +87,21 @@
 		
 		var pageModel = _createPageModel(key, model);
 		
+		if (!$.type(key)) {
+			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		//find an existing page and cannot override it
-		if (!!pageModels[key] && !override) {
+		} else if (!!pageModels[key] && !override) {
 			//error, should not override an existing key
 			App.log({
 				args: ['Overwriting page model key %s is not allowed', key],
 				fx: 'error'
 			});
-			return false;
 		} else {
 			//Store page to the list
 			pageModels[key] = pageModel;
-			return true;
+			return pageModel;
 		}
+		return false;
 	};
 	
 	 // Validation
@@ -204,7 +206,7 @@
 	};
 	
 	// Should notify all pages ??
-	var notifyPage = function (key, data) {
+	var notifyPage = function (key, data, cb) {
 		App.log({
 			args: 'This method is deprecated in favor of App.mediator.notifyCurrentPage',
 			fx: 'info'
@@ -223,6 +225,9 @@
 					return pageInstances[key];
 				}
 				return pageInstances;
+			},
+			models: function () {
+				return pageModels;
 			},
 			
 			// public

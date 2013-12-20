@@ -11,6 +11,9 @@
 	/** Utility **/
 	var callback = function (fx, args) {
 		try {
+			if (!$.isArray(args)) {
+				args = [args];
+			}
 			if ($.isFunction(fx)) {
 				// IE8 does not allow null/undefined args
 				return fx.apply(this, args || []);
@@ -21,7 +24,7 @@
 			
 			App.log({args: [msg, err], fx: 'error'});
 		}
-		return null;
+		return undefined;
 	};
 	
 	/** Public Interfaces **/

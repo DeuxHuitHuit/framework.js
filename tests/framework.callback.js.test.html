@@ -68,7 +68,7 @@
 				var 
 				testCallbackWithNumber = 1;
 				
-				ok(App.callback(testCallbackWithNumber) === null);
+				ok(App.callback(testCallbackWithNumber) === undefined);
 			});
 			
 			test('Callback handle exception', function AppDebug() {
@@ -79,7 +79,7 @@
 				},
 				logResult;
 				
-				ok(App.callback(testCallbackWithException) === null, "okay with no logger");
+				ok(App.callback(testCallbackWithException) === undefined, "okay with no logger");
 				
 				/* Create a fake logger to test */ 
 				window.App = $.extend(window.App, {
