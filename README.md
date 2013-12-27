@@ -1,4 +1,4 @@
-# Deux Huit Huit's framework.js
+# Deux Huit Huit's framework.js [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 #### Version 1.3
 
