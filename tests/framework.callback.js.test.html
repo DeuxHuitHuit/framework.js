@@ -110,6 +110,28 @@
 				ok(App.callback(testCallbackReturn) === returnedValue, "Is returning the callback value");
 			});
 			
+			test('Callback work without array', function NoArray() {
+				var test = function (one, two, three) {
+					return one === 1;
+				};
+				
+				ok(App.callback(test, 1), 'is working without');
+				ok(App.callback(test, [1]), 'is working with');
+			});
+			
+			test('Callback work with native `arguments` array-like object', function ArrayLikeObjects() {
+				var test = function (one, two, three) {
+					return one === 1;
+				};
+				
+				var tester = function () {
+					ok(App.callback(test, arguments), 'is working with arguments');
+				};
+				
+				ok(App.callback(test, [1, 2, 3]), 'is working with array');
+				tester(1, 2, 3);
+			});
+			
 		}; // end run tests
 		
 		$(w).load(runTests);
