@@ -157,7 +157,7 @@ module.exports = function fxGruntConfig(grunt) {
 					}
 				},
 				options: {
-					//banner: '<% meta.banner %>',
+					banner: '<%= meta.banner %>',
 					sourceMap: 'dist/framework.map',
 					sourceMappingURL: 'framework.map',
 					report: 'gzip',
