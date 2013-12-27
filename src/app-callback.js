@@ -11,9 +11,11 @@
 	/** Utility **/
 	var callback = function (fx, args) {
 		try {
-			if (!$.isArray(args)) {
+			if (args !== null && args !== undefined &&
+			   !$.isArray(args) && !$.isNumeric(args.length)) {
 				args = [args];
 			}
+			
 			if ($.isFunction(fx)) {
 				// IE8 does not allow null/undefined args
 				return fx.apply(this, args || []);

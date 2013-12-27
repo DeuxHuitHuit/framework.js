@@ -119,6 +119,18 @@
 				ok(App.callback(test, [1]), 'is working with');
 			});
 			
+			test('Do now wrap nulls and undefineds and other falsy values', function NoArray() {
+				var test = function (one, two, three) {
+					return !one;
+				};
+				
+				ok(App.callback(test), 'undefined');
+				ok(App.callback(test, undefined), 'real undefined');
+				ok(App.callback(test, null), 'null');
+				ok(App.callback(test, 0), 'zero');
+				ok(App.callback(test, false), 'false');
+			});
+			
 			test('Callback work with native `arguments` array-like object', function ArrayLikeObjects() {
 				var test = function (one, two, three) {
 					return one === 1;
