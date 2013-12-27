@@ -1,4 +1,4 @@
-/*! framework.js - v1.2.2 - 2013-12-13
+/*! framework.js - v1.3.0 - 2013-12-27
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -7,30 +7,27 @@
  * App Callback functionnality
  *
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 
-	"use strict";
-	
-	var 
+	'use strict';
 	
 	/** Utility **/
-	callback = function (fx, args) {
+	var callback = function (fx, args) {
 		try {
+			if (!$.isArray(args)) {
+				args = [args];
+			}
 			if ($.isFunction(fx)) {
-				return fx.apply(this, args || []); // IE8 does not allow null/undefined args
+				// IE8 does not allow null/undefined args
+				return fx.apply(this, args || []);
 			}
 		} catch (err) {
-			if(!global.App || !$.isFunction(global.App.debug)) {
-				window.alert(err.message || err);
-			}else {
-				var 
-				stack = App.debug() && err.stack,
-				msg = (err.message || err) +  (stack || '');
-				
-				App.log({args:[msg, err], fx:'error'});
-			}
+			var stack = err.stack;
+			var msg = (err.message || err) + '\n' + (stack || '');
+			
+			App.log({args: [msg, err], fx: 'error'});
 		}
-		return null;
+		return undefined;
 	};
 	
 	/** Public Interfaces **/
@@ -49,9 +46,9 @@
  * Components
  * Components are factory method that will generate a instance of a component.
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 
-	"use strict";
+	'use strict';
 	
 	/** Components **/
 	var components = {};
@@ -67,23 +64,26 @@
 	};
 	
 	var exportComponent = function (key, component, override) {
-		if (!!components[key] && !override) {
-			App.log({args:['Overwriting component key %s is not allowed', key], fx:'error'});
+		if (!$.type(key)) {
+			App.log({args: ['`key` must be a string', key], fx: 'error'});
+		} else if (!!components[key] && !override) {
+			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
 		} else {
 			components[key] = component;
+			return component;
 		}
-		return components[key];
+		return false;
 	};
 	
 	var createComponent = function (key, options) {
 		if (!components[key]) {
-			App.log({args:['Component %s is not found', key], fx:'error'});
+			App.log({args: ['Component %s is not found', key], fx: 'error'});
 		}
 		
 		var c = components[key];
 		
 		if (!$.isFunction(c)) {
-			App.log({args:['Component %s is not a function', key], fx:'error'});
+			App.log({args: ['Component %s is not a function', key], fx: 'error'});
 			return  extendComponent({});
 		}
 		
@@ -115,66 +115,63 @@
  * App Debug and Log
  *
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 
-	"use strict";
-	
-	var 
+	'use strict';
 	
 	/** Debug **/
-	isDebuging = false,
-	debug = function (value) {
+	var isDebuging = false;
+	
+	var debug = function (value) {
 		if (value === true || value === false) {
 			isDebuging = value;
 		} else if (value === '!') {
 			isDebuging = !isDebuging;
 		}
 		return isDebuging;
-	},
+	};
 	
-	logs = [],
-	log = function (arg) {
-		if (isDebuging) {
-			// no args, exit
-			if (!arg) {
-				return this;
-			}
-			
-			// ensure that args is an array
-			if (!!arg.args && !$.isArray(arg.args)) {
-				arg.args = [arg.args];
-			}
-			
-			// our copy
-			var a = {
-				args: arg.args || arguments,
-				fx: arg.fx || 'warn',
-				me: arg.me || 'App'
-			},
-			t1 = $.type(a.args[0]);
-			
-			if (t1  === 'string' || t1 === 'number' || t1 == 'boolean') {
-				// append me before a.args[0]
-				a.args[0] = '[' + a.me + '] ' + a.args[0];
-			}
-			
-			if (!!window.console) {
-				// make sure fx exists
-				if (!$.isFunction(console[a.fx])) {
-					a.fx = 'log';
-				}
-				// call it
-				if (!!window.console[a.fx].apply) {
-					window.console[a.fx].apply(window.console, a.args);
-				} else {
-					$.each(a.args, function _logArgs(index, arg) {
-						window.console[a.fx](arg);
-					});
-				}
-			}
-			
-			logs.push(a);
+	var logs = [];
+	var log = function (arg) {
+		// no args, exit
+		if (!arg) {
+			return this;
 		}
+		
+		// ensure that args is an array
+		if (!!arg.args && !$.isArray(arg.args)) {
+			arg.args = [arg.args];
+		}
+		
+		// our copy
+		var a = {
+			args: arg.args || arguments,
+			fx: arg.fx || 'warn',
+			me: arg.me || 'App'
+		},
+		t1 = $.type(a.args[0]);
+		
+		if (t1  === 'string' || t1 === 'number' || t1 == 'boolean') {
+			// append me before a.args[0]
+			a.args[0] = '[' + a.me + '] ' + a.args[0];
+		}
+		
+		if (isDebuging) {
+			// make sure fx exists
+			if (!$.isFunction(console[a.fx])) {
+				a.fx = 'log';
+			}
+			// call it
+			if (!!window.console[a.fx].apply) {
+				window.console[a.fx].apply(window.console, a.args);
+			} else {
+				$.each(a.args, function _logArgs(index, arg) {
+					window.console[a.fx](arg);
+				});
+			}
+		}
+		logs.push(a);
+		
 		return this;
 	};
 	
@@ -188,8 +185,9 @@
 		log: log,
 		
 		// logs
-		logs: function () {return logs;}
-		
+		logs: function () {
+			return logs;
+		}
 	});
 	
 })(jQuery, window);
@@ -199,9 +197,9 @@
  * 
  * Modules
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 
-	"use strict";
+	'use strict';
 	
 	/** Modules **/
 	var modules = {};
@@ -218,17 +216,22 @@
 	};
 	
 	var exportModule = function (key, module, override) {
-		if (!!modules[key] && !override) {
-			App.log({args:['Overwriting module key %s is not allowed', key], fx:'error'});
+		if (!$.type(key)) {
+			App.log({args: ['`key` must be a string', key], fx: 'error'});
+		} else if (!!modules[key] && !override) {
+			App.log({args: ['Overwriting module key %s is not allowed', key], fx: 'error'});
 		} else {
 			modules[key] = createModule(module);
 		}
 		return modules[key];
 	};
 	
-	var notifyModules = function (key, data, e) {
-		$.each(modules, function _actionToAllModules () {
-			App._callAction(this.actions(), key, data, e);
+	var notifyModules = function (key, data, cb) {
+		$.each(modules, function _actionToAllModules(index) {
+			var res = App._callAction(this.actions(), key, data, cb);
+			if (res !== undefined) {
+				App.callback(cb, [index, res]);
+			}
 		});
 		return this;
 	};
@@ -259,16 +262,15 @@
  * 
  * Pages
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 
-	"use strict";
+	'use strict';
 	
 	var pageModels = {};
 	var pageInstances = {};
 	
 	var _createPageModel = function (key, model, override) {
 		var
-		
 		
 		ftrue = function () {
 			return true;
@@ -306,7 +308,7 @@
 				canEnter: ftrue,
 				canLeave: ftrue,
 				routes: _routes,
-				data : function() {
+				data: function () {
 					return _pageData;
 				}
 			}, model);
@@ -315,50 +317,58 @@
 		return factory;
 	};
 	
-	var createPage = function (pageData, keyModel,override) {
+	var createPage = function (pageData, keyModel, override) {
 		var 
 		//Find the page model associated
 		pageModel = pageModels[keyModel],
 		pageInst;
 		
 		if (!pageModel) {
-			App.log({args:['Model %s not found', keyModel], fx:'error'});
-			return false;
+			App.log({args: ['Model %s not found', keyModel], fx: 'error'});
 		} else {
 			//Check to not overide an existing page
 			if (!!pageInstances[pageData.key] && !override) {
-				App.log({args:['Overwriting page key %s is not allowed', pageData.key], fx:'error'});
+				App.log({
+					args: ['Overwriting page key %s is not allowed', pageData.key],
+					fx: 'error'
+				});
 			} else {
 				pageInst = pageModel(pageData);
 				pageInstances[pageData.key] = pageInst;
-				return true;
+				return pageInst;
 			}
 		}
+		return false;
 	};
 	
 	/* Create a function to create a new page */
 	var exportPage = function (key, model, override) {
 		
-		var pageModel = _createPageModel(key,model);
+		var pageModel = _createPageModel(key, model);
 		
+		if (!$.type(key)) {
+			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		//find an existing page and cannot override it
-		if (!!pageModels[key] && !override) {
+		} else if (!!pageModels[key] && !override) {
 			//error, should not override an existing key
-			App.log({args:['Overwriting page model key %s is not allowed', key], fx:'error'});
-			return false;
+			App.log({
+				args: ['Overwriting page model key %s is not allowed', key],
+				fx: 'error'
+			});
 		} else {
 			//Store page to the list
 			pageModels[key] = pageModel;
-			return true;
+			return pageModel;
 		}
+		return false;
 	};
 	
 	 // Validation
-	var _validateRoute = function(route) {
+	var _validateRoute = function (route) {
 		var result = false;
 		
 		if (!route) {
-			App.log({args:'No route set.', fx:'error'});
+			App.log({args: 'No route set.', fx: 'error'});
 		} else {
 			result = true;
 		}
@@ -368,11 +378,20 @@
 	
 	
 	var _matchRoute = function (route, routes) {
-		var index = -1,
-			found = function (i) {
-				index = i;
-				return false; // exit each
-			};
+		var index = -1;
+		var found = function (i) {
+			index = i;
+			return false; // exit each
+		};
+		
+		if ($.type(route) !== 'string') {
+			App.log({args: '`route` must be a string', fx: 'error'});
+			return index;
+		}
+		
+		if (!!~route.indexOf('?')) {
+			route = route.split('?')[0];
+		}
 		
 		if (!!route && !!routes) {
 			$.each(routes, function _matchOneRoute(i) {
@@ -404,26 +423,29 @@
 					}
 					
 					// assure we are testing until the end
-					if (testRoute.indexOf('^') !== testRoute.length-1) {
+					if (testRoute.indexOf('^') !== testRoute.length - 1) {
 						testRoute = testRoute + '$';
 					}
 					
 					// wildcard replace
 					// avoid overloading routes with regex
 					if (testRoute.indexOf('*')) {
-						testRoute = testRoute.replace(new RegExp('\\*','g'), '.*'); // a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
+						 // a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
+						testRoute = testRoute.replace(new RegExp('\\*', 'gi'), '.*');
 					}
 					
 					try {
 						regex = new RegExp(testRoute);
 					} catch (ex) {
-						App.log({args:['Error while creating RegExp %s.\n%s', testRoute, ex], fx:'error'});
+						App.log({
+							args: ['Error while creating RegExp %s.\n%s', testRoute, ex],
+							fx: 'error'
+						});
 					}
 					
 					if (!!regex && regex.test(route)) {
 						return found(i);
 					}
-					
 				} else {
 					if (testRoute === route) {
 						return found(i);
@@ -452,8 +474,11 @@
 	};
 	
 	// Should notify all pages ??
-	var notifyPage = function (key, data, e) {
-		App.log({args:'This method is deprecated in favor of App.mediator.notifyCurrentPage', fx:'error'});
+	var notifyPage = function (key, data, cb) {
+		App.log({
+			args: 'This method is deprecated in favor of App.mediator.notifyCurrentPage',
+			fx: 'info'
+		});
 	};
 	
 	/** Public Interfaces **/
@@ -469,6 +494,9 @@
 				}
 				return pageInstances;
 			},
+			models: function () {
+				return pageModels;
+			},
 			
 			// public
 			getPageForRoute: _getPageForRoute,
@@ -478,7 +506,7 @@
 				var result = pageInstances[keyOrRoute];
 				
 				//if no result found try with the route
-				if(!!!result) {
+				if (!!!result) {
 					result = _getPageForRoute(keyOrRoute);
 				}
 				
@@ -500,25 +528,27 @@
  * 
  * Superlight App Framework
  */
-;(function ($, global, undefined) {
-
-	"use strict";
+(function ($, global, undefined) {
+	
+	'use strict';
 	
 	//Default value
 	var ROOT = 'body';
 	
 	/** Mediator **/
 	var mediatorIsLoadingPage = false;
-	var currentRouteUrl = document.location.href.substring(document.location.protocol.length + 2 + document.location.host.length);
+	var currentRouteUrl = document.location.href.substring(
+		document.location.protocol.length + 2 + document.location.host.length
+	);
 	
 	//Store ref to the current page object
 	var currentPage = null;
 	
 	//Store ref to the previous page object
 	var previousPage = null;
-	var previousUrl = "";
+	var previousUrl = '';
 	
-	var _callAction = function (actions, key, data, e) {
+	var _callAction = function (actions, key, data) {
 		if (!!actions) {
 			var tempFx = actions[key];
 			
@@ -526,35 +556,42 @@
 				tempFx = actions;
 				// try JSONPath style...
 				var paths = key.split('.');
-				$.each(paths, function _eachPath () {
+				$.each(paths, function _eachPath() {
 					tempFx = tempFx[this];
 					if (!$.isPlainObject(tempFx)) {
-						return false;
+						return false; // exit
 					}
+					return true;
 				});
 			}
 			
-			App.callback(tempFx, [key, data, e]);
-		}
+			return App.callback(tempFx, [key, data]);
+			
+		} /*else {
+			App.log({args: '`actions` is null.', fx: 'error'});
+		}*/
 	};
 	
-	var notifyPage = function (key, data, e) {
+	var notifyPage = function (key, data, cb) {
 		if (!!currentPage) {
-			App._callAction(currentPage.actions(), key, data, e);
+			var res = App._callAction(currentPage.actions(), key, data);
+			if (res !== undefined) {
+				App.callback(cb, [currentPage.key(), res]);
+			}
 		}
 		return this;
 	};
 	
 	// Validation
-	var _validateMediatorState = function() {
+	var _validateMediatorState = function () {
 		if (mediatorIsLoadingPage) {
-			App.log({args:'Mediator is busy waiting for a page load.', fx:'error'});
+			App.log({args: 'Mediator is busy waiting for a page load.', fx: 'error'});
 		}
 		
 		return !mediatorIsLoadingPage;
 	};
 	
-	var _validateNextPage = function(nextPage) {
+	var _validateNextPage = function (nextPage) {
 		var result = true;
 			
 		if (!nextPage) {
@@ -564,7 +601,7 @@
 		return result;
 	};
 	
-	var _canEnterNextPage = function(nextPage) {
+	var _canEnterNextPage = function (nextPage) {
 		var result = true;
 		
 		if (!nextPage.canEnter()) {
@@ -575,11 +612,11 @@
 		return result;
 	};
 	
-	var _canLeaveCurrentPage = function() {
+	var _canLeaveCurrentPage = function () {
 		var result = false;
 		
 		if (!currentPage) {
-			App.log({args:'No current page set.', fx:'error'});
+			App.log({args: 'No current page set.', fx: 'error'});
 		} else if (!currentPage.canLeave()) {
 			App.log('Cannot leave page %s.', currentPage.key());
 		} else {
@@ -597,13 +634,13 @@
 	* @see AER in http://addyosmani.com/largescalejavascript/
 	* @see pub/sub http://freshbrewedcode.com/jimcowart/tag/pubsub/
 	*/
-	var notifyAll = function (key, data, e) {
+	var notifyAll = function (key, data, cb) {
 		
 		// propagate action to current page only
-		notifyPage(key, data, e);
+		notifyPage(key, data, cb);
 		
 		// propagate action to all modules
-		App.modules.notify(key, data, e);
+		App.modules.notify(key, data, cb);
 		
 		return this;
 	};
@@ -614,7 +651,7 @@
 	*/
 	var gotoPage = function (obj) {
 		var 
-		nextPage ,
+		nextPage,
 		route = '',
 		enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable 
@@ -622,52 +659,51 @@
 			var 
 			leavingPage = currentPage,
 			
-			_leaveCurrent = function() {
-				//ensure the leaving page is hidden
-				//$(leavingPage.key()).hide();
+			_leaveCurrent = function () {
+				currentPage = null;  // clean currentPage pointer,this will block all interactions
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
-				previousUrl = document.location.href.substring(document.location.protocol.length + 2 + document.location.host.length);
+				previousUrl = document.location.href.substring(
+					document.location.protocol.length + 2 + document.location.host.length
+				);
 				//clear leavingPage
 				leavingPage = null;
 				
 				//notify all module
 				App.modules.notify('page.leave', {page: previousPage});
 			},
-			_enterNext = function() {
+			_enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
 				// notify all module
-				App.modules.notify('page.enter',{page: nextPage, route: route});
+				App.modules.notify('page.enter', {page: nextPage, route: route});
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
 			},
 			pageTransitionData = {
-				currentPage : currentPage,
-				nextPage : nextPage,
-				leaveCurrent : _leaveCurrent,
-				enterNext : _enterNext,
-				route : route,
-				isHandled : false
+				currentPage: currentPage,
+				nextPage: nextPage,
+				leaveCurrent: _leaveCurrent,
+				enterNext: _enterNext,
+				route: route,
+				isHandled: false
 			};
-			
-			currentPage = null;  // clean currentPage pointer,this will block all interactions
 			
 			//Try to find a module to handle page transition
 			App.modules.notify('pages.requestPageTransition', pageTransitionData);
 			
 			//if not, return to classic code
-			if(!pageTransitionData.isHandled) {
+			if (!pageTransitionData.isHandled) {
 				//Leave to page the transition job
 				
 				//notify all module
-				App.modules.notify('page.leaving',{page: leavingPage});
+				App.modules.notify('page.leaving', {page: leavingPage});
 					
 				//Leave the current page
 				leavingPage.leave(_leaveCurrent);
 				
-				App.modules.notify('page.entering',{page: nextPage, route: route});
+				App.modules.notify('page.entering', {page: nextPage, route: route});
 				
 				nextPage.enter(_enterNext);
 			}
@@ -677,20 +713,20 @@
 			var node = $(data).find(nextPage.key());
 			
 			if (!node.length) {
-				App.log({args:['Could not find "%s" in xhr data.', nextPage.key()], fx:'error'});
+				App.log({args: ['Could not find "%s" in xhr data.', nextPage.key()], fx: 'error'});
 				
 			} else {
 				
 				var elem = $(ROOT);
 				
 				// append it to the doc, hidden
-				elem.append(node.css({opacity:0}));
+				elem.append(node.css({opacity: 0}));
 				
 				// init page
 				nextPage.init();
 				
 				node.hide();
-				App.modules.notify('pages.loaded', {elem:elem, data : data, url: obj});
+				App.modules.notify('pages.loaded', {elem: elem, data: data, url: obj});
 				
 				// actual goto
 				enterLeave();
@@ -709,12 +745,12 @@
 		}
 			
 		if (!_validateNextPage(nextPage)) {
-			App.log({args:['Route "%s" was not found.', obj], fx:'error'});
+			App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
 		} else {
-			if(_canEnterNextPage(nextPage)) {
+			if (_canEnterNextPage(nextPage)) {
 				if (nextPage === currentPage) {
 					App.log('next page is the current one');
-					App.modules.notify('pages.navigateToCurrent',{page: nextPage, route: route});
+					App.modules.notify('pages.navigateToCurrent', {page: nextPage, route: route});
 				} else {
 					// Raise the flag to mark we are in the process
 					// of loading a new page
@@ -740,7 +776,7 @@
 		return this;
 	};
 	
-	var togglePage = function(route) {
+	var togglePage = function (route) {
 		if (!!currentPage && _validateMediatorState()) {
 			var 
 			nextPage = App.pages.getPageForRoute(route);
@@ -763,7 +799,7 @@
 	* Assign root variable
 	* Call init on all registered page and modules
 	*/
-	var initApplication = function(root) {
+	var initApplication = function (root) {
 		
 		// assure root node
 		if (!!root && !!$(root).length) {
@@ -787,10 +823,16 @@
 					// initialise page variable
 					currentPage = this;
 					previousPage = this; // Set the same for the first time
-					App.modules.notify('page.entering',{page: currentPage, route: currentRouteUrl});
+					App.modules.notify('page.entering', {
+						page: currentPage,
+						route: currentRouteUrl
+					});
 					// enter the page right now
 					currentPage.enter(function _currentPageEnterCallback() {
-						App.modules.notify('page.enter', {page: currentPage, route: currentRouteUrl});
+						App.modules.notify('page.enter', {
+							page: currentPage,
+							route: currentRouteUrl
+						});
 					});
 				}
 			}
@@ -809,7 +851,7 @@
 		_callAction: _callAction,
 		
 		// root node for the pages
-		root: function() {
+		root: function () {
 			return ROOT;
 		},
 		
@@ -818,6 +860,13 @@
 		
 		// mediator object
 		mediator: {
+			// private
+			_currentPage: function (page) {
+				if (!!page) {
+					currentPage = page;
+				}
+				return currentPage;
+			},
 			
 			// event dispatcher to the
 			// current Page and Modules
@@ -846,25 +895,24 @@
  /*
  * Browser Support/Detection
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 	
-	"use strict";
-
-	var 
-	QueryStringParserConstructor = function() {
+	'use strict';
+	
+	var queryStringParser = function () {
 		var
 		a = /\+/g,  // Regex for replacing addition symbol with a space
-		r = /([^&=]+)=?([^&]*)/g,
-		d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+		r = /([^&=]+)=?([^&]*)/gi,
+		d = function (s) { return decodeURIComponent(s.replace(a, ' ')); },
 		
-		_parse = function(qs) {
+		_parse = function (qs) {
 			var 
 			u = {},
 			e,
 			q;
 			
 			//if we dont have the parameter qs, use the window location search value
-			if(qs !== "" && !!!qs) {
+			if (qs !== '' && !qs) {
 				qs = window.location.search;
 			}
 			
@@ -881,54 +929,54 @@
 		return {
 			parse : _parse
 		};
-	},
+	};
 	
-	BrowserDetectorConstructor = function() {
-		var
-		getUserAgent = function(userAgent) {
-			if(userAgent !== "" && !!!userAgent) {
+	var browserDetector = function () {
+		var getUserAgent = function (userAgent) {
+			if (userAgent !== '' && !userAgent) {
 				userAgent = navigator.userAgent;
 			}
 			return userAgent;
 		};
 		
-	
 		return {
-	
-			isIos : function(userAgent) {
-				return window.BrowserDetector.isIphone(userAgent) || window.BrowserDetector.isIpad(userAgent);
+			isIos : function (userAgent) {
+				return global.BrowserDetector.isIphone(userAgent) || 
+					global.BrowserDetector.isIpad(userAgent);
 			},
 			
-			isIphone : function(userAgent) {
+			isIphone : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return !!(userAgent.match(/iPhone/i) || userAgent.match(/iPod/i));
 			},
 			
-			isIpad : function(userAgent) {
+			isIpad : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return !!(userAgent.match(/iPad/i));
 			},
 			
-			isAndroid : function(userAgent) {
+			isAndroid : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return !!(userAgent.match(/Android/i));
 			},
 			
-			isOtherMobile : function(userAgent) {
+			isOtherMobile : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return !!(userAgent.match(/mobile/i) || userAgent.match(/phone/i));
 			},
 			
-			isMobile : function(userAgent) {
-				return window.BrowserDetector.isIos(userAgent) || window.BrowserDetector.isAndroid(userAgent) || window.BrowserDetector.isOtherMobile(userAgent);
+			isMobile : function (userAgent) {
+				return global.BrowserDetector.isIos(userAgent) || 
+					global.BrowserDetector.isAndroid(userAgent) || 
+					global.BrowserDetector.isOtherMobile(userAgent);
 			},
 			
-			isMsie : function(userAgent) {
+			isMsie : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return userAgent.match(/msie/gi) || userAgent.match(/trident/gi);
 			}
 			
-			/*isUnsupported : function(userAgent) {
+			/*isUnsupported : function (userAgent) {
 				var 
 				b;
 				userAgent = getUserAgent(userAgent);
@@ -941,22 +989,22 @@
 	
 	// Query string Parser
 	// http://stackoverflowindow.com/questions/901115/get-query-string-values-in-javascript
-	global.QueryStringParser = QueryStringParserConstructor();
+	global.QueryStringParser = queryStringParser();
 	
 	//Parse the query string and store a copy of the result in the window object
 	global.QS = global.QueryStringParser.parse();
 	
 	// Browser detector
-	global.BrowserDetector = BrowserDetectorConstructor();
+	global.BrowserDetector = browserDetector();
 	
 	// User Agent parsing
-	$.iphone =  global.BrowserDetector.isIphone();
+	$.iphone = global.BrowserDetector.isIphone();
 	
-	$.ipad =  global.BrowserDetector.isIpad();
+	$.ipad = global.BrowserDetector.isIpad();
 	
-	$.ios    =  global.BrowserDetector.isIos();
+	$.ios = global.BrowserDetector.isIos();
 	
-	$.mobile =  global.BrowserDetector.isMobile();
+	$.mobile = global.BrowserDetector.isMobile();
 	
 	
 /**
@@ -980,11 +1028,15 @@
 	/*
 	 * Snippet
 	var c=[];
-	$('ol.toc li').each(function () {var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])})
+	$('ol.toc li').each(function () {
+		var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])
+	});
 	console.log(c);
 	 */
 	
-	var consoleFx = ["assert", "clear", "count", "debug", "dir", "dirxml", "error", "group", "group", "group", "info", "log", "profile", "profile", "time", "time", "time", "trace", "warn"];
+	var consoleFx = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'group', 
+		'group', 'group', 'info', 'log', 'profile', 'profile', 'time', 'time', 'time', 
+		'trace', 'warn'];
 	
 	// console support
 	if (!window.console) {
@@ -1000,9 +1052,8 @@
  * Global window tools
  */
 	
-	var 
-	hex = function(x) {
-		return ("0" + parseInt(x, 10).toString(16)).slice(-2);
+	var hex = function (x) {
+		return ('0' + parseInt(x, 10).toString(16)).slice(-2);
 	};
 		
 	global.rgb2hex = function (rgb) {
@@ -1014,12 +1065,12 @@
 	};
 	
 	// prevent default macro
-	global.pd = function (e, stop) {
+	global.pd = function (e, donotstop) {
 		if (!!e) {
 			if ($.isFunction(e.preventDefault)) {
 				e.preventDefault();
 			}
-			if (stop === true && $.isFunction(e.stopPropagation)) {
+			if (donotstop !== false && $.isFunction(e.stopPropagation)) {
 				e.stopPropagation();
 			}
 		}
@@ -1029,19 +1080,117 @@
 	/**
 	 * Keyboard keys
 	 */
-	// from https://github.com/drobati/django-homepage/blob/1a75e9ba31c24cb77d87ff3eb435333932056af7/media/js/jquery.keyNav.js
-	global.keys = {"?": 0,"backspace": 8,"tab": 9,"enter": 13,"shift": 16,"ctrl": 17,"alt": 18,"pause_break": 19,
-			"caps_lock": 20,"escape": 27,"space_bar": 32, "page_up": 33,"page_down": 34,"end": 35,"home": 36,"left_arrow": 37,
-			"up_arrow": 38,"right_arrow": 39,"down_arrow": 40,"insert": 45,"delete": 46,"0": 48,"1": 49,"2": 50,
-			"3": 51,"4": 52,"5": 53,"6": 54,"7": 55,"8": 56,"9": 57,"a": 65,"b": 66,"c": 67,"d": 68,"e": 69,"f": 70,
-			"g": 71,"h": 72,"i": 73,"j": 74,"k": 75,"l": 76,"m": 77,"n": 78,"o": 79,"p": 80,"q": 81,"r": 82,"s": 83,
-			"t": 84,"u": 85,"v": 86,"w": 87,"x": 88,"y": 89,"z": 90,"left_window_key": 91,"right_window_key": 92,
-			"select_key": 93,"numpad_0": 96,"numpad_1": 97,"numpad_2": 98,"numpad_3": 99,"numpad 4": 100,"numpad_5": 101,
-			"numpad_6": 102,"numpad_7": 103,"numpad_8": 104,"numpad_9": 105,"multiply": 106,"add": 107,"subtract": 109,
-			"decimal point": 110,"divide": 111,"f1": 112,"f2": 113,"f3": 114,"f4": 115,"f5": 116,"f6": 117,"f7": 118,
-			"f8": 119,"f9": 120,"f10": 121,"f11": 122,"f12": 123,"num_lock": 144,"scroll_lock": 145,"semi_colon": 186,
-			";": 186,"=": 187,"equal_sign": 187,"comma": 188,",": 188,"dash": 189,".": 190,"period": 190,"forward_slash": 191,
-			"/": 191,"grave_accent": 192,"open_bracket": 219,"back_slash": 220,"\\": 220,"close_braket": 221,"single_quote":222};
+	// from:
+	// https://github.com/drobati/django-homepage/
+	// blob/1a75e9ba31c24cb77d87ff3eb435333932056af7/media/js/jquery.keyNav.js
+	global.keys = {
+		'?': 0, 
+		'backspace': 8,
+		'tab': 9,
+		'enter': 13,
+		'shift': 16,
+		'ctrl': 17,
+		'alt': 18,
+		'pause_break': 19,
+		'caps_lock': 20,
+		'escape': 27,
+		'space_bar': 32,
+		'page_up': 33,
+		'page_down': 34,
+		'end': 35,
+		'home': 36,
+		'left_arrow': 37, 
+		'up_arrow': 38,
+		'right_arrow': 39,
+		'down_arrow': 40,
+		'insert': 45,
+		'delete': 46, 
+		'0': 48,
+		'1': 49,
+		'2': 50,
+		'3': 51,
+		'4': 52,
+		'5': 53,
+		'6': 54,
+		'7': 55,
+		'8': 56, 
+		'9': 57,
+		'a': 65,
+		'b': 66,
+		'c': 67,
+		'd': 68,
+		'e': 69,
+		'f': 70,
+		'g': 71,
+		'h': 72, 
+		'i': 73,
+		'j': 74,
+		'k': 75,
+		'l': 76,
+		'm': 77,
+		'n': 78,
+		'o': 79,
+		'p': 80,
+		'q': 81,
+		'r': 82,
+		's': 83,
+		't': 84,
+		'u': 85,
+		'v': 86,
+		'w': 87,
+		'x': 88,
+		'y': 89,
+		'z': 90,
+		'left_window_key': 91,
+		'right_window_key': 92,
+		'select_key': 93,
+		'numpad_0': 96,
+		'numpad_1': 97,
+		'numpad_2': 98,
+		'numpad_3': 99,
+		'numpad 4': 100,
+		'numpad_5': 101,
+		'numpad_6': 102,
+		'numpad_7': 103,
+		'numpad_8': 104,
+		'numpad_9': 105,
+		'multiply': 106,
+		'add': 107,
+		'subtract': 109,
+		'decimal point': 110,
+		'divide': 111,
+		'f1': 112,
+		'f2': 113,
+		'f3': 114,
+		'f4': 115,
+		'f5': 116,
+		'f6': 117,
+		'f7': 118,
+		'f8': 119,
+		'f9': 120,
+		'f10': 121,
+		'f11': 122,
+		'f12': 123,
+		'num_lock': 144,
+		'scroll_lock': 145,
+		'semi_colon': 186,
+		';': 186,
+		'=': 187,
+		'equal_sign': 187, 
+		'comma': 188,
+		', ': 188,
+		'dash': 189,
+		'.': 190,
+		'period': 190,
+		'forward_slash': 191,
+		'/': 191,
+		'grave_accent': 192,
+		'open_bracket': 219,
+		'back_slash': 220,
+		'\\': 220,
+		'close_braket': 221,
+		'single_quote': 222
+	};
 
 	global.keyFromCode = function (code) {
 		var key = '?';
@@ -1071,9 +1220,9 @@
  * 
  * Assets loader
  */
-;(function ($, global, undefined) {
+(function ($, global, undefined) {
 	
-	"use strict";
+	'use strict';
 	
 	var
 	
@@ -1129,13 +1278,13 @@
 				// clear pointer
 				currentUrl = null;
 				
-				App.log({args:['Error loading url %s', asset.url], me:'Loader'});
+				App.log({args: ['Error loading url %s', asset.url], me: 'Loader'});
 				
 				// if no vip access is granted
 				//if (!asset.vip) { 
 					// decrease priority
 					// this avoids looping for a unload-able asset
-					asset.priority += ++asset.retries; // out of bounds checking is done later
+				asset.priority += ++asset.retries; // out of bounds checking is done later
 				//}
 				
 				// @todo: check for the error code
@@ -1162,7 +1311,7 @@
 		currentUrl = param.url;
 	},
 	
-	validateUrlArgs = function(url,priority) {
+	validateUrlArgs = function (url, priority) {
 		// ensure we are dealing with an object
 		if (!$.isPlainObject(url)) {
 			url = {url: url};
@@ -1189,15 +1338,15 @@
 	
 	loadAsset = function (url, priority) {
 		if (!url) {
-			App.log({args:'No url given', me:'Loader'});
+			App.log({args: 'No url given', me: 'Loader'});
 			return this;
 		}
 		
-		validateUrlArgs(url,priority);
+		validateUrlArgs(url, priority);
 		
 		// ensure that asset is not current
 		if (isLoading(url.url)) {
-			App.log({args:['Url %s is already loading', url.url], me:'Loader'});
+			App.log({args: ['Url %s is already loading', url.url], me: 'Loader'});
 			return this;
 		}
 		
@@ -1207,7 +1356,7 @@
 		if (!~index) {
 			// insert in array
 			assets.splice(url.priority, 1, url);
-			App.log({args:['Url %s has been insert at %s', url.url, url.priority], me:'Loader'});
+			App.log({args: ['Url %s has been insert at %s', url.url, url.priority], me: 'Loader'});
 			
 		} else {
 			// promote if new priority is different
@@ -1218,7 +1367,14 @@
 				// add
 				assets.splice(url.priority, 1, url);
 			}
-			App.log({args:['Url %s was shifted from %s to %s', url.url, oldAsset.priority, url.priority], me:'Loader'});
+			App.log({
+				args: [
+					'Url %s was shifted from %s to %s',
+					url.url,
+					oldAsset.priority, url.priority
+				],
+				me: 'Loader'
+			});
 		}
 		
 		launchLoad();
@@ -1226,12 +1382,12 @@
 		return this;
 	},
 	
-	launchLoad = function() {
+	launchLoad = function () {
 		// start now if nothing is loading
 		if (!loadIsWorking) {
 			loadIsWorking = true;
 			_loadOneAsset();
-			App.log({args:'Load worker has been started', me:'Loader'});
+			App.log({args: 'Load worker has been started', me: 'Loader'});
 		}
 	};
 	
