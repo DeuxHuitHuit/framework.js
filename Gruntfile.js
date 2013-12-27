@@ -11,6 +11,8 @@ module.exports = function fxGruntConfig(grunt) {
 	// VAR
 	var GRUNT_FILE = 'Gruntfile.js';
 	
+	var BUILD_FILE = './dist/build.json';
+	
 	var SRC_FOLDERS = ['./src/'];
 	var SRC_FILES = [];
 	
@@ -70,162 +72,180 @@ module.exports = function fxGruntConfig(grunt) {
 		}
 	};
 	
-	var init = function (grunt) {
-		// Project configuration.
-		grunt.initConfig({
-			pkg: grunt.file.readJSON('package.json'),
-			meta: {
-				banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
-				'<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-				'<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-				'* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-				' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n'
+	var getBuildNumber = function () {
+		var b = {}
+		
+		try {
+			b = grunt.file.readJSON(BUILD_FILE);
+		} catch (e) {}
+		
+		b.lastBuild = b.lastBuild > 0 ? b.lastBuild + 1 : 1;
+		
+		grunt.file.write(BUILD_FILE, JSON.stringify(b));
+		
+		return b.lastBuild;
+	};
+	
+	var config = {
+		pkg: grunt.file.readJSON('package.json'),
+		build: 'auto',
+		meta: {
+			banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> ' +
+			'- build <%= build %> - ' +
+			'<%= grunt.template.today("yyyy-mm-dd") %>\n' +
+			'<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
+			'* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+			' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n'
+		},
+		concat: {
+			options: {
+				process: true,
+				banner: '<%= meta.banner %>'
 			},
-			concat: {
+			dist: {
+				src: SRC_FILES,
+				dest: 'dist/<%= pkg.name %>.js'
+			}
+		},
+		qunit: {
+			all: {
 				options: {
-					process: true,
-					banner: '<%= meta.banner %>'
-				},
-				dist: {
-					src: SRC_FILES,
-					dest: 'dist/<%= pkg.name %>.js'
-				}
-			},
-			qunit: {
-				all: {
-					options: {
-						urls: TEST_URIS
-					}
-				}
-			},
-			watch: {
-				files: SRC_FILES.concat(GRUNT_FILE),
-				tasks: ['jshint', 'complexity']
-			},
-			jshint: {
-				files: SRC_FILES.concat(GRUNT_FILE),
-				//force: true,
-				options: {
-					bitwise: false,
-					camelcase: false,
-					curly: true,
-					eqeqeq: false, // allow ==
-					forin: true,
-					//freeze: true,
-					immed: false, //
-					latedef: true, // late definition
-					newcap: true, // capitalize ctos
-					noempty: true,
-					nonew: true, // no new ..()
-					noarg: true, 
-					plusplus: false,
-					quotmark: 'single',
-					undef: true,
-					maxparams: 5,
-					maxdepth: 5,
-					maxstatements: 30,
-					maxlen: 100,
-					//maxcomplexity: 10,
-					
-					// relax options
-					//boss: true,
-					//eqnull: true, 
-					esnext: true,
-					regexp: true,
-					strict: true,
-					trailing: false,
-					sub: true, // [] notation
-					smarttabs: true,
-					lastsemic: false, // enforce semicolons
-					white: true,
-					
-					// env
-					browser: true,
-					
-					globals: {
-						jQuery: true,
-						console: true,
-						App: true,
-						Loader: true
-					}
-				}
-			},
-			uglify: {
-				prod: {
-					files: {
-						'dist/<%= pkg.name %>.min.js': '<%= concat.dist.dest %>' 
-					}
-				},
-				options: {
-					banner: '<%= meta.banner %>',
-					sourceMap: 'dist/framework.map',
-					sourceMappingURL: 'framework.map',
-					report: 'gzip',
-					mangle: true,
-					compress: {
-						global_defs: {
-							DEBUG: false
-						},
-						dead_code: true,
-						unused: true,
-						warnings: true
-					},
-					preserveComments: false
-				}
-			},
-			connect: {
-				server: {
-					options: {
-						port: SERVER_PORT,
-						base: '.'
-					}
-				}
-			},
-			complexity: {
-				generic: {
-					src: SRC_FILES.concat(GRUNT_FILE),
-					options: {
-						//jsLintXML: 'report.xml', // create XML JSLint-like report
-						errorsOnly: false, // show only maintainability errors
-						cyclomatic: 10,
-						halstead: 25,
-						maintainability: 90
-					}
-				}
-			},
-			karma: {
-				unit: {
-					//configFile: 'karma.conf.js',
-					files: TEST_FILES,
-					frameworks: ['qunit'],
-					runnerPort: SERVER_PORT,
-					singleRun: true,
-					browsers: ['PhantomJS']
-				},
-				linux: {
-					files: TEST_FILES,
-					frameworks: ['qunit'],
-					runnerPort: SERVER_PORT,
-					singleRun: true,
-					browsers: ['Chrome', 'Firefox', 'PhantomJS']
-				},
-				win32: {
-					files: TEST_FILES,
-					frameworks: ['qunit'],
-					//runnerPort: SERVER_PORT,
-					singleRun: true,
-					basePath: '',
-					browsers: ['Chrome', 'Firefox', 'IE']
-				},
-				darwin: {
-					files: TEST_FILES,
-					frameworks: ['qunit'],
-					runnerPort: SERVER_PORT,
-					singleRun: true,
-					browsers: ['Chrome', 'Firefox', 'Safari', 'PhantomJS']
+					urls: TEST_URIS
 				}
 			}
-		});
+		},
+		watch: {
+			files: SRC_FILES.concat(GRUNT_FILE),
+			tasks: ['jshint', 'complexity']
+		},
+		jshint: {
+			files: SRC_FILES.concat(GRUNT_FILE),
+			//force: true,
+			options: {
+				bitwise: false,
+				camelcase: false,
+				curly: true,
+				eqeqeq: false, // allow ==
+				forin: true,
+				//freeze: true,
+				immed: false, //
+				latedef: true, // late definition
+				newcap: true, // capitalize ctos
+				noempty: true,
+				nonew: true, // no new ..()
+				noarg: true, 
+				plusplus: false,
+				quotmark: 'single',
+				undef: true,
+				maxparams: 5,
+				maxdepth: 5,
+				maxstatements: 30,
+				maxlen: 100,
+				//maxcomplexity: 10,
+				
+				// relax options
+				//boss: true,
+				//eqnull: true, 
+				esnext: true,
+				regexp: true,
+				strict: true,
+				trailing: false,
+				sub: true, // [] notation
+				smarttabs: true,
+				lastsemic: false, // enforce semicolons
+				white: true,
+				
+				// env
+				browser: true,
+				
+				globals: {
+					jQuery: true,
+					console: true,
+					App: true,
+					Loader: true
+				}
+			}
+		},
+		uglify: {
+			prod: {
+				files: {
+					'dist/<%= pkg.name %>.min.js': '<%= concat.dist.dest %>' 
+				}
+			},
+			options: {
+				banner: '<%= meta.banner %>',
+				sourceMap: 'dist/framework.map',
+				sourceMappingURL: 'framework.map',
+				report: 'gzip',
+				mangle: true,
+				compress: {
+					global_defs: {
+						DEBUG: false
+					},
+					dead_code: true,
+					unused: true,
+					warnings: true
+				},
+				preserveComments: false
+			}
+		},
+		connect: {
+			server: {
+				options: {
+					port: SERVER_PORT,
+					base: '.'
+				}
+			}
+		},
+		complexity: {
+			generic: {
+				src: SRC_FILES.concat(GRUNT_FILE),
+				options: {
+					//jsLintXML: 'report.xml', // create XML JSLint-like report
+					errorsOnly: false, // show only maintainability errors
+					cyclomatic: 10,
+					halstead: 25,
+					maintainability: 90
+				}
+			}
+		},
+		karma: {
+			unit: {
+				//configFile: 'karma.conf.js',
+				files: TEST_FILES,
+				frameworks: ['qunit'],
+				runnerPort: SERVER_PORT,
+				singleRun: true,
+				browsers: ['PhantomJS']
+			},
+			linux: {
+				files: TEST_FILES,
+				frameworks: ['qunit'],
+				runnerPort: SERVER_PORT,
+				singleRun: true,
+				browsers: ['Chrome', 'Firefox', 'PhantomJS']
+			},
+			win32: {
+				files: TEST_FILES,
+				frameworks: ['qunit'],
+				//runnerPort: SERVER_PORT,
+				singleRun: true,
+				basePath: '',
+				browsers: ['Chrome', 'Firefox', 'IE']
+			},
+			darwin: {
+				files: TEST_FILES,
+				frameworks: ['qunit'],
+				runnerPort: SERVER_PORT,
+				singleRun: true,
+				browsers: ['Chrome', 'Firefox', 'Safari', 'PhantomJS']
+			}
+		}
+	};
+	
+	var init = function (grunt) {
+		// Project configuration.
+		grunt.initConfig(config);
 		
 		// fix source map url
 		grunt.registerTask('fix-source-map', 
@@ -266,6 +286,8 @@ module.exports = function fxGruntConfig(grunt) {
 		createSrcFiles();
 		createTestUris();
 		createTestFiles();
+		
+		config.build = getBuildNumber();
 		
 		init(grunt);
 		
