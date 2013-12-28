@@ -175,12 +175,12 @@
 	};
 	
 	// prevent default macro
-	global.pd = function (e, donotstop) {
+	global.pd = function (e, stopPropagation) {
 		if (!!e) {
 			if ($.isFunction(e.preventDefault)) {
 				e.preventDefault();
 			}
-			if (donotstop !== false && $.isFunction(e.stopPropagation)) {
+			if (stopPropagation !== false && $.isFunction(e.stopPropagation)) {
 				e.stopPropagation();
 			}
 		}

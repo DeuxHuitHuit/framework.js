@@ -112,6 +112,23 @@
 				ok(w.isChar(w.keys.z), 'z');
 			});
 			
+			test('pd(e)', function pdTest() {
+				var e = $.Event('pd-test');
+				
+				var r = w.pd(e);
+				
+				equal(r, false, 'r is false');
+				equal(e.isDefaultPrevented(), true, 'r is default prevented');
+				equal(e.isPropagationStopped(), true, 'r is propagation stopped');
+				
+				e = $.Event('pd-test');
+				r = w.pd(e, false);
+				
+				equal(r, false, 'r is false');
+				equal(e.isDefaultPrevented(), true, 'r is default prevented');
+				equal(e.isPropagationStopped(), false, 'r is not propagation stopped');
+			});
+			
 		}; // end run tests
 		
 		$(w).load(runTests);
