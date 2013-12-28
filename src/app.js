@@ -190,6 +190,12 @@
 			if (!node.length) {
 				App.log({args: ['Could not find "%s" in xhr data.', nextPage.key()], fx: 'error'});
 				
+				// free the mediator
+				mediatorIsLoadingPage = false;
+				
+				// notify
+				App.modules.notify('pages.notfound', {data: data, url: obj});
+				
 			} else {
 				
 				var elem = $(ROOT);
