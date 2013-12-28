@@ -3,6 +3,7 @@
 var fs = module.require('fs');
 var path = module.require('path');
 var os = module.require('os');
+var md = module.require('matchdep');
 
 module.exports = function fxGruntConfig(grunt) {
 	
@@ -13,8 +14,7 @@ module.exports = function fxGruntConfig(grunt) {
 	
 	var BUILD_FILE = './dist/build.json';
 	
-	var SRC_FOLDERS = ['./src/'];
-	var SRC_FILES = [];
+	var SRC_FILES = ['./src/*.js'];
 	
 	// TESTS
 	var SERVER_PORT = 8080;
@@ -29,28 +29,6 @@ module.exports = function fxGruntConfig(grunt) {
 	
 	var TEST_FILES = [];
 	var TEST_URIS = [];
-	
-	// load grunt task
-	var loadGruntTasks = function (grunt) {
-		grunt.loadNpmTasks('grunt-contrib-connect');
-		grunt.loadNpmTasks('grunt-contrib-uglify');
-		grunt.loadNpmTasks('grunt-contrib-jshint');
-		grunt.loadNpmTasks('grunt-contrib-qunit');
-		grunt.loadNpmTasks('grunt-contrib-concat');
-		grunt.loadNpmTasks('grunt-complexity');
-		grunt.loadNpmTasks('grunt-karma');
-	};
-	
-	var createSrcFiles = function () {
-		SRC_FOLDERS.forEach(function (folder) {
-			var p = path.normalize(folder);
-			var files = fs.readdirSync(p);
-			
-			files.forEach(function (file) {
-				SRC_FILES.push(path.normalize(p + file));
-			});
-		});
-	};
 	
 	// for karma
 	var createTestFiles = function () {
@@ -73,7 +51,7 @@ module.exports = function fxGruntConfig(grunt) {
 	};
 	
 	var getBuildNumber = function () {
-		var b = {}
+		var b = {};
 		
 		try {
 			b = grunt.file.readJSON(BUILD_FILE);
@@ -174,8 +152,8 @@ module.exports = function fxGruntConfig(grunt) {
 			},
 			options: {
 				banner: '<%= meta.banner %>',
-				sourceMap: 'dist/framework.map',
-				sourceMappingURL: 'framework.map',
+				sourceMap: 'dist/<%= pkg.name %>.map',
+				sourceMappingURL: '<%= pkg.name %>.map',
 				report: 'gzip',
 				mangle: true,
 				compress: {
@@ -266,9 +244,9 @@ module.exports = function fxGruntConfig(grunt) {
 		
 		// Default task.
 		grunt.registerTask('default',   ['dev', 'build']);
-		grunt.registerTask('dev',	   ['jshint', 'connect', 'qunit', 'complexity']);
-		grunt.registerTask('build',	 ['concat', 'uglify', 'fix-source-map']);
-		grunt.registerTask('test',	  ['jshint', 'connect', 'qunit']);
+		grunt.registerTask('dev',       ['jshint', 'connect', 'qunit', 'complexity']);
+		grunt.registerTask('build',     ['concat', 'uglify', 'fix-source-map']);
+		grunt.registerTask('test',      ['jshint', 'connect', 'qunit']);
 		
 		// karma requires some env variables
 		// export PHANTOMJS_BIN=/usr/bin/phantomjs
@@ -281,9 +259,8 @@ module.exports = function fxGruntConfig(grunt) {
 	};
 	
 	var load = function (grunt) {
-		loadGruntTasks(grunt);
+		md.filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 		
-		createSrcFiles();
 		createTestUris();
 		createTestFiles();
 		
