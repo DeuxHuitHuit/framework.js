@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.0 - 2013-12-27
+/*! framework.js - v1.3.0 - build 20 - 2013-12-27
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
 /**
@@ -716,6 +716,12 @@
 			
 			if (!node.length) {
 				App.log({args: ['Could not find "%s" in xhr data.', nextPage.key()], fx: 'error'});
+				
+				// free the mediator
+				mediatorIsLoadingPage = false;
+				
+				// notify
+				App.modules.notify('pages.notfound', {data: data, url: obj});
 				
 			} else {
 				
