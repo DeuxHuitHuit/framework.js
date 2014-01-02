@@ -11,31 +11,27 @@
 	var pageInstances = {};
 	
 	var _createPageModel = function (key, model, override) {
-		var
-		
-		ftrue = function () {
+		var ftrue = function () {
 			return true;
-		},
+		};
 		
-		_enterLeave = function (next) {
+		var _enterLeave = function (next) {
 			App.callback(next);
-		},
+		};
 		
-		factory = function (pageData) {
+		var factory = function (pageData) {
 		
-			var
+			var _pageData = pageData;
 			
-			_pageData = pageData,
-			
-			_key = function () {
+			var _key = function () {
 				return _pageData.key;
-			},
+			};
 			
-			_routes = function () {
+			var _routes = function () {
 				return _pageData.routes;
-			},
+			};
 			
-			_loaded = function () {
+			var _loaded = function () {
 				return !!$(this.key()).length;
 			};
 			
@@ -59,10 +55,9 @@
 	};
 	
 	var createPage = function (pageData, keyModel, override) {
-		var 
 		//Find the page model associated
-		pageModel = pageModels[keyModel],
-		pageInst;
+		var pageModel = pageModels[keyModel];
+		var pageInst;
 		
 		if (!pageModel) {
 			App.log({args: ['Model %s not found', keyModel], fx: 'error'});
@@ -82,7 +77,7 @@
 		return false;
 	};
 	
-	/* Create a function to create a new page */
+	// Create a function to create a new page
 	var exportPage = function (key, model, override) {
 		
 		var pageModel = _createPageModel(key, model);
@@ -116,7 +111,6 @@
 		
 		return result;
 	};
-	
 	
 	var _matchRoute = function (route, routes) {
 		var index = -1;

@@ -125,16 +125,15 @@
 	* Do nothing if the current page is already the requested route
 	*/
 	var gotoPage = function (obj) {
-		var 
-		nextPage,
-		route = '',
-		enterLeave = function () {
+		var nextPage;
+		var route = '';
+
+		var enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable 
 			//The currentPage pointer will be cleared after the next call
-			var 
-			leavingPage = currentPage,
+			var leavingPage = currentPage;
 			
-			_leaveCurrent = function () {
+			var _leaveCurrent = function () {
 				currentPage = null;  // clean currentPage pointer,this will block all interactions
 				
 				//set leaving page to be previous one
@@ -147,16 +146,18 @@
 				
 				//notify all module
 				App.modules.notify('page.leave', {page: previousPage});
-			},
-			_enterNext = function () {
+			};
+
+			var _enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
 				// notify all module
 				App.modules.notify('page.enter', {page: nextPage, route: route});
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			},
-			pageTransitionData = {
+			};
+
+			var pageTransitionData = {
 				currentPage: currentPage,
 				nextPage: nextPage,
 				leaveCurrent: _leaveCurrent,
@@ -182,8 +183,9 @@
 				
 				nextPage.enter(_enterNext);
 			}
-		},
-		loadSucess = function (data, textStatus, jqXHR) {
+		};
+
+		var loadSucess = function (data, textStatus, jqXHR) {
 			// get the node
 			var node = $(data).find(nextPage.key());
 			
