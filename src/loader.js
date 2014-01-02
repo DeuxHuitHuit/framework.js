@@ -1,15 +1,38 @@
 /**
  * @author Deux Huit Huit
  * 
- * Assets loader
+ * Assets loader: Basically a wrap around $.ajax in order
+ *   to priorize and serialize resource loading.
  */
 (function ($, global, undefined) {
 	
 	'use strict';
+
+	// Forked: https://gist.github.com/nitriques/6583457
+	(function addXhrProgressEvent() {
+		var originalXhr = $.ajaxSettings.xhr;
+		$.ajaxSetup({
+			progress: $.noop,
+			upload: $.noop,
+			xhr: function () {
+				var self = this;
+				var req = originalXhr();
+				if (req) {
+					if ($.isFunction(req.addEventListener)) {
+						req.addEventListener('progress', self.progress, false);
+					}
+					if (!!req.upload && $.isFunction(req.upload.addEventListener)) {
+						req.upload.addEventListener('progress', self.upload, false);
+					}
+				}
+				return req;
+			}
+		});
+	})();
 	
 	var assets = []; // FIFO
 	
-	var loadIsWorking = false;
+	var loaderIsWorking = false;
 	
 	var currentUrl = null;
 	
@@ -35,7 +58,7 @@
 			_loadOneAsset();
 		} else {
 			// work is done
-			loadIsWorking = false;
+			loaderIsWorking = false;
 		}
 	};
 	
@@ -43,6 +66,10 @@
 		 // grab first item
 		var asset = assets.shift();
 		var param = $.extend({}, asset, {
+			progress: function () {
+				// callback
+				App.callback.call(this, asset.progress, arguments);
+			},
 			success: function () {
 				// clear pointer
 				currentUrl = null;
@@ -165,8 +192,8 @@
 	
 	var launchLoad = function () {
 		// start now if nothing is loading
-		if (!loadIsWorking) {
-			loadIsWorking = true;
+		if (!loaderIsWorking) {
+			loaderIsWorking = true;
 			_loadOneAsset();
 			App.log({args: 'Load worker has been started', me: 'Loader'});
 		}
@@ -177,7 +204,7 @@
 		isLoading: isLoading,
 		inQueue: inQueue,
 		working: function () {
-			return loadIsWorking;
+			return loaderIsWorking;
 		}
 	});
 	

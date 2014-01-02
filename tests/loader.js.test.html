@@ -35,7 +35,7 @@
 	</script>
 </head>
 <body>
-	<h1 id="qunit-header">framework.js</h1>  
+	<h1 id="qunit-header">framework.js: Loader</h1>  
 	<h2 id="qunit-banner"></h2>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
@@ -46,49 +46,92 @@
 	<script src="../src/app-callback.js"></script> 
 	<script src="../src/loader.js"></script> 
 	
-	
-	
 	<script>
 	(function ($, w) {
 		
-		"use strict";
+		'use strict';
 		
-		var 
-		
-		runTests = function  () {
+		var runTests = function  () {
 			
 			module('Loader');
 			App.debug(true);
 			
 			test('load', function loaderLoadTest () {
-				var count = 0;
 				
-				stop();
-				
-				Loader
-					.load('framework.js.test.html')
-					.load({
-						url: '1.html',
-						success: function () {
-							count++; // should not get called
-						}
-					})
-					.load({
-						url: '2.html',
+				var fisrtTest = function () {
+					var successCount = 0;
+					var errorCount = 0;
+					var completeCount = 0;
+
+					stop();
+
+					Loader
+						.load('framework.js.test.html')
+						.load({
+							url: '1.html', // 404
+							success: function () {
+								successCount++; // should not get called
+							},
+							error: function () {
+								errorCount++;
+							},
+							complete: function () {
+								completeCount++;
+
+								// should be called at least 2 times
+								if (completeCount == 2) {
+
+									start();
+									equal(successCount, 0, 'successCount is 0');
+									equal(errorCount, 2, 'errorCount is 2');
+
+									secondTest();
+								}
+							}
+						});
+				};
+
+				var secondTest = function () {
+					var progressCount = 0;
+					var progressE = null;
+
+					var successCount = 0;
+					var errorCount = 0;
+					var completeCount = 0;
+
+					stop();
+
+					Loader.load({
+						url: '2.html', // valid
+						success: function (e) {
+							successCount++;
+						},
+						error: function () {
+							errorCount++; // should not get called
+						},
+						progress: function (e) {
+							progressCount++;
+							progressE = e;
+						},
 						complete: function () {
-							count++;
+							completeCount++;
 							
 							// don't let the retries do that
-							if (count > 2) {
+							if (completeCount === 1) {
 								start();
 								
-								equal(count, 3);
+								equal(successCount, 1, 'successCount is 1');
+								equal(errorCount, 0, 'errorCount is 1');
+
+								ok(progressE, 'progressE is true');
+								equal(progressCount, 1, 'progressCount is 1');
 							}
 						}
 					});
-				
+				};
+					
+				fisrtTest();
 			});
-			
 			
 		}; // end run tests
 		
