@@ -7,19 +7,17 @@
 	
 	'use strict';
 	
-	var
+	var assets = []; // FIFO
 	
-	assets = [], // FIFO
+	var loadIsWorking = false;
 	
-	loadIsWorking = false,
+	var currentUrl = null;
 	
-	currentUrl = null,
-	
-	isLoading = function (url) {
+	var isLoading = function (url) {
 		return !!currentUrl && currentUrl === url;
-	},
+	};
 	
-	inQueue = function (url) {
+	var inQueue = function (url) {
 		var foundIndex = -1;
 		$.each(assets, function _eachAsset(index, asset) {
 			if (asset.url === url) {
@@ -29,9 +27,9 @@
 			return true;
 		});
 		return foundIndex;
-	},
+	};
 	
-	_recursiveLoad = function () {
+	var _recursiveLoad = function () {
 		if (!!assets.length) {
 			// start next one
 			_loadOneAsset();
@@ -39,12 +37,12 @@
 			// work is done
 			loadIsWorking = false;
 		}
-	},
+	};
 	
-	_loadOneAsset = function () {
-		var 
-		asset = assets.shift(), // grab first item
-		param = $.extend({}, asset, {
+	var _loadOneAsset = function () {
+		 // grab first item
+		var asset = assets.shift();
+		var param = $.extend({}, asset, {
 			success: function () {
 				// clear pointer
 				currentUrl = null;
@@ -92,9 +90,9 @@
 		$.ajax(param);
 		// set the pointer
 		currentUrl = param.url;
-	},
+	};
 	
-	validateUrlArgs = function (url, priority) {
+	var validateUrlArgs = function (url, priority) {
 		// ensure we are dealing with an object
 		if (!$.isPlainObject(url)) {
 			url = {url: url};
@@ -117,9 +115,9 @@
 		if (!$.isNumeric(url.maxRetries)) {
 			url.maxRetries = 2;
 		}
-	},
+	};
 	
-	loadAsset = function (url, priority) {
+	var loadAsset = function (url, priority) {
 		if (!url) {
 			App.log({args: 'No url given', me: 'Loader'});
 			return this;
@@ -163,9 +161,9 @@
 		launchLoad();
 		
 		return this;
-	},
+	};
 	
-	launchLoad = function () {
+	var launchLoad = function () {
 		// start now if nothing is loading
 		if (!loadIsWorking) {
 			loadIsWorking = true;
