@@ -252,7 +252,7 @@
 					// Raise the flag to mark we are in the process
 					// of loading a new page
 					mediatorIsLoadingPage = true;
-					// Load from xhr or uise cache copy
+					// Load from xhr or use cache copy
 					if (!nextPage.loaded()) {
 						App.modules.notify('pages.loading');
 						Loader.load({
