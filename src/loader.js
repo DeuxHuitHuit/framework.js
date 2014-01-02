@@ -19,10 +19,14 @@
 				var req = originalXhr();
 				if (req) {
 					if ($.isFunction(req.addEventListener)) {
-						req.addEventListener('progress', self.progress, false);
+						req.addEventListener('progress', function (e) {
+							self.progress($.Event(e)); // make sure it's jQuery-ize
+						}, false);
 					}
 					if (!!req.upload && $.isFunction(req.upload.addEventListener)) {
-						req.upload.addEventListener('progress', self.upload, false);
+						req.upload.addEventListener('progress', function (e) {
+							self.upload($.Event(e)); // make sure it's jQuery-ize
+						}, false);
 					}
 				}
 				return req;
