@@ -1,6 +1,6 @@
-/*! framework.js - v1.3.0 - build 21 - 2013-12-27
+/*! framework.js - v1.3.0 - build 33 - 2014-01-02
 * https://github.com/DeuxHuitHuit/framework.js
-* Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
+* Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
  * @author Deux Huit Huit
  * 
@@ -272,31 +272,27 @@
 	var pageInstances = {};
 	
 	var _createPageModel = function (key, model, override) {
-		var
-		
-		ftrue = function () {
+		var ftrue = function () {
 			return true;
-		},
+		};
 		
-		_enterLeave = function (next) {
+		var _enterLeave = function (next) {
 			App.callback(next);
-		},
+		};
 		
-		factory = function (pageData) {
+		var factory = function (pageData) {
 		
-			var
+			var _pageData = pageData;
 			
-			_pageData = pageData,
-			
-			_key = function () {
+			var _key = function () {
 				return _pageData.key;
-			},
+			};
 			
-			_routes = function () {
+			var _routes = function () {
 				return _pageData.routes;
-			},
+			};
 			
-			_loaded = function () {
+			var _loaded = function () {
 				return !!$(this.key()).length;
 			};
 			
@@ -320,10 +316,9 @@
 	};
 	
 	var createPage = function (pageData, keyModel, override) {
-		var 
 		//Find the page model associated
-		pageModel = pageModels[keyModel],
-		pageInst;
+		var pageModel = pageModels[keyModel];
+		var pageInst;
 		
 		if (!pageModel) {
 			App.log({args: ['Model %s not found', keyModel], fx: 'error'});
@@ -343,7 +338,7 @@
 		return false;
 	};
 	
-	/* Create a function to create a new page */
+	// Create a function to create a new page
 	var exportPage = function (key, model, override) {
 		
 		var pageModel = _createPageModel(key, model);
@@ -377,7 +372,6 @@
 		
 		return result;
 	};
-	
 	
 	var _matchRoute = function (route, routes) {
 		var index = -1;
@@ -652,16 +646,15 @@
 	* Do nothing if the current page is already the requested route
 	*/
 	var gotoPage = function (obj) {
-		var 
-		nextPage,
-		route = '',
-		enterLeave = function () {
+		var nextPage;
+		var route = '';
+
+		var enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable 
 			//The currentPage pointer will be cleared after the next call
-			var 
-			leavingPage = currentPage,
+			var leavingPage = currentPage;
 			
-			_leaveCurrent = function () {
+			var _leaveCurrent = function () {
 				currentPage = null;  // clean currentPage pointer,this will block all interactions
 				
 				//set leaving page to be previous one
@@ -674,16 +667,18 @@
 				
 				//notify all module
 				App.modules.notify('page.leave', {page: previousPage});
-			},
-			_enterNext = function () {
+			};
+
+			var _enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
 				// notify all module
 				App.modules.notify('page.enter', {page: nextPage, route: route});
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			},
-			pageTransitionData = {
+			};
+
+			var pageTransitionData = {
 				currentPage: currentPage,
 				nextPage: nextPage,
 				leaveCurrent: _leaveCurrent,
@@ -709,8 +704,9 @@
 				
 				nextPage.enter(_enterNext);
 			}
-		},
-		loadSucess = function (data, textStatus, jqXHR) {
+		};
+
+		var loadSucess = function (data, textStatus, jqXHR) {
 			// get the node
 			var node = $(data).find(nextPage.key());
 			
@@ -741,7 +737,20 @@
 				
 			}
 		}; 
-		//end var
+		
+		var progress = function (e) {
+			var total = e.originalEvent.total;
+			var loaded = e.originalEvent.loaded;
+			var percent = total > 0 ? loaded / total : 0;
+
+			App.mediator.notify('pages.loadprogress', {
+				event: e,
+				url: obj,
+				total: total,
+				loaded: loaded,
+				percent: percent
+			});
+		};
 		
 		if ($.type(obj) === 'string') {
 			if (_canLeaveCurrentPage() &&  _validateMediatorState()) {
@@ -757,8 +766,9 @@
 		} else {
 			if (_canEnterNextPage(nextPage)) {
 				if (nextPage === currentPage) {
-					App.log('next page is the current one');
 					App.modules.notify('pages.navigateToCurrent', {page: nextPage, route: route});
+					App.log('next page is the current one');
+
 				} else {
 					// Raise the flag to mark we are in the process
 					// of loading a new page
@@ -771,14 +781,22 @@
 							priority: 0, // now
 							vip: true, // don't queue on fail
 							success: loadSucess,
-							error: function () {
-								App.modules.notify('pages.loaderror');
+							progress: progress,
+							error: function (e) {
+								App.modules.notify('pages.loaderror', {event: e});
+							},
+							giveup: function (e) {
+								// Free the mediator
+								mediatorIsLoadingPage = true;
+								App.modules.notify('pages.loadfatalerror', {event: e});
 							}
 						});
 					} else {
 						enterLeave();
 					}
 				}
+			} else {
+				App.log({args: ['Route "%s" is invalid.', obj], fx: 'error'});
 			}
 		}		
 		return this;
@@ -1073,12 +1091,12 @@
 	};
 	
 	// prevent default macro
-	global.pd = function (e, donotstop) {
+	global.pd = function (e, stopPropagation) {
 		if (!!e) {
 			if ($.isFunction(e.preventDefault)) {
 				e.preventDefault();
 			}
-			if (donotstop !== false && $.isFunction(e.stopPropagation)) {
+			if (stopPropagation !== false && $.isFunction(e.stopPropagation)) {
 				e.stopPropagation();
 			}
 		}
@@ -1226,25 +1244,50 @@
 /**
  * @author Deux Huit Huit
  * 
- * Assets loader
+ * Assets loader: Basically a wrap around $.ajax in order
+ *   to priorize and serialize resource loading.
  */
 (function ($, global, undefined) {
 	
 	'use strict';
+
+	// Forked: https://gist.github.com/nitriques/6583457
+	(function addXhrProgressEvent() {
+		var originalXhr = $.ajaxSettings.xhr;
+		$.ajaxSetup({
+			progress: $.noop,
+			upload: $.noop,
+			xhr: function () {
+				var self = this;
+				var req = originalXhr();
+				if (req) {
+					if ($.isFunction(req.addEventListener)) {
+						req.addEventListener('progress', function (e) {
+							self.progress($.Event(e)); // make sure it's jQuery-ize
+						}, false);
+					}
+					if (!!req.upload && $.isFunction(req.upload.addEventListener)) {
+						req.upload.addEventListener('progress', function (e) {
+							self.upload($.Event(e)); // make sure it's jQuery-ize
+						}, false);
+					}
+				}
+				return req;
+			}
+		});
+	})();
 	
-	var
+	var assets = []; // FIFO
 	
-	assets = [], // FIFO
+	var loaderIsWorking = false;
 	
-	loadIsWorking = false,
+	var currentUrl = null;
 	
-	currentUrl = null,
-	
-	isLoading = function (url) {
+	var isLoading = function (url) {
 		return !!currentUrl && currentUrl === url;
-	},
+	};
 	
-	inQueue = function (url) {
+	var inQueue = function (url) {
 		var foundIndex = -1;
 		$.each(assets, function _eachAsset(index, asset) {
 			if (asset.url === url) {
@@ -1254,22 +1297,26 @@
 			return true;
 		});
 		return foundIndex;
-	},
+	};
 	
-	_recursiveLoad = function () {
+	var _recursiveLoad = function () {
 		if (!!assets.length) {
 			// start next one
 			_loadOneAsset();
 		} else {
 			// work is done
-			loadIsWorking = false;
+			loaderIsWorking = false;
 		}
-	},
+	};
 	
-	_loadOneAsset = function () {
-		var 
-		asset = assets.shift(), // grab first item
-		param = $.extend({}, asset, {
+	var _loadOneAsset = function () {
+		 // grab first item
+		var asset = assets.shift();
+		var param = $.extend({}, asset, {
+			progress: function () {
+				// callback
+				App.callback.call(this, asset.progress, arguments);
+			},
 			success: function () {
 				// clear pointer
 				currentUrl = null;
@@ -1303,6 +1350,9 @@
 				if (asset.retries <= (asset.maxRetries * maxRetriesFactor)) {
 					// push it back into the queue and retry
 					loadAsset(asset);
+				} else {
+					// we give up!
+					App.callback.call(this, asset.giveup, arguments);
 				}
 				
 				// next
@@ -1317,9 +1367,9 @@
 		$.ajax(param);
 		// set the pointer
 		currentUrl = param.url;
-	},
+	};
 	
-	validateUrlArgs = function (url, priority) {
+	var validateUrlArgs = function (url, priority) {
 		// ensure we are dealing with an object
 		if (!$.isPlainObject(url)) {
 			url = {url: url};
@@ -1342,9 +1392,9 @@
 		if (!$.isNumeric(url.maxRetries)) {
 			url.maxRetries = 2;
 		}
-	},
+	};
 	
-	loadAsset = function (url, priority) {
+	var loadAsset = function (url, priority) {
 		if (!url) {
 			App.log({args: 'No url given', me: 'Loader'});
 			return this;
@@ -1388,12 +1438,12 @@
 		launchLoad();
 		
 		return this;
-	},
+	};
 	
-	launchLoad = function () {
+	var launchLoad = function () {
 		// start now if nothing is loading
-		if (!loadIsWorking) {
-			loadIsWorking = true;
+		if (!loaderIsWorking) {
+			loaderIsWorking = true;
 			_loadOneAsset();
 			App.log({args: 'Load worker has been started', me: 'Loader'});
 		}
@@ -1404,7 +1454,7 @@
 		isLoading: isLoading,
 		inQueue: inQueue,
 		working: function () {
-			return loadIsWorking;
+			return loaderIsWorking;
 		}
 	});
 	
