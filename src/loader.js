@@ -107,6 +107,9 @@
 				if (asset.retries <= (asset.maxRetries * maxRetriesFactor)) {
 					// push it back into the queue and retry
 					loadAsset(asset);
+				} else {
+					// we give up!
+					App.callback.call(this, asset.giveup, arguments);
 				}
 				
 				// next

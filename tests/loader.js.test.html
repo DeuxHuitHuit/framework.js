@@ -62,6 +62,7 @@
 					var successCount = 0;
 					var errorCount = 0;
 					var completeCount = 0;
+					var giveup = 0;
 
 					stop();
 
@@ -69,21 +70,26 @@
 						.load('framework.js.test.html')
 						.load({
 							url: '1.html', // 404
+							vip: false,
 							success: function () {
 								successCount++; // should not get called
 							},
 							error: function () {
 								errorCount++;
 							},
+							giveup: function () {
+								giveup++;
+							},
 							complete: function () {
 								completeCount++;
 
 								// should be called at least 2 times
-								if (completeCount == 2) {
+								if (completeCount > 2) {
 
 									start();
+									equal(giveup, 1, 'giveup count is 1');
 									equal(successCount, 0, 'successCount is 0');
-									equal(errorCount, 2, 'errorCount is 2');
+									equal(errorCount, 3, 'errorCount is 3');
 
 									secondTest();
 								}
