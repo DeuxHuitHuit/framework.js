@@ -216,7 +216,20 @@
 				
 			}
 		}; 
-		//end var
+		
+		var progress = function (e) {
+			var total = e.originalEvent.total;
+			var loaded = e.originalEvent.loaded;
+			var percent = total > 0 ? loaded / total : 0;
+
+			App.mediator.notify('pages.loadprogress', {
+				event: e,
+				url: obj,
+				total: total,
+				loaded: loaded,
+				percent: percent
+			});
+		};
 		
 		if ($.type(obj) === 'string') {
 			if (_canLeaveCurrentPage() &&  _validateMediatorState()) {
@@ -232,8 +245,9 @@
 		} else {
 			if (_canEnterNextPage(nextPage)) {
 				if (nextPage === currentPage) {
-					App.log('next page is the current one');
 					App.modules.notify('pages.navigateToCurrent', {page: nextPage, route: route});
+					App.log('next page is the current one');
+
 				} else {
 					// Raise the flag to mark we are in the process
 					// of loading a new page
@@ -246,14 +260,22 @@
 							priority: 0, // now
 							vip: true, // don't queue on fail
 							success: loadSucess,
-							error: function () {
-								App.modules.notify('pages.loaderror');
+							progress: progress,
+							error: function (e) {
+								App.modules.notify('pages.loaderror', {event: e});
+							},
+							giveup: function (e) {
+								// Free the mediator
+								mediatorIsLoadingPage = true;
+								App.modules.notify('pages.loadfatalerror', {event: e});
 							}
 						});
 					} else {
 						enterLeave();
 					}
 				}
+			} else {
+				App.log({args: ['Route "%s" is invalid.', obj], fx: 'error'});
 			}
 		}		
 		return this;
