@@ -50,26 +50,16 @@ module.exports = function fxGruntConfig(grunt) {
 		}
 	};
 	
-	var getBuildNumber = function () {
-		var b = {};
-		
-		try {
-			b = grunt.file.readJSON(BUILD_FILE);
-		} catch (e) {}
-		
-		b.lastBuild = b.lastBuild > 0 ? b.lastBuild + 1 : 1;
-		
-		grunt.file.write(BUILD_FILE, JSON.stringify(b));
-		
-		return b.lastBuild;
-	};
-	
 	var config = {
 		pkg: grunt.file.readJSON('package.json'),
-		build: 'auto',
+		buildnum: {
+			options: {
+				file: BUILD_FILE
+			}
+		},
 		meta: {
 			banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> ' +
-			'- build <%= build %> - ' +
+			'- build <%= buildnum.num %> - ' +
 			'<%= grunt.template.today("yyyy-mm-dd") %>\n' +
 			'<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
 			'* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
@@ -238,14 +228,36 @@ module.exports = function fxGruntConfig(grunt) {
 				newSources.push(elem.replace(diff, ''));
 			});
 			sourceMap.sources = newSources;
-			grunt.log.write(sourceMap.sources);
 			grunt.file.write(sourceMapPath, JSON.stringify(sourceMap));
+		});
+
+		// generate build number
+		grunt.registerTask('buildnum', 
+			'Generates and updates the current build number', function () {
+			var options = this.options();
+			var getBuildNumber = function () {
+				var b = {};
+				
+				try {
+					b = grunt.file.readJSON(options.file);
+				} catch (e) {}
+				
+				b.lastBuild = b.lastBuild > 0 ? b.lastBuild + 1 : 1;
+				
+				grunt.file.write(options.file, JSON.stringify(b));
+				
+				return b.lastBuild;
+			};
+
+			var buildnum = getBuildNumber();
+			grunt.log.writeln('New build num: ', buildnum);
+			grunt.config.set('buildnum.num', buildnum);
 		});
 		
 		// Default task.
 		grunt.registerTask('default',   ['dev', 'build']);
 		grunt.registerTask('dev',       ['jshint', 'connect', 'qunit', 'complexity']);
-		grunt.registerTask('build',     ['concat', 'uglify', 'fix-source-map']);
+		grunt.registerTask('build',     ['buildnum', 'concat', 'uglify', 'fix-source-map']);
 		grunt.registerTask('test',      ['jshint', 'connect', 'qunit']);
 		
 		// karma requires some env variables
@@ -263,8 +275,6 @@ module.exports = function fxGruntConfig(grunt) {
 		
 		createTestUris();
 		createTestFiles();
-		
-		config.build = getBuildNumber();
 		
 		init(grunt);
 		

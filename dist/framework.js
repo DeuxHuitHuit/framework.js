@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.0 - build 33 - 2014-01-02
+/*! framework.js - v1.3.0 - build 50 - 2014-01-03
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -773,7 +773,7 @@
 					// Raise the flag to mark we are in the process
 					// of loading a new page
 					mediatorIsLoadingPage = true;
-					// Load from xhr or uise cache copy
+					// Load from xhr or use cache copy
 					if (!nextPage.loaded()) {
 						App.modules.notify('pages.loading');
 						Loader.load({
