@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.0 - build 50 - 2014-01-03
+/*! framework.js - v1.3.0 - build 51 - 2014-01-07
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -648,7 +648,7 @@
 	var gotoPage = function (obj) {
 		var nextPage;
 		var route = '';
-
+		
 		var enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable 
 			//The currentPage pointer will be cleared after the next call
@@ -668,7 +668,7 @@
 				//notify all module
 				App.modules.notify('page.leave', {page: previousPage});
 			};
-
+			
 			var _enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
@@ -677,7 +677,7 @@
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
 			};
-
+			
 			var pageTransitionData = {
 				currentPage: currentPage,
 				nextPage: nextPage,
@@ -705,7 +705,7 @@
 				nextPage.enter(_enterNext);
 			}
 		};
-
+		
 		var loadSucess = function (data, textStatus, jqXHR) {
 			// get the node
 			var node = $(data).find(nextPage.key());
@@ -768,7 +768,7 @@
 				if (nextPage === currentPage) {
 					App.modules.notify('pages.navigateToCurrent', {page: nextPage, route: route});
 					App.log('next page is the current one');
-
+					
 				} else {
 					// Raise the flag to mark we are in the process
 					// of loading a new page
@@ -787,7 +787,11 @@
 							},
 							giveup: function (e) {
 								// Free the mediator
-								mediatorIsLoadingPage = true;
+								mediatorIsLoadingPage = false;
+								// Reset the current page
+								
+								App.log({args: 'Giving up!', me: 'Loader'});
+								
 								App.modules.notify('pages.loadfatalerror', {event: e});
 							}
 						});
