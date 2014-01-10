@@ -347,6 +347,8 @@
 				}
 			}
 		});
+		
+		notifyAll('app.init');
 	};
 	
 	/** App **/
