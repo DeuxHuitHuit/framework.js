@@ -250,7 +250,7 @@
 		if (!_validateNextPage(nextPage)) {
 			App.modules.notify('pages.routeNotFound', {
 				page: currentPage, 
-				route: obj
+				url: obj
 			});
 			App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
 		} else {
