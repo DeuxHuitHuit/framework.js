@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.0 - build 52 - 2014-01-10
+/*! framework.js - v1.3.0 - build 53 - 2014-01-10
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -868,6 +868,8 @@
 				}
 			}
 		});
+		
+		notifyAll('app.init');
 	};
 	
 	/** App **/
