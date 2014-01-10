@@ -241,6 +241,7 @@
 		}
 			
 		if (!_validateNextPage(nextPage)) {
+			App.modules.notify('pages.routeNotFound', {route: route});
 			App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
 		} else {
 			if (_canEnterNextPage(nextPage)) {
