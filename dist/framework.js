@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.0 - build 51 - 2014-01-07
+/*! framework.js - v1.3.0 - build 52 - 2014-01-10
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -762,6 +762,7 @@
 		}
 			
 		if (!_validateNextPage(nextPage)) {
+			App.modules.notify('pages.routeNotFound', {route: route});
 			App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
 		} else {
 			if (_canEnterNextPage(nextPage)) {
