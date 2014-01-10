@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.0 - build 54 - 2014-01-10
+/*! framework.js - v1.3.0 - build 55 - 2014-01-10
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -730,7 +730,14 @@
 				nextPage.init();
 				
 				node.hide();
-				App.modules.notify('pages.loaded', {elem: elem, data: data, url: obj});
+				
+				App.modules.notify('pages.loaded', {
+					elem: elem,
+					data: data,
+					url: obj,
+					page: currentPage,
+					node: node
+				});
 				
 				// actual goto
 				enterLeave();
@@ -777,11 +784,13 @@
 					App.log('next page is the current one');
 					
 				} else {
-					// Raise the flag to mark we are in the process
-					// of loading a new page
-					mediatorIsLoadingPage = true;
+					
 					// Load from xhr or use cache copy
 					if (!nextPage.loaded()) {
+						// Raise the flag to mark we are in the process
+						// of loading a new page
+						mediatorIsLoadingPage = true;
+						
 						App.modules.notify('pages.loading', {
 							page: nextPage
 						});
@@ -794,7 +803,7 @@
 							error: function (e) {
 								App.modules.notify('pages.loaderror', {
 									event: e,
-									route: obj
+									url: obj
 								});
 							},
 							giveup: function (e) {
@@ -806,7 +815,7 @@
 								
 								App.modules.notify('pages.loadfatalerror', {
 									event: e,
-									route: obj
+									url: obj
 								});
 							}
 						});
