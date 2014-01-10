@@ -209,7 +209,14 @@
 				nextPage.init();
 				
 				node.hide();
-				App.modules.notify('pages.loaded', {elem: elem, data: data, url: obj});
+				
+				App.modules.notify('pages.loaded', {
+					elem: elem,
+					data: data,
+					url: obj,
+					page: currentPage,
+					node: node
+				});
 				
 				// actual goto
 				enterLeave();
@@ -256,11 +263,13 @@
 					App.log('next page is the current one');
 					
 				} else {
-					// Raise the flag to mark we are in the process
-					// of loading a new page
-					mediatorIsLoadingPage = true;
+					
 					// Load from xhr or use cache copy
 					if (!nextPage.loaded()) {
+						// Raise the flag to mark we are in the process
+						// of loading a new page
+						mediatorIsLoadingPage = true;
+						
 						App.modules.notify('pages.loading', {
 							page: nextPage
 						});
@@ -273,7 +282,7 @@
 							error: function (e) {
 								App.modules.notify('pages.loaderror', {
 									event: e,
-									route: obj
+									url: obj
 								});
 							},
 							giveup: function (e) {
@@ -285,7 +294,7 @@
 								
 								App.modules.notify('pages.loadfatalerror', {
 									event: e,
-									route: obj
+									url: obj
 								});
 							}
 						});
