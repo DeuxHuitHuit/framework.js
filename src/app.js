@@ -241,12 +241,18 @@
 		}
 			
 		if (!_validateNextPage(nextPage)) {
-			App.modules.notify('pages.routeNotFound', {route: route});
+			App.modules.notify('pages.routeNotFound', {
+				page: currentPage, 
+				route: obj
+			});
 			App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
 		} else {
 			if (_canEnterNextPage(nextPage)) {
 				if (nextPage === currentPage) {
-					App.modules.notify('pages.navigateToCurrent', {page: nextPage, route: route});
+					App.modules.notify('pages.navigateToCurrent', {
+						page: nextPage,
+						route: route
+					});
 					App.log('next page is the current one');
 					
 				} else {
@@ -255,7 +261,9 @@
 					mediatorIsLoadingPage = true;
 					// Load from xhr or use cache copy
 					if (!nextPage.loaded()) {
-						App.modules.notify('pages.loading');
+						App.modules.notify('pages.loading', {
+							page: nextPage
+						});
 						Loader.load({
 							url: obj, // the *actual* route
 							priority: 0, // now
@@ -263,7 +271,10 @@
 							success: loadSucess,
 							progress: progress,
 							error: function (e) {
-								App.modules.notify('pages.loaderror', {event: e});
+								App.modules.notify('pages.loaderror', {
+									event: e,
+									route: obj
+								});
 							},
 							giveup: function (e) {
 								// Free the mediator
@@ -272,7 +283,10 @@
 								
 								App.log({args: 'Giving up!', me: 'Loader'});
 								
-								App.modules.notify('pages.loadfatalerror', {event: e});
+								App.modules.notify('pages.loadfatalerror', {
+									event: e,
+									route: obj
+								});
 							}
 						});
 					} else {
@@ -348,7 +362,9 @@
 			}
 		});
 		
-		notifyAll('app.init');
+		notifyAll('app.init', {
+			page: currentPage
+		});
 	};
 	
 	/** App **/
