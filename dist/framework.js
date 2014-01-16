@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.0 - build 56 - 2014-01-10
+/*! framework.js - v1.3.0 - build 57 - 2014-01-16
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -280,9 +280,45 @@
 			App.callback(next);
 		};
 		
+		var base = {
+			actions: $.noop,
+			init: $.noop,
+			enter: _enterLeave,
+			leave: _enterLeave,
+			canEnter: ftrue,
+			canLeave: ftrue
+		};
+		
+		// This is the method that creates page instances
 		var factory = function (pageData) {
 		
 			var _pageData = pageData;
+			var modelRef;
+			
+			if ($.isPlainObject(model)) {
+				modelRef = model;
+			} else if ($.isFunction(model)) {
+				modelRef = model.call(this, key, _pageData, override);
+				if (!$.isPlainObject(modelRef)) {
+					App.log({
+						args: [
+							'The exported page model function must return an object, ' + 
+							'`%s` given (%s)', $.type(modelRef), modelRef
+						],
+						fx: 'error'
+					});
+					return null;
+				}
+			} else {
+				App.log({
+					args: [
+						'The exported page model must be an object or a function, ' + 
+						'`%s` given (%s)', $.type(model), model
+					],
+					fx: 'error'
+				});
+				return null;
+			}
 			
 			var _key = function () {
 				return _pageData.key;
@@ -293,23 +329,24 @@
 			};
 			
 			var _loaded = function () {
-				return !!$(this.key()).length;
+				return !!$(_key()).length;
 			};
 			
-			return $.extend({
-				actions: $.noop,
+			// recuperate extra params...
+			var _data = function () {
+				return _pageData;
+			};
+			
+			 // insure this can't be overriden
+			var overwrites = {
 				key: _key, // css selector
 				loaded: _loaded,
-				init: $.noop,
-				enter: _enterLeave,
-				leave: _enterLeave,
-				canEnter: ftrue,
-				canLeave: ftrue,
 				routes: _routes,
-				data: function () {
-					return _pageData;
-				}
-			}, model);
+				data: _data
+			};
+			
+			// New deep copy object
+			return $.extend(true, {}, base, modelRef, overwrites);
 		};
 		
 		return factory;
@@ -321,43 +358,53 @@
 		var pageInst;
 		
 		if (!pageModel) {
-			App.log({args: ['Model %s not found', keyModel], fx: 'error'});
+			App.log({args: ['Model `%s` not found', keyModel], fx: 'error'});
 		} else {
 			//Check to not overide an existing page
 			if (!!pageInstances[pageData.key] && !override) {
 				App.log({
-					args: ['Overwriting page key %s is not allowed', pageData.key],
+					args: ['Overwriting page key `%s` is not allowed', pageData.key],
 					fx: 'error'
 				});
 			} else {
 				pageInst = pageModel(pageData);
-				pageInstances[pageData.key] = pageInst;
+				if (!!pageInst) {
+					pageInstances[pageData.key] = pageInst;
+				}
 				return pageInst;
 			}
 		}
 		return false;
 	};
 	
-	// Create a function to create a new page
-	var exportPage = function (key, model, override) {
-		
-		var pageModel = _createPageModel(key, model);
-		
-		if (!$.type(key)) {
-			App.log({args: ['`key` must be a string', key], fx: 'error'});
-		//find an existing page and cannot override it
+	var registerPageModel = function (key, pageModel, override) {
+		var keyType = $.type(key);
+		if (keyType !== 'string') {
+			App.log({
+				args: ['`key` must be a string, `%s` given (%s).', keyType, key],
+				fx: 'error'
+			});
+		// Found an existing page and cannot override it
 		} else if (!!pageModels[key] && !override) {
 			//error, should not override an existing key
 			App.log({
-				args: ['Overwriting page model key %s is not allowed', key],
+				args: ['Overwriting page model key `%s` is not allowed', key],
 				fx: 'error'
 			});
 		} else {
-			//Store page to the list
+			// Store page to the list
 			pageModels[key] = pageModel;
 			return pageModel;
 		}
-		return false;
+		return false;	
+	};
+	
+	// Create a function to create a new page
+	var exportPage = function (key, model, override) {
+		// Pass all args to the factory
+		var pageModel = _createPageModel(key, model, override);
+		// Only work with pageModel afterwards
+		return registerPageModel(key, pageModel, override);
 	};
 	
 	 // Validation
@@ -717,7 +764,12 @@
 				mediatorIsLoadingPage = false;
 				
 				// notify
-				App.modules.notify('pages.notfound', {data: data, url: obj});
+				App.modules.notify('pages.notfound', {
+					data: data,
+					url: obj,
+					xhr: jqXHR,
+					status: textStatus
+				});
 				
 			} else {
 				
@@ -736,7 +788,9 @@
 					data: data,
 					url: obj,
 					page: currentPage,
-					node: node
+					node: node,
+					xhr: jqXHR,
+					status: textStatus
 				});
 				
 				// actual goto
