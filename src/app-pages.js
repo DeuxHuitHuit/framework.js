@@ -37,7 +37,7 @@
 			if ($.isPlainObject(model)) {
 				modelRef = model;
 			} else if ($.isFunction(model)) {
-				modelRef = model.call(this, key, override);
+				modelRef = model.call(this, key, _pageData, override);
 				if (!$.isPlainObject(modelRef)) {
 					App.log({
 						args: [
