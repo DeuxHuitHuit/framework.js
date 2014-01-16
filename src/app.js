@@ -196,7 +196,12 @@
 				mediatorIsLoadingPage = false;
 				
 				// notify
-				App.modules.notify('pages.notfound', {data: data, url: obj});
+				App.modules.notify('pages.notfound', {
+					data: data,
+					url: obj,
+					xhr: jqXHR,
+					status: textStatus
+				});
 				
 			} else {
 				
@@ -215,7 +220,9 @@
 					data: data,
 					url: obj,
 					page: currentPage,
-					node: node
+					node: node,
+					xhr: jqXHR,
+					status: textStatus
 				});
 				
 				// actual goto
