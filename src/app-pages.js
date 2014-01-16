@@ -19,9 +19,39 @@
 			App.callback(next);
 		};
 		
+		var base = {
+			actions: $.noop,
+			init: $.noop,
+			enter: _enterLeave,
+			leave: _enterLeave,
+			canEnter: ftrue,
+			canLeave: ftrue
+		};
+		
+		// This is the method that creates page instances
 		var factory = function (pageData) {
 		
 			var _pageData = pageData;
+			var modelRef;
+			
+			if ($.isPlainObject(model)) {
+				modelRef = model;
+			} else if ($.isFunction(model)) {
+				modelRef = model.call(this, key, override);
+				if (!$.isPlainObject(modelRef) {
+					App.log({
+						args: 'The exported page model function must return an object',
+						fx: 'error'
+					});
+					return null;
+				}
+			} else {
+				App.log({
+					args: ['The exported page model must be an object or a function', pageData.key],
+					fx: 'error'
+				});
+				return null;
+			}
 			
 			var _key = function () {
 				return _pageData.key;
@@ -32,23 +62,24 @@
 			};
 			
 			var _loaded = function () {
-				return !!$(this.key()).length;
+				return !!$(_key()).length;
 			};
 			
-			return $.extend({
-				actions: $.noop,
+			// recuperate extra params...
+			var _data = function () {
+				return _pageData;
+			};
+			
+			 // insure this can't be overriden
+			var overwrites = {
 				key: _key, // css selector
 				loaded: _loaded,
-				init: $.noop,
-				enter: _enterLeave,
-				leave: _enterLeave,
-				canEnter: ftrue,
-				canLeave: ftrue,
 				routes: _routes,
-				data: function () {
-					return _pageData;
-				}
-			}, model);
+				data: _data
+			};
+			
+			// New deep copy object
+			return $.extend(true, {}, base, modelRef, overwrites);
 		};
 		
 		return factory;
@@ -70,21 +101,20 @@
 				});
 			} else {
 				pageInst = pageModel(pageData);
-				pageInstances[pageData.key] = pageInst;
+				if (!!pageInst) {
+					pageInstances[pageData.key] = pageInst;
+				}
 				return pageInst;
 			}
 		}
 		return false;
 	};
 	
-	// Create a function to create a new page
-	var exportPage = function (key, model, override) {
-		
-		var pageModel = _createPageModel(key, model);
-		
-		if (!$.type(key)) {
+	var registerPageModel = function (key, pageModel) {
+		if ($.type(key) !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
-		//find an existing page and cannot override it
+			
+		// Found an existing page and cannot override it
 		} else if (!!pageModels[key] && !override) {
 			//error, should not override an existing key
 			App.log({
@@ -92,11 +122,19 @@
 				fx: 'error'
 			});
 		} else {
-			//Store page to the list
+			// Store page to the list
 			pageModels[key] = pageModel;
 			return pageModel;
 		}
-		return false;
+		return false;	
+	};
+	
+	// Create a function to create a new page
+	var exportPage = function (key, model, override) {
+		// Pass all args to the factory
+		var pageModel = _createPageModel(key, model, override);
+		// Only work with pageModel afterwards
+		return registerPageModel(key, pageModel);
 	};
 	
 	 // Validation
