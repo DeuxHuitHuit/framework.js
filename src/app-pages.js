@@ -38,7 +38,7 @@
 				modelRef = model;
 			} else if ($.isFunction(model)) {
 				modelRef = model.call(this, key, override);
-				if (!$.isPlainObject(modelRef) {
+				if (!$.isPlainObject(modelRef)) {
 					App.log({
 						args: 'The exported page model function must return an object',
 						fx: 'error'
@@ -47,7 +47,7 @@
 				}
 			} else {
 				App.log({
-					args: ['The exported page model must be an object or a function', pageData.key],
+					args: ['The exported page model must be an object or a function'],
 					fx: 'error'
 				});
 				return null;
@@ -110,7 +110,7 @@
 		return false;
 	};
 	
-	var registerPageModel = function (key, pageModel) {
+	var registerPageModel = function (key, pageModel, override) {
 		if ($.type(key) !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
 			
@@ -134,7 +134,7 @@
 		// Pass all args to the factory
 		var pageModel = _createPageModel(key, model, override);
 		// Only work with pageModel afterwards
-		return registerPageModel(key, pageModel);
+		return registerPageModel(key, pageModel, override);
 	};
 	
 	 // Validation
