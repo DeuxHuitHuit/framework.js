@@ -40,14 +40,20 @@
 				modelRef = model.call(this, key, override);
 				if (!$.isPlainObject(modelRef)) {
 					App.log({
-						args: 'The exported page model function must return an object',
+						args: [
+							'The exported page model function must return an object, ' + 
+							'`%s` given (%s)', $.type(modelRef), modelRef
+						],
 						fx: 'error'
 					});
 					return null;
 				}
 			} else {
 				App.log({
-					args: ['The exported page model must be an object or a function'],
+					args: [
+						'The exported page model must be an object or a function, ' + 
+						'`%s` given (%s)', $.type(model), model
+					],
 					fx: 'error'
 				});
 				return null;
@@ -91,12 +97,12 @@
 		var pageInst;
 		
 		if (!pageModel) {
-			App.log({args: ['Model %s not found', keyModel], fx: 'error'});
+			App.log({args: ['Model `%s` not found', keyModel], fx: 'error'});
 		} else {
 			//Check to not overide an existing page
 			if (!!pageInstances[pageData.key] && !override) {
 				App.log({
-					args: ['Overwriting page key %s is not allowed', pageData.key],
+					args: ['Overwriting page key `%s` is not allowed', pageData.key],
 					fx: 'error'
 				});
 			} else {
@@ -111,14 +117,17 @@
 	};
 	
 	var registerPageModel = function (key, pageModel, override) {
-		if ($.type(key) !== 'string') {
-			App.log({args: ['`key` must be a string', key], fx: 'error'});
-			
+		var keyType = $.type(key);
+		if (keyType !== 'string') {
+			App.log({
+				args: ['`key` must be a string, `%s` given (%s).', keyType, key],
+				fx: 'error'
+			});
 		// Found an existing page and cannot override it
 		} else if (!!pageModels[key] && !override) {
 			//error, should not override an existing key
 			App.log({
-				args: ['Overwriting page model key %s is not allowed', key],
+				args: ['Overwriting page model key `%s` is not allowed', key],
 				fx: 'error'
 			});
 		} else {

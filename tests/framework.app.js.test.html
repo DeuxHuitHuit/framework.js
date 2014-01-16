@@ -17,7 +17,7 @@
 				e,
 				a = /\+/g,  // Regex for replacing addition symbol with a space
 				r = /([^&=]+)=?([^&]*)/g,
-				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+				d = function (s) { return decodeURIComponent(s.replace(a, ' ')); },
 				q = w.location.search.substring(1),
 				v = '2.0.3';
 
@@ -29,7 +29,7 @@
 				v = u.jquery;
 			}	
 
-			doc.write('<script src="http://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + "<" + '/' + 'script>');
+			doc.write('<script src="http://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + '<' + '/' + 'script>');
 			co.log('\nLoading jQuery v' + v + '\n');
 		})(window, document, console);
 	</script>
@@ -51,7 +51,7 @@
 	<script>
 	(function ($, w) {
 		
-		"use strict";
+		'use strict';
 		
 		var 
 		
@@ -67,45 +67,64 @@
 			module('App.Pages');
 			
 			test('exportsPage and createPage', function exportPagesTest() {
-				var modelKey = "m1",
+				var modelKey = 'm1',
 				f = {
 						init: initTest
 					};
 				
-				ok(App.pages.exports(modelKey,f), "page exports work");
+				ok(App.pages.exports(modelKey,f), 'page exports work');
 				
-				ok(!App.pages.exports(modelKey,f), "page exports dont allow override by default");
+				ok(!App.pages.exports(modelKey,f), 'page exports dont allow override by default');
 				
-				ok(!App.pages.exports(modelKey,f,false), "page exports dont allow override with false override");
+				ok(!App.pages.exports(1,f), 'key cant be an int');
+				ok(!App.pages.exports({},f), 'key cant be an object');
+				ok(!App.pages.exports($.noop,f), 'key cant be a function');
+				ok(!App.pages.exports(false,f), 'key cant be a boolean');
 				
-				ok(App.pages.exports(modelKey,f,true), "page exports allow override with true override");
+				ok(!App.pages.exports(modelKey,f,false), 'page exports dont allow override with false override');
 				
-				var routes = [ "/en/test/","/fr/test/"];
+				ok(App.pages.exports(modelKey,f,true), 'page exports allow override with true override');
+				
+				ok(App.pages.exports(modelKey+'func', function () {
+					return $.extend({}, f);
+				}), 'page exports allow functions');
+				
+				App.pages.exports(modelKey+'int', 1);
+				App.pages.exports(modelKey+'string', '1');
+				
+				var routes = [ '/en/test/','/fr/test/'];
 				
 				ok(App.pages.create({
-					key: "test", 
+					key: 'test', 
 					routes: routes
-				},modelKey), "Page create worked");
+				},modelKey), 'Page create worked');
 				
 				var page = App.pages.page('test');
 				ok(page.key() == 'test');
 				ok(page.routes() == routes);
 				
 				ok(!App.pages.create({
-					key: "test", 
-					routes: ["/en/test/","/fr/test/"]
-				},modelKey), "page create dont allow override existing page");
+					key: 'test', 
+					routes: ['/en/test/','/fr/test/']
+				},modelKey), 'page create dont allow override existing page');
 				
 				ok(App.pages.create({
-					key: "test", 
-					routes: ["/en/test/","/fr/test/"]
-				},modelKey,true), "page create allow override existing page with true override");
+					key: 'test', 
+					routes: ['/en/test/','/fr/test/']
+				},modelKey,true), 'page create allow override existing page with true override');
 				
 				ok(!App.pages.create({
-					key: "test2",
-					routes: ["/en/test/", "/fr/test/"]
-				},"m3"), "page create dont find the model");
+					key: 'test2',
+					routes: ['/en/test/', '/fr/test/']
+				},'m3'), 'page create dont find the model');
 				
+				ok(!App.pages.create({}, modelKey+'int'), 'cant create ints models');
+				ok(!App.pages.create({}, modelKey+'string'), 'cant create string models');
+				
+				var page1 = App.pages.create({}, modelKey+'func');
+				var page2 = App.pages.create({}, modelKey+'func');
+				
+				ok(page1 != page2, 'functions creates new scopes');
 			});
 			
 			test('_matchRoute', function appPages_matchRouteTest () {
@@ -169,8 +188,8 @@
 					init : initTest
 				});
 				
-				App.pages.create({key: "page 1", routes: ['page-1']},'page1');
-				App.pages.create({key: "page 2", routes: ['page-2']},'page1');
+				App.pages.create({key: 'page 1', routes: ['page-1']},'page1');
+				App.pages.create({key: 'page 2', routes: ['page-2']},'page1');
 				
 				var page;
 				
