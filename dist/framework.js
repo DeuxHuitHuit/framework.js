@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.0 - build 57 - 2014-01-16
+/*! framework.js - v1.3.1 - build 58 - 2014-01-24
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -787,7 +787,7 @@
 					elem: elem,
 					data: data,
 					url: obj,
-					page: currentPage,
+					page: nextPage,
 					node: node,
 					xhr: jqXHR,
 					status: textStatus
