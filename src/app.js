@@ -219,7 +219,7 @@
 					elem: elem,
 					data: data,
 					url: obj,
-					page: currentPage,
+					page: nextPage,
 					node: node,
 					xhr: jqXHR,
 					status: textStatus
