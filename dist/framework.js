@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 58 - 2014-01-24
+/*! framework.js - v1.3.1 - build 59 - 2014-02-10
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1118,6 +1118,7 @@
 	
 	$.mobile = global.BrowserDetector.isMobile();
 	
+	$.click = $.mobile ? 'touchstart' : 'click';
 	
 /**
  * General customization for mobile and default easing
