@@ -116,6 +116,7 @@
 	
 	$.mobile = global.BrowserDetector.isMobile();
 	
+	$.click = $.mobile ? 'touchstart' : 'click';
 	
 /**
  * General customization for mobile and default easing
