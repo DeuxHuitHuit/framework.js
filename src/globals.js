@@ -118,19 +118,36 @@
 	
 	$.android = global.BrowserDetector.isAndroid();
 	
-	$.click = $.ios || $.android ? 'touchend' : 'click';
+	$.touchClick = $.ios || $.android;
+	
+	$.click = $.touchClick ? 'mobile-click' : 'click';
 	
 /**
  * General customization for mobile and default easing
  */
 	
 	// add mobile css class to html
-	if ($.mobile) {
-		$('html').addClass('mobile');
-	}
+	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android'], function (i, c) {
+		if (!!$[c]) {
+			$('html').addClass(c);
+		}
+	});
 	
 	// easing support
 	$.easing.def = ($.mobile ? 'linear' : 'easeOutQuad');
+	
+	// touch support
+	if ($.touchClick) {
+		var lastTouchedElement = $();
+		$(document).on('touchstart', function (e) {
+			lastTouchedElement = $(e.target);
+		}).on('touchstart', function (e) {
+			var t = $(e.target);
+			if (lastTouchedElement.is(t)) {
+				t.trigger($.click);
+			}
+		});
+	}
 	
 	
 /**
