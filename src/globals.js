@@ -116,7 +116,9 @@
 	
 	$.mobile = global.BrowserDetector.isMobile();
 	
-	$.click = $.mobile ? 'touchstart' : 'click';
+	$.android = global.BrowserDetector.isAndroid();
+	
+	$.click = $.ios || $.android ? 'touchend' : 'click';
 	
 /**
  * General customization for mobile and default easing
