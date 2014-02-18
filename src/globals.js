@@ -138,14 +138,19 @@
 	
 	// touch support
 	if ($.touchClick) {
-		var lastTouchedElement = $();
+		var didMove = false;
 		$(document).on('touchstart', function (e) {
-			lastTouchedElement = $(e.target);
-		}).on('touchstart', function (e) {
-			var t = $(e.target);
-			if (lastTouchedElement.is(t)) {
-				t.trigger($.click);
+			didMove = false;
+		}).on('touchmove', function (e) {
+			didMove = true;
+		}).on('touchend', function (e) {
+			if (!didMove) {
+				// prevent default right now
+				global.pd(e);
+				$(e.target).trigger($.click);
+				return false;
 			}
+			didMove = false;
 		});
 	}
 	
