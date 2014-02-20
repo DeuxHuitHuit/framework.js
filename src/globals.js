@@ -142,7 +142,8 @@
 		$(document).on('touchstart', function (e) {
 			didMove = false;
 		}).on('touchmove', function (e) {
-			didMove = true;
+			// only count move when one finger is used
+			didMove = e.originalEvent.changedTouches.length === 1;
 		}).on('touchend', function (e) {
 			if (!didMove) {
 				// prevent default right now
