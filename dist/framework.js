@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 73 - 2014-02-18
+/*! framework.js - v1.3.1 - build 74 - 2014-02-24
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1144,7 +1144,8 @@
 		$(document).on('touchstart', function (e) {
 			didMove = false;
 		}).on('touchmove', function (e) {
-			didMove = true;
+			// only count move when one finger is used
+			didMove = e.originalEvent.changedTouches.length === 1;
 		}).on('touchend', function (e) {
 			if (!didMove) {
 				// prevent default right now
