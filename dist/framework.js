@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 74 - 2014-02-24
+/*! framework.js - v1.3.1 - build 76 - 2014-03-12
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1147,7 +1147,8 @@
 			// only count move when one finger is used
 			didMove = e.originalEvent.changedTouches.length === 1;
 		}).on('touchend', function (e) {
-			if (!didMove) {
+			// do not count inputs
+			if (!didMove && !$(e.target).is('input, select, textarea')) {
 				// prevent default right now
 				global.pd(e);
 				$(e.target).trigger($.click);
