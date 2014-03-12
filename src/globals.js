@@ -145,7 +145,8 @@
 			// only count move when one finger is used
 			didMove = e.originalEvent.changedTouches.length === 1;
 		}).on('touchend', function (e) {
-			if (!didMove) {
+			// do not count inputs
+			if (!didMove && !$(e.traget).is('input, select, textarea')) {
 				// prevent default right now
 				global.pd(e);
 				$(e.target).trigger($.click);
