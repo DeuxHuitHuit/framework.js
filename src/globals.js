@@ -146,7 +146,7 @@
 			didMove = e.originalEvent.changedTouches.length === 1;
 		}).on('touchend', function (e) {
 			// do not count inputs
-			if (!didMove && !$(e.traget).is('input, select, textarea')) {
+			if (!didMove && !$(e.target).is('input, select, textarea')) {
 				// prevent default right now
 				global.pd(e);
 				$(e.target).trigger($.click);
