@@ -250,8 +250,9 @@ module.exports = function fxGruntConfig(grunt) {
 			};
 
 			var buildnum = getBuildNumber();
-			grunt.log.writeln('New build num: ', buildnum);
 			grunt.config.set('buildnum.num', buildnum);
+			grunt.log.writeln('New build num:', buildnum);
+			grunt.log.writeln('For version:', config.pkg.version);
 		});
 		
 		// Default task.
