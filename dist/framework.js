@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 77 - 2014-03-18
+/*! framework.js - v1.3.1 - build 80 - 2014-03-18
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -396,7 +396,7 @@
 			pageModels[key] = pageModel;
 			return pageModel;
 		}
-		return false;	
+		return false;
 	};
 	
 	// Create a function to create a new page
