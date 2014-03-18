@@ -135,7 +135,7 @@
 			pageModels[key] = pageModel;
 			return pageModel;
 		}
-		return false;	
+		return false;
 	};
 	
 	// Create a function to create a new page
