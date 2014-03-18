@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 76 - 2014-03-12
+/*! framework.js - v1.3.1 - build 77 - 2014-03-18
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -839,15 +839,16 @@
 					
 				} else {
 					
+					App.modules.notify('pages.loading', {
+						page: nextPage
+					});
+					
 					// Load from xhr or use cache copy
 					if (!nextPage.loaded()) {
 						// Raise the flag to mark we are in the process
 						// of loading a new page
 						mediatorIsLoadingPage = true;
 						
-						App.modules.notify('pages.loading', {
-							page: nextPage
-						});
 						Loader.load({
 							url: obj, // the *actual* route
 							priority: 0, // now
@@ -875,6 +876,12 @@
 						});
 					} else {
 						enterLeave();
+						
+						App.modules.notify('pages.loaded', {
+							elem: $(ROOT),
+							url: obj,
+							page: nextPage,
+						});
 					}
 				}
 			} else {
