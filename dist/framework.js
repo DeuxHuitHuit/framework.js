@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 80 - 2014-03-18
+/*! framework.js - v1.3.1 - build 81 - 2014-04-01
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -22,6 +22,9 @@
 			if ($.isFunction(fx)) {
 				// IE8 does not allow null/undefined args
 				return fx.apply(this, args || []);
+				
+			} else if ($.isPlainObject(fx)) {
+				return fx;
 			}
 		} catch (err) {
 			var stack = err.stack;
@@ -32,12 +35,31 @@
 		return undefined;
 	};
 	
+	// external lib load check
+	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
+		delay = Math.max(delay || 0, 100);
+		maxRetriesCount = maxRetriesCount || 10;
+		counter = counter || 1;
+		// get the value
+		var value = callback(v, [counter]);
+		// if the value exists
+		if (!!value) {
+			// call the function, with the value
+			return callback(fx, [value, counter]);
+		} else if (counter < maxRetriesCount) {
+			// recurse
+			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
+		}
+	};
+	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
 		// callback utility
-		callback: callback
+		callback: callback,
 		
+		// loaded utility
+		loaded: loaded
 	});
 	
 })(jQuery, window);
