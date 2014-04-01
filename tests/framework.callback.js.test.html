@@ -57,21 +57,27 @@
 			
 			module('App.callback');
 			
-			test('Callback exist', function AppDebug() {
+			test('Callback exist', function Callback() {
 				//test for initial value
 				ok(!!window.App, 'window.App is defined'); 
 				ok(!!window.App.callback, 'window.App.callback is defined'); 
 			});
 			
-			test('Callback work good with wrong value', function AppDebug() {
+			test('Callback work good with wrong value', function CallbackWrongValue() {
 				//test for initial value
-				var 
-				testCallbackWithNumber = 1;
+				var testCallbackWithNumber = 1;
 				
 				ok(App.callback(testCallbackWithNumber) === undefined);
 			});
 			
-			test('Callback handle exception', function AppDebug() {
+			test('Callback work good with object value', function CallbackObject() {
+				//test for initial value
+				var testCallbackWithObject = {};
+				
+				ok(App.callback(testCallbackWithObject) === testCallbackWithObject);
+			});
+			
+			test('Callback handle exception', function CallbackException() {
 				//test for initial value
 				var 
 				testCallbackWithException = function() {
@@ -99,7 +105,7 @@
 				
 			});
 			
-			test('Callback work and return value', function AppDebug() {
+			test('Callback work and return value', function CallbackReturnValue() {
 				//test for initial value
 				var 
 				returnedValue = "test",
@@ -119,7 +125,7 @@
 				ok(App.callback(test, [1]), 'is working with');
 			});
 			
-			test('Do now wrap nulls and undefineds and other falsy values', function NoArray() {
+			test('Do now wrap nulls and undefineds and other falsy values', function NoFalsyWraps() {
 				var test = function (one, two, three) {
 					return !one;
 				};
@@ -142,6 +148,33 @@
 				
 				ok(App.callback(test, [1, 2, 3]), 'is working with array');
 				tester(1, 2, 3);
+			});
+			
+			module('App.loaded');
+			
+			test('Loaded exist', function Loaded() {
+				//test for initial value
+				ok(!!window.App, 'window.App is defined'); 
+				ok(!!window.App.loaded, 'window.App.loaded is defined'); 
+			});
+			
+			test('Loaded works', function LoadedCall() {
+				var magicNumber = 3;
+				var value = function (counter) {
+					if (counter === magicNumber) {
+						return true;
+					}
+				};
+				
+				var callback = function (value, counter) {
+					start();
+					ok(value, 'value is true!');
+					equal(counter, magicNumber, 'counter is ' + magicNumber);
+				};
+				
+				stop();
+				
+				App.loaded(value, callback);
 			});
 			
 		}; // end run tests
