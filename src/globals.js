@@ -70,6 +70,12 @@
 				return !!(userAgent.match(/Android/i));
 			},
 			
+			isPhone : function (userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return global.BrowserDetector.isOtherMobile(userAgent) || 
+					global.BrowserDetector.isIphone(userAgent);
+			},
+			
 			isOtherMobile : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return !!(userAgent.match(/mobile/i) || userAgent.match(/phone/i));
