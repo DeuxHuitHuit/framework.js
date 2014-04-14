@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 81 - 2014-04-01
+/*! framework.js - v1.3.1 - build 82 - 2014-04-14
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1099,6 +1099,12 @@
 			isAndroid : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return !!(userAgent.match(/Android/i));
+			},
+			
+			isPhone : function (userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return global.BrowserDetector.isOtherMobile(userAgent) || 
+					global.BrowserDetector.isIphone(userAgent);
 			},
 			
 			isOtherMobile : function (userAgent) {
