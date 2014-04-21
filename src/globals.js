@@ -72,13 +72,19 @@
 			
 			isPhone : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
-				return global.BrowserDetector.isOtherMobile(userAgent) || 
+				return global.BrowserDetector.isOtherPhone(userAgent) || 
 					global.BrowserDetector.isIphone(userAgent);
+			},
+			
+			isOtherPhone : function (userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return !!(userAgent.match(/phone/i));
 			},
 			
 			isOtherMobile : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/mobile/i) || userAgent.match(/phone/i));
+				return !!(userAgent.match(/mobile/i)) ||
+					global.BrowserDetector.isOtherPhone(userAgent);
 			},
 			
 			isMobile : function (userAgent) {
