@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 83 - 2014-04-21
+/*! framework.js - v1.3.1 - build 84 - 2014-04-21
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1160,6 +1160,8 @@
 	$.mobile = global.BrowserDetector.isMobile();
 	
 	$.android = global.BrowserDetector.isAndroid();
+	
+	$.phone = global.BrowserDetector.isPhone();
 	
 	$.touchClick = $.ios || $.android;
 	
