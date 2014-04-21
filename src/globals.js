@@ -130,6 +130,8 @@
 	
 	$.android = global.BrowserDetector.isAndroid();
 	
+	$.phone = global.BrowserDetector.isPhone();
+	
 	$.touchClick = $.ios || $.android;
 	
 	$.click = $.touchClick ? 'mobile-click' : 'click';
