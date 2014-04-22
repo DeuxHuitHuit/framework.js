@@ -70,9 +70,15 @@
 				return !!(userAgent.match(/Android/i));
 			},
 			
+			isAndroidPhone: function (userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return global.BrowserDetector.isAndroid(userAgent) && !!(userAgent.match(/mobile/i));
+			},
+			
 			isPhone : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return global.BrowserDetector.isOtherPhone(userAgent) || 
+					global.BrowserDetector.isAndroidPhone(userAgent) ||
 					global.BrowserDetector.isIphone(userAgent);
 			},
 			
