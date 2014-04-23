@@ -72,7 +72,8 @@
 			
 			isAndroidPhone: function (userAgent) {
 				userAgent = getUserAgent(userAgent);
-				return global.BrowserDetector.isAndroid(userAgent) && !!(userAgent.match(/mobile/i));
+				return global.BrowserDetector.isAndroid(userAgent) && 
+					!!(userAgent.match(/mobile/i));
 			},
 			
 			isPhone : function (userAgent) {
