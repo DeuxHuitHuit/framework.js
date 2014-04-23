@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 84 - 2014-04-21
+/*! framework.js - v1.3.1 - build 85 - 2014-04-23
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -835,81 +835,81 @@
 			});
 		};
 		
-		if ($.type(obj) === 'string') {
-			if (_canLeaveCurrentPage() &&  _validateMediatorState()) {
+		if (_validateMediatorState() && _canLeaveCurrentPage()) {
+			if ($.type(obj) === 'string') {
 				nextPage = App.pages.getPageForRoute(obj);
 				route = obj;
-			}
-		} else {
-			nextPage = obj;
-		}
-			
-		if (!_validateNextPage(nextPage)) {
-			App.modules.notify('pages.routeNotFound', {
-				page: currentPage, 
-				url: obj
-			});
-			App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
-		} else {
-			if (_canEnterNextPage(nextPage)) {
-				if (nextPage === currentPage) {
-					App.modules.notify('pages.navigateToCurrent', {
-						page: nextPage,
-						route: route
-					});
-					App.log('next page is the current one');
-					
-				} else {
-					
-					App.modules.notify('pages.loading', {
-						page: nextPage
-					});
-					
-					// Load from xhr or use cache copy
-					if (!nextPage.loaded()) {
-						// Raise the flag to mark we are in the process
-						// of loading a new page
-						mediatorIsLoadingPage = true;
-						
-						Loader.load({
-							url: obj, // the *actual* route
-							priority: 0, // now
-							vip: true, // don't queue on fail
-							success: loadSucess,
-							progress: progress,
-							error: function (e) {
-								App.modules.notify('pages.loaderror', {
-									event: e,
-									url: obj
-								});
-							},
-							giveup: function (e) {
-								// Free the mediator
-								mediatorIsLoadingPage = false;
-								// Reset the current page
-								
-								App.log({args: 'Giving up!', me: 'Loader'});
-								
-								App.modules.notify('pages.loadfatalerror', {
-									event: e,
-									url: obj
-								});
-							}
-						});
-					} else {
-						enterLeave();
-						
-						App.modules.notify('pages.loaded', {
-							elem: $(ROOT),
-							url: obj,
-							page: nextPage,
-						});
-					}
-				}
 			} else {
-				App.log({args: ['Route "%s" is invalid.', obj], fx: 'error'});
+				nextPage = obj;
 			}
-		}		
+				
+			if (!_validateNextPage(nextPage)) {
+				App.modules.notify('pages.routeNotFound', {
+					page: currentPage, 
+					url: obj
+				});
+				App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
+			} else {
+				if (_canEnterNextPage(nextPage)) {
+					if (nextPage === currentPage) {
+						App.modules.notify('pages.navigateToCurrent', {
+							page: nextPage,
+							route: route
+						});
+						App.log('next page is the current one');
+						
+					} else {
+						
+						App.modules.notify('pages.loading', {
+							page: nextPage
+						});
+						
+						// Load from xhr or use cache copy
+						if (!nextPage.loaded()) {
+							// Raise the flag to mark we are in the process
+							// of loading a new page
+							mediatorIsLoadingPage = true;
+							
+							Loader.load({
+								url: obj, // the *actual* route
+								priority: 0, // now
+								vip: true, // don't queue on fail
+								success: loadSucess,
+								progress: progress,
+								error: function (e) {
+									App.modules.notify('pages.loaderror', {
+										event: e,
+										url: obj
+									});
+								},
+								giveup: function (e) {
+									// Free the mediator
+									mediatorIsLoadingPage = false;
+									// Reset the current page
+									
+									App.log({args: 'Giving up!', me: 'Loader'});
+									
+									App.modules.notify('pages.loadfatalerror', {
+										event: e,
+										url: obj
+									});
+								}
+							});
+						} else {
+							enterLeave();
+							
+							App.modules.notify('pages.loaded', {
+								elem: $(ROOT),
+								url: obj,
+								page: nextPage,
+							});
+						}
+					}
+				} else {
+					App.log({args: ['Route "%s" is invalid.', obj], fx: 'error'});
+				}
+			}
+		}
 		return this;
 	};
 	
@@ -1101,9 +1101,16 @@
 				return !!(userAgent.match(/Android/i));
 			},
 			
+			isAndroidPhone: function (userAgent) {
+				userAgent = getUserAgent(userAgent);
+				return global.BrowserDetector.isAndroid(userAgent) && 
+					!!(userAgent.match(/mobile/i));
+			},
+			
 			isPhone : function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return global.BrowserDetector.isOtherPhone(userAgent) || 
+					global.BrowserDetector.isAndroidPhone(userAgent) ||
 					global.BrowserDetector.isIphone(userAgent);
 			},
 			
