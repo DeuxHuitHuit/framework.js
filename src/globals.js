@@ -72,7 +72,8 @@
 			
 			isAndroidPhone: function (userAgent) {
 				userAgent = getUserAgent(userAgent);
-				return global.BrowserDetector.isAndroid(userAgent) && !!(userAgent.match(/mobile/i));
+				return global.BrowserDetector.isAndroid(userAgent) &&
+					!!(userAgent.match(/mobile/i));
 			},
 			
 			isPhone : function (userAgent) {
@@ -159,20 +160,50 @@
 	// touch support
 	if ($.touchClick) {
 		var didMove = false;
+		var preventNextClick = false;
+		var lastTouch = {x: 0, y: 0};
+		var minMove = 10 * (window.devicePixelRatio || 1);
 		$(document).on('touchstart', function (e) {
 			didMove = false;
+			var touch = e.originalEvent.touches[0];
+			lastTouch.x = touch.screenX;
+			lastTouch.y = touch.screenY;
+			App.log('touchstart', lastTouch);
 		}).on('touchmove', function (e) {
+			var touch = e.originalEvent.changedTouches[0];
 			// only count move when one finger is used
-			didMove = e.originalEvent.changedTouches.length === 1;
+			didMove = e.originalEvent.changedTouches.length === 1 &&
+				// and if the gesture was more than accidental
+				(Math.abs(lastTouch.x - touch.screenX) > minMove ||
+				Math.abs(lastTouch.y - touch.screenY) > minMove);
+				
+			App.log('touchmove', lastTouch, didMove, touch.screenX, touch.screenY);
 		}).on('touchend', function (e) {
+			App.log('touchend', lastTouch, didMove);
+			var t = $(e.target);
+			var ignoreInputs = 'input, select, textarea';
+			var ignoreClass = '.ignore-mobile-click, .ignore-mobile-click *';
+			var mustBeIgnored = t.is(ignoreInputs) || t.is(ignoreClass);
+			
+			// prevent click only if not ignored
+			preventNextClick = $.ios && !mustBeIgnored;
+			
 			// do not count inputs
-			if (!didMove && !$(e.target).is('input, select, textarea')) {
+			if (!didMove && !mustBeIgnored) {
 				// prevent default right now
 				global.pd(e);
 				$(e.target).trigger($.click);
 				return false;
 			}
-			didMove = false;
+		}).on('click', function (e) {
+			App.log('real click');
+			var isNextClickPrevented = preventNextClick;
+			preventNextClick = false;
+			if (isNextClickPrevented) {
+				App.log('click prevented');
+				global.pd(e);
+			}
+			return !isNextClickPrevented;
 		});
 	}
 	
