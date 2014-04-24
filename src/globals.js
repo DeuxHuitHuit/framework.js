@@ -148,7 +148,7 @@
  */
 	
 	// add mobile css class to html
-	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android'], function (i, c) {
+	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'touchClick'], function (i, c) {
 		if (!!$[c]) {
 			$('html').addClass(c);
 		}
