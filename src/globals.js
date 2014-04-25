@@ -117,7 +117,7 @@
 	};
 	
 	// Query string Parser
-	// http://stackoverflowindow.com/questions/901115/get-query-string-values-in-javascript
+	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
 	global.QueryStringParser = queryStringParser();
 	
 	//Parse the query string and store a copy of the result in the global object
@@ -244,17 +244,17 @@
 		'trace', 'warn'];
 	
 	// console support
-	if (!window.console) {
-		window.console = {};
+	if (!global.console) {
+		global.console = {};
 	}
 	
 	$.each(consoleFx, function (i, key) {
-		window.console[key] = window.console[key] || $.noop;
+		global.console[key] = global.console[key] || $.noop;
 	});
 	
 
 /**
- * Global window tools
+ * Global tools
  */
 	
 	var hex = function (x) {
