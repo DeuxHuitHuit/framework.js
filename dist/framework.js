@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 102 - 2014-04-24
+/*! framework.js - v1.3.1 - build 110 - 2014-04-25
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1343,6 +1343,15 @@
 		var preventNextClick = false;
 		var lastTouch = {x: 0, y: 0};
 		var minMove = 10 * (window.devicePixelRatio || 1);
+		
+		var preventNextClickExternal = function (target, e) {
+			var ret = true;
+			if ($.isFunction(window.preventNextClick)) {
+				ret = window.preventNextClick.call(target, e);
+			}
+			return ret;
+		};
+		
 		$(document).on('touchstart', function (e) {
 			didMove = false;
 			var touch = e.originalEvent.touches[0];
@@ -1391,18 +1400,19 @@
 				}
 				
 				if (e.isDefaultPrevented()) {
-					return clickEvent.isPropagationStopped();
+					App.log('touchend prevented');
+					return false;
 				}
 			}
-		}).on('click', function (e) {
+		}).on('click', 'a', function (e) {
 			App.log('real click');
-			var isNextClickPrevented = preventNextClick;
+			
+			var isNextClickPrevented = preventNextClick && preventNextClickExternal(this, e);
 			preventNextClick = false;
+			
 			if (isNextClickPrevented) {
 				App.log('click prevented');
 				global.pd(e);
-			}
-			if (isNextClickPrevented) {
 				return false;
 			}
 		});
