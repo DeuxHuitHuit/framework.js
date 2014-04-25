@@ -194,15 +194,20 @@
 			
 			if (!didMove && !mustBeIgnored) {
 				
-				// create a new touch click event
-				var touchEvent = $.Event($.click);
+				// create a new click event
+				var clickEvent = $.Event($.click);
 				
 				// raise it
-				$(e.target).trigger(touchEvent);
+				$(e.target).trigger(clickEvent);
 				
 				// let others prevent defaults...
-				if (touchEvent.isDefaultPrevented()) {
-					global.pd(e, touchEvent.isPropagationStopped());
+				if (clickEvent.isDefaultPrevented()) {
+					// and do the same
+					global.pd(e, clickEvent.isPropagationStopped());
+				}
+				// or stop propagation
+				else if (clickEvent.isPropagationStopped()) {
+					e.stopPropagation();
 				}
 				
 				return !e.isDefaultPrevented();
