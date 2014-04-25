@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 96 - 2014-04-24
+/*! framework.js - v1.3.1 - build 102 - 2014-04-24
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1297,16 +1297,16 @@
 	};
 	
 	// Query string Parser
-	// http://stackoverflowindow.com/questions/901115/get-query-string-values-in-javascript
+	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
 	global.QueryStringParser = queryStringParser();
 	
-	//Parse the query string and store a copy of the result in the window object
+	//Parse the query string and store a copy of the result in the global object
 	global.QS = global.QueryStringParser.parse();
 	
 	// Browser detector
 	global.BrowserDetector = browserDetector();
 	
-	// User Agent parsing
+	// User Agent short-hands
 	$.iphone = global.BrowserDetector.isIphone();
 	
 	$.ipad = global.BrowserDetector.isIpad();
@@ -1321,14 +1321,14 @@
 	
 	$.touchClick = $.ios || $.android;
 	
-	$.click = $.touchClick ? 'mobile-click' : 'click';
+	$.click = $.touchClick ? 'touch-click' : 'click';
 	
 /**
  * General customization for mobile and default easing
  */
 	
 	// add mobile css class to html
-	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android'], function (i, c) {
+	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'touchClick'], function (i, c) {
 		if (!!$[c]) {
 			$('html').addClass(c);
 		}
@@ -1360,20 +1360,39 @@
 			App.log('touchmove', lastTouch, didMove, touch.screenX, touch.screenY);
 		}).on('touchend', function (e) {
 			App.log('touchend', lastTouch, didMove);
+			
 			var t = $(e.target);
+			// do not count inputs
 			var ignoreInputs = 'input, select, textarea';
+			// special ignore class
 			var ignoreClass = '.ignore-mobile-click, .ignore-mobile-click *';
+			// store de result
 			var mustBeIgnored = t.is(ignoreInputs) || t.is(ignoreClass);
 			
 			// prevent click only if not ignored
 			preventNextClick = $.ios && !mustBeIgnored;
 			
-			// do not count inputs
 			if (!didMove && !mustBeIgnored) {
-				// prevent default right now
-				global.pd(e);
-				$(e.target).trigger($.click);
-				return false;
+				
+				// create a new click event
+				var clickEvent = $.Event($.click);
+				
+				// raise it
+				$(e.target).trigger(clickEvent);
+				
+				// let others prevent defaults...
+				if (clickEvent.isDefaultPrevented()) {
+					// and do the same
+					global.pd(e, clickEvent.isPropagationStopped());
+				}
+				// or stop propagation
+				else if (clickEvent.isPropagationStopped()) {
+					e.stopPropagation();
+				}
+				
+				if (e.isDefaultPrevented()) {
+					return clickEvent.isPropagationStopped();
+				}
 			}
 		}).on('click', function (e) {
 			App.log('real click');
@@ -1383,7 +1402,9 @@
 				App.log('click prevented');
 				global.pd(e);
 			}
-			return !isNextClickPrevented;
+			if (isNextClickPrevented) {
+				return false;
+			}
 		});
 	}
 	
@@ -1407,17 +1428,17 @@
 		'trace', 'warn'];
 	
 	// console support
-	if (!window.console) {
-		window.console = {};
+	if (!global.console) {
+		global.console = {};
 	}
 	
 	$.each(consoleFx, function (i, key) {
-		window.console[key] = window.console[key] || $.noop;
+		global.console[key] = global.console[key] || $.noop;
 	});
 	
 
 /**
- * Global window tools
+ * Global tools
  */
 	
 	var hex = function (x) {
