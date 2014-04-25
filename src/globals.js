@@ -120,13 +120,13 @@
 	// http://stackoverflowindow.com/questions/901115/get-query-string-values-in-javascript
 	global.QueryStringParser = queryStringParser();
 	
-	//Parse the query string and store a copy of the result in the window object
+	//Parse the query string and store a copy of the result in the global object
 	global.QS = global.QueryStringParser.parse();
 	
 	// Browser detector
 	global.BrowserDetector = browserDetector();
 	
-	// User Agent parsing
+	// User Agent short-hands
 	$.iphone = global.BrowserDetector.isIphone();
 	
 	$.ipad = global.BrowserDetector.isIpad();
@@ -141,7 +141,7 @@
 	
 	$.touchClick = $.ios || $.android;
 	
-	$.click = $.touchClick ? 'mobile-click' : 'click';
+	$.click = $.touchClick ? 'touch-click' : 'click';
 	
 /**
  * General customization for mobile and default easing
@@ -180,20 +180,32 @@
 			App.log('touchmove', lastTouch, didMove, touch.screenX, touch.screenY);
 		}).on('touchend', function (e) {
 			App.log('touchend', lastTouch, didMove);
+			
 			var t = $(e.target);
+			// do not count inputs
 			var ignoreInputs = 'input, select, textarea';
+			// special ignore class
 			var ignoreClass = '.ignore-mobile-click, .ignore-mobile-click *';
+			// store de result
 			var mustBeIgnored = t.is(ignoreInputs) || t.is(ignoreClass);
 			
 			// prevent click only if not ignored
 			preventNextClick = $.ios && !mustBeIgnored;
 			
-			// do not count inputs
 			if (!didMove && !mustBeIgnored) {
-				// prevent default right now
-				global.pd(e);
-				$(e.target).trigger($.click);
-				return false;
+				
+				// create a new touch click event
+				var touchEvent = $.Event($.click);
+				
+				// raise it
+				$(e.target).trigger(touchEvent);
+				
+				// let others prevent defaults...
+				if (touchEvent.isDefaultPrevented()) {
+					global.pd(e, touchEvent.isPropagationStopped());
+				}
+				
+				return !e.isDefaultPrevented();
 			}
 		}).on('click', function (e) {
 			App.log('real click');
