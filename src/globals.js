@@ -210,7 +210,9 @@
 					e.stopPropagation();
 				}
 				
-				return !e.isDefaultPrevented();
+				if (e.isDefaultPrevented()) {
+					return false;
+				}
 			}
 		}).on('click', function (e) {
 			App.log('real click');
@@ -220,7 +222,9 @@
 				App.log('click prevented');
 				global.pd(e);
 			}
-			return !isNextClickPrevented;
+			if (isNextClickPrevented) {
+				return false;
+			}
 		});
 	}
 	
