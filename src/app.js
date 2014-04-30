@@ -419,6 +419,10 @@
 				return currentPage;
 			},
 			
+			getCurrentPage: function () {
+				return currentPage;
+			},
+			
 			// event dispatcher to the
 			// current Page and Modules
 			notify: notifyAll,
