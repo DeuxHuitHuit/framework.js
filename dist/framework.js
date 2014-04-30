@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 110 - 2014-04-25
+/*! framework.js - v1.3.1 - build 111 - 2014-04-30
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1006,6 +1006,10 @@
 				if (!!page) {
 					currentPage = page;
 				}
+				return currentPage;
+			},
+			
+			getCurrentPage: function () {
 				return currentPage;
 			},
 			
