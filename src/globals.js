@@ -43,10 +43,15 @@
 	
 	var browserDetector = function () {
 		var getUserAgent = function (userAgent) {
-			if (userAgent !== '' && !userAgent) {
-				userAgent = window.navigator.userAgent;
+			if (!userAgent) {
+				return window.navigator.userAgent;
 			}
 			return userAgent;
+		};
+		
+		var testUserAgent = function (regexp, userAgent) {
+			userAgent = getUserAgent(userAgent);
+			return regexp.test(userAgent);
 		};
 		
 		var detector = {
@@ -56,29 +61,24 @@
 			},
 			
 			isIphone: function (userAgent) {
-				userAgent = getUserAgent(userAgent);
 				return !detector.isIpad(userAgent) &&
-					(userAgent.match(/iPhone/i) || userAgent.match(/iPod/i));
+					(testUserAgent(/iPhone/i, userAgent) || testUserAgent(/iPod/i, userAgent));
 			},
 			
 			isIpad: function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/iPad/i));
+				return testUserAgent(/iPad/i, userAgent);
 			},
 			
 			isAndroid: function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/Android/i));
+				return testUserAgent(/Android/i, userAgent);
 			},
 			
 			isAndroidPhone: function (userAgent) {
-				userAgent = getUserAgent(userAgent);
 				return detector.isAndroid(userAgent) && 
-					!!(userAgent.match(/mobile/i));
+					testUserAgent(/mobile/i, userAgent);
 			},
 			
 			isPhone: function (userAgent) {
-				userAgent = getUserAgent(userAgent);
 				return !detector.isIpad(userAgent) && (
 					detector.isOtherPhone(userAgent) || 
 					detector.isAndroidPhone(userAgent) ||
@@ -86,25 +86,23 @@
 			},
 			
 			isOtherPhone: function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/phone/i));
+				return testUserAgent(/phone/i, userAgent);
 			},
 			
 			isOtherMobile: function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/mobile/i)) ||
-					global.BrowserDetector.isOtherPhone(userAgent);
+				return testUserAgent(/mobile/i, userAgent) ||
+					detector.isOtherPhone(userAgent);
 			},
 			
 			isMobile: function (userAgent) {
-				return global.BrowserDetector.isIos(userAgent) || 
-					global.BrowserDetector.isAndroid(userAgent) || 
-					global.BrowserDetector.isOtherMobile(userAgent);
+				return detector.isIos(userAgent) || 
+					detector.isAndroid(userAgent) || 
+					detector.isOtherMobile(userAgent);
 			},
 			
 			isMsie: function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return userAgent.match(/msie/gi) || userAgent.match(/trident/gi);
+				return testUserAgent(/msie/mi, userAgent) || 
+					testUserAgent(/trident/mi, userAgent);
 			}
 			
 			/*isUnsupported : function (userAgent) {
