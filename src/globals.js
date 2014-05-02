@@ -44,63 +44,65 @@
 	var browserDetector = function () {
 		var getUserAgent = function (userAgent) {
 			if (userAgent !== '' && !userAgent) {
-				userAgent = navigator.userAgent;
+				userAgent = window.navigator.userAgent;
 			}
 			return userAgent;
 		};
 		
-		return {
-			isIos : function (userAgent) {
-				return global.BrowserDetector.isIphone(userAgent) || 
-					global.BrowserDetector.isIpad(userAgent);
+		var detector = {
+			isIos: function (userAgent) {
+				return detector.isIphone(userAgent) || 
+					detector.isIpad(userAgent);
 			},
 			
-			isIphone : function (userAgent) {
+			isIphone: function (userAgent) {
 				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/iPhone/i) || userAgent.match(/iPod/i));
+				return !detector.isIpad(userAgent) &&
+					(userAgent.match(/iPhone/i) || userAgent.match(/iPod/i));
 			},
 			
-			isIpad : function (userAgent) {
+			isIpad: function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return !!(userAgent.match(/iPad/i));
 			},
 			
-			isAndroid : function (userAgent) {
+			isAndroid: function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return !!(userAgent.match(/Android/i));
 			},
 			
 			isAndroidPhone: function (userAgent) {
 				userAgent = getUserAgent(userAgent);
-				return global.BrowserDetector.isAndroid(userAgent) && 
+				return detector.isAndroid(userAgent) && 
 					!!(userAgent.match(/mobile/i));
 			},
 			
-			isPhone : function (userAgent) {
+			isPhone: function (userAgent) {
 				userAgent = getUserAgent(userAgent);
-				return global.BrowserDetector.isOtherPhone(userAgent) || 
-					global.BrowserDetector.isAndroidPhone(userAgent) ||
-					global.BrowserDetector.isIphone(userAgent);
+				return !detector.isIpad(userAgent) && (
+					detector.isOtherPhone(userAgent) || 
+					detector.isAndroidPhone(userAgent) ||
+					detector.isIphone(userAgent));
 			},
 			
-			isOtherPhone : function (userAgent) {
+			isOtherPhone: function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return !!(userAgent.match(/phone/i));
 			},
 			
-			isOtherMobile : function (userAgent) {
+			isOtherMobile: function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return !!(userAgent.match(/mobile/i)) ||
 					global.BrowserDetector.isOtherPhone(userAgent);
 			},
 			
-			isMobile : function (userAgent) {
+			isMobile: function (userAgent) {
 				return global.BrowserDetector.isIos(userAgent) || 
 					global.BrowserDetector.isAndroid(userAgent) || 
 					global.BrowserDetector.isOtherMobile(userAgent);
 			},
 			
-			isMsie : function (userAgent) {
+			isMsie: function (userAgent) {
 				userAgent = getUserAgent(userAgent);
 				return userAgent.match(/msie/gi) || userAgent.match(/trident/gi);
 			}
@@ -114,6 +116,9 @@
 				return b.browser === "" || (b.browser == 'msie' && parseInt(b.version,10)) < 9;
 			}*/
 		};
+		
+		// return newly created object
+		return detector;
 	};
 	
 	// Query string Parser
