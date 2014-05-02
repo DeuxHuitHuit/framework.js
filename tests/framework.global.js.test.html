@@ -73,16 +73,39 @@
 			
 			test('isIphone', function browserDetectorIsIphoneTest() {
 				//test for empty string
-				ok(w.BrowserDetector.isIphone('') == false,'empty ua is not an iphone');
+				ok(!w.BrowserDetector.isIphone(''),'empty ua is not an iphone');
 				
 				//test for iphone regex
-				ok(w.BrowserDetector.isIphone('iphone') == true,'iphone text ua is an iphone');
-				ok(w.BrowserDetector.isIphone('sdfdg-iphonesdf') == true,'ua contains iphone then is an iphone');
+				ok(w.BrowserDetector.isIphone('iphone'),'iphone text ua is an iphone');
+				ok(w.BrowserDetector.isIphone('sdfdg-iphonesdf'),'ua contains iphone then is an iphone');
+				
+				//Test for ipod regex
+				ok(w.BrowserDetector.isIphone('ipod'),'ipod text ua is an iphone');
+				ok(w.BrowserDetector.isIphone('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
+				
+				ok(w.BrowserDetector.isIphone('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
+				
+				ok(!w.BrowserDetector.isIphone('ipad iphone'),'ua contains ipad AND iphone then is NOT iphone');
+			});
+			
+			
+			test('isIpad', function browserDetectorIsIphoneTest() {
+				//test for empty string
+				ok(!w.BrowserDetector.isIpad(''),'empty ua is not an ipad');
+				
+				//test for iphone regex
+				ok(!w.BrowserDetector.isIpad('iphone'),'iphone is an not an ipad');
+				ok(!w.BrowserDetector.isIpad('sdfdg-iphonesdf'),'ua contains iphone then is not and ipad');
+				
+				//Test for ipod regex
+				ok(!w.BrowserDetector.isIpad('ipod'),'ipod text ua is not an iphone');
+				ok(!w.BrowserDetector.isIpad('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
 				
 				//Test for ipad regex
-				ok(w.BrowserDetector.isIphone('ipod') == true,'ipod text ua is an iphone');
-				ok(w.BrowserDetector.isIphone('sdfdg-ipodesdf') == true,'ua contains ipod then is an iphone');
+				ok(w.BrowserDetector.isIpad('sdfdg-ipadesdf'),'ua contains ipad then is an ipad');
+				ok(w.BrowserDetector.isIpad('ipad iphone'),'ua contains ipad AND iphone then IS ipad');
 			});
+			
 			
 			//test('is')
 			
