@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 111 - 2014-04-30
+/*! framework.js - v1.3.1 - build 112 - 2014-05-02
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1227,66 +1227,66 @@
 	
 	var browserDetector = function () {
 		var getUserAgent = function (userAgent) {
-			if (userAgent !== '' && !userAgent) {
-				userAgent = navigator.userAgent;
+			if (!userAgent) {
+				return window.navigator.userAgent;
 			}
 			return userAgent;
 		};
 		
-		return {
-			isIos : function (userAgent) {
-				return global.BrowserDetector.isIphone(userAgent) || 
-					global.BrowserDetector.isIpad(userAgent);
+		var testUserAgent = function (regexp, userAgent) {
+			userAgent = getUserAgent(userAgent);
+			return regexp.test(userAgent);
+		};
+		
+		var detector = {
+			isIos: function (userAgent) {
+				return detector.isIphone(userAgent) || 
+					detector.isIpad(userAgent);
 			},
 			
-			isIphone : function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/iPhone/i) || userAgent.match(/iPod/i));
+			isIphone: function (userAgent) {
+				return !detector.isIpad(userAgent) &&
+					(testUserAgent(/iPhone/i, userAgent) || testUserAgent(/iPod/i, userAgent));
 			},
 			
-			isIpad : function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/iPad/i));
+			isIpad: function (userAgent) {
+				return testUserAgent(/iPad/i, userAgent);
 			},
 			
-			isAndroid : function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/Android/i));
+			isAndroid: function (userAgent) {
+				return testUserAgent(/Android/i, userAgent);
 			},
 			
 			isAndroidPhone: function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return global.BrowserDetector.isAndroid(userAgent) && 
-					!!(userAgent.match(/mobile/i));
+				return detector.isAndroid(userAgent) && 
+					testUserAgent(/mobile/i, userAgent);
 			},
 			
-			isPhone : function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return global.BrowserDetector.isOtherPhone(userAgent) || 
-					global.BrowserDetector.isAndroidPhone(userAgent) ||
-					global.BrowserDetector.isIphone(userAgent);
+			isPhone: function (userAgent) {
+				return !detector.isIpad(userAgent) && (
+					detector.isOtherPhone(userAgent) || 
+					detector.isAndroidPhone(userAgent) ||
+					detector.isIphone(userAgent));
 			},
 			
-			isOtherPhone : function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/phone/i));
+			isOtherPhone: function (userAgent) {
+				return testUserAgent(/phone/i, userAgent);
 			},
 			
-			isOtherMobile : function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return !!(userAgent.match(/mobile/i)) ||
-					global.BrowserDetector.isOtherPhone(userAgent);
+			isOtherMobile: function (userAgent) {
+				return testUserAgent(/mobile/i, userAgent) ||
+					detector.isOtherPhone(userAgent);
 			},
 			
-			isMobile : function (userAgent) {
-				return global.BrowserDetector.isIos(userAgent) || 
-					global.BrowserDetector.isAndroid(userAgent) || 
-					global.BrowserDetector.isOtherMobile(userAgent);
+			isMobile: function (userAgent) {
+				return detector.isIos(userAgent) || 
+					detector.isAndroid(userAgent) || 
+					detector.isOtherMobile(userAgent);
 			},
 			
-			isMsie : function (userAgent) {
-				userAgent = getUserAgent(userAgent);
-				return userAgent.match(/msie/gi) || userAgent.match(/trident/gi);
+			isMsie: function (userAgent) {
+				return testUserAgent(/msie/mi, userAgent) || 
+					testUserAgent(/trident/mi, userAgent);
 			}
 			
 			/*isUnsupported : function (userAgent) {
@@ -1298,6 +1298,9 @@
 				return b.browser === "" || (b.browser == 'msie' && parseInt(b.version,10)) < 9;
 			}*/
 		};
+		
+		// return newly created object
+		return detector;
 	};
 	
 	// Query string Parser
