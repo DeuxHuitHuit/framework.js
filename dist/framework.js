@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.1 - build 112 - 2014-05-02
+/*! framework.js - v1.3.2 - build 113 - 2014-08-29
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -862,6 +862,12 @@
 						
 						App.modules.notify('pages.loading', {
 							page: nextPage
+						});
+						
+						App.modules.notify('pages.requestBeginPageTransition', {
+							currentPage: currentPage,
+							nextPage: nextPage,
+							route: route
 						});
 						
 						// Load from xhr or use cache copy
