@@ -274,6 +274,12 @@
 							page: nextPage
 						});
 						
+						App.modules.notify('pages.requestBeginPageTransition', {
+							currentPage: currentPage,
+							nextPage: nextPage,
+							route: route
+						});
+						
 						// Load from xhr or use cache copy
 						if (!nextPage.loaded()) {
 							// Raise the flag to mark we are in the process
