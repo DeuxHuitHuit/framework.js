@@ -329,7 +329,7 @@
 		return this;
 	};
 	
-	var togglePage = function (route) {
+	var togglePage = function (route, fallback) {
 		if (!!currentPage && _validateMediatorState()) {
 			var 
 			nextPage = App.pages.getPageForRoute(route);
@@ -339,6 +339,9 @@
 					gotoPage(route);
 				} else if (!!previousUrl) {
 					gotoPage(previousUrl);
+				} else if (!!fallback) {
+					gotoPage(fallback);	
+				}
 				} else {
 					App.modules.notify('page.toggleNoPreviousUrl', { currentPage: nextPage });
 				}
