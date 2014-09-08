@@ -27,18 +27,7 @@ module.exports = function fxGruntConfig(grunt) {
 		'/tests/loader.js.test.html?noglobals=true'
 	];
 	
-	var TEST_FILES = [];
 	var TEST_URIS = [];
-	
-	// for karma
-	var createTestFiles = function () {
-		for (var c = 0; c < TEST_PATHS.length; c++) {
-			TEST_FILES.push(TEST_PATHS[c]);
-			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.10.2');
-			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.9.1');
-			TEST_FILES.push(TEST_PATHS[c] + '&jquery=1.8');
-		}
-	};
 	
 	// for qunit
 	var createTestUris = function () {
@@ -176,38 +165,6 @@ module.exports = function fxGruntConfig(grunt) {
 					maintainability: 90
 				}
 			}
-		},
-		karma: {
-			unit: {
-				//configFile: 'karma.conf.js',
-				files: TEST_FILES,
-				frameworks: ['qunit'],
-				runnerPort: SERVER_PORT,
-				singleRun: true,
-				browsers: ['PhantomJS']
-			},
-			linux: {
-				files: TEST_FILES,
-				frameworks: ['qunit'],
-				runnerPort: SERVER_PORT,
-				singleRun: true,
-				browsers: ['Chrome', 'Firefox', 'PhantomJS']
-			},
-			win32: {
-				files: TEST_FILES,
-				frameworks: ['qunit'],
-				//runnerPort: SERVER_PORT,
-				singleRun: true,
-				basePath: '',
-				browsers: ['Chrome', 'Firefox', 'IE']
-			},
-			darwin: {
-				files: TEST_FILES,
-				frameworks: ['qunit'],
-				runnerPort: SERVER_PORT,
-				singleRun: true,
-				browsers: ['Chrome', 'Firefox', 'Safari', 'PhantomJS']
-			}
 		}
 	};
 	
@@ -260,22 +217,12 @@ module.exports = function fxGruntConfig(grunt) {
 		grunt.registerTask('dev',       ['jshint', 'connect', 'qunit', 'complexity']);
 		grunt.registerTask('build',     ['buildnum', 'concat', 'uglify', 'fix-source-map']);
 		grunt.registerTask('test',      ['jshint', 'connect', 'qunit']);
-		
-		// karma requires some env variables
-		// export PHANTOMJS_BIN=/usr/bin/phantomjs
-		// export CHROME_BIN=/usr/bin/chromium-browser
-		
-		// IE requires ENV VAR on Windows too
-		// SETX IE_BIN "C:\Program Files\Internet Explorer\iexplore.exe"
-		// SETX FIREFOX_BIN "C:\Program Files (x86)\Mozilla Firefox\firefox.exe"
-		grunt.registerTask('karma-test', ['jshint', 'karma:' + os.platform() || 'unit']);
 	};
 	
 	var load = function (grunt) {
 		md.filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 		
 		createTestUris();
-		createTestFiles();
 		
 		init(grunt);
 		
