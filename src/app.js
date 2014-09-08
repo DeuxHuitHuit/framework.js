@@ -340,8 +340,7 @@
 				} else if (!!previousUrl) {
 					gotoPage(previousUrl);
 				} else if (!!fallback) {
-					gotoPage(fallback);	
-				}
+					gotoPage(fallback);
 				} else {
 					App.modules.notify('page.toggleNoPreviousUrl', { currentPage: nextPage });
 				}
