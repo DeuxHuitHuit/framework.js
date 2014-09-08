@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.2 - build 113 - 2014-08-29
+/*! framework.js - v1.3.2 - build 114 - 2014-09-08
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -919,7 +919,7 @@
 		return this;
 	};
 	
-	var togglePage = function (route) {
+	var togglePage = function (route, fallback) {
 		if (!!currentPage && _validateMediatorState()) {
 			var 
 			nextPage = App.pages.getPageForRoute(route);
@@ -929,6 +929,8 @@
 					gotoPage(route);
 				} else if (!!previousUrl) {
 					gotoPage(previousUrl);
+				} else if (!!fallback) {
+					gotoPage(fallback);
 				} else {
 					App.modules.notify('page.toggleNoPreviousUrl', { currentPage: nextPage });
 				}
