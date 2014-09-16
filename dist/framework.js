@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.2 - build 114 - 2014-09-08
+/*! framework.js - v1.3.2 - build 115 - 2014-09-16
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1247,6 +1247,12 @@
 		};
 		
 		var detector = {
+		
+			isTablette: function (userAgent) {
+				return detector.isMobile(userAgent) &&
+					!detector.isPhone(userAgent);
+			},
+			
 			isIos: function (userAgent) {
 				return detector.isIphone(userAgent) || 
 					detector.isIpad(userAgent);
@@ -1333,6 +1339,8 @@
 	$.android = global.BrowserDetector.isAndroid();
 	
 	$.phone = global.BrowserDetector.isPhone();
+	
+	$.tablette = global.BrowserDetector.isTablette();
 	
 	$.touchClick = $.ios || $.android;
 	
