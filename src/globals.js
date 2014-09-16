@@ -56,7 +56,7 @@
 		
 		var detector = {
 		
-			isTablette: function(userAgent) {
+			isTablette: function (userAgent) {
 				return detector.isMobile(userAgent) &&
 					!detector.isPhone(userAgent);
 			},
