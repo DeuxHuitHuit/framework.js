@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.2 - build 115 - 2014-09-16
+/*! framework.js - v1.3.3 - build 116 - 2014-10-10
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1346,9 +1346,13 @@
 	
 	$.click = $.touchClick ? 'touch-click' : 'click';
 	
+})(jQuery, window);
+
 /**
  * General customization for mobile and default easing
  */
+(function ($, global, undefined) {
+	'use strict';
 	
 	// add mobile css class to html
 	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'touchClick'], function (i, c) {
@@ -1365,15 +1369,26 @@
 		var didMove = false;
 		var preventNextClick = false;
 		var lastTouch = {x: 0, y: 0};
-		var minMove = 10 * (window.devicePixelRatio || 1);
 		
 		var preventNextClickExternal = function (target, e) {
 			var ret = true;
-			if ($.isFunction(window.preventNextClick)) {
-				ret = window.preventNextClick.call(target, e);
+			if ($.isFunction(global.preventNextClick)) {
+				ret = global.preventNextClick.call(target, e);
 			}
 			return ret;
 		};
+		
+		var getMinMoveValue = function () {
+			var value = 0;
+			if ($.isNumeric(global.deviceMinMoveValue)) {
+				value = parseInt(global.deviceMinMoveValue, 10);
+			} else if ($.isFunction(global.deviceMinMoveValue)) {
+				value = parseInt(global.deviceMinMoveValue());
+			}
+			return value || 10; // default value
+		};
+		
+		var minMove = getMinMoveValue() * (window.devicePixelRatio || 1);
 		
 		$(document).on('touchstart', function (e) {
 			didMove = false;
