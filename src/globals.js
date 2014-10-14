@@ -196,7 +196,7 @@
 			return value || 10; // default value
 		};
 		
-		var minMove = getMinMoveValue() * (window.devicePixelRatio || 1);
+		var minMove = 0;
 		
 		$(document).on('touchstart', function (e) {
 			didMove = false;
@@ -206,6 +206,9 @@
 			App.log('touchstart', lastTouch);
 		}).on('touchmove', function (e) {
 			var touch = e.originalEvent.changedTouches[0];
+			if (!minMove) {
+				minMove = getMinMoveValue() * (window.devicePixelRatio || 1);
+			}
 			// only count move when one finger is used
 			didMove = e.originalEvent.changedTouches.length === 1 &&
 				// and if the gesture was more than accidental
