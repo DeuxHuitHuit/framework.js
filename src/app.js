@@ -124,7 +124,7 @@
 	* Change the current page to the requested route
 	* Do nothing if the current page is already the requested route
 	*/
-	var gotoPage = function (obj) {
+	var gotoPage = function (obj, previousPoppedUrl) {
 		var nextPage;
 		var route = '';
 		
@@ -138,9 +138,10 @@
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
-				previousUrl = document.location.href.substring(
-					document.location.protocol.length + 2 + document.location.host.length
-				);
+				previousUrl = !!previousPoppedUrl ? previousPoppedUrl : 
+					document.location.href.substring(
+						document.location.protocol.length + 2 + document.location.host.length
+					);
 				//clear leavingPage
 				leavingPage = null;
 				
