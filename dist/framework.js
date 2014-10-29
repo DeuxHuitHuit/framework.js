@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.4 - build 118 - 2014-10-14
+/*! framework.js - v1.3.5 - build 119 - 2014-10-29
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -714,7 +714,7 @@
 	* Change the current page to the requested route
 	* Do nothing if the current page is already the requested route
 	*/
-	var gotoPage = function (obj) {
+	var gotoPage = function (obj, previousPoppedUrl) {
 		var nextPage;
 		var route = '';
 		
@@ -728,9 +728,10 @@
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
-				previousUrl = document.location.href.substring(
-					document.location.protocol.length + 2 + document.location.host.length
-				);
+				previousUrl = !!previousPoppedUrl ? previousPoppedUrl : 
+					document.location.href.substring(
+						document.location.protocol.length + 2 + document.location.host.length
+					);
 				//clear leavingPage
 				leavingPage = null;
 				
