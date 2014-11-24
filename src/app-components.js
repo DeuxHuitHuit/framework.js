@@ -36,13 +36,14 @@
 	var createComponent = function (key, options) {
 		if (!components[key]) {
 			App.log({args: ['Component %s is not found', key], fx: 'error'});
+			return extendComponent({});
 		}
 		
 		var c = components[key];
 		
 		if (!$.isFunction(c)) {
 			App.log({args: ['Component %s is not a function', key], fx: 'error'});
-			return  extendComponent({});
+			return extendComponent({});
 		}
 		
 		return extendComponent(c.call(c, options));
