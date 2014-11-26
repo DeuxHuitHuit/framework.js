@@ -11,10 +11,13 @@
 	/** Utility **/
 	var callback = function (fx, args) {
 		try {
-			if (args !== undefined && // not undefined (null is valid)
-			    !$.isArray(args) && // not an array
-			   (!$.isNumeric(args.length) || $.type(args) === 'string') // no .length or string
-			    ) {
+			if (args === null || // null is valid
+			    ( // or
+			        args !== undefined && // not undefined
+			        !$.isArray(args) && // not an array
+			       (!$.isNumeric(args.length) || $.type(args) === 'string') // no .length or string
+			    )
+			) {
 				// put single parameter inside an array
 				args = [args];
 			}
