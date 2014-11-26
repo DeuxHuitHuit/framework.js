@@ -139,8 +139,7 @@
 				};
 				
 				var thirdTest = function () {
-					var progressCount = 0;
-					var progressE = null;
+					var cacheCount = 0;
 
 					var successCount = 0;
 					var errorCount = 0;
@@ -179,6 +178,21 @@
 							
 							ok(window.Storage.session.get('2.html'), '2.html cache storage is present');
 							equal(window.Storage.session.get('2.html'), 'test file', '2.html cache is 2.html content');
+							
+							stop();
+							
+							Loader.load({
+								url: '2.html', // valid
+								cache: true,
+								cachehit: function () {
+									cacheCount++;
+								},
+								success: function (data) {
+									start();
+									equal(cacheCount, 1, '2.html cache cacheCount is 1');
+									equal(data, window.Storage.session.get('2.html'), '2.html retreived from cache');
+								}
+							});
 						}
 					});
 				};
