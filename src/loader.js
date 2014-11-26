@@ -56,6 +56,13 @@
 		return foundIndex;
 	};
 	
+	var getStorageEngine = function (url) {
+		if (url.cache === true) {
+			url.cache = 'session';
+		}
+		return global.Storage[url.cache];
+	};
+	
 	var _recursiveLoad = function () {
 		if (!!assets.length) {
 			// start next one
@@ -74,7 +81,7 @@
 				// callback
 				App.callback.call(this, asset.progress, arguments);
 			},
-			success: function () {
+			success: function (data) {
 				// clear pointer
 				currentUrl = null;
 				
@@ -83,6 +90,14 @@
 				
 				// callback
 				App.callback.call(this, asset.success, arguments);
+				
+				// store in cache
+				if (!!asset.cache) {
+					var storage = getStorageEngine(asset);
+					if (!!storage) {
+						storage.put(asset.url, data);
+					}
+				}
 			},
 			error: function () {
 				var maxRetriesFactor = !!asset.vip ? 2 : 1;
@@ -176,6 +191,18 @@
 			App.log({args: ['Url %s has been insert at %s', url.url, url.priority], me: 'Loader'});
 			
 		} else {
+			// check cache
+			if (!!url.cache) {
+				var storage = getStorageEngine(url);
+				if (!!storage) {
+					var item = storage.get(url.url);
+					if (!!item) {
+						App.callback.call(this, url.success, item);
+						return this;
+					}
+				}
+			}
+			
 			// promote if new priority is different
 			var oldAsset = assets[index];
 			if (oldAsset.priority != url.priority) {
