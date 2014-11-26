@@ -164,7 +164,7 @@ module.exports = function fxGruntConfig(grunt) {
 					errorsOnly: false, // show only maintainability errors
 					cyclomatic: 10,
 					halstead: 25,
-					maintainability: 90
+					maintainability: 89
 				}
 			}
 		}
