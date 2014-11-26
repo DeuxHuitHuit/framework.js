@@ -149,6 +149,8 @@
 		if (!$.isNumeric(url.maxRetries)) {
 			url.maxRetries = 2;
 		}
+		
+		return url;
 	};
 	
 	var loadAsset = function (url, priority) {
@@ -157,7 +159,7 @@
 			return this;
 		}
 		
-		validateUrlArgs(url, priority);
+		url = validateUrlArgs(url, priority);
 		
 		// ensure that asset is not current
 		if (isLoading(url.url)) {
