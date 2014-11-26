@@ -1,6 +1,6 @@
 # Deux Huit Huit's framework.js [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
-#### Version 1.3.5
+#### Version 1.3.x
 
 Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
