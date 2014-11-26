@@ -95,7 +95,7 @@
 				if (!!asset.cache) {
 					var storage = getStorageEngine(asset);
 					if (!!storage) {
-						storage.put(asset.url, data);
+						storage.set(asset.url, data);
 					}
 				}
 			},
