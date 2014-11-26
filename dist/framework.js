@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.5 - build 119 - 2014-10-29
+/*! framework.js - v1.3.6 - build 120 - 2014-11-26
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -14,8 +14,14 @@
 	/** Utility **/
 	var callback = function (fx, args) {
 		try {
-			if (args !== null && args !== undefined &&
-			   !$.isArray(args) && !$.isNumeric(args.length)) {
+			if (args === null || // null is valid
+			    ( // or
+			        args !== undefined && // not undefined
+			        !$.isArray(args) && // not an array
+			       (!$.isNumeric(args.length) || $.type(args) === 'string') // no .length or string
+			    )
+			) {
+				// put single parameter inside an array
 				args = [args];
 			}
 			
@@ -102,13 +108,14 @@
 	var createComponent = function (key, options) {
 		if (!components[key]) {
 			App.log({args: ['Component %s is not found', key], fx: 'error'});
+			return extendComponent({});
 		}
 		
 		var c = components[key];
 		
 		if (!$.isFunction(c)) {
 			App.log({args: ['Component %s is not a function', key], fx: 'error'});
-			return  extendComponent({});
+			return extendComponent({});
 		}
 		
 		return extendComponent(c.call(c, options));
@@ -1578,6 +1585,13 @@
 		return foundIndex;
 	};
 	
+	var getStorageEngine = function (url) {
+		if (url.cache === true) {
+			url.cache = 'session';
+		}
+		return global.Storage[url.cache];
+	};
+	
 	var _recursiveLoad = function () {
 		if (!!assets.length) {
 			// start next one
@@ -1596,7 +1610,7 @@
 				// callback
 				App.callback.call(this, asset.progress, arguments);
 			},
-			success: function () {
+			success: function (data) {
 				// clear pointer
 				currentUrl = null;
 				
@@ -1605,6 +1619,14 @@
 				
 				// callback
 				App.callback.call(this, asset.success, arguments);
+				
+				// store in cache
+				if (!!asset.cache) {
+					var storage = getStorageEngine(asset);
+					if (!!storage) {
+						storage.set(asset.url, data);
+					}
+				}
 			},
 			error: function () {
 				var maxRetriesFactor = !!asset.vip ? 2 : 1;
@@ -1671,6 +1693,8 @@
 		if (!$.isNumeric(url.maxRetries)) {
 			url.maxRetries = 2;
 		}
+		
+		return url;
 	};
 	
 	var loadAsset = function (url, priority) {
@@ -1679,12 +1703,28 @@
 			return this;
 		}
 		
-		validateUrlArgs(url, priority);
+		url = validateUrlArgs(url, priority);
 		
 		// ensure that asset is not current
 		if (isLoading(url.url)) {
 			App.log({args: ['Url %s is already loading', url.url], me: 'Loader'});
 			return this;
+		}
+		
+		// check cache
+		if (!!url.cache) {
+			var storage = getStorageEngine(url);
+			if (!!storage) {
+				var item = storage.get(url.url);
+				if (!!item) {
+					// if the cache-hit is valid
+					if (App.callback.call(this, url.cachehit, item) !== false) {
+						// return the cache
+						App.callback.call(this, url.success, item);
+						return this;
+					}
+				}
+			}
 		}
 		
 		var index = inQueue(url.url);
@@ -1735,6 +1775,70 @@
 		working: function () {
 			return loaderIsWorking;
 		}
+	});
+	
+})(jQuery, window);
+
+/**
+ * @author Deux Huit Huit
+ * 
+ * Storage: A safe wrapper around window.localStorage/sessionStorage
+ */
+(function ($, global, undefined) {
+	'use strict';
+	
+	var storage = function (storage) {
+		return {
+			get: function (key) {
+				if (!key) {
+					return;
+				}
+				key += ''; // make it a string
+				return storage[key];
+			},
+			set: function (key, value) {
+				var result = false;
+				if (!!key) {
+					key += ''; // make it a string
+					try {
+						storage[key] = value + '';
+						result = true;
+					} catch (e) {
+						App.log({
+							args: e.message,
+							me: 'Storage',
+							fx: 'error'
+						});
+						result = false;
+					}
+				}
+				return result;
+			},
+			remove: function (key) {
+				var result = false;
+				if (!!key) {
+					key += ''; // make it a string
+					try {
+						storage.removeItem(key);
+						result = true;
+					} catch (e) {
+						App.log({
+							args: e.message,
+							me: 'Storage',
+							fx: 'error'
+						});
+						result = false;
+					}
+				}
+				return result;
+			}
+		};
+	};
+	
+	global.Storage = $.extend(global.Storage, {
+		facotry: storage,
+		local: storage(window.localStorage),
+		session: storage(window.sessionStorage)
 	});
 	
 })(jQuery, window);
