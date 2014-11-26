@@ -182,6 +182,22 @@
 			return this;
 		}
 		
+		// check cache
+		if (!!url.cache) {
+			var storage = getStorageEngine(url);
+			if (!!storage) {
+				var item = storage.get(url.url);
+				if (!!item) {
+					// if the cache-hit is valid
+					if (App.callback.call(this, url.cachehit, item) !== false) {
+						// return the cache
+						App.callback.call(this, url.success, item);
+						return this;
+					}
+				}
+			}
+		}
+		
 		var index = inQueue(url.url);
 		
 		// ensure that asset is not in the queue
@@ -191,18 +207,6 @@
 			App.log({args: ['Url %s has been insert at %s', url.url, url.priority], me: 'Loader'});
 			
 		} else {
-			// check cache
-			if (!!url.cache) {
-				var storage = getStorageEngine(url);
-				if (!!storage) {
-					var item = storage.get(url.url);
-					if (!!item) {
-						App.callback.call(this, url.success, item);
-						return this;
-					}
-				}
-			}
-			
 			// promote if new priority is different
 			var oldAsset = assets[index];
 			if (oldAsset.priority != url.priority) {
