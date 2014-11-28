@@ -56,7 +56,7 @@
 		
 		var detector = {
 		
-			isTablette: function (userAgent) {
+			isTablet: function (userAgent) {
 				return detector.isMobile(userAgent) &&
 					!detector.isPhone(userAgent);
 			},
@@ -148,7 +148,7 @@
 	
 	$.phone = global.BrowserDetector.isPhone();
 	
-	$.tablette = global.BrowserDetector.isTablette();
+	$.tablet = global.BrowserDetector.isTablet();
 	
 	$.touchClick = $.ios || $.android;
 	
