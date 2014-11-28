@@ -61,6 +61,11 @@
 					!detector.isPhone(userAgent);
 			},
 			
+			/* @deprecated */
+			isTablette: function (userAgent) {
+				return this.isTablet(userAgent);
+			},
+			
 			isIos: function (userAgent) {
 				return detector.isIphone(userAgent) || 
 					detector.isIpad(userAgent);
@@ -153,6 +158,10 @@
 	$.touch = $.ios || $.android;
 	
 	$.click = $.touch ? 'touch-click' : 'click';
+	
+	/* @deprecated values */
+	$.tablette = $.tablet;
+	$.touchClick = $.touch;
 	
 })(jQuery, window);
 
