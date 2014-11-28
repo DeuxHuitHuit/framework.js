@@ -150,9 +150,9 @@
 	
 	$.tablet = global.BrowserDetector.isTablet();
 	
-	$.touchClick = $.ios || $.android;
+	$.touch = $.ios || $.android;
 	
-	$.click = $.touchClick ? 'touch-click' : 'click';
+	$.click = $.touch ? 'touch-click' : 'click';
 	
 })(jQuery, window);
 
@@ -163,7 +163,7 @@
 	'use strict';
 	
 	// add mobile css class to html
-	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'touchClick'], function (i, c) {
+	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'touch'], function (i, c) {
 		if (!!$[c]) {
 			$('html').addClass(c);
 		}
@@ -172,8 +172,8 @@
 	// easing support
 	$.easing.def = ($.mobile ? 'linear' : 'easeOutQuad');
 	
-	// touch support
-	if ($.touchClick) {
+	// touch support: removing the 300ms delay
+	if ($.touch) {
 		var didMove = false;
 		var preventNextClick = false;
 		var lastTouch = {x: 0, y: 0};
