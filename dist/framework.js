@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.6 - build 120 - 2014-11-26
+/*! framework.js - v1.3.7 - build 121 - 2014-11-28
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1256,7 +1256,7 @@
 		
 		var detector = {
 		
-			isTablette: function (userAgent) {
+			isTablet: function (userAgent) {
 				return detector.isMobile(userAgent) &&
 					!detector.isPhone(userAgent);
 			},
@@ -1348,11 +1348,11 @@
 	
 	$.phone = global.BrowserDetector.isPhone();
 	
-	$.tablette = global.BrowserDetector.isTablette();
+	$.tablet = global.BrowserDetector.isTablet();
 	
-	$.touchClick = $.ios || $.android;
+	$.touch = $.ios || $.android;
 	
-	$.click = $.touchClick ? 'touch-click' : 'click';
+	$.click = $.touch ? 'touch-click' : 'click';
 	
 })(jQuery, window);
 
@@ -1363,7 +1363,7 @@
 	'use strict';
 	
 	// add mobile css class to html
-	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'touchClick'], function (i, c) {
+	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'touch'], function (i, c) {
 		if (!!$[c]) {
 			$('html').addClass(c);
 		}
@@ -1372,8 +1372,8 @@
 	// easing support
 	$.easing.def = ($.mobile ? 'linear' : 'easeOutQuad');
 	
-	// touch support
-	if ($.touchClick) {
+	// touch support: removing the 300ms delay
+	if ($.touch) {
 		var didMove = false;
 		var preventNextClick = false;
 		var lastTouch = {x: 0, y: 0};
