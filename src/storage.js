@@ -50,6 +50,30 @@
 					}
 				}
 				return result;
+			},
+			clear: function (regexp) {
+				var result = false;
+				try {
+					if (!regexp) {
+						storage.clear();
+					} else {
+						for (var i = 0; i < storage.length; i++) {
+							var key = storage.key(i);
+							if (regexp.test(key)) {
+								storage.removeItem(key);
+							}
+						}
+					}
+					result = true;
+				} catch (e) {
+					App.log({
+						args: e.message,
+						me: 'Storage',
+						fx: 'error'
+					});
+					result = false;
+				}
+				return result;
 			}
 		};
 	};
