@@ -80,7 +80,8 @@ Adds some flag value on the jquery object to detect the browser used
 * **1.1**: Patch update
 * **1.0**: Initial release
 
-# Copyrights and license
+### LICENSE
 
-(c) 2013-2014 Deux Huit Huit: <http://deuxhuithu.it>, <http://deuxhuithuit.github.io>    
-<http://deuxhuithuit.mit-license.org>
+[MIT](http://deuxhuithuit.mit-license.org)    
+Made with love in Montréal by [Deux Huit Huit](http://deuxhuithuit.com)    
+Copyrights (c) 2013-2014
