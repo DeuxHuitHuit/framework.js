@@ -51,6 +51,10 @@
 
 		'use strict';
 
+		// clean up
+		window.localStorage.clear();
+		window.sessionStorage.clear();
+
 		var runTests = function  () {
 
 			module('Storage');
@@ -67,14 +71,23 @@
 				return Storage.factory(self);
 			})(window.Storage);
 
-			test('mock get/set', function loaderLoadTest () {
-				var value = 'VALUE';
+			var getSetTest = function (store, prefix) {
+				var fx = function () {
+					var value = 'VALUE';
 
-				ok(mock_storage.get(value) === undefined, 'mock is empty');
-				ok(mock_storage.set(value, value), 'mock was set');
-				ok(mock_storage.get(value) === value, 'mock was get');
-			});
+					ok(store.get(value) === undefined, prefix + ' is empty');
+					ok(store.set(value, value), prefix + ' was set');
+					ok(store.get(value) === value, prefix + ' was get');
+				};
+				fx.displayName = prefix + 'GetSetTest';
+				return fx;
+			};
 
+			test('mock get/set', getSetTest(mock_storage, 'mock'));
+
+			test('local get/set', getSetTest(Storage.local, 'local'));
+
+			test('session get/set', getSetTest(Storage.session, 'session'));
 
 		}; // end run tests
 
