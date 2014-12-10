@@ -24,7 +24,8 @@ module.exports = function fxGruntConfig(grunt) {
 		'/tests/framework.debug.js.test.html?noglobals=true',
 		'/tests/framework.callback.js.test.html?noglobals=true',
 		'/tests/framework.app.js.test.html?noglobals=true',
-		'/tests/loader.js.test.html?noglobals=true'
+		'/tests/loader.js.test.html?noglobals=true',
+		'/tests/storage.js.test.html?noglobals=true'
 	];
 	
 	var TEST_URIS = [];
