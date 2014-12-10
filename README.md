@@ -83,5 +83,5 @@ Adds some flag value on the jquery object to detect the browser used
 ### LICENSE
 
 [MIT](http://deuxhuithuit.mit-license.org)    
-Made with love in Montréal by [Deux Huit Huit](http://deuxhuithuit.com)    
+Made with love in Montréal by [Deux Huit Huit](https://deuxhuithuit.com)    
 Copyrights (c) 2013-2014
