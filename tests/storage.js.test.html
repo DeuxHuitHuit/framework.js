@@ -91,11 +91,45 @@
 				return fx;
 			};
 
+			var clearTest = function (store, prefix) {
+				var fx = function () {
+					var key1 = 'bar';
+					var key2 = 'foo';
+					var key3 = 'foo2';
+					var value = 'VALUE';
+
+					$.each([key1, key2, key3], function (i, k) {
+						ok(store.set(k, value), prefix + ' ' + k + ' was set to ' + value);
+						ok(store.get(k) === value, prefix + ' ' + k + ' was ' + value);
+					});
+
+					ok(store.clear(/^foo/), 'clear all foos');
+					ok(store.get(key1) === value, prefix + ' ' + key1  + ' was ' + value);
+					ok(store.get(key2) === undefined, prefix + ' ' + key2 + ' was undefined');
+					ok(store.get(key3) === undefined, prefix + ' ' + key3 + ' was undefined');
+
+					$.each([key1, key2, key3], function (i, k) {
+						ok(store.set(k, value), prefix + ' ' + k + ' was set to ' + value);
+					});
+
+					ok(store.clear(), 'clear all');
+					ok(store.get(key1) === undefined, prefix + ' ' + key1 + ' was undefined');
+					ok(store.get(key2) === undefined, prefix + ' ' + key2 + ' was undefined');
+					ok(store.get(key3) === undefined, prefix + ' ' + key3 + ' was undefined');
+				};
+				fx.displayName = prefix + 'ClearTest';
+				return fx;
+			};
+
 			test('mock get/set', getSetTest(mock_storage, 'mock'));
 
 			test('local get/set', getSetTest(Storage.local, 'local'));
 
 			test('session get/set', getSetTest(Storage.session, 'session'));
+
+			test('local clear', clearTest(Storage.local, 'local'));
+
+			test('session clear', clearTest(Storage.session, 'session'));
 
 		}; // end run tests
 
