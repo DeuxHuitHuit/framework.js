@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.7 - build 121 - 2014-11-28
+/*! framework.js - v1.3.7 - build 122 - 2014-12-10
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1261,6 +1261,11 @@
 					!detector.isPhone(userAgent);
 			},
 			
+			/* @deprecated */
+			isTablette: function (userAgent) {
+				return this.isTablet(userAgent);
+			},
+			
 			isIos: function (userAgent) {
 				return detector.isIphone(userAgent) || 
 					detector.isIpad(userAgent);
@@ -1353,6 +1358,10 @@
 	$.touch = $.ios || $.android;
 	
 	$.click = $.touch ? 'touch-click' : 'click';
+	
+	/* @deprecated values */
+	$.tablette = $.tablet;
+	$.touchClick = $.touch;
 	
 })(jQuery, window);
 
@@ -1801,7 +1810,7 @@
 				if (!!key) {
 					key += ''; // make it a string
 					try {
-						storage[key] = value + '';
+						storage[key] = !value ? '' : value + '';
 						result = true;
 					} catch (e) {
 						App.log({
@@ -1831,12 +1840,36 @@
 					}
 				}
 				return result;
+			},
+			clear: function (regexp) {
+				var result = false;
+				try {
+					if (!regexp) {
+						storage.clear();
+					} else {
+						for (var i = 0; i < storage.length; i++) {
+							var key = storage.key(i);
+							if (regexp.test(key)) {
+								storage.removeItem(key);
+							}
+						}
+					}
+					result = true;
+				} catch (e) {
+					App.log({
+						args: e.message,
+						me: 'Storage',
+						fx: 'error'
+					});
+					result = false;
+				}
+				return result;
 			}
 		};
 	};
-	
+
 	global.Storage = $.extend(global.Storage, {
-		facotry: storage,
+		factory: storage,
 		local: storage(window.localStorage),
 		session: storage(window.sessionStorage)
 	});
