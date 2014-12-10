@@ -20,7 +20,7 @@
 				if (!!key) {
 					key += ''; // make it a string
 					try {
-						storage[key] = value + '';
+						storage[key] = !value ? '' : value + '';
 						result = true;
 					} catch (e) {
 						App.log({
