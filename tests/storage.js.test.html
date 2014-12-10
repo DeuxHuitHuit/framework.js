@@ -76,8 +76,16 @@
 					var value = 'VALUE';
 
 					ok(store.get(value) === undefined, prefix + ' is empty');
-					ok(store.set(value, value), prefix + ' was set');
-					ok(store.get(value) === value, prefix + ' was get');
+					ok(store.set(value, value), prefix + ' was set to ' + value);
+					ok(store.get(value) === value, prefix + ' was ' + value);
+					ok(store.get(value + '1') === undefined, prefix + ' value1 still undefined');
+					ok(store.get(value) === value, prefix + ' was ');
+					ok(store.set(value, null), prefix + ' was set to null');
+					ok(store.get(value) === '', prefix + ' was ""');
+					ok(store.set(value, value), prefix + ' was set to ' + value);
+					ok(store.get(value) === value, prefix + ' was ' + value);
+					ok(store.remove(value), prefix + ' was removed');
+					ok(store.get(value) === undefined, prefix + ' is empty');
 				};
 				fx.displayName = prefix + 'GetSetTest';
 				return fx;
