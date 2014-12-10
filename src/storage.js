@@ -77,9 +77,9 @@
 			}
 		};
 	};
-	
+
 	global.Storage = $.extend(global.Storage, {
-		facotry: storage,
+		factory: storage,
 		local: storage(window.localStorage),
 		session: storage(window.sessionStorage)
 	});
