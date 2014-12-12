@@ -57,11 +57,15 @@
 					if (!regexp) {
 						storage.clear();
 					} else {
+						var remove = [];
 						for (var i = 0; i < storage.length; i++) {
 							var key = storage.key(i);
 							if (regexp.test(key)) {
-								storage.removeItem(key);
+								remove.push(key);
 							}
+						}
+						for (i = 0; i < remove.length; i++) {
+							storage.removeItem(remove[i]);
 						}
 					}
 					result = true;
