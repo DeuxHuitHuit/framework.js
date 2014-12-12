@@ -1,4 +1,4 @@
-/*! framework.js - v1.3.7 - build 122 - 2014-12-10
+/*! framework.js - v1.3.7 - build 123 - 2014-12-11
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
 /**
@@ -1847,11 +1847,15 @@
 					if (!regexp) {
 						storage.clear();
 					} else {
+						var remove = [];
 						for (var i = 0; i < storage.length; i++) {
 							var key = storage.key(i);
 							if (regexp.test(key)) {
-								storage.removeItem(key);
+								remove.push(key);
 							}
+						}
+						for (i = 0; i < remove.length; i++) {
+							storage.removeItem(remove[i]);
 						}
 					}
 					result = true;
