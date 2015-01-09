@@ -1,6 +1,6 @@
-/*! framework.js - v1.3.7 - build 123 - 2014-12-11
+/*! framework.js - v1.3.7 - build 124 - 2015-01-09
 * https://github.com/DeuxHuitHuit/framework.js
-* Copyright (c) 2014 Deux Huit Huit; Licensed MIT */
+* Copyright (c) 2015 Deux Huit Huit; Licensed MIT */
 /**
  * @author Deux Huit Huit
  * 
@@ -767,6 +767,11 @@
 			//Try to find a module to handle page transition
 			App.modules.notify('pages.requestPageTransition', pageTransitionData);
 			
+			if (!nextPage.isInited) {
+				nextPage.init();
+				nextPage.isInited = true;
+			}
+			
 			//if not, return to classic code
 			if (!pageTransitionData.isHandled) {
 				//Leave to page the transition job
@@ -810,6 +815,7 @@
 				
 				// init page
 				nextPage.init();
+				nextPage.isInited = true;
 				
 				node.hide();
 				
@@ -969,6 +975,7 @@
 			if (!!this.loaded()) {
 				// init page
 				this.init({firstTime: true});
+				this.isInited = true;
 				
 				// find if this is our current page
 				// current route found ?
