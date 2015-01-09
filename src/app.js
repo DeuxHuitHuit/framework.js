@@ -170,6 +170,11 @@
 			//Try to find a module to handle page transition
 			App.modules.notify('pages.requestPageTransition', pageTransitionData);
 			
+			if (!nextPage.isInited) {
+				nextPage.init();
+				nextPage.isInited = true;
+			}
+			
 			//if not, return to classic code
 			if (!pageTransitionData.isHandled) {
 				//Leave to page the transition job
@@ -213,6 +218,7 @@
 				
 				// init page
 				nextPage.init();
+				nextPage.isInited = true;
 				
 				node.hide();
 				
@@ -372,6 +378,7 @@
 			if (!!this.loaded()) {
 				// init page
 				this.init({firstTime: true});
+				this.isInited = true;
 				
 				// find if this is our current page
 				// current route found ?
