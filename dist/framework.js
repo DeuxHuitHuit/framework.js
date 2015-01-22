@@ -1,6 +1,6 @@
-/*! framework.js - v1.1.0 - 2013-10-02
+/*! framework.js - v1.1.1 - 2015-01-22
 * https://github.com/DeuxHuitHuit/framework.js
-* Copyright (c) 2013 Deux Huit Huit; Licensed MIT */
+* Copyright (c) 2015 Deux Huit Huit; Licensed MIT */
 /**
  * @author Deux Huit Huit
  * 
@@ -529,6 +529,8 @@
 			var node = $(data).find(nextPage.key());
 			
 			if (!node.length) {
+				// free mediator
+				mediatorIsLoadingPage = false;
 				App.log({args:['Could not find "%s" in xhr data.', nextPage.key()], fx:'error'});
 				
 			} else {
@@ -580,6 +582,7 @@
 							vip: true, // don't queue on fail
 							success: loadSucess,
 							error: function () {
+								mediatorIsLoadingPage = false;
 								notifyModules('pages.loaderror');
 							}
 						});
