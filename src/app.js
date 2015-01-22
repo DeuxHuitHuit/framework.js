@@ -399,6 +399,8 @@
 			var node = $(data).find(nextPage.key());
 			
 			if (!node.length) {
+				// free mediator
+				mediatorIsLoadingPage = false;
 				App.log({args:['Could not find "%s" in xhr data.', nextPage.key()], fx:'error'});
 				
 			} else {
@@ -450,6 +452,7 @@
 							vip: true, // don't queue on fail
 							success: loadSucess,
 							error: function () {
+								mediatorIsLoadingPage = false;
 								notifyModules('pages.loaderror');
 							}
 						});
