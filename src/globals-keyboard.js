@@ -112,6 +112,7 @@
 		'comma': 188,
 		', ': 188,
 		'dash': 189,
+		'ff-dash': 173,
 		'.': 190,
 		'period': 190,
 		'forward_slash': 191,
