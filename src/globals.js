@@ -137,6 +137,7 @@
 	//Parse the query string and store a copy of the result in the global object
 	global.QS = global.QueryStringParser.parse();
 	
+	
 	// Browser detector
 	global.BrowserDetector = browserDetector();
 	
@@ -172,7 +173,7 @@
 	'use strict';
 	
 	// add mobile css class to html
-	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'touch'], function (i, c) {
+	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'tablet', 'touch'], function (i, c) {
 		if (!!$[c]) {
 			$('html').addClass(c);
 		}
