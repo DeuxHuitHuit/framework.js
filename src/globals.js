@@ -187,7 +187,8 @@
 	'use strict';
 	
 	// add mobile css class to html
-	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'tablet', 'touch'], function (i, c) {
+	var mobileClasses = ['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'tablet', 'touch'];
+	$.each(mobileClasses, function (i, c) {
 		if (!!$[c]) {
 			$('html').addClass(c);
 		}
