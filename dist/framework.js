@@ -1,6 +1,6 @@
-/*! framework.js - v1.3.7 - build 125 - 2015-01-11
+/*! framework.js - v1.3.7 - build 127 - 2015-12-15
 * https://github.com/DeuxHuitHuit/framework.js
-* Copyright (c) 2015 Deux Huit Huit; Licensed MIT */
+* Copyright (c) 2015 Deux Huit Huit; Licensed  */
 /**
  * @author Deux Huit Huit
  * 
@@ -1170,6 +1170,7 @@
 		'comma': 188,
 		', ': 188,
 		'dash': 189,
+		'ff-dash': 173,
 		'.': 190,
 		'period': 190,
 		'forward_slash': 191,
@@ -1241,10 +1242,24 @@
 			}
 			
 			return u;
+		},
+		
+		_stringify = function (qs) {
+			var aqs = [];
+			$.each(qs, function (k, v) {
+				if (!!v) {
+					aqs.push(k + '=' + global.encodeURIComponent(v));
+				}
+			});
+			if (!aqs.length) {
+				return '';
+			}
+			return '?' + aqs.join('&');
 		};
 		
 		return {
-			parse : _parse
+			parse : _parse,
+			stringify: _stringify
 		};
 	};
 	
@@ -1344,6 +1359,7 @@
 	//Parse the query string and store a copy of the result in the global object
 	global.QS = global.QueryStringParser.parse();
 	
+	
 	// Browser detector
 	global.BrowserDetector = browserDetector();
 	
@@ -1379,7 +1395,8 @@
 	'use strict';
 	
 	// add mobile css class to html
-	$.each(['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'touch'], function (i, c) {
+	var mobileClasses = ['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'tablet', 'touch'];
+	$.each(mobileClasses, function (i, c) {
 		if (!!$[c]) {
 			$('html').addClass(c);
 		}
