@@ -34,10 +34,24 @@
 			}
 			
 			return u;
+		},
+		
+		_stringify = function (qs) {
+			var aqs = [];
+			$.each(qs, function (k, v) {
+				if (!!v) {
+					aqs.push(k + '=' + global.encodeURIComponent(v));
+				}
+			});
+			if (!aqs.length) {
+				return '';
+			}
+			return '?' + aqs.join('&');
 		};
 		
 		return {
-			parse : _parse
+			parse : _parse,
+			stringify: _stringify
 		};
 	};
 	
