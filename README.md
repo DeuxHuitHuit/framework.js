@@ -2,9 +2,9 @@
 
 #### Version 1.3.x
 
-Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
+> Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
-The framework use jQuery and extends some functionality.
+The framework use jQuery and Underscore.js and extends some functionality.
 
 ## API
 
@@ -14,8 +14,14 @@ Adds some flag value on the jquery object to detect the browser used
 
 * `$.unsupported` true if it's MSIE less than version 9
 * `$.iphone` true for userAgent containing 'iPhone' or 'iPod'
+* `$.ipad` true for userAgent containing 'iPad'
 * `$.ios` true when iPhone is true or userAgent contain 'iPad'
-* `$.mobile` true when ios is true or userAgent contain 'Android','mobile' or 'phone'
+* `$.mobile` true when ios is true or android is true or userAgent contain 'mobile' or 'phone'
+* `$.android` true for userAgent containing Android'
+* `$.phone` true when userAgent contain 'mobile' or 'phone'
+* `$.tablet` true when mobile but not a phone
+* `$.touch` $.ios || $.android;
+* `$.click` 'touch-click' if touch enabled device, 'click' if not
 
 **Loader**
 
@@ -71,6 +77,8 @@ Adds some flag value on the jquery object to detect the browser used
 ## History
 
 * **1.3**
+	* Ability to preload pages
+	* Added QueryStringParser.stringify
 	* Added callback support for actions functions.
 	* Removed the `e` parameter on notifies.
 	* Added the `cb` parameter on notifies.
