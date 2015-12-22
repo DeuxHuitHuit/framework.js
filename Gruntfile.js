@@ -134,8 +134,8 @@ module.exports = function fxGruntConfig(grunt) {
 			},
 			options: {
 				banner: '<%= meta.banner %>',
-				sourceMap: 'dist/<%= pkg.name %>.map',
-				sourceMappingURL: '<%= pkg.name %>.map',
+				sourceMap: 'dist/<%= pkg.name %>.min.js.map',
+				sourceMappingURL: '<%= pkg.name %>.min.js.map',
 				report: 'gzip',
 				mangle: true,
 				compress: {
