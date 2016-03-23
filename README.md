@@ -78,6 +78,7 @@ Adds some flag value on the jquery object to detect the browser used
 
 * **1.4.x**
 	* Handle server redirects
+	* Allow non-GET requests to be queued
 * **1.3.x**
 	* Ability to preload pages
 	* Added QueryStringParser.stringify
