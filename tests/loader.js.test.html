@@ -149,7 +149,7 @@
 					
 					// mock Storage
 					var _store = {};
-					window.AppStorage = {
+					w.AppStorage = {
 						session: {
 							get: function (key) {
 								return _store[key];
@@ -191,6 +191,8 @@
 									start();
 									equal(cacheCount, 1, '2.html cache cacheCount is 1');
 									equal(data, window.AppStorage.session.get('2.html'), '2.html retreived from cache');
+									
+									delete window.AppStorage;
 								}
 							});
 						}
