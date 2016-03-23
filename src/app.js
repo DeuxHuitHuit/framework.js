@@ -205,7 +205,8 @@
 			var elem = $(ROOT);
 			
 			// Check for redirects
-			var responseUrl = htmldata.find(ROOT + ' > [data-url]').attr('data-url');
+			var responseUrl = htmldata.find(ROOT + ' > [data-response-url]')
+				.attr('data-response-url');
 			
 			if (!!responseUrl && responseUrl != obj) {
 				
