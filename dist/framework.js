@@ -1,6 +1,6 @@
-/*! framework.js - v1.3.8 - build 133 - 2015-12-22
+/*! framework.js - v1.4.0 - build 134 - 2016-03-23
 * https://github.com/DeuxHuitHuit/framework.js
-* Copyright (c) 2015 Deux Huit Huit; Licensed  */
+* Copyright (c) 2016 Deux Huit Huit; Licensed  */
 /**
  * @author Deux Huit Huit
  * 
@@ -18,7 +18,10 @@
 			    ( // or
 			        args !== undefined && // not undefined
 			        !$.isArray(args) && // not an array
-			       (!$.isNumeric(args.length) || $.type(args) === 'string') // no .length or string
+			        // not the 'arguments' type
+			       (!$.isNumeric(args.length) || // no .length
+			         $.type(args) === 'string' || // or not string
+			         !!args.jquery) // or jQuery Object
 			    )
 			) {
 				// put single parameter inside an array
@@ -258,8 +261,12 @@
 	};
 	
 	var notifyModules = function (key, data, cb) {
+		if ($.isFunction(data) && !cb) {
+			cb = data;
+			data = undefined;
+		}
 		$.each(modules, function _actionToAllModules(index) {
-			var res = App._callAction(this.actions(), key, data, cb);
+			var res = App._callAction(this.actions, key, data, cb);
 			if (res !== undefined) {
 				App.callback(cb, [index, res]);
 			}
@@ -545,14 +552,6 @@
 		return page;
 	};
 	
-	// Should notify all pages ??
-	var notifyPage = function (key, data, cb) {
-		App.log({
-			args: 'This method is deprecated in favor of App.mediator.notifyCurrentPage',
-			fx: 'info'
-		});
-	};
-	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		// Page creation
@@ -588,9 +587,7 @@
 			create: createPage,
 			
 			//Add a new template to the list of page templates exports(key,model,override)
-			exports: exportPage,
-			
-			notify: notifyPage
+			exports: exportPage
 		}
 	});
 	
@@ -621,6 +618,9 @@
 	var previousUrl = '';
 	
 	var _callAction = function (actions, key, data) {
+		if ($.isFunction(actions)) {
+			actions = actions();
+		}
 		if (!!actions) {
 			var tempFx = actions[key];
 			
@@ -638,15 +638,16 @@
 			}
 			
 			return App.callback(tempFx, [key, data]);
-			
-		} /*else {
-			App.log({args: '`actions` is null.', fx: 'error'});
-		}*/
+		}
 	};
 	
 	var notifyPage = function (key, data, cb) {
 		if (!!currentPage) {
-			var res = App._callAction(currentPage.actions(), key, data);
+			if ($.isFunction(data) && !cb) {
+				cb = data;
+				data = undefined;
+			}
+			var res = App._callAction(currentPage.actions, key, data);
 			if (res !== undefined) {
 				App.callback(cb, [currentPage.key(), res]);
 			}
@@ -778,7 +779,7 @@
 				
 				//notify all module
 				App.modules.notify('page.leaving', {page: leavingPage});
-					
+				
 				//Leave the current page
 				leavingPage.leave(_leaveCurrent);
 				
@@ -789,10 +790,72 @@
 		};
 		
 		var loadSucess = function (data, textStatus, jqXHR) {
+			var htmldata = $(data);
+			
 			// get the node
-			var node = $(data).find(nextPage.key());
+			var node = htmldata.find(nextPage.key());
+			
+			// get the root node
+			var elem = $(ROOT);
+			
+			// Check for redirects
+			var responseUrl = htmldata.find(ROOT + ' > [data-url]').attr('data-url');
+			
+			if (!!responseUrl && responseUrl != obj) {
+				
+				var redirectedPage = nextPage;
+				
+				// Find the right page
+				nextPage = App.pages.getPageForRoute(responseUrl);
+				
+				// Offer a bail out door
+				App.modules.notify('pages.redirected', {
+					currentPage: currentPage,
+					nextPage: nextPage,
+					redirectedPage: redirectedPage,
+					requestedRoute: route,
+					responseRoute: responseUrl
+				});
+				
+				// Cancel current transition
+				App.modules.notify('pages.requestCancelPageTransition', {
+					currentPage: currentPage,
+					nextPage: nextPage,
+					route: route
+				});
+				
+				if (!_validateNextPage(nextPage)) {
+					App.modules.notify('pages.routeNotFound', {
+						page: currentPage,
+						url: obj,
+						isRedirect: true
+					});
+					App.log({args: ['Redirected route "%s" was not found.', obj], fx: 'error'});
+					return;
+				} else {
+					node = htmldata.find(nextPage.key());
+					if (nextPage === currentPage) {
+						App.modules.notify('pages.navigateToCurrent', {
+							page: nextPage,
+							route: route,
+							isRedirect: true
+						});
+						App.log('redirected next page is the current one');
+					} else {
+						// Start new transition
+						App.modules.notify('pages.requestBeginPageTransition', {
+							currentPage: currentPage,
+							nextPage: nextPage,
+							route: responseUrl,
+							isRedirect: true
+						});
+						
+					}
+				}
+			}
 			
 			if (!node.length) {
+				
 				App.log({args: ['Could not find "%s" in xhr data.', nextPage.key()], fx: 'error'});
 				
 				// free the mediator
@@ -807,8 +870,6 @@
 				});
 				
 			} else {
-				
-				var elem = $(ROOT);
 				
 				// append it to the doc, hidden
 				elem.append(node.css({opacity: 0}));
@@ -831,9 +892,8 @@
 				
 				// actual goto
 				enterLeave();
-				
 			}
-		}; 
+		};
 		
 		var progress = function (e) {
 			var total = e.originalEvent.total;
@@ -856,7 +916,7 @@
 			} else {
 				nextPage = obj;
 			}
-				
+			
 			if (!_validateNextPage(nextPage)) {
 				App.modules.notify('pages.routeNotFound', {
 					page: currentPage, 
