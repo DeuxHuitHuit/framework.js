@@ -41,7 +41,13 @@
 	var currentUrl = null;
 	
 	var isLoading = function (url) {
-		return !!currentUrl && currentUrl === url;
+		if (!$.isPlainObject(url)) {
+			url = {url: url};
+		}
+		if (!!url.method && url.method !== 'GET') {
+			return false;
+		}
+		return !!currentUrl && currentUrl === url.url;
 	};
 	
 	var inQueue = function (url) {
@@ -177,7 +183,7 @@
 		url = validateUrlArgs(url, priority);
 		
 		// ensure that asset is not current
-		if (isLoading(url.url)) {
+		if (isLoading(url)) {
 			App.log({args: ['Url %s is already loading', url.url], me: 'Loader'});
 			return this;
 		}

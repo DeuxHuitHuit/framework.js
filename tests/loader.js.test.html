@@ -193,10 +193,33 @@
 									equal(data, window.AppStorage.session.get('2.html'), '2.html retreived from cache');
 									
 									delete window.AppStorage;
+									
+									fourthTest();
 								}
 							});
 						}
 					});
+				};
+				
+				var fourthTest = function () {
+					Loader.load({
+						url: '2.html',
+						complete: function () {
+							start();
+						}
+					});
+					
+					ok(Loader.isLoading('2.html'), '2.html is loading');
+					ok(Loader.isLoading({url: '2.html'}), '{ url: \'2.html\' } is loading');
+					equal(Loader.inQueue('2.html'), -1, '2.html is not in queue');
+					
+					Loader.load({
+						url: '2.html',
+						method: 'POST'
+					});
+					equal(Loader.inQueue('2.html'), 0, '2.html is not in queue');
+					
+					stop();
 				};
 				
 				fisrtTest();
