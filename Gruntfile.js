@@ -34,11 +34,12 @@ module.exports = function fxGruntConfig(grunt) {
 	var createTestUris = function () {
 		for (var c = 0; c < TEST_PATHS.length; c++) {
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c]);
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=2.1.4');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=2.0.3');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.12.2');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.11.1');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.10.2');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.9.1');
-			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.8');
 		}
 	};
 	
