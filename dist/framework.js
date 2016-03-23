@@ -1,4 +1,4 @@
-/*! framework.js - v1.4.0 - build 134 - 2016-03-23
+/*! framework.js - v1.4.0 - build 135 - 2016-03-23
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2016 Deux Huit Huit; Licensed  */
 /**
@@ -799,7 +799,8 @@
 			var elem = $(ROOT);
 			
 			// Check for redirects
-			var responseUrl = htmldata.find(ROOT + ' > [data-url]').attr('data-url');
+			var responseUrl = htmldata.find(ROOT + ' > [data-response-url]')
+				.attr('data-response-url');
 			
 			if (!!responseUrl && responseUrl != obj) {
 				
