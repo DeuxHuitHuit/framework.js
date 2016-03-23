@@ -229,6 +229,25 @@
 				equal(count, 3, '3 modules got called');
 			});
 			
+			test('notify - with actions as an object', function appModuleNotifyTest () {
+				var count = 0;
+				var testModule = {
+					actions: {
+						test: function () {
+							count++;
+						}
+					}
+				};
+				App.modules.exports('moduleA', testModule, true);
+				App.modules.exports('moduleB', testModule, true);
+				App.modules.exports('moduleC', testModule, true);
+				App.modules.exports('moduleD', {}, true);
+				
+				App.modules.notify('test');
+				
+				equal(count, 3, '3 modules got called');
+			});
+			
 			test('notify - JSON Path', function appModuleNotifyJsonPathTest () {
 				var count = 0;
 				var testModule = {

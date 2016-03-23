@@ -24,6 +24,9 @@
 	var previousUrl = '';
 	
 	var _callAction = function (actions, key, data) {
+		if ($.isFunction(actions)) {
+			actions = actions();
+		}
 		if (!!actions) {
 			var tempFx = actions[key];
 			
@@ -41,10 +44,7 @@
 			}
 			
 			return App.callback(tempFx, [key, data]);
-			
-		} /*else {
-			App.log({args: '`actions` is null.', fx: 'error'});
-		}*/
+		}
 	};
 	
 	var notifyPage = function (key, data, cb) {
@@ -53,7 +53,7 @@
 				cb = data;
 				data = undefined;
 			}
-			var res = App._callAction(currentPage.actions(), key, data);
+			var res = App._callAction(currentPage.actions, key, data);
 			if (res !== undefined) {
 				App.callback(cb, [currentPage.key(), res]);
 			}
