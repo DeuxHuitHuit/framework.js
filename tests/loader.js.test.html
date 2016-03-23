@@ -149,7 +149,7 @@
 					
 					// mock Storage
 					var _store = {};
-					window.Storage = {
+					window.AppStorage = {
 						session: {
 							get: function (key) {
 								return _store[key];
@@ -176,8 +176,8 @@
 							
 							equal(successCount, 1, '2.html cache successCount is 1');
 							
-							ok(window.Storage.session.get('2.html'), '2.html cache storage is present');
-							equal(window.Storage.session.get('2.html'), 'test file', '2.html cache is 2.html content');
+							ok(window.AppStorage.session.get('2.html'), '2.html cache storage is present');
+							equal(window.AppStorage.session.get('2.html'), 'test file', '2.html cache is 2.html content');
 							
 							stop();
 							
@@ -190,7 +190,7 @@
 								success: function (data) {
 									start();
 									equal(cacheCount, 1, '2.html cache cacheCount is 1');
-									equal(data, window.Storage.session.get('2.html'), '2.html retreived from cache');
+									equal(data, window.AppStorage.session.get('2.html'), '2.html retreived from cache');
 								}
 							});
 						}

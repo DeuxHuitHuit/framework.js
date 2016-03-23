@@ -60,7 +60,7 @@
 		if (url.cache === true) {
 			url.cache = 'session';
 		}
-		return global.Storage[url.cache];
+		return global.AppStorage[url.cache];
 	};
 	
 	var _recursiveLoad = function () {
