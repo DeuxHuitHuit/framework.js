@@ -1,4 +1,4 @@
-/*! framework.js - v1.4.0 - build 135 - 2016-03-23
+/*! framework.js - v1.4.1 - build 136 - 2016-03-23
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2016 Deux Huit Huit; Licensed  */
 /**
@@ -1664,7 +1664,13 @@
 	var currentUrl = null;
 	
 	var isLoading = function (url) {
-		return !!currentUrl && currentUrl === url;
+		if (!$.isPlainObject(url)) {
+			url = {url: url};
+		}
+		if (!!url.method && url.method !== 'GET') {
+			return false;
+		}
+		return !!currentUrl && currentUrl === url.url;
 	};
 	
 	var inQueue = function (url) {
@@ -1683,7 +1689,7 @@
 		if (url.cache === true) {
 			url.cache = 'session';
 		}
-		return global.Storage[url.cache];
+		return global.AppStorage && global.AppStorage[url.cache];
 	};
 	
 	var _recursiveLoad = function () {
@@ -1800,7 +1806,7 @@
 		url = validateUrlArgs(url, priority);
 		
 		// ensure that asset is not current
-		if (isLoading(url.url)) {
+		if (isLoading(url)) {
 			App.log({args: ['Url %s is already loading', url.url], me: 'Loader'});
 			return this;
 		}
@@ -1957,10 +1963,13 @@
 		};
 	};
 
-	global.Storage = $.extend(global.Storage, {
+	global.AppStorage = $.extend(global.AppStorage, {
 		factory: storage,
 		local: storage(window.localStorage),
 		session: storage(window.sessionStorage)
 	});
+	
+	// @deprecated
+	global.Storage = $.extend(global.Storage, global.AppStorage);
 	
 })(jQuery, window);
