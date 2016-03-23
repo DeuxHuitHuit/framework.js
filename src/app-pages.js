@@ -255,14 +255,6 @@
 		return page;
 	};
 	
-	// Should notify all pages ??
-	var notifyPage = function (key, data, cb) {
-		App.log({
-			args: 'This method is deprecated in favor of App.mediator.notifyCurrentPage',
-			fx: 'info'
-		});
-	};
-	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		// Page creation
@@ -298,9 +290,7 @@
 			create: createPage,
 			
 			//Add a new template to the list of page templates exports(key,model,override)
-			exports: exportPage,
-			
-			notify: notifyPage
+			exports: exportPage
 		}
 	});
 	
