@@ -1,6 +1,6 @@
 # Deux Huit Huit's framework.js [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![David DM](https://david-dm.org/DeuxHuitHuit/framework.js/dev-status.svg?style=flat)](https://david-dm.org/DeuxHuitHuit/framework.js#info=devDependencies)
 
-#### Version 1.3.x
+#### Version 1.4.x
 
 > Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
@@ -76,7 +76,9 @@ Adds some flag value on the jquery object to detect the browser used
 		
 ## History
 
-* **1.3**
+* **1.4.x**
+	* Handle server redirects
+* **1.3.x**
 	* Ability to preload pages
 	* Added QueryStringParser.stringify
 	* Added callback support for actions functions.
