@@ -181,7 +181,7 @@
 				
 				//notify all module
 				App.modules.notify('page.leaving', {page: leavingPage});
-					
+				
 				//Leave the current page
 				leavingPage.leave(_leaveCurrent);
 				
@@ -192,10 +192,72 @@
 		};
 		
 		var loadSucess = function (data, textStatus, jqXHR) {
+			var htmldata = $(data);
+			
 			// get the node
-			var node = $(data).find(nextPage.key());
+			var node = htmldata.find(nextPage.key());
+			
+			// get the root node
+			var elem = $(ROOT);
+			
+			// Check for redirects
+			var responseUrl = htmldata.find(ROOT + ' > [data-url]').attr('data-url');
+			
+			if (!!responseUrl && responseUrl != obj) {
+				
+				var redirectedPage = nextPage;
+				
+				// Find the right page
+				nextPage = App.pages.getPageForRoute(responseUrl);
+				
+				// Offer a bail out door
+				App.modules.notify('pages.redirected', {
+					currentPage: currentPage,
+					nextPage: nextPage,
+					redirectedPage: redirectedPage,
+					requestedRoute: route,
+					responseRoute: responseUrl
+				});
+				
+				// Cancel current transition
+				App.modules.notify('pages.requestCancelPageTransition', {
+					currentPage: currentPage,
+					nextPage: nextPage,
+					route: route
+				});
+				
+				if (!_validateNextPage(nextPage)) {
+					App.modules.notify('pages.routeNotFound', {
+						page: currentPage,
+						url: obj,
+						isRedirect: true
+					});
+					App.log({args: ['Redirected route "%s" was not found.', obj], fx: 'error'});
+					return;
+				} else {
+					node = htmldata.find(nextPage.key());
+					if (nextPage === currentPage) {
+						App.modules.notify('pages.navigateToCurrent', {
+							page: nextPage,
+							route: route,
+							isRedirect: true
+						});
+						App.log('redirected next page is the current one');
+					} else {
+						// Start new transition
+						App.modules.notify('pages.requestBeginPageTransition', {
+							currentPage: currentPage,
+							nextPage: nextPage,
+							route: responseUrl,
+							isRedirect: true
+						});
+						
+					}
+				}
+			}
 			
 			if (!node.length) {
+				
 				App.log({args: ['Could not find "%s" in xhr data.', nextPage.key()], fx: 'error'});
 				
 				// free the mediator
@@ -210,8 +272,6 @@
 				});
 				
 			} else {
-				
-				var elem = $(ROOT);
 				
 				// append it to the doc, hidden
 				elem.append(node.css({opacity: 0}));
@@ -234,9 +294,8 @@
 				
 				// actual goto
 				enterLeave();
-				
 			}
-		}; 
+		};
 		
 		var progress = function (e) {
 			var total = e.originalEvent.total;
@@ -259,7 +318,7 @@
 			} else {
 				nextPage = obj;
 			}
-				
+			
 			if (!_validateNextPage(nextPage)) {
 				App.modules.notify('pages.routeNotFound', {
 					page: currentPage, 
