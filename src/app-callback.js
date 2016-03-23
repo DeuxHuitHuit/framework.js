@@ -15,7 +15,10 @@
 			    ( // or
 			        args !== undefined && // not undefined
 			        !$.isArray(args) && // not an array
-			       (!$.isNumeric(args.length) || $.type(args) === 'string') // no .length or string
+			        // not the 'arguments' type
+			       (!$.isNumeric(args.length) || // no .length
+			         $.type(args) === 'string' || // or not string
+			         !!args.jquery) // or jQuery Object
 			    )
 			) {
 				// put single parameter inside an array

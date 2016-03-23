@@ -125,6 +125,15 @@
 				ok(App.callback(test, [1]), 'is working with');
 			});
 			
+			test('Callback work with jQuery object', function NoArray() {
+				var test = function (jquery) {
+					return !!jquery.jquery && !!jquery.show;
+				};
+				
+				ok(App.callback(test, $()), 'is working without');
+				ok(App.callback(test, [$()]), 'is working with');
+			});
+			
 			test('Do now wrap nulls and undefineds and other falsy values', function NoFalsyWraps() {
 				var test = function (one, two, three) {
 					return !one;
