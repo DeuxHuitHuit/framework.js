@@ -82,10 +82,13 @@
 		};
 	};
 
-	global.Storage = $.extend(global.Storage, {
+	global.AppStorage = $.extend(global.AppStorage, {
 		factory: storage,
 		local: storage(window.localStorage),
 		session: storage(window.sessionStorage)
 	});
+	
+	// @deprecated
+	global.Storage = $.extend(global.Storage, global.AppStorage);
 	
 })(jQuery, window);
