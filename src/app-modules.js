@@ -33,6 +33,10 @@
 	};
 	
 	var notifyModules = function (key, data, cb) {
+		if ($.isFunction(data) && !cb) {
+			cb = data;
+			data = undefined;
+		}
 		$.each(modules, function _actionToAllModules(index) {
 			var res = App._callAction(this.actions(), key, data, cb);
 			if (res !== undefined) {

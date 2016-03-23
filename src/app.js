@@ -49,6 +49,10 @@
 	
 	var notifyPage = function (key, data, cb) {
 		if (!!currentPage) {
+			if ($.isFunction(data) && !cb) {
+				cb = data;
+				data = undefined;
+			}
 			var res = App._callAction(currentPage.actions(), key, data);
 			if (res !== undefined) {
 				App.callback(cb, [currentPage.key(), res]);
