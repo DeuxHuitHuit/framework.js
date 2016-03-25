@@ -132,6 +132,17 @@
 		var nextPage;
 		var route = '';
 		
+		var safeParseData = function (data) {
+			try {
+				return $(data);
+			}
+			catch (ex) {
+				App.log({args: [ex.message], fx: 'error'});
+				App.page.notify('pages.failedtoparse', [data]);
+			}
+			return $();
+		};
+		
 		var enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable 
 			//The currentPage pointer will be cleared after the next call
@@ -196,7 +207,7 @@
 		};
 		
 		var loadSucess = function (data, textStatus, jqXHR) {
-			var htmldata = $(data);
+			var htmldata = safeParseData(data);
 			
 			// get the node
 			var node = htmldata.find(nextPage.key());
