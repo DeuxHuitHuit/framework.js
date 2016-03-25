@@ -138,7 +138,7 @@
 			}
 			catch (ex) {
 				App.log({args: [ex.message], fx: 'error'});
-				App.page.notify('pages.failedtoparse', [data]);
+				App.modules.notify('pages.failedtoparse', [data]);
 			}
 			return $();
 		};
