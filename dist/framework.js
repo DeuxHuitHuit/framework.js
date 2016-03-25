@@ -1,4 +1,4 @@
-/*! framework.js - v1.4.2 - build 139 - 2016-03-25
+/*! framework.js - v1.4.2 - build 141 - 2016-03-25
 * https://github.com/DeuxHuitHuit/framework.js
 * Copyright (c) 2016 Deux Huit Huit; Licensed  */
 /**
@@ -732,7 +732,12 @@
 			}
 			catch (ex) {
 				App.log({args: [ex.message], fx: 'error'});
-				App.modules.notify('pages.failedtoparse', [data]);
+				App.modules.notify('pages.failedtoparse', {
+					data: data,
+					route: route,
+					nextPage: nextPage,
+					currentPage: currentPage
+				});
 			}
 			return $();
 		};
