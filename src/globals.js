@@ -1,12 +1,11 @@
 /**
  * @author Deux Huit Huit
  */
- 
- /*
+
+/**
  * Browser Support/Detection
  */
 (function ($, global, undefined) {
-	
 	'use strict';
 	
 	var queryStringParser = function () {
@@ -181,11 +180,15 @@
 })(jQuery, window);
 
 /**
- * General customization for mobile and default easing
+ * General customization
  */
 (function ($, global, undefined) {
 	'use strict';
-	
+
+	/*
+	 * Cheap modrnzr
+	 */
+
 	// add mobile css class to html
 	var mobileClasses = ['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'tablet', 'touch'];
 	$.each(mobileClasses, function (i, c) {
@@ -292,23 +295,19 @@
 		});
 	}
 	
-	
-/**
- * Patching console object.
- */
-	
-	// see: https://developers.google.com/chrome-developer-tools/docs/console-api
 	/*
+	 * Patching console object.
+	 * See: https://developers.google.com/chrome-developer-tools/docs/console-api
 	 * Snippet
-	var c=[];
-	$('ol.toc li').each(function () {
-		var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])
-	});
-	console.log(c);
-	 */
+		var c=[];
+		$('ol.toc li').each(function () {
+			var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])
+		});
+		console.log(c);
+	*/
 	
-	var consoleFx = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'group', 
-		'group', 'group', 'info', 'log', 'profile', 'profile', 'time', 'time', 'time', 
+	var consoleFx = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'group',
+		'group', 'group', 'info', 'log', 'profile', 'profile', 'time', 'time', 'time',
 		'trace', 'warn'];
 	
 	// console support
@@ -320,22 +319,9 @@
 		global.console[key] = global.console[key] || $.noop;
 	});
 	
-
-/**
- * Global tools
- */
-	
-	var hex = function (x) {
-		return ('0' + parseInt(x, 10).toString(16)).slice(-2);
-	};
-		
-	global.rgb2hex = function (rgb) {
-		var hexa = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-		if (!hexa) {
-			return rgb;
-		}
-		return hex(hexa[1]) + hex(hexa[2]) + hex(hexa[3]);
-	};
+	/*
+	 * Global tools
+	 */
 	
 	// prevent default macro
 	global.pd = function (e, stopPropagation) {
