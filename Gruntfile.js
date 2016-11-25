@@ -16,6 +16,8 @@ module.exports = function fxGruntConfig(grunt) {
 	
 	var SRC_FILES = ['./src/*.js'];
 	
+	var JSCS_FILE = '.jscsrc';
+	
 	// TESTS
 	var SERVER_PORT = 8080;
 	var SERVER_URI = 'http://localhost:' + SERVER_PORT;
@@ -167,6 +169,16 @@ module.exports = function fxGruntConfig(grunt) {
 					cyclomatic: 10,
 					halstead: 25,
 					maintainability: 89
+				}
+			}
+		},
+		jscs: {
+			src: SRC_FILES.concat(GRUNT_FILE),
+			options: {
+				config: JSCS_FILE,
+				fix: true,
+				disallowDanglingUnderscores: {
+					allExcept: ['_currentPage']
 				}
 			}
 		}
