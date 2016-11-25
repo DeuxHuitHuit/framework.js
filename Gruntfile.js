@@ -230,10 +230,10 @@ module.exports = function fxGruntConfig(grunt) {
 		});
 		
 		// Default task.
-		grunt.registerTask('default',   ['dev', 'build']);
-		grunt.registerTask('dev',       ['jshint', 'connect', 'qunit', 'complexity']);
+		grunt.registerTask('test',      ['connect', 'qunit']);
+		grunt.registerTask('dev',       ['jshint', 'jscs', 'complexity']);
 		grunt.registerTask('build',     ['buildnum', 'concat', 'uglify', 'fix-source-map']);
-		grunt.registerTask('test',      ['jshint', 'connect', 'qunit']);
+		grunt.registerTask('default',   ['dev', 'test', 'build']);
 	};
 	
 	var load = function (grunt) {
