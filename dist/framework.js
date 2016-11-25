@@ -1,9 +1,9 @@
-/*! framework.js - v1.4.2 - build 141 - 2016-03-25
-* https://github.com/DeuxHuitHuit/framework.js
-* Copyright (c) 2016 Deux Huit Huit; Licensed  */
-/**
+/*! framework.js - v1.4.2 - build 143 - 2016-11-25
+ * https://github.com/DeuxHuitHuit/framework.js
+ * Copyright (c) 2016 Deux Huit Huit (https://deuxhuithuit.com/);
+ * MIT *//**
  * @author Deux Huit Huit
- * 
+ *
  * App Callback functionnality
  *
  */
@@ -12,21 +12,24 @@
 	'use strict';
 	
 	/** Utility **/
+	var argsToArray = function (args) {
+		var isNull = (args === null);
+		var isNotUndefined = (args !== undefined);
+		var isNotAnArray = !$.isArray(args);
+		var noLength = !!args && !$.isNumeric(args.length);
+		var isString = $.type(args) === 'string';
+		var isjQuery = !!args && !!args.jquery;
+		
+		if (isNull || (isNotUndefined && isNotAnArray && (noLength || isString || isjQuery))) {
+			// put single parameter inside an array
+			args = [args];
+		}
+		return args;
+	};
+	
 	var callback = function (fx, args) {
 		try {
-			if (args === null || // null is valid
-			    ( // or
-			        args !== undefined && // not undefined
-			        !$.isArray(args) && // not an array
-			        // not the 'arguments' type
-			       (!$.isNumeric(args.length) || // no .length
-			         $.type(args) === 'string' || // or not string
-			         !!args.jquery) // or jQuery Object
-			    )
-			) {
-				// put single parameter inside an array
-				args = [args];
-			}
+			args = argsToArray(args);
 			
 			if ($.isFunction(fx)) {
 				// IE8 does not allow null/undefined args
@@ -75,7 +78,7 @@
 
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Components
  * Components are factory method that will generate a instance of a component.
  */
@@ -143,9 +146,10 @@
 	});
 	
 })(jQuery, window);
+
 /**
  * @author Deux Huit Huit
- * 
+ *
  * App Debug and Log
  *
  */
@@ -165,13 +169,7 @@
 		return isDebuging;
 	};
 	
-	var logs = [];
-	var log = function (arg) {
-		// no args, exit
-		if (!arg) {
-			return this;
-		}
-		
+	var argsToObject = function (arg) {
 		// ensure that args is an array
 		if (!!arg.args && !$.isArray(arg.args)) {
 			arg.args = [arg.args];
@@ -185,10 +183,21 @@
 		},
 		t1 = $.type(a.args[0]);
 		
-		if (t1  === 'string' || t1 === 'number' || t1 == 'boolean') {
+		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
 			// append me before a.args[0]
 			a.args[0] = '[' + a.me + '] ' + a.args[0];
 		}
+		return a;
+	};
+	
+	var logs = [];
+	var log = function (arg) {
+		// no args, exit
+		if (!arg) {
+			return this;
+		}
+		
+		var a = argsToObject(arg);
 		
 		if (isDebuging) {
 			// make sure fx exists
@@ -199,7 +208,7 @@
 			if (!!window.console[a.fx].apply) {
 				window.console[a.fx].apply(window.console, a.args);
 			} else {
-				$.each(a.args, function _logArgs(index, arg) {
+				$.each(a.args, function _logArgs (index, arg) {
 					window.console[a.fx](arg);
 				});
 			}
@@ -228,7 +237,7 @@
 
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Modules
  */
 (function ($, global, undefined) {
@@ -265,7 +274,7 @@
 			cb = data;
 			data = undefined;
 		}
-		$.each(modules, function _actionToAllModules(index) {
+		$.each(modules, function _actionToAllModules (index) {
 			var res = App._callAction(this.actions, key, data, cb);
 			if (res !== undefined) {
 				App.callback(cb, [index, res]);
@@ -295,9 +304,10 @@
 	});
 	
 })(jQuery, window);
+
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Pages
  */
 (function ($, global, undefined) {
@@ -327,7 +337,6 @@
 		
 		// This is the method that creates page instances
 		var factory = function (pageData) {
-		
 			var _pageData = pageData;
 			var modelRef;
 			
@@ -338,7 +347,7 @@
 				if (!$.isPlainObject(modelRef)) {
 					App.log({
 						args: [
-							'The exported page model function must return an object, ' + 
+							'The exported page model function must return an object, ' +
 							'`%s` given (%s)', $.type(modelRef), modelRef
 						],
 						fx: 'error'
@@ -348,7 +357,7 @@
 			} else {
 				App.log({
 					args: [
-						'The exported page model must be an object or a function, ' + 
+						'The exported page model must be an object or a function, ' +
 						'`%s` given (%s)', $.type(model), model
 					],
 					fx: 'error'
@@ -373,7 +382,7 @@
 				return _pageData;
 			};
 			
-			 // insure this can't be overriden
+			// insure this can't be overriden
 			var overwrites = {
 				key: _key, // css selector
 				loaded: _loaded,
@@ -443,7 +452,7 @@
 		return registerPageModel(key, pageModel, override);
 	};
 	
-	 // Validation
+	// Validation
 	var _validateRoute = function (route) {
 		var result = false;
 		
@@ -454,6 +463,57 @@
 		}
 		
 		return result;
+	};
+	
+	var routeMatchStagegies = {
+		regexp: function (testRoute, route, cb) {
+			if (testRoute.test(route)) {
+				return cb();
+			}
+		},
+		string: function (testRoute, route, cb) {
+			var regex;
+			// be sure to escape uri
+			route = decodeURIComponent(route);
+			
+			// be sure we do not have hashed in the route
+			route = route.split('#')[0];
+			
+			// avoid RegExp if possible
+			if (testRoute == route) {
+				return cb();
+			}
+			
+			// assure we are testing from the beginning
+			if (testRoute.indexOf('^') !== 0) {
+				testRoute = '^' + testRoute;
+			}
+			
+			// assure we are testing until the end
+			if (testRoute.indexOf('^') !== testRoute.length - 1) {
+				testRoute = testRoute + '$';
+			}
+			
+			// wildcard replace
+			// avoid overloading routes with regex
+			if (testRoute.indexOf('*')) {
+				// a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
+				testRoute = testRoute.replace(new RegExp('\\*', 'gi'), '.*');
+			}
+			
+			try {
+				regex = new RegExp(testRoute);
+			} catch (ex) {
+				App.log({
+					args: ['Error while creating RegExp %s.\n%s', testRoute, ex],
+					fx: 'error'
+				});
+			}
+			
+			if (!!regex && regex.test(route)) {
+				return cb();
+			}
+		}
 	};
 	
 	var _matchRoute = function (route, routes) {
@@ -473,62 +533,17 @@
 		}
 		
 		if (!!route && !!routes) {
-			$.each(routes, function _matchOneRoute(i) {
-				var regex,
-					testRoute = this,
-					routeType = $.type(testRoute);
+			$.each(routes, function matchOneRoute (i, testRoute) {
+				var routeType = $.type(testRoute);
+				var routeStrategy = routeMatchStagegies[routeType];
+				var cb = function () {
+					return found(i);
+				};
 				
-				if (routeType == 'regexp') {
-					if (testRoute.test(route)) {
-						return found(i);
-					}
-					
-				} else if (routeType == 'string') {
-				
-					// be sure to escape uri
-					route = decodeURIComponent(route);
-					
-					// be sure we do not have hashed in the route
-					route = route.split('#')[0];
-					
-					// avoid RegExp if possible
-					if (testRoute == route) {
-						return found(i);
-					}
-					
-					// assure we are testing from the beginning
-					if (testRoute.indexOf('^') !== 0) {
-						testRoute = '^' + testRoute;
-					}
-					
-					// assure we are testing until the end
-					if (testRoute.indexOf('^') !== testRoute.length - 1) {
-						testRoute = testRoute + '$';
-					}
-					
-					// wildcard replace
-					// avoid overloading routes with regex
-					if (testRoute.indexOf('*')) {
-						 // a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
-						testRoute = testRoute.replace(new RegExp('\\*', 'gi'), '.*');
-					}
-					
-					try {
-						regex = new RegExp(testRoute);
-					} catch (ex) {
-						App.log({
-							args: ['Error while creating RegExp %s.\n%s', testRoute, ex],
-							fx: 'error'
-						});
-					}
-					
-					if (!!regex && regex.test(route)) {
-						return found(i);
-					}
-				} else {
-					if (testRoute === route) {
-						return found(i);
-					}
+				if ($.isFunction(routeStrategy)) {
+					return routeStrategy(testRoute, route, cb);
+				} else if (testRoute === route) {
+					return found(i);
 				}
 				return true;
 			});
@@ -540,7 +555,7 @@
 	var _getPageForRoute = function (route) {
 		var page = null;
 		if (_validateRoute(route)) {
-			$.each(pageInstances, function _walkPage() {
+			$.each(pageInstances, function _walkPage () {
 				var routes = this.routes();
 				// route found ?
 				if (!!~_matchRoute(route, routes)) {
@@ -592,9 +607,10 @@
 	});
 	
 })(jQuery, window);
+
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Superlight App Framework
  */
 (function ($, global, undefined) {
@@ -628,7 +644,7 @@
 				tempFx = actions;
 				// try JSONPath style...
 				var paths = key.split('.');
-				$.each(paths, function _eachPath() {
+				$.each(paths, function _eachPath () {
 					tempFx = tempFx[this];
 					if (!$.isPlainObject(tempFx)) {
 						return false; // exit
@@ -680,7 +696,7 @@
 		if (!nextPage.canEnter()) {
 			App.log('Cannot enter page %s.', nextPage.key());
 			result = false;
-		} 
+		}
 		
 		return result;
 	};
@@ -718,7 +734,7 @@
 		return this;
 	};
 	
-	/** 
+	/**
 	* Change the current page to the requested route
 	* Do nothing if the current page is already the requested route
 	*/
@@ -743,7 +759,7 @@
 		};
 		
 		var enterLeave = function () {
-			//Keep currentPage pointer for the callback in a new variable 
+			//Keep currentPage pointer for the callback in a new variable
 			//The currentPage pointer will be cleared after the next call
 			var leavingPage = currentPage;
 			
@@ -752,7 +768,7 @@
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
-				previousUrl = !!previousPoppedUrl ? previousPoppedUrl : 
+				previousUrl = !!previousPoppedUrl ? previousPoppedUrl :
 					document.location.href.substring(
 						document.location.protocol.length + 2 + document.location.host.length
 					);
@@ -936,7 +952,7 @@
 			
 			if (!_validateNextPage(nextPage)) {
 				App.modules.notify('pages.routeNotFound', {
-					page: currentPage, 
+					page: currentPage,
 					url: obj
 				});
 				App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
@@ -998,7 +1014,7 @@
 							App.modules.notify('pages.loaded', {
 								elem: $(ROOT),
 								url: obj,
-								page: nextPage,
+								page: nextPage
 							});
 						}
 					}
@@ -1012,7 +1028,7 @@
 	
 	var togglePage = function (route, fallback) {
 		if (!!currentPage && _validateMediatorState()) {
-			var 
+			var
 			nextPage = App.pages.getPageForRoute(route);
 			
 			if (_validateNextPage(nextPage) && _canEnterNextPage(nextPage)) {
@@ -1030,7 +1046,7 @@
 		return this;
 	};
 	
-	/** 
+	/**
 	* Init All the applications
 	* Assign root variable
 	* Call init on all registered page and modules
@@ -1043,12 +1059,12 @@
 		}
 		
 		// init each Modules
-		$.each(App.modules.models(), function _initModule() {
+		$.each(App.modules.models(), function _initModule () {
 			this.init();
 		});
 		
 		// init each Page already loaded
-		$.each(App.pages.instances(), function _initPage() {
+		$.each(App.pages.instances(), function _initPage () {
 			if (!!this.loaded()) {
 				// init page
 				this.init({firstTime: true});
@@ -1065,7 +1081,7 @@
 						route: currentRouteUrl
 					});
 					// enter the page right now
-					currentPage.enter(function _currentPageEnterCallback() {
+					currentPage.enter(function _currentPageEnterCallback () {
 						App.modules.notify('page.enter', {
 							page: currentPage,
 							route: currentRouteUrl
@@ -1137,9 +1153,9 @@
  * @author Deux Huit Huit
  */
  
- /*
- * Browser Support/Detection
- */
+/*
+	* Browser Support/Detection
+	*/
 (function ($, global, undefined) {
 	
 	'use strict';
@@ -1151,113 +1167,113 @@
 	// https://github.com/drobati/django-homepage/
 	// blob/1a75e9ba31c24cb77d87ff3eb435333932056af7/media/js/jquery.keyNav.js
 	global.keys = {
-		'?': 0, 
-		'backspace': 8,
-		'tab': 9,
-		'enter': 13,
-		'shift': 16,
-		'ctrl': 17,
-		'alt': 18,
-		'pause_break': 19,
-		'caps_lock': 20,
-		'escape': 27,
-		'space_bar': 32,
-		'page_up': 33,
-		'page_down': 34,
-		'end': 35,
-		'home': 36,
-		'left_arrow': 37, 
-		'up_arrow': 38,
-		'right_arrow': 39,
-		'down_arrow': 40,
-		'insert': 45,
-		'delete': 46, 
-		'0': 48,
-		'1': 49,
-		'2': 50,
-		'3': 51,
-		'4': 52,
-		'5': 53,
-		'6': 54,
-		'7': 55,
-		'8': 56, 
-		'9': 57,
-		'a': 65,
-		'b': 66,
-		'c': 67,
-		'd': 68,
-		'e': 69,
-		'f': 70,
-		'g': 71,
-		'h': 72, 
-		'i': 73,
-		'j': 74,
-		'k': 75,
-		'l': 76,
-		'm': 77,
-		'n': 78,
-		'o': 79,
-		'p': 80,
-		'q': 81,
-		'r': 82,
-		's': 83,
-		't': 84,
-		'u': 85,
-		'v': 86,
-		'w': 87,
-		'x': 88,
-		'y': 89,
-		'z': 90,
-		'left_window_key': 91,
-		'right_window_key': 92,
-		'select_key': 93,
-		'numpad_0': 96,
-		'numpad_1': 97,
-		'numpad_2': 98,
-		'numpad_3': 99,
+		'?': 0,
+		backspace: 8,
+		tab: 9,
+		enter: 13,
+		shift: 16,
+		ctrl: 17,
+		alt: 18,
+		pause_break: 19,
+		caps_lock: 20,
+		escape: 27,
+		space_bar: 32,
+		page_up: 33,
+		page_down: 34,
+		end: 35,
+		home: 36,
+		left_arrow: 37,
+		up_arrow: 38,
+		right_arrow: 39,
+		down_arrow: 40,
+		insert: 45,
+		delete: 46,
+		0: 48,
+		1: 49,
+		2: 50,
+		3: 51,
+		4: 52,
+		5: 53,
+		6: 54,
+		7: 55,
+		8: 56,
+		9: 57,
+		a: 65,
+		b: 66,
+		c: 67,
+		d: 68,
+		e: 69,
+		f: 70,
+		g: 71,
+		h: 72,
+		i: 73,
+		j: 74,
+		k: 75,
+		l: 76,
+		m: 77,
+		n: 78,
+		o: 79,
+		p: 80,
+		q: 81,
+		r: 82,
+		s: 83,
+		t: 84,
+		u: 85,
+		v: 86,
+		w: 87,
+		x: 88,
+		y: 89,
+		z: 90,
+		left_window_key: 91,
+		right_window_key: 92,
+		select_key: 93,
+		numpad_0: 96,
+		numpad_1: 97,
+		numpad_2: 98,
+		numpad_3: 99,
 		'numpad 4': 100,
-		'numpad_5': 101,
-		'numpad_6': 102,
-		'numpad_7': 103,
-		'numpad_8': 104,
-		'numpad_9': 105,
-		'multiply': 106,
-		'add': 107,
-		'subtract': 109,
+		numpad_5: 101,
+		numpad_6: 102,
+		numpad_7: 103,
+		numpad_8: 104,
+		numpad_9: 105,
+		multiply: 106,
+		add: 107,
+		subtract: 109,
 		'decimal point': 110,
-		'divide': 111,
-		'f1': 112,
-		'f2': 113,
-		'f3': 114,
-		'f4': 115,
-		'f5': 116,
-		'f6': 117,
-		'f7': 118,
-		'f8': 119,
-		'f9': 120,
-		'f10': 121,
-		'f11': 122,
-		'f12': 123,
-		'num_lock': 144,
-		'scroll_lock': 145,
-		'semi_colon': 186,
+		divide: 111,
+		f1: 112,
+		f2: 113,
+		f3: 114,
+		f4: 115,
+		f5: 116,
+		f6: 117,
+		f7: 118,
+		f8: 119,
+		f9: 120,
+		f10: 121,
+		f11: 122,
+		f12: 123,
+		num_lock: 144,
+		scroll_lock: 145,
+		semi_colon: 186,
 		';': 186,
 		'=': 187,
-		'equal_sign': 187, 
-		'comma': 188,
+		equal_sign: 187,
+		comma: 188,
 		', ': 188,
-		'dash': 189,
+		dash: 189,
 		'ff-dash': 173,
 		'.': 190,
-		'period': 190,
-		'forward_slash': 191,
+		period: 190,
+		forward_slash: 191,
 		'/': 191,
-		'grave_accent': 192,
-		'open_bracket': 219,
-		'back_slash': 220,
+		grave_accent: 192,
+		open_bracket: 219,
+		back_slash: 220,
 		'\\': 220,
-		'close_braket': 221,
-		'single_quote': 222
+		close_braket: 221,
+		single_quote: 222
 	};
 
 	global.keyFromCode = function (code) {
@@ -1286,22 +1302,23 @@
 /**
  * @author Deux Huit Huit
  */
- 
- /*
+
+/**
  * Browser Support/Detection
  */
 (function ($, global, undefined) {
-	
 	'use strict';
 	
 	var queryStringParser = function () {
 		var
 		a = /\+/g,  // Regex for replacing addition symbol with a space
 		r = /([^&=]+)=?([^&]*)/gi,
-		d = function (s) { return decodeURIComponent(s.replace(a, ' ')); },
+		d = function (s) {
+			return decodeURIComponent(s.replace(a, ' '));
+		},
 		
 		_parse = function (qs) {
-			var 
+			var
 			u = {},
 			e,
 			q;
@@ -1335,7 +1352,7 @@
 		};
 		
 		return {
-			parse : _parse,
+			parse: _parse,
 			stringify: _stringify
 		};
 	};
@@ -1366,7 +1383,7 @@
 			},
 			
 			isIos: function (userAgent) {
-				return detector.isIphone(userAgent) || 
+				return detector.isIphone(userAgent) ||
 					detector.isIpad(userAgent);
 			},
 			
@@ -1384,13 +1401,13 @@
 			},
 			
 			isAndroidPhone: function (userAgent) {
-				return detector.isAndroid(userAgent) && 
+				return detector.isAndroid(userAgent) &&
 					testUserAgent(/mobile/i, userAgent);
 			},
 			
 			isPhone: function (userAgent) {
 				return !detector.isIpad(userAgent) && (
-					detector.isOtherPhone(userAgent) || 
+					detector.isOtherPhone(userAgent) ||
 					detector.isAndroidPhone(userAgent) ||
 					detector.isIphone(userAgent));
 			},
@@ -1405,18 +1422,18 @@
 			},
 			
 			isMobile: function (userAgent) {
-				return detector.isIos(userAgent) || 
-					detector.isAndroid(userAgent) || 
+				return detector.isIos(userAgent) ||
+					detector.isAndroid(userAgent) ||
 					detector.isOtherMobile(userAgent);
 			},
 			
 			isMsie: function (userAgent) {
-				return testUserAgent(/msie/mi, userAgent) || 
+				return testUserAgent(/msie/mi, userAgent) ||
 					testUserAgent(/trident/mi, userAgent);
 			}
 			
 			/*isUnsupported : function (userAgent) {
-				var 
+				var
 				b;
 				userAgent = getUserAgent(userAgent);
 				b = $.uaMatch(userAgent);
@@ -1466,11 +1483,15 @@
 })(jQuery, window);
 
 /**
- * General customization for mobile and default easing
+ * General customization
  */
 (function ($, global, undefined) {
 	'use strict';
-	
+
+	/*
+	 * Cheap modrnzr
+	 */
+
 	// add mobile css class to html
 	var mobileClasses = ['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'tablet', 'touch'];
 	$.each(mobileClasses, function (i, c) {
@@ -1577,23 +1598,19 @@
 		});
 	}
 	
-	
-/**
- * Patching console object.
- */
-	
-	// see: https://developers.google.com/chrome-developer-tools/docs/console-api
 	/*
+	 * Patching console object.
+	 * See: https://developers.google.com/chrome-developer-tools/docs/console-api
 	 * Snippet
-	var c=[];
-	$('ol.toc li').each(function () {
-		var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])
-	});
-	console.log(c);
-	 */
+		var c=[];
+		$('ol.toc li').each(function () {
+			var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])
+		});
+		console.log(c);
+	*/
 	
-	var consoleFx = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'group', 
-		'group', 'group', 'info', 'log', 'profile', 'profile', 'time', 'time', 'time', 
+	var consoleFx = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'group',
+		'group', 'group', 'info', 'log', 'profile', 'profile', 'time', 'time', 'time',
 		'trace', 'warn'];
 	
 	// console support
@@ -1605,22 +1622,9 @@
 		global.console[key] = global.console[key] || $.noop;
 	});
 	
-
-/**
- * Global tools
- */
-	
-	var hex = function (x) {
-		return ('0' + parseInt(x, 10).toString(16)).slice(-2);
-	};
-		
-	global.rgb2hex = function (rgb) {
-		var hexa = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-		if (!hexa) {
-			return rgb;
-		}
-		return hex(hexa[1]) + hex(hexa[2]) + hex(hexa[3]);
-	};
+	/*
+	 * Global tools
+	 */
 	
 	// prevent default macro
 	global.pd = function (e, stopPropagation) {
@@ -1639,7 +1643,7 @@
 
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Assets loader: Basically a wrap around $.ajax in order
  *   to priorize and serialize resource loading.
  */
@@ -1648,7 +1652,7 @@
 	'use strict';
 
 	// Forked: https://gist.github.com/nitriques/6583457
-	(function addXhrProgressEvent() {
+	(function addXhrProgressEvent () {
 		var originalXhr = $.ajaxSettings.xhr;
 		$.ajaxSetup({
 			progress: $.noop,
@@ -1691,7 +1695,7 @@
 	
 	var inQueue = function (url) {
 		var foundIndex = -1;
-		$.each(assets, function _eachAsset(index, asset) {
+		$.each(assets, function _eachAsset (index, asset) {
 			if (asset.url === url) {
 				foundIndex = index;
 				return false; // early exit
@@ -1708,20 +1712,12 @@
 		return global.AppStorage && global.AppStorage[url.cache];
 	};
 	
-	var _recursiveLoad = function () {
-		if (!!assets.length) {
-			// start next one
-			_loadOneAsset();
-		} else {
-			// work is done
-			loaderIsWorking = false;
-		}
-	};
+	// This breaks the call dependency cycle
+	var recursiveLoad = $.noop;
+	var loadAsset = $.noop;
 	
-	var _loadOneAsset = function () {
-		 // grab first item
-		var asset = assets.shift();
-		var param = $.extend({}, asset, {
+	var defaultParameters = function (asset) {
+		return {
 			progress: function () {
 				// callback
 				App.callback.call(this, asset.progress, arguments);
@@ -1731,7 +1727,7 @@
 				currentUrl = null;
 				
 				// register next
-				_recursiveLoad();
+				recursiveLoad();
 				
 				// callback
 				App.callback.call(this, asset.success, arguments);
@@ -1753,9 +1749,9 @@
 				App.log({args: ['Error loading url %s', asset.url], me: 'Loader'});
 				
 				// if no vip access is granted
-				//if (!asset.vip) { 
-					// decrease priority
-					// this avoids looping for a unload-able asset
+				//if (!asset.vip) {
+				// decrease priority
+				// this avoids looping for a unload-able asset
 				asset.priority += ++asset.retries; // out of bounds checking is done later
 				//}
 				
@@ -1773,17 +1769,33 @@
 				}
 				
 				// next
-				_recursiveLoad();
+				recursiveLoad();
 				
 				// callback
 				App.callback.call(this, asset.error, arguments);
 			}
-		});
-		
+		};
+	};
+	
+	var loadOneAsset = function () {
+		// grab first item
+		var asset = assets.shift();
+		// extend it
+		var param = $.extend({}, asset, defaultParameters(asset));
 		// actual loading
 		$.ajax(param);
 		// set the pointer
 		currentUrl = param.url;
+	};
+	
+	recursiveLoad = function () {
+		if (!!assets.length) {
+			// start next one
+			loadOneAsset();
+		} else {
+			// work is done
+			loaderIsWorking = false;
+		}
 	};
 	
 	var validateUrlArgs = function (url, priority) {
@@ -1795,7 +1807,7 @@
 		// pass the priority param into the object
 		if ($.isNumeric(priority) && Math.abs(priority) < assets.length) {
 			url.priority = priority;
-		} 
+		}
 		
 		// ensure that the priority is valid
 		if (!$.isNumeric(url.priority) || Math.abs(url.priority) > assets.length) {
@@ -1813,7 +1825,51 @@
 		return url;
 	};
 	
-	var loadAsset = function (url, priority) {
+	var launchLoad = function () {
+		// start now if nothing is loading
+		if (!loaderIsWorking) {
+			loaderIsWorking = true;
+			loadOneAsset();
+			App.log({args: 'Load worker has been started', me: 'Loader'});
+		}
+	};
+	
+	var getValueFromCache = function (url) {
+		var storage = getStorageEngine(url);
+		if (!!storage) {
+			var item = storage.get(url.url);
+			if (!!item) {
+				// if the cache-hit is valid
+				if (App.callback.call(this, url.cachehit, item) !== false) {
+					// return the cache
+					App.callback.call(this, url.success, item);
+					return true;
+				}
+			}
+		}
+		return false;
+	};
+	
+	var updatePrioriy = function (url, index) {
+		// promote if new priority is different
+		var oldAsset = assets[index];
+		if (oldAsset.priority != url.priority) {
+			// remove
+			assets.splice(index, 1);
+			// add
+			assets.splice(url.priority, 1, url);
+		}
+		App.log({
+			args: [
+				'Url %s was shifted from %s to %s',
+				url.url,
+				oldAsset.priority, url.priority
+			],
+			me: 'Loader'
+		});
+	};
+	
+	loadAsset = function (url, priority) {
 		if (!url) {
 			App.log({args: 'No url given', me: 'Loader'});
 			return this;
@@ -1829,17 +1885,8 @@
 		
 		// check cache
 		if (!!url.cache) {
-			var storage = getStorageEngine(url);
-			if (!!storage) {
-				var item = storage.get(url.url);
-				if (!!item) {
-					// if the cache-hit is valid
-					if (App.callback.call(this, url.cachehit, item) !== false) {
-						// return the cache
-						App.callback.call(this, url.success, item);
-						return this;
-					}
-				}
+			if (getValueFromCache(url)) {
+				return this;
 			}
 		}
 		
@@ -1852,36 +1899,12 @@
 			App.log({args: ['Url %s has been insert at %s', url.url, url.priority], me: 'Loader'});
 			
 		} else {
-			// promote if new priority is different
-			var oldAsset = assets[index];
-			if (oldAsset.priority != url.priority) {
-				// remove
-				assets.splice(index, 1);
-				// add
-				assets.splice(url.priority, 1, url);
-			}
-			App.log({
-				args: [
-					'Url %s was shifted from %s to %s',
-					url.url,
-					oldAsset.priority, url.priority
-				],
-				me: 'Loader'
-			});
+			updatePrioriy(url, index);
 		}
 		
 		launchLoad();
 		
 		return this;
-	};
-	
-	var launchLoad = function () {
-		// start now if nothing is loading
-		if (!loaderIsWorking) {
-			loaderIsWorking = true;
-			_loadOneAsset();
-			App.log({args: 'Load worker has been started', me: 'Loader'});
-		}
 	};
 	
 	global.Loader = $.extend(global.Loader, {
@@ -1897,7 +1920,7 @@
 
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Storage: A safe wrapper around window.localStorage/sessionStorage
  */
 (function ($, global, undefined) {
