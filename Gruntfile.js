@@ -56,9 +56,10 @@ module.exports = function fxGruntConfig(grunt) {
 			banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> ' +
 			'- build <%= buildnum.num %> - ' +
 			'<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-			'<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-			'* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-			' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n'
+			'<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
+			' * Copyright (c) <%= grunt.template.today("yyyy") %> ' +
+			'<%= pkg.author.name %> (<%= pkg.author.url %>);\n' +
+			' * <%= pkg.license %> */'
 		},
 		concat: {
 			options: {
