@@ -191,6 +191,41 @@
 		}
 	};
 	
+	var getValueFromCache = function (url) {
+		var storage = getStorageEngine(url);
+		if (!!storage) {
+			var item = storage.get(url.url);
+			if (!!item) {
+				// if the cache-hit is valid
+				if (App.callback.call(this, url.cachehit, item) !== false) {
+					// return the cache
+					App.callback.call(this, url.success, item);
+					return true;
+				}
+			}
+		}
+		return false;
+	};
+	
+	var updatePrioriy = function (url, index) {
+		// promote if new priority is different
+		var oldAsset = assets[index];
+		if (oldAsset.priority != url.priority) {
+			// remove
+			assets.splice(index, 1);
+			// add
+			assets.splice(url.priority, 1, url);
+		}
+		App.log({
+			args: [
+				'Url %s was shifted from %s to %s',
+				url.url,
+				oldAsset.priority, url.priority
+			],
+			me: 'Loader'
+		});
+	};
+	
 	loadAsset = function (url, priority) {
 		if (!url) {
 			App.log({args: 'No url given', me: 'Loader'});
@@ -207,17 +242,8 @@
 		
 		// check cache
 		if (!!url.cache) {
-			var storage = getStorageEngine(url);
-			if (!!storage) {
-				var item = storage.get(url.url);
-				if (!!item) {
-					// if the cache-hit is valid
-					if (App.callback.call(this, url.cachehit, item) !== false) {
-						// return the cache
-						App.callback.call(this, url.success, item);
-						return this;
-					}
-				}
+			if (getValueFromCache(url)) {
+				return this;
 			}
 		}
 		
@@ -230,22 +256,7 @@
 			App.log({args: ['Url %s has been insert at %s', url.url, url.priority], me: 'Loader'});
 			
 		} else {
-			// promote if new priority is different
-			var oldAsset = assets[index];
-			if (oldAsset.priority != url.priority) {
-				// remove
-				assets.splice(index, 1);
-				// add
-				assets.splice(url.priority, 1, url);
-			}
-			App.log({
-				args: [
-					'Url %s was shifted from %s to %s',
-					url.url,
-					oldAsset.priority, url.priority
-				],
-				me: 'Loader'
-			});
+			updatePrioriy(url, index);
 		}
 		
 		launchLoad();

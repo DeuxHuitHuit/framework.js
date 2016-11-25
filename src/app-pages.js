@@ -30,7 +30,6 @@
 		
 		// This is the method that creates page instances
 		var factory = function (pageData) {
-		
 			var _pageData = pageData;
 			var modelRef;
 			
@@ -159,6 +158,57 @@
 		return result;
 	};
 	
+	var routeMatchStagegies = {
+		regexp: function (testRoute, route, cb) {
+			if (testRoute.test(route)) {
+				return cb();
+			}
+		},
+		string: function (testRoute, route, cb) {
+			var regex;
+			// be sure to escape uri
+			route = decodeURIComponent(route);
+			
+			// be sure we do not have hashed in the route
+			route = route.split('#')[0];
+			
+			// avoid RegExp if possible
+			if (testRoute == route) {
+				return cb();
+			}
+			
+			// assure we are testing from the beginning
+			if (testRoute.indexOf('^') !== 0) {
+				testRoute = '^' + testRoute;
+			}
+			
+			// assure we are testing until the end
+			if (testRoute.indexOf('^') !== testRoute.length - 1) {
+				testRoute = testRoute + '$';
+			}
+			
+			// wildcard replace
+			// avoid overloading routes with regex
+			if (testRoute.indexOf('*')) {
+				 // a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
+				testRoute = testRoute.replace(new RegExp('\\*', 'gi'), '.*');
+			}
+			
+			try {
+				regex = new RegExp(testRoute);
+			} catch (ex) {
+				App.log({
+					args: ['Error while creating RegExp %s.\n%s', testRoute, ex],
+					fx: 'error'
+				});
+			}
+			
+			if (!!regex && regex.test(route)) {
+				return cb();
+			}
+		}
+	};
+	
 	var _matchRoute = function (route, routes) {
 		var index = -1;
 		var found = function (i) {
@@ -176,62 +226,17 @@
 		}
 		
 		if (!!route && !!routes) {
-			$.each(routes, function _matchOneRoute(i) {
-				var regex,
-					testRoute = this,
-					routeType = $.type(testRoute);
+			$.each(routes, function matchOneRoute(i, testRoute) {
+				var routeType = $.type(testRoute);
+				var routeStrategy = routeMatchStagegies[routeType];
+				var cb = function () {
+					return found(i);
+				};
 				
-				if (routeType == 'regexp') {
-					if (testRoute.test(route)) {
-						return found(i);
-					}
-					
-				} else if (routeType == 'string') {
-				
-					// be sure to escape uri
-					route = decodeURIComponent(route);
-					
-					// be sure we do not have hashed in the route
-					route = route.split('#')[0];
-					
-					// avoid RegExp if possible
-					if (testRoute == route) {
-						return found(i);
-					}
-					
-					// assure we are testing from the beginning
-					if (testRoute.indexOf('^') !== 0) {
-						testRoute = '^' + testRoute;
-					}
-					
-					// assure we are testing until the end
-					if (testRoute.indexOf('^') !== testRoute.length - 1) {
-						testRoute = testRoute + '$';
-					}
-					
-					// wildcard replace
-					// avoid overloading routes with regex
-					if (testRoute.indexOf('*')) {
-						 // a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
-						testRoute = testRoute.replace(new RegExp('\\*', 'gi'), '.*');
-					}
-					
-					try {
-						regex = new RegExp(testRoute);
-					} catch (ex) {
-						App.log({
-							args: ['Error while creating RegExp %s.\n%s', testRoute, ex],
-							fx: 'error'
-						});
-					}
-					
-					if (!!regex && regex.test(route)) {
-						return found(i);
-					}
-				} else {
-					if (testRoute === route) {
-						return found(i);
-					}
+				if ($.isFunction(routeStrategy)) {
+					return routeStrategy(testRoute, route, cb);
+				} else if (testRoute === route) {
+					return found(i);
 				}
 				return true;
 			});

@@ -9,21 +9,26 @@
 	'use strict';
 	
 	/** Utility **/
+	var argsToArray = function (args) {
+		if (args === null || // null is valid
+		    ( // or
+		        args !== undefined && // not undefined
+		        !$.isArray(args) && // not an array
+		        // not the 'arguments' type
+		       (!$.isNumeric(args.length) || // no .length
+		         $.type(args) === 'string' || // or not string
+		         !!args.jquery) // or jQuery Object
+		    )
+		) {
+			// put single parameter inside an array
+			args = [args];
+		}
+		return args;
+	};
+	
 	var callback = function (fx, args) {
 		try {
-			if (args === null || // null is valid
-			    ( // or
-			        args !== undefined && // not undefined
-			        !$.isArray(args) && // not an array
-			        // not the 'arguments' type
-			       (!$.isNumeric(args.length) || // no .length
-			         $.type(args) === 'string' || // or not string
-			         !!args.jquery) // or jQuery Object
-			    )
-			) {
-				// put single parameter inside an array
-				args = [args];
-			}
+			args = argsToArray(args);
 			
 			if ($.isFunction(fx)) {
 				// IE8 does not allow null/undefined args

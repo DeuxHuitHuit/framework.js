@@ -20,13 +20,7 @@
 		return isDebuging;
 	};
 	
-	var logs = [];
-	var log = function (arg) {
-		// no args, exit
-		if (!arg) {
-			return this;
-		}
-		
+	var argsToObject = function (arg) {
 		// ensure that args is an array
 		if (!!arg.args && !$.isArray(arg.args)) {
 			arg.args = [arg.args];
@@ -44,6 +38,17 @@
 			// append me before a.args[0]
 			a.args[0] = '[' + a.me + '] ' + a.args[0];
 		}
+		return a;
+	};
+	
+	var logs = [];
+	var log = function (arg) {
+		// no args, exit
+		if (!arg) {
+			return this;
+		}
+		
+		var a = argsToObject(arg);
 		
 		if (isDebuging) {
 			// make sure fx exists
