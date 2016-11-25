@@ -4,7 +4,7 @@
 	<meta charset="utf-8" /> 
 	<title>app-debug.js test suite</title> 
 	
-	<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css" type="text/css"/>
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css" type="text/css"/>
 	
 	<style type="text/css">
 
@@ -12,14 +12,14 @@
 	
 	<script>
 		(function (w, doc,co) {
-			// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
+			// https://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
 			var u = {},
 				e,
 				a = /\+/g,  // Regex for replacing addition symbol with a space
 				r = /([^&=]+)=?([^&]*)/g,
 				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
 				q = w.location.search.substring(1),
-				v = '2.2.2';
+				v = '2.2.4';
 
 			while (e = r.exec(q)) {
 				u[d(e[1])] = d(e[2]);
@@ -29,7 +29,7 @@
 				v = u.jquery;
 			}	
 
-			doc.write('<script src="http://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + "<" + '/' + 'script>');
+			doc.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + "<" + '/' + 'script>');
 			co.log('\nLoading jQuery v' + v + '\n');
 		})(window, document, console);
 	</script>
@@ -40,7 +40,7 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 	
-	<script src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
+	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
 	<script src="../src/globals.js"></script>
 	<script src="../src/app-debug.js"></script>
 	
