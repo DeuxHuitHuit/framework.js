@@ -1,6 +1,6 @@
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Superlight App Framework
  */
 (function ($, global, undefined) {
@@ -34,7 +34,7 @@
 				tempFx = actions;
 				// try JSONPath style...
 				var paths = key.split('.');
-				$.each(paths, function _eachPath() {
+				$.each(paths, function _eachPath () {
 					tempFx = tempFx[this];
 					if (!$.isPlainObject(tempFx)) {
 						return false; // exit
@@ -86,7 +86,7 @@
 		if (!nextPage.canEnter()) {
 			App.log('Cannot enter page %s.', nextPage.key());
 			result = false;
-		} 
+		}
 		
 		return result;
 	};
@@ -124,7 +124,7 @@
 		return this;
 	};
 	
-	/** 
+	/**
 	* Change the current page to the requested route
 	* Do nothing if the current page is already the requested route
 	*/
@@ -149,7 +149,7 @@
 		};
 		
 		var enterLeave = function () {
-			//Keep currentPage pointer for the callback in a new variable 
+			//Keep currentPage pointer for the callback in a new variable
 			//The currentPage pointer will be cleared after the next call
 			var leavingPage = currentPage;
 			
@@ -158,7 +158,7 @@
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
-				previousUrl = !!previousPoppedUrl ? previousPoppedUrl : 
+				previousUrl = !!previousPoppedUrl ? previousPoppedUrl :
 					document.location.href.substring(
 						document.location.protocol.length + 2 + document.location.host.length
 					);
@@ -342,7 +342,7 @@
 			
 			if (!_validateNextPage(nextPage)) {
 				App.modules.notify('pages.routeNotFound', {
-					page: currentPage, 
+					page: currentPage,
 					url: obj
 				});
 				App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
@@ -404,7 +404,7 @@
 							App.modules.notify('pages.loaded', {
 								elem: $(ROOT),
 								url: obj,
-								page: nextPage,
+								page: nextPage
 							});
 						}
 					}
@@ -418,7 +418,7 @@
 	
 	var togglePage = function (route, fallback) {
 		if (!!currentPage && _validateMediatorState()) {
-			var 
+			var
 			nextPage = App.pages.getPageForRoute(route);
 			
 			if (_validateNextPage(nextPage) && _canEnterNextPage(nextPage)) {
@@ -436,7 +436,7 @@
 		return this;
 	};
 	
-	/** 
+	/**
 	* Init All the applications
 	* Assign root variable
 	* Call init on all registered page and modules
@@ -449,12 +449,12 @@
 		}
 		
 		// init each Modules
-		$.each(App.modules.models(), function _initModule() {
+		$.each(App.modules.models(), function _initModule () {
 			this.init();
 		});
 		
 		// init each Page already loaded
-		$.each(App.pages.instances(), function _initPage() {
+		$.each(App.pages.instances(), function _initPage () {
 			if (!!this.loaded()) {
 				// init page
 				this.init({firstTime: true});
@@ -471,7 +471,7 @@
 						route: currentRouteUrl
 					});
 					// enter the page right now
-					currentPage.enter(function _currentPageEnterCallback() {
+					currentPage.enter(function _currentPageEnterCallback () {
 						App.modules.notify('page.enter', {
 							page: currentPage,
 							route: currentRouteUrl

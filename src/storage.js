@@ -1,6 +1,6 @@
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Storage: A safe wrapper around window.localStorage/sessionStorage
  */
 (function ($, global, undefined) {

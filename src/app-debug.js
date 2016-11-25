@@ -1,6 +1,6 @@
 /**
  * @author Deux Huit Huit
- * 
+ *
  * App Debug and Log
  *
  */
@@ -34,7 +34,7 @@
 		},
 		t1 = $.type(a.args[0]);
 		
-		if (t1  === 'string' || t1 === 'number' || t1 == 'boolean') {
+		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
 			// append me before a.args[0]
 			a.args[0] = '[' + a.me + '] ' + a.args[0];
 		}
@@ -59,7 +59,7 @@
 			if (!!window.console[a.fx].apply) {
 				window.console[a.fx].apply(window.console, a.args);
 			} else {
-				$.each(a.args, function _logArgs(index, arg) {
+				$.each(a.args, function _logArgs (index, arg) {
 					window.console[a.fx](arg);
 				});
 			}

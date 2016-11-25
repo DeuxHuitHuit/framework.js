@@ -1,6 +1,6 @@
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Assets loader: Basically a wrap around $.ajax in order
  *   to priorize and serialize resource loading.
  */
@@ -9,7 +9,7 @@
 	'use strict';
 
 	// Forked: https://gist.github.com/nitriques/6583457
-	(function addXhrProgressEvent() {
+	(function addXhrProgressEvent () {
 		var originalXhr = $.ajaxSettings.xhr;
 		$.ajaxSetup({
 			progress: $.noop,
@@ -52,7 +52,7 @@
 	
 	var inQueue = function (url) {
 		var foundIndex = -1;
-		$.each(assets, function _eachAsset(index, asset) {
+		$.each(assets, function _eachAsset (index, asset) {
 			if (asset.url === url) {
 				foundIndex = index;
 				return false; // early exit
@@ -106,9 +106,9 @@
 				App.log({args: ['Error loading url %s', asset.url], me: 'Loader'});
 				
 				// if no vip access is granted
-				//if (!asset.vip) { 
-					// decrease priority
-					// this avoids looping for a unload-able asset
+				//if (!asset.vip) {
+				// decrease priority
+				// this avoids looping for a unload-able asset
 				asset.priority += ++asset.retries; // out of bounds checking is done later
 				//}
 				
@@ -164,7 +164,7 @@
 		// pass the priority param into the object
 		if ($.isNumeric(priority) && Math.abs(priority) < assets.length) {
 			url.priority = priority;
-		} 
+		}
 		
 		// ensure that the priority is valid
 		if (!$.isNumeric(url.priority) || Math.abs(url.priority) > assets.length) {

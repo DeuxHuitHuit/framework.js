@@ -1,6 +1,6 @@
 /**
  * @author Deux Huit Huit
- * 
+ *
  * App Callback functionnality
  *
  */
@@ -10,16 +10,14 @@
 	
 	/** Utility **/
 	var argsToArray = function (args) {
-		if (args === null || // null is valid
-		    ( // or
-		        args !== undefined && // not undefined
-		        !$.isArray(args) && // not an array
-		        // not the 'arguments' type
-		       (!$.isNumeric(args.length) || // no .length
-		         $.type(args) === 'string' || // or not string
-		         !!args.jquery) // or jQuery Object
-		    )
-		) {
+		var isNull = (args === null);
+		var isNotUndefined = (args !== undefined);
+		var isNotAnArray = !$.isArray(args);
+		var noLength = !!args && !$.isNumeric(args.length);
+		var isString = $.type(args) === 'string';
+		var isjQuery = !!args && !!args.jquery;
+		
+		if (isNull || (isNotUndefined && isNotAnArray && (noLength || isString || isjQuery))) {
 			// put single parameter inside an array
 			args = [args];
 		}

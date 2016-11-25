@@ -12,10 +12,12 @@
 		var
 		a = /\+/g,  // Regex for replacing addition symbol with a space
 		r = /([^&=]+)=?([^&]*)/gi,
-		d = function (s) { return decodeURIComponent(s.replace(a, ' ')); },
+		d = function (s) {
+			return decodeURIComponent(s.replace(a, ' '));
+		},
 		
 		_parse = function (qs) {
-			var 
+			var
 			u = {},
 			e,
 			q;
@@ -49,7 +51,7 @@
 		};
 		
 		return {
-			parse : _parse,
+			parse: _parse,
 			stringify: _stringify
 		};
 	};
@@ -80,7 +82,7 @@
 			},
 			
 			isIos: function (userAgent) {
-				return detector.isIphone(userAgent) || 
+				return detector.isIphone(userAgent) ||
 					detector.isIpad(userAgent);
 			},
 			
@@ -98,13 +100,13 @@
 			},
 			
 			isAndroidPhone: function (userAgent) {
-				return detector.isAndroid(userAgent) && 
+				return detector.isAndroid(userAgent) &&
 					testUserAgent(/mobile/i, userAgent);
 			},
 			
 			isPhone: function (userAgent) {
 				return !detector.isIpad(userAgent) && (
-					detector.isOtherPhone(userAgent) || 
+					detector.isOtherPhone(userAgent) ||
 					detector.isAndroidPhone(userAgent) ||
 					detector.isIphone(userAgent));
 			},
@@ -119,18 +121,18 @@
 			},
 			
 			isMobile: function (userAgent) {
-				return detector.isIos(userAgent) || 
-					detector.isAndroid(userAgent) || 
+				return detector.isIos(userAgent) ||
+					detector.isAndroid(userAgent) ||
 					detector.isOtherMobile(userAgent);
 			},
 			
 			isMsie: function (userAgent) {
-				return testUserAgent(/msie/mi, userAgent) || 
+				return testUserAgent(/msie/mi, userAgent) ||
 					testUserAgent(/trident/mi, userAgent);
 			}
 			
 			/*isUnsupported : function (userAgent) {
-				var 
+				var
 				b;
 				userAgent = getUserAgent(userAgent);
 				b = $.uaMatch(userAgent);

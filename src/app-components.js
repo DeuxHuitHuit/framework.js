@@ -1,6 +1,6 @@
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Components
  * Components are factory method that will generate a instance of a component.
  */

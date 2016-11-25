@@ -5,7 +5,7 @@ var path = module.require('path');
 var os = module.require('os');
 var md = module.require('matchdep');
 
-module.exports = function fxGruntConfig(grunt) {
+module.exports = function fxGruntConfig (grunt) {
 	
 	'use strict';
 	
@@ -133,7 +133,7 @@ module.exports = function fxGruntConfig(grunt) {
 		uglify: {
 			prod: {
 				files: {
-					'dist/<%= pkg.name %>.min.js': '<%= concat.dist.dest %>' 
+					'dist/<%= pkg.name %>.min.js': '<%= concat.dist.dest %>'
 				}
 			},
 			options: {
@@ -190,7 +190,7 @@ module.exports = function fxGruntConfig(grunt) {
 		grunt.initConfig(config);
 		
 		// fix source map url
-		grunt.registerTask('fix-source-map', 
+		grunt.registerTask('fix-source-map',
 			'Fixes the wrong file path in the source map', function () {
 			var sourceMapPath = grunt.template.process('<%= uglify.options.sourceMap %>');
 			var sourceMapUrl = grunt.template.process('<%= uglify.options.sourceMappingURL %>');
@@ -206,7 +206,7 @@ module.exports = function fxGruntConfig(grunt) {
 		});
 
 		// generate build number
-		grunt.registerTask('buildnum', 
+		grunt.registerTask('buildnum',
 			'Generates and updates the current build number', function () {
 			var options = this.options();
 			var getBuildNumber = function () {
@@ -230,10 +230,10 @@ module.exports = function fxGruntConfig(grunt) {
 		});
 		
 		// Default task.
-		grunt.registerTask('test',      ['connect', 'qunit']);
-		grunt.registerTask('dev',       ['jshint', 'jscs', 'complexity']);
-		grunt.registerTask('build',     ['buildnum', 'concat', 'uglify', 'fix-source-map']);
-		grunt.registerTask('default',   ['dev', 'test', 'build']);
+		grunt.registerTask('test', ['connect', 'qunit']);
+		grunt.registerTask('dev', ['jshint', 'jscs', 'complexity']);
+		grunt.registerTask('build', ['buildnum', 'concat', 'uglify', 'fix-source-map']);
+		grunt.registerTask('default', ['dev', 'test', 'build']);
 	};
 	
 	var load = function (grunt) {

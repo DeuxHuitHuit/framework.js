@@ -1,6 +1,6 @@
 /**
  * @author Deux Huit Huit
- * 
+ *
  * Pages
  */
 (function ($, global, undefined) {
@@ -40,7 +40,7 @@
 				if (!$.isPlainObject(modelRef)) {
 					App.log({
 						args: [
-							'The exported page model function must return an object, ' + 
+							'The exported page model function must return an object, ' +
 							'`%s` given (%s)', $.type(modelRef), modelRef
 						],
 						fx: 'error'
@@ -50,7 +50,7 @@
 			} else {
 				App.log({
 					args: [
-						'The exported page model must be an object or a function, ' + 
+						'The exported page model must be an object or a function, ' +
 						'`%s` given (%s)', $.type(model), model
 					],
 					fx: 'error'
@@ -75,7 +75,7 @@
 				return _pageData;
 			};
 			
-			 // insure this can't be overriden
+			// insure this can't be overriden
 			var overwrites = {
 				key: _key, // css selector
 				loaded: _loaded,
@@ -145,7 +145,7 @@
 		return registerPageModel(key, pageModel, override);
 	};
 	
-	 // Validation
+	// Validation
 	var _validateRoute = function (route) {
 		var result = false;
 		
@@ -190,7 +190,7 @@
 			// wildcard replace
 			// avoid overloading routes with regex
 			if (testRoute.indexOf('*')) {
-				 // a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
+				// a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
 				testRoute = testRoute.replace(new RegExp('\\*', 'gi'), '.*');
 			}
 			
@@ -226,7 +226,7 @@
 		}
 		
 		if (!!route && !!routes) {
-			$.each(routes, function matchOneRoute(i, testRoute) {
+			$.each(routes, function matchOneRoute (i, testRoute) {
 				var routeType = $.type(testRoute);
 				var routeStrategy = routeMatchStagegies[routeType];
 				var cb = function () {
@@ -248,7 +248,7 @@
 	var _getPageForRoute = function (route) {
 		var page = null;
 		if (_validateRoute(route)) {
-			$.each(pageInstances, function _walkPage() {
+			$.each(pageInstances, function _walkPage () {
 				var routes = this.routes();
 				// route found ?
 				if (!!~_matchRoute(route, routes)) {
