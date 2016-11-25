@@ -186,6 +186,10 @@ module.exports = function fxGruntConfig (grunt) {
 	};
 	
 	var init = function (grunt) {
+		// Overrides some values
+		grunt.util.linefeed = '\n';
+		grunt.file.preserveBOM = false;
+		
 		// Project configuration.
 		grunt.initConfig(config);
 		
