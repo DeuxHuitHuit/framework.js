@@ -69,20 +69,12 @@
 		return global.AppStorage && global.AppStorage[url.cache];
 	};
 	
-	var _recursiveLoad = function () {
-		if (!!assets.length) {
-			// start next one
-			_loadOneAsset();
-		} else {
-			// work is done
-			loaderIsWorking = false;
-		}
-	};
+	// This breaks the call dependency cycle
+	var recursiveLoad = $.noop;
+	var loadAsset = $.noop;
 	
-	var _loadOneAsset = function () {
-		 // grab first item
-		var asset = assets.shift();
-		var param = $.extend({}, asset, {
+	var defaultParameters = function (asset) {
+		return {
 			progress: function () {
 				// callback
 				App.callback.call(this, asset.progress, arguments);
@@ -92,7 +84,7 @@
 				currentUrl = null;
 				
 				// register next
-				_recursiveLoad();
+				recursiveLoad();
 				
 				// callback
 				App.callback.call(this, asset.success, arguments);
@@ -134,17 +126,33 @@
 				}
 				
 				// next
-				_recursiveLoad();
+				recursiveLoad();
 				
 				// callback
 				App.callback.call(this, asset.error, arguments);
 			}
-		});
-		
+		};
+	};
+	
+	var loadOneAsset = function () {
+		// grab first item
+		var asset = assets.shift();
+		// extend it
+		var param = $.extend({}, asset, defaultParameters(asset));
 		// actual loading
 		$.ajax(param);
 		// set the pointer
 		currentUrl = param.url;
+	};
+	
+	recursiveLoad = function () {
+		if (!!assets.length) {
+			// start next one
+			loadOneAsset();
+		} else {
+			// work is done
+			loaderIsWorking = false;
+		}
 	};
 	
 	var validateUrlArgs = function (url, priority) {
@@ -174,7 +182,16 @@
 		return url;
 	};
 	
-	var loadAsset = function (url, priority) {
+	var launchLoad = function () {
+		// start now if nothing is loading
+		if (!loaderIsWorking) {
+			loaderIsWorking = true;
+			loadOneAsset();
+			App.log({args: 'Load worker has been started', me: 'Loader'});
+		}
+	};
+	
+	loadAsset = function (url, priority) {
 		if (!url) {
 			App.log({args: 'No url given', me: 'Loader'});
 			return this;
@@ -234,15 +251,6 @@
 		launchLoad();
 		
 		return this;
-	};
-	
-	var launchLoad = function () {
-		// start now if nothing is loading
-		if (!loaderIsWorking) {
-			loaderIsWorking = true;
-			_loadOneAsset();
-			App.log({args: 'Load worker has been started', me: 'Loader'});
-		}
 	};
 	
 	global.Loader = $.extend(global.Loader, {

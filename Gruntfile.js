@@ -96,7 +96,7 @@ module.exports = function fxGruntConfig(grunt) {
 				newcap: true, // capitalize ctos
 				noempty: true,
 				nonew: true, // no new ..()
-				noarg: true, 
+				noarg: true,
 				plusplus: false,
 				quotmark: 'single',
 				undef: true,
@@ -108,7 +108,7 @@ module.exports = function fxGruntConfig(grunt) {
 				
 				// relax options
 				//boss: true,
-				//eqnull: true, 
+				//eqnull: true,
 				esnext: true,
 				regexp: true,
 				strict: true,
