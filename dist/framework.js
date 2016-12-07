@@ -1,4 +1,4 @@
-/*! framework.js - v1.4.2 - build 143 - 2016-11-25
+/*! framework.js - v1.5.0 - 60195d3 - build 146 - 2016-12-07
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2016 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -208,7 +208,7 @@
 			if (!!window.console[a.fx].apply) {
 				window.console[a.fx].apply(window.console, a.args);
 			} else {
-				$.each(a.args, function _logArgs (index, arg) {
+				$.each(a.args, function logArgs (index, arg) {
 					window.console[a.fx](arg);
 				});
 			}
@@ -232,6 +232,212 @@
 			return logs;
 		}
 	});
+	
+})(jQuery, window);
+
+/**
+ * @author Deux Huit Huit
+ */
+
+/**
+ * Browser Support/Detection
+ */
+(function ($, global, undefined) {
+	'use strict';
+	
+	var queryStringParser = (function () {
+		var a = /\+/g; // Regex for replacing addition symbol with a space
+		var r = /([^&=]+)=?([^&]*)/gi;
+		var d = function (s) {
+			return decodeURIComponent(s.replace(a, ' '));
+		};
+		
+		var parse = function (qs) {
+			var u = {};
+			var e, q;
+			
+			//if we dont have the parameter qs, use the window location search value
+			if (qs !== '' && !qs) {
+				qs = window.location.search;
+			}
+			
+			//remove the first caracter (?)
+			q = qs.substring(1);
+
+			while ((e = r.exec(q))) {
+				u[d(e[1])] = d(e[2]);
+			}
+			
+			return u;
+		};
+		
+		var stringify = function (qs) {
+			var aqs = [];
+			$.each(qs, function (k, v) {
+				if (!!v) {
+					aqs.push(k + '=' + global.encodeURIComponent(v));
+				}
+			});
+			if (!aqs.length) {
+				return '';
+			}
+			return '?' + aqs.join('&');
+		};
+		
+		return {
+			parse: parse,
+			stringify: stringify
+		};
+	})();
+	
+	var browserDetector = (function () {
+		var getUserAgent = function (userAgent) {
+			if (!userAgent) {
+				return window.navigator.userAgent;
+			}
+			return userAgent;
+		};
+		
+		var testUserAgent = function (regexp, userAgent) {
+			userAgent = getUserAgent(userAgent);
+			return regexp.test(userAgent);
+		};
+		
+		var detector = {
+		
+			isTablet: function (userAgent) {
+				return detector.isMobile(userAgent) &&
+					!detector.isPhone(userAgent);
+			},
+			
+			/* @deprecated */
+			isTablette: function (userAgent) {
+				return this.isTablet(userAgent);
+			},
+			
+			isIos: function (userAgent) {
+				return detector.isIphone(userAgent) ||
+					detector.isIpad(userAgent);
+			},
+			
+			isIphone: function (userAgent) {
+				return !detector.isIpad(userAgent) &&
+					(testUserAgent(/iPhone/i, userAgent) || testUserAgent(/iPod/i, userAgent));
+			},
+			
+			isIpad: function (userAgent) {
+				return testUserAgent(/iPad/i, userAgent);
+			},
+			
+			isAndroid: function (userAgent) {
+				return testUserAgent(/Android/i, userAgent);
+			},
+			
+			isAndroidPhone: function (userAgent) {
+				return detector.isAndroid(userAgent) &&
+					testUserAgent(/mobile/i, userAgent);
+			},
+			
+			isPhone: function (userAgent) {
+				return !detector.isIpad(userAgent) && (
+					detector.isOtherPhone(userAgent) ||
+					detector.isAndroidPhone(userAgent) ||
+					detector.isIphone(userAgent));
+			},
+			
+			isOtherPhone: function (userAgent) {
+				return testUserAgent(/phone/i, userAgent);
+			},
+			
+			isOtherMobile: function (userAgent) {
+				return testUserAgent(/mobile/i, userAgent) ||
+					detector.isOtherPhone(userAgent);
+			},
+			
+			isMobile: function (userAgent) {
+				return detector.isIos(userAgent) ||
+					detector.isAndroid(userAgent) ||
+					detector.isOtherMobile(userAgent);
+			},
+			
+			isMsie: function (userAgent) {
+				return testUserAgent(/msie/mi, userAgent) ||
+					testUserAgent(/trident/mi, userAgent);
+			}
+			
+			/*isUnsupported : function (userAgent) {
+				var
+				b;
+				userAgent = getUserAgent(userAgent);
+				b = $.uaMatch(userAgent);
+				
+				return b.browser === "" || (b.browser == 'msie' && parseInt(b.version,10)) < 9;
+			}*/
+		};
+		
+		// return newly created object
+		return detector;
+	})();
+	
+	/** Public Interfaces **/
+	global.App = $.extend(global.App, {
+		routing: {
+			querystring: queryStringParser
+		},
+		
+		device: {
+			detector: browserDetector,
+			iphone: browserDetector.isIphone(),
+			ipad: browserDetector.isIpad(),
+			ios: browserDetector.isIos(),
+			android: browserDetector.isAndroid(),
+			mobile: browserDetector.isMobile(),
+			phone: browserDetector.isPhone(),
+			tablet: browserDetector.isTablet(),
+			events: {
+				click: 'pointerup',
+				enter: 'pointerenter',
+				up: 'pointerup',
+				down: 'pointerdown',
+				move: 'pointermove',
+				over: 'pointerover',
+				out: 'pointerout',
+				leave: 'pointerleave'
+			}
+		}
+	});
+	
+	/* @deprecated values */
+	
+	// Query string Parser
+	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
+	
+	global.QueryStringParser = queryStringParser;
+	
+	//Parse the query string and store a copy of the result in the global object
+	global.QS = queryStringParser.parse();
+	
+	// Browser detector
+	global.BrowserDetector = browserDetector;
+	
+	// User Agent short-hands
+	$.iphone = browserDetector.isIphone();
+	
+	$.ipad = browserDetector.isIpad();
+	
+	$.ios = browserDetector.isIos();
+	
+	$.mobile = browserDetector.isMobile();
+	
+	$.android = browserDetector.isAndroid();
+	
+	$.phone = browserDetector.isPhone();
+	
+	$.tablet = browserDetector.isTablet();
+	
+	$.touch = $.ios || $.android;
+	
+	$.click = App.device.click;
 	
 })(jQuery, window);
 
@@ -274,7 +480,7 @@
 			cb = data;
 			data = undefined;
 		}
-		$.each(modules, function _actionToAllModules (index) {
+		$.each(modules, function actionToAllModules (index) {
 			var res = App._callAction(this.actions, key, data, cb);
 			if (res !== undefined) {
 				App.callback(cb, [index, res]);
@@ -322,15 +528,15 @@
 			return true;
 		};
 		
-		var _enterLeave = function (next) {
+		var enterLeave = function (next) {
 			App.callback(next);
 		};
 		
 		var base = {
 			actions: $.noop,
 			init: $.noop,
-			enter: _enterLeave,
-			leave: _enterLeave,
+			enter: enterLeave,
+			leave: enterLeave,
 			canEnter: ftrue,
 			canLeave: ftrue
 		};
@@ -365,29 +571,29 @@
 				return null;
 			}
 			
-			var _key = function () {
+			var getKey = function () {
 				return _pageData.key;
 			};
 			
-			var _routes = function () {
+			var routes = function () {
 				return _pageData.routes;
 			};
 			
-			var _loaded = function () {
-				return !!$(_key()).length;
+			var loaded = function () {
+				return !!$(key()).length;
 			};
 			
 			// recuperate extra params...
-			var _data = function () {
+			var data = function () {
 				return _pageData;
 			};
 			
 			// insure this can't be overriden
 			var overwrites = {
-				key: _key, // css selector
-				loaded: _loaded,
-				routes: _routes,
-				data: _data
+				key: getKey, // css selector
+				loaded: loaded,
+				routes: routes,
+				data: data
 			};
 			
 			// New deep copy object
@@ -555,7 +761,7 @@
 	var _getPageForRoute = function (route) {
 		var page = null;
 		if (_validateRoute(route)) {
-			$.each(pageInstances, function _walkPage () {
+			$.each(pageInstances, function walkPage () {
 				var routes = this.routes();
 				// route found ?
 				if (!!~_matchRoute(route, routes)) {
@@ -644,7 +850,7 @@
 				tempFx = actions;
 				// try JSONPath style...
 				var paths = key.split('.');
-				$.each(paths, function _eachPath () {
+				$.each(paths, function eachPath () {
 					tempFx = tempFx[this];
 					if (!$.isPlainObject(tempFx)) {
 						return false; // exit
@@ -763,8 +969,8 @@
 			//The currentPage pointer will be cleared after the next call
 			var leavingPage = currentPage;
 			
-			var _leaveCurrent = function () {
-				currentPage = null;  // clean currentPage pointer,this will block all interactions
+			var leaveCurrent = function () {
+				currentPage = null; // clean currentPage pointer,this will block all interactions
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
@@ -779,7 +985,7 @@
 				App.modules.notify('page.leave', {page: previousPage});
 			};
 			
-			var _enterNext = function () {
+			var enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
 				// notify all module
@@ -791,8 +997,8 @@
 			var pageTransitionData = {
 				currentPage: currentPage,
 				nextPage: nextPage,
-				leaveCurrent: _leaveCurrent,
-				enterNext: _enterNext,
+				leaveCurrent: leaveCurrent,
+				enterNext: enterNext,
 				route: route,
 				isHandled: false
 			};
@@ -813,11 +1019,11 @@
 				App.modules.notify('page.leaving', {page: leavingPage});
 				
 				//Leave the current page
-				leavingPage.leave(_leaveCurrent);
+				leavingPage.leave(leaveCurrent);
 				
 				App.modules.notify('page.entering', {page: nextPage, route: route});
 				
-				nextPage.enter(_enterNext);
+				nextPage.enter(enterNext);
 			}
 		};
 		
@@ -1304,194 +1510,14 @@
  */
 
 /**
- * Browser Support/Detection
- */
-(function ($, global, undefined) {
-	'use strict';
-	
-	var queryStringParser = function () {
-		var
-		a = /\+/g,  // Regex for replacing addition symbol with a space
-		r = /([^&=]+)=?([^&]*)/gi,
-		d = function (s) {
-			return decodeURIComponent(s.replace(a, ' '));
-		},
-		
-		_parse = function (qs) {
-			var
-			u = {},
-			e,
-			q;
-			
-			//if we dont have the parameter qs, use the window location search value
-			if (qs !== '' && !qs) {
-				qs = window.location.search;
-			}
-			
-			//remove the first caracter (?)
-			q = qs.substring(1);
-
-			while ((e = r.exec(q))) {
-				u[d(e[1])] = d(e[2]);
-			}
-			
-			return u;
-		},
-		
-		_stringify = function (qs) {
-			var aqs = [];
-			$.each(qs, function (k, v) {
-				if (!!v) {
-					aqs.push(k + '=' + global.encodeURIComponent(v));
-				}
-			});
-			if (!aqs.length) {
-				return '';
-			}
-			return '?' + aqs.join('&');
-		};
-		
-		return {
-			parse: _parse,
-			stringify: _stringify
-		};
-	};
-	
-	var browserDetector = function () {
-		var getUserAgent = function (userAgent) {
-			if (!userAgent) {
-				return window.navigator.userAgent;
-			}
-			return userAgent;
-		};
-		
-		var testUserAgent = function (regexp, userAgent) {
-			userAgent = getUserAgent(userAgent);
-			return regexp.test(userAgent);
-		};
-		
-		var detector = {
-		
-			isTablet: function (userAgent) {
-				return detector.isMobile(userAgent) &&
-					!detector.isPhone(userAgent);
-			},
-			
-			/* @deprecated */
-			isTablette: function (userAgent) {
-				return this.isTablet(userAgent);
-			},
-			
-			isIos: function (userAgent) {
-				return detector.isIphone(userAgent) ||
-					detector.isIpad(userAgent);
-			},
-			
-			isIphone: function (userAgent) {
-				return !detector.isIpad(userAgent) &&
-					(testUserAgent(/iPhone/i, userAgent) || testUserAgent(/iPod/i, userAgent));
-			},
-			
-			isIpad: function (userAgent) {
-				return testUserAgent(/iPad/i, userAgent);
-			},
-			
-			isAndroid: function (userAgent) {
-				return testUserAgent(/Android/i, userAgent);
-			},
-			
-			isAndroidPhone: function (userAgent) {
-				return detector.isAndroid(userAgent) &&
-					testUserAgent(/mobile/i, userAgent);
-			},
-			
-			isPhone: function (userAgent) {
-				return !detector.isIpad(userAgent) && (
-					detector.isOtherPhone(userAgent) ||
-					detector.isAndroidPhone(userAgent) ||
-					detector.isIphone(userAgent));
-			},
-			
-			isOtherPhone: function (userAgent) {
-				return testUserAgent(/phone/i, userAgent);
-			},
-			
-			isOtherMobile: function (userAgent) {
-				return testUserAgent(/mobile/i, userAgent) ||
-					detector.isOtherPhone(userAgent);
-			},
-			
-			isMobile: function (userAgent) {
-				return detector.isIos(userAgent) ||
-					detector.isAndroid(userAgent) ||
-					detector.isOtherMobile(userAgent);
-			},
-			
-			isMsie: function (userAgent) {
-				return testUserAgent(/msie/mi, userAgent) ||
-					testUserAgent(/trident/mi, userAgent);
-			}
-			
-			/*isUnsupported : function (userAgent) {
-				var
-				b;
-				userAgent = getUserAgent(userAgent);
-				b = $.uaMatch(userAgent);
-				
-				return b.browser === "" || (b.browser == 'msie' && parseInt(b.version,10)) < 9;
-			}*/
-		};
-		
-		// return newly created object
-		return detector;
-	};
-	
-	// Query string Parser
-	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
-	global.QueryStringParser = queryStringParser();
-	
-	//Parse the query string and store a copy of the result in the global object
-	global.QS = global.QueryStringParser.parse();
-	
-	
-	// Browser detector
-	global.BrowserDetector = browserDetector();
-	
-	// User Agent short-hands
-	$.iphone = global.BrowserDetector.isIphone();
-	
-	$.ipad = global.BrowserDetector.isIpad();
-	
-	$.ios = global.BrowserDetector.isIos();
-	
-	$.mobile = global.BrowserDetector.isMobile();
-	
-	$.android = global.BrowserDetector.isAndroid();
-	
-	$.phone = global.BrowserDetector.isPhone();
-	
-	$.tablet = global.BrowserDetector.isTablet();
-	
-	$.touch = $.ios || $.android;
-	
-	$.click = $.touch ? 'touch-click' : 'click';
-	
-	/* @deprecated values */
-	$.tablette = $.tablet;
-	$.touchClick = $.touch;
-	
-})(jQuery, window);
-
-/**
  * General customization
  */
 (function ($, global, undefined) {
 	'use strict';
-
+	
 	/*
 	 * Cheap modrnzr
 	 */
-
 	// add mobile css class to html
 	var mobileClasses = ['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'tablet', 'touch'];
 	$.each(mobileClasses, function (i, c) {
@@ -1499,104 +1525,8 @@
 			$('html').addClass(c);
 		}
 	});
-	
 	// easing support
 	$.easing.def = ($.mobile ? 'linear' : 'easeOutQuad');
-	
-	// touch support: removing the 300ms delay
-	if ($.touch) {
-		var didMove = false;
-		var preventNextClick = false;
-		var lastTouch = {x: 0, y: 0};
-		
-		var preventNextClickExternal = function (target, e) {
-			var ret = true;
-			if ($.isFunction(global.preventNextClick)) {
-				ret = global.preventNextClick.call(target, e);
-			}
-			return ret;
-		};
-		
-		var getMinMoveValue = function () {
-			var value = 0;
-			if ($.isNumeric(global.deviceMinMoveValue)) {
-				value = parseInt(global.deviceMinMoveValue, 10);
-			} else if ($.isFunction(global.deviceMinMoveValue)) {
-				value = parseInt(global.deviceMinMoveValue());
-			}
-			return value || 10; // default value
-		};
-		
-		var minMove = 0;
-		
-		$(document).on('touchstart', function (e) {
-			didMove = false;
-			var touch = e.originalEvent.touches[0];
-			lastTouch.x = touch.screenX;
-			lastTouch.y = touch.screenY;
-			App.log('touchstart', lastTouch);
-		}).on('touchmove', function (e) {
-			var touch = e.originalEvent.changedTouches[0];
-			if (!minMove) {
-				minMove = getMinMoveValue() * (window.devicePixelRatio || 1);
-			}
-			// only count move when one finger is used
-			didMove = e.originalEvent.changedTouches.length === 1 &&
-				// and if the gesture was more than accidental
-				(Math.abs(lastTouch.x - touch.screenX) > minMove ||
-				Math.abs(lastTouch.y - touch.screenY) > minMove);
-				
-			App.log('touchmove', lastTouch, didMove, touch.screenX, touch.screenY);
-		}).on('touchend', function (e) {
-			App.log('touchend', lastTouch, didMove);
-			
-			var t = $(e.target);
-			// do not count inputs
-			var ignoreInputs = 'input, select, textarea';
-			// special ignore class
-			var ignoreClass = '.ignore-mobile-click, .ignore-mobile-click *';
-			// store de result
-			var mustBeIgnored = t.is(ignoreInputs) || t.is(ignoreClass);
-			
-			// prevent click only if not ignored
-			preventNextClick = $.ios && !mustBeIgnored;
-			
-			if (!didMove && !mustBeIgnored) {
-				
-				// create a new click event
-				var clickEvent = $.Event($.click);
-				
-				// raise it
-				$(e.target).trigger(clickEvent);
-				
-				// let others prevent defaults...
-				if (clickEvent.isDefaultPrevented()) {
-					// and do the same
-					global.pd(e, clickEvent.isPropagationStopped());
-				}
-				// or stop propagation
-				else if (clickEvent.isPropagationStopped()) {
-					e.stopPropagation();
-				}
-				
-				if (e.isDefaultPrevented()) {
-					App.log('touchend prevented');
-					return false;
-				}
-			}
-		}).on('click', 'a', function (e) {
-			App.log('real click');
-			
-			var isNextClickPrevented = preventNextClick && preventNextClickExternal(this, e);
-			preventNextClick = false;
-			
-			if (isNextClickPrevented) {
-				App.log('click prevented');
-				global.pd(e);
-				return false;
-			}
-		});
-	}
 	
 	/*
 	 * Patching console object.
@@ -1695,7 +1625,7 @@
 	
 	var inQueue = function (url) {
 		var foundIndex = -1;
-		$.each(assets, function _eachAsset (index, asset) {
+		$.each(assets, function eachAsset (index, asset) {
 			if (asset.url === url) {
 				foundIndex = index;
 				return false; // early exit

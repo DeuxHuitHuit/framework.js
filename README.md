@@ -1,27 +1,19 @@
 # Deux Huit Huit's framework.js [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![David DM](https://david-dm.org/DeuxHuitHuit/framework.js/dev-status.svg?style=flat)](https://david-dm.org/DeuxHuitHuit/framework.js#info=devDependencies)
 
-#### Version 1.4.x
+#### Version 1.5.x
 
 > Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
 The framework use jQuery and Underscore.js and extends some functionality.
 
+## Dependencies
+
+* https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
+* https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js
+* https://code.jquery.com/pep/0.4.1/pep.js
+* https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js
+
 ## API
-
-**Global**
-
-Adds some flag value on the jquery object to detect the browser used
-
-* `$.unsupported` true if it's MSIE less than version 9
-* `$.iphone` true for userAgent containing 'iPhone' or 'iPod'
-* `$.ipad` true for userAgent containing 'iPad'
-* `$.ios` true when iPhone is true or userAgent contain 'iPad'
-* `$.mobile` true when ios is true or android is true or userAgent contain 'mobile' or 'phone'
-* `$.android` true for userAgent containing Android'
-* `$.phone` true when userAgent contain 'mobile' or 'phone'
-* `$.tablet` true when mobile but not a phone
-* `$.touch` $.ios || $.android;
-* `$.click` 'touch-click' if touch enabled device, 'click' if not
 
 **Loader**
 
@@ -72,10 +64,23 @@ Adds some flag value on the jquery object to detect the browser used
 	* `instances()`
 	* `create()`
 	* `exports()`
-		
-		
+
+* `device`
+
+	* `iphone` true for userAgent containing 'iPhone' or 'iPod'
+	* `ipad` true for userAgent containing 'iPad'
+	* `ios` true when iPhone is true or userAgent contain 'iPad'
+	* `mobile` true when ios is true or android is true or userAgent contain 'mobile' or 'phone'
+	* `android` true for userAgent containing Android'
+	* `phone` true when userAgent contain 'mobile' or 'phone'
+	* `tablet` true when mobile but not a phone
+
 ## History
 
+* **1.5.x**
+	* Added jscs to the build
+	* Introduce App.device and App.routing
+	* Remove the 300ms delay hack and use pointer events instead (see touch-action="none")
 * **1.4.x**
 	* Handle server redirects
 	* Allow non-GET requests to be queued
@@ -95,4 +100,4 @@ Adds some flag value on the jquery object to detect the browser used
 
 [MIT](http://deuxhuithuit.mit-license.org)    
 Made with love in Montréal by [Deux Huit Huit](https://deuxhuithuit.com)    
-Copyrights (c) 2013-2014
+Copyrights (c) 2013-2016
