@@ -59,7 +59,7 @@
 			if (!!window.console[a.fx].apply) {
 				window.console[a.fx].apply(window.console, a.args);
 			} else {
-				$.each(a.args, function _logArgs (index, arg) {
+				$.each(a.args, function logArgs (index, arg) {
 					window.console[a.fx](arg);
 				});
 			}

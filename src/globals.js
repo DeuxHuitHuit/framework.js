@@ -10,13 +10,13 @@
 	
 	var queryStringParser = function () {
 		var
-		a = /\+/g,  // Regex for replacing addition symbol with a space
+		a = /\+/g, // Regex for replacing addition symbol with a space
 		r = /([^&=]+)=?([^&]*)/gi,
 		d = function (s) {
 			return decodeURIComponent(s.replace(a, ' '));
 		},
 		
-		_parse = function (qs) {
+		parse = function (qs) {
 			var
 			u = {},
 			e,
@@ -37,7 +37,7 @@
 			return u;
 		},
 		
-		_stringify = function (qs) {
+		stringify = function (qs) {
 			var aqs = [];
 			$.each(qs, function (k, v) {
 				if (!!v) {
@@ -51,8 +51,8 @@
 		};
 		
 		return {
-			parse: _parse,
-			stringify: _stringify
+			parse: parse,
+			stringify: stringify
 		};
 	};
 	

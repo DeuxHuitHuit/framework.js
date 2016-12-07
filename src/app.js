@@ -34,7 +34,7 @@
 				tempFx = actions;
 				// try JSONPath style...
 				var paths = key.split('.');
-				$.each(paths, function _eachPath () {
+				$.each(paths, function eachPath () {
 					tempFx = tempFx[this];
 					if (!$.isPlainObject(tempFx)) {
 						return false; // exit
@@ -153,8 +153,8 @@
 			//The currentPage pointer will be cleared after the next call
 			var leavingPage = currentPage;
 			
-			var _leaveCurrent = function () {
-				currentPage = null;  // clean currentPage pointer,this will block all interactions
+			var leaveCurrent = function () {
+				currentPage = null; // clean currentPage pointer,this will block all interactions
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
@@ -169,7 +169,7 @@
 				App.modules.notify('page.leave', {page: previousPage});
 			};
 			
-			var _enterNext = function () {
+			var enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
 				// notify all module
@@ -181,8 +181,8 @@
 			var pageTransitionData = {
 				currentPage: currentPage,
 				nextPage: nextPage,
-				leaveCurrent: _leaveCurrent,
-				enterNext: _enterNext,
+				leaveCurrent: leaveCurrent,
+				enterNext: enterNext,
 				route: route,
 				isHandled: false
 			};
@@ -203,11 +203,11 @@
 				App.modules.notify('page.leaving', {page: leavingPage});
 				
 				//Leave the current page
-				leavingPage.leave(_leaveCurrent);
+				leavingPage.leave(leaveCurrent);
 				
 				App.modules.notify('page.entering', {page: nextPage, route: route});
 				
-				nextPage.enter(_enterNext);
+				nextPage.enter(enterNext);
 			}
 		};
 		

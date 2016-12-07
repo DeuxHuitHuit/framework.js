@@ -37,7 +37,7 @@
 			cb = data;
 			data = undefined;
 		}
-		$.each(modules, function _actionToAllModules (index) {
+		$.each(modules, function actionToAllModules (index) {
 			var res = App._callAction(this.actions, key, data, cb);
 			if (res !== undefined) {
 				App.callback(cb, [index, res]);

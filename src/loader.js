@@ -52,7 +52,7 @@
 	
 	var inQueue = function (url) {
 		var foundIndex = -1;
-		$.each(assets, function _eachAsset (index, asset) {
+		$.each(assets, function eachAsset (index, asset) {
 			if (asset.url === url) {
 				foundIndex = index;
 				return false; // early exit

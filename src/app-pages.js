@@ -15,15 +15,15 @@
 			return true;
 		};
 		
-		var _enterLeave = function (next) {
+		var enterLeave = function (next) {
 			App.callback(next);
 		};
 		
 		var base = {
 			actions: $.noop,
 			init: $.noop,
-			enter: _enterLeave,
-			leave: _enterLeave,
+			enter: enterLeave,
+			leave: enterLeave,
 			canEnter: ftrue,
 			canLeave: ftrue
 		};
@@ -58,29 +58,29 @@
 				return null;
 			}
 			
-			var _key = function () {
+			var getKey = function () {
 				return _pageData.key;
 			};
 			
-			var _routes = function () {
+			var routes = function () {
 				return _pageData.routes;
 			};
 			
-			var _loaded = function () {
-				return !!$(_key()).length;
+			var loaded = function () {
+				return !!$(key()).length;
 			};
 			
 			// recuperate extra params...
-			var _data = function () {
+			var data = function () {
 				return _pageData;
 			};
 			
 			// insure this can't be overriden
 			var overwrites = {
-				key: _key, // css selector
-				loaded: _loaded,
-				routes: _routes,
-				data: _data
+				key: getKey, // css selector
+				loaded: loaded,
+				routes: routes,
+				data: data
 			};
 			
 			// New deep copy object
@@ -248,7 +248,7 @@
 	var _getPageForRoute = function (route) {
 		var page = null;
 		if (_validateRoute(route)) {
-			$.each(pageInstances, function _walkPage () {
+			$.each(pageInstances, function walkPage () {
 				var routes = this.routes();
 				// route found ?
 				if (!!~_matchRoute(route, routes)) {
