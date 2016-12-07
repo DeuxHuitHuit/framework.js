@@ -44,6 +44,7 @@
 	<script src="../src/globals.js"></script>
 	<script src="../src/app-debug.js"></script>
 	<script src="../src/app-callback.js"></script>
+	<script src="../src/app-device.js"></script>
 	<script src="../src/app.js"></script>
 	<script src="../src/app-pages.js"></script>
 	<script src="../src/app-modules.js"></script>
@@ -63,6 +64,73 @@
 		
 			//Enable debug
 			App.debug(true);
+			
+			module('App.device.detector');
+			
+			/*test('isUnsupported', function browserDetectorIsUnsupported() {
+			
+				//test for empty string
+				ok(w.App.device.detector.isUnsupported('') == true,'empty ua is an unsupported');
+			
+				//test for msie with version 7
+				ok(w.App.device.detector.isUnsupported('Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)') == true,'msie v7 is unsupported');
+				
+				//test for msie with version 8
+				ok(w.App.device.detector.isUnsupported('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)') == true,'msie v8 is unsupported');
+				
+				//test for msie with version 9
+				ok(!w.App.device.detector.isUnsupported('Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)') == true,'msie v9 is supported');
+				
+			});*/
+			
+			test('isIphone', function browserDetectorIsIphoneTest() {
+				//test for empty string
+				ok(!w.App.device.detector.isIphone(''),'empty ua is not an iphone');
+				
+				//test for iphone regex
+				ok(w.App.device.detector.isIphone('iphone'),'iphone text ua is an iphone');
+				ok(w.App.device.detector.isIphone('sdfdg-iphonesdf'),'ua contains iphone then is an iphone');
+				
+				//Test for ipod regex
+				ok(w.App.device.detector.isIphone('ipod'),'ipod text ua is an iphone');
+				ok(w.App.device.detector.isIphone('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
+				
+				ok(w.App.device.detector.isIphone('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
+				
+				ok(!w.App.device.detector.isIphone('ipad iphone'),'ua contains ipad AND iphone then is NOT iphone');
+			});
+			
+			
+			test('isIpad', function browserDetectorIsIphoneTest() {
+				//test for empty string
+				ok(!w.App.device.detector.isIpad(''),'empty ua is not an ipad');
+				
+				//test for iphone regex
+				ok(!w.App.device.detector.isIpad('iphone'),'iphone is an not an ipad');
+				ok(!w.App.device.detector.isIpad('sdfdg-iphonesdf'),'ua contains iphone then is not and ipad');
+				
+				//Test for ipod regex
+				ok(!w.App.device.detector.isIpad('ipod'),'ipod text ua is not an iphone');
+				ok(!w.App.device.detector.isIpad('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
+				
+				//Test for ipad regex
+				ok(w.App.device.detector.isIpad('sdfdg-ipadesdf'),'ua contains ipad then is an ipad');
+				ok(w.App.device.detector.isIpad('ipad iphone'),'ua contains ipad AND iphone then IS ipad');
+			});
+			
+			module('App.routing.querystring');
+			
+			test('parse',function QSTest() {
+				var result;
+				
+				//Test 1
+				result = w.App.routing.querystring.parse('?q=test');
+				ok(result.q === 'test','parse ?q.test is parsed successfully');
+				
+				//Test 2
+				result = w.App.routing.querystring.parse('?q=test&r=2');
+				ok(result.q === 'test' && result.r == 2,'parse ?q=test&r=2 is parsed successfully');
+			});
 			
 			module('App.Pages');
 			

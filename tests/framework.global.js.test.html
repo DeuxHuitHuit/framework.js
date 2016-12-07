@@ -52,83 +52,8 @@
 		var 
 		
 		runTests = function  () {
-			
-			module('window.BrowserDetector');
-			
-			/*test('isUnsupported', function browserDetectorIsUnsupported() {
-			
-				//test for empty string
-				ok(w.BrowserDetector.isUnsupported('') == true,'empty ua is an unsupported');
-			
-				//test for msie with version 7
-				ok(w.BrowserDetector.isUnsupported('Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)') == true,'msie v7 is unsupported');
-				
-				//test for msie with version 8
-				ok(w.BrowserDetector.isUnsupported('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)') == true,'msie v8 is unsupported');
-				
-				//test for msie with version 9
-				ok(!w.BrowserDetector.isUnsupported('Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)') == true,'msie v9 is supported');
-				
-			});*/
-			
-			test('isIphone', function browserDetectorIsIphoneTest() {
-				//test for empty string
-				ok(!w.BrowserDetector.isIphone(''),'empty ua is not an iphone');
-				
-				//test for iphone regex
-				ok(w.BrowserDetector.isIphone('iphone'),'iphone text ua is an iphone');
-				ok(w.BrowserDetector.isIphone('sdfdg-iphonesdf'),'ua contains iphone then is an iphone');
-				
-				//Test for ipod regex
-				ok(w.BrowserDetector.isIphone('ipod'),'ipod text ua is an iphone');
-				ok(w.BrowserDetector.isIphone('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
-				
-				ok(w.BrowserDetector.isIphone('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
-				
-				ok(!w.BrowserDetector.isIphone('ipad iphone'),'ua contains ipad AND iphone then is NOT iphone');
-			});
-			
-			
-			test('isIpad', function browserDetectorIsIphoneTest() {
-				//test for empty string
-				ok(!w.BrowserDetector.isIpad(''),'empty ua is not an ipad');
-				
-				//test for iphone regex
-				ok(!w.BrowserDetector.isIpad('iphone'),'iphone is an not an ipad');
-				ok(!w.BrowserDetector.isIpad('sdfdg-iphonesdf'),'ua contains iphone then is not and ipad');
-				
-				//Test for ipod regex
-				ok(!w.BrowserDetector.isIpad('ipod'),'ipod text ua is not an iphone');
-				ok(!w.BrowserDetector.isIpad('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
-				
-				//Test for ipad regex
-				ok(w.BrowserDetector.isIpad('sdfdg-ipadesdf'),'ua contains ipad then is an ipad');
-				ok(w.BrowserDetector.isIpad('ipad iphone'),'ua contains ipad AND iphone then IS ipad');
-			});
-			
-			
-			//test('is')
-			
-			module('QueryStringParser');
-			
-			test('parse',function QSTest() {
-				var result;
-				
-				//Test 1
-				result = w.QueryStringParser.parse('?q=test');
-				ok(result.q === 'test','parse ?q.test is parsed successfully');
-				
-				//Test 2
-				result = w.QueryStringParser.parse('?q=test&r=2');
-				ok(result.q === 'test' && result.r == 2,'parse ?q=test&r=2 is parsed successfully');
-			});
-			
 			module('window');
 			
-			test('QS',function QSTest() {
-				ok($.isPlainObject(w.QS), 'w.QS is plain object');
-			});
-		
 			test('isChar', function isCharTest() {
 				ok(w.isChar(w.keys.space_bar), 'space_bar');
 				ok(!w.isChar(w.keys.backspace), 'backspace');
