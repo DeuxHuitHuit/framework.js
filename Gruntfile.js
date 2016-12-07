@@ -53,13 +53,20 @@ module.exports = function fxGruntConfig (grunt) {
 			}
 		},
 		meta: {
-			banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> ' +
-			'- build <%= buildnum.num %> - ' +
+			banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %>' +
+			' - <%= meta.revision %> - build <%= buildnum.num %> - ' +
 			'<%= grunt.template.today("yyyy-mm-dd") %>\n' +
 			'<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
 			' * Copyright (c) <%= grunt.template.today("yyyy") %> ' +
 			'<%= pkg.author.name %> (<%= pkg.author.url %>);\n' +
 			' * <%= pkg.license %> */'
+		},
+		revision: {
+			options: {
+				property: 'meta.revision',
+				ref: 'HEAD',
+				short: true
+			}
 		},
 		concat: {
 			options: {
@@ -253,7 +260,13 @@ module.exports = function fxGruntConfig (grunt) {
 		// Default task.
 		grunt.registerTask('test', ['connect', 'qunit']);
 		grunt.registerTask('dev', ['jshint', 'jscs', 'complexity']);
-		grunt.registerTask('build', ['buildnum', 'concat', 'uglify', 'fix-source-map']);
+		grunt.registerTask('build', [
+			'buildnum',
+			'revision',
+			'concat',
+			'uglify',
+			'fix-source-map'
+		]);
 		grunt.registerTask('default', ['dev', 'test', 'build']);
 	};
 	

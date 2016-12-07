@@ -2,7 +2,7 @@
   "name": "framework",
   "title": "framework.js",
   "description": "Deux Huit Huit javascript framework",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "homepage": "https://github.com/DeuxHuitHuit/framework.js",
   "author": {
     "name": "Deux Huit Huit",
@@ -27,6 +27,7 @@
     "grunt-contrib-qunit": "^1.2.0",
     "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "^1.0.0",
+    "grunt-git-revision": "0.0.1",
     "grunt-jscs": "^3.0.1",
     "grunt-karma": "~2.0.0",
     "karma": "~1.3",
