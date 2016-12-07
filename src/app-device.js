@@ -200,6 +200,6 @@
 	
 	$.touch = $.ios || $.android;
 	
-	$.click = $.touch ? 'touch-click' : 'click';
+	$.click = App.device.click;
 	
 })(jQuery, window);
