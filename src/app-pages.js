@@ -67,7 +67,7 @@
 			};
 			
 			var loaded = function () {
-				return !!$(key()).length;
+				return !!$(getKey()).length;
 			};
 			
 			// recuperate extra params...

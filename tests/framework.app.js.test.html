@@ -268,10 +268,28 @@
 				page = App.pages.getPageForRoute('page-2');
 				equal(page.key(), 'page 2', 'page 2');
 				
-				page.init();
+				ok(!page.init(), 'init returns a false-y value');
 				
 				page = App.pages.getPageForRoute('page-3');
 				equal(page, null, 'page 3');
+			});
+			
+			test('page properties', function pagePropertiesTest() {
+				App.pages.exports('page-properties', {});
+				var page = App.pages.create({
+					key: 'page properties',
+					routes: ['page-1']
+				}, 'page-properties');
+				
+				ok(page, 'page has a value');
+				ok(page.key(), 'key() returns a value');
+				ok(!page.loaded(), 'loaded() returns false');
+				ok(page.routes(), 'key() returns a value');
+				ok(page.data(), 'data() returns a value');
+				ok(page.canEnter(), 'canEnter() returns a value');
+				ok(page.canLeave(), 'canLeave() returns a value');
+				ok(page.enter, 'enter is a value');
+				ok(page.init, 'init is a value');
 			});
 			
 			module('App.modules');
