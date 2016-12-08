@@ -137,8 +137,8 @@
 			test('exportsPage and createPage', function exportPagesTest() {
 				var modelKey = 'm1',
 				f = {
-						init: initTest
-					};
+					init: initTest
+				};
 				
 				ok(App.pages.exports(modelKey,f), 'page exports work');
 				
@@ -160,7 +160,7 @@
 				App.pages.exports(modelKey+'int', 1);
 				App.pages.exports(modelKey+'string', '1');
 				
-				var routes = [ '/en/test/','/fr/test/'];
+				var routes = ['/en/test/','/fr/test/'];
 				
 				ok(App.pages.create({
 					key: 'test', 
@@ -186,8 +186,8 @@
 					routes: ['/en/test/', '/fr/test/']
 				},'m3'), 'page create dont find the model');
 				
-				ok(!App.pages.create({}, modelKey+'int'), 'cant create ints models');
-				ok(!App.pages.create({}, modelKey+'string'), 'cant create string models');
+				ok(!App.pages.create(1, modelKey+'int'), 'cant create ints models');
+				ok(!App.pages.create('', modelKey+'string'), 'cant create string models');
 				
 				var page1 = App.pages.create({}, modelKey+'func');
 				var page2 = App.pages.create({}, modelKey+'func');
