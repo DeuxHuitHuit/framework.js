@@ -1,4 +1,4 @@
-/*! framework.js - v1.5.2 - d11bb29 - build 148 - 2016-12-09
+/*! framework.js - v1.5.3 - 3bd1962 - build 151 - 2016-12-09
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2016 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -395,7 +395,8 @@
 			phone: browserDetector.isPhone(),
 			tablet: browserDetector.isTablet(),
 			events: {
-				click: 'pointerup',
+				pick: 'pointerup',
+				click: 'click',
 				enter: 'pointerenter',
 				up: 'pointerup',
 				down: 'pointerdown',
@@ -437,7 +438,7 @@
 	
 	$.touch = $.ios || $.android;
 	
-	$.click = App.device.events.click;
+	$.click = App.device.events.pick;
 	
 })(jQuery, window);
 
