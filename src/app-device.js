@@ -158,7 +158,8 @@
 			phone: browserDetector.isPhone(),
 			tablet: browserDetector.isTablet(),
 			events: {
-				click: 'pointerup',
+				pick: 'pointerup',
+				click: 'click',
 				enter: 'pointerenter',
 				up: 'pointerup',
 				down: 'pointerdown',
@@ -200,6 +201,6 @@
 	
 	$.touch = $.ios || $.android;
 	
-	$.click = App.device.events.click;
+	$.click = App.device.events.pick;
 	
 })(jQuery, window);
