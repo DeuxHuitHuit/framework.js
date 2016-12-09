@@ -200,6 +200,6 @@
 	
 	$.touch = $.ios || $.android;
 	
-	$.click = App.device.click;
+	$.click = App.device.events.click;
 	
 })(jQuery, window);
