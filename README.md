@@ -10,8 +10,8 @@ The framework use jQuery and Underscore.js and extends some functionality.
 
 * https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
 * https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js
-* https://code.jquery.com/pep/0.4.1/pep.js
 * https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js
+* https://code.jquery.com/pep/0.4.1/pep.min.js (optional)
 
 ## API
 
