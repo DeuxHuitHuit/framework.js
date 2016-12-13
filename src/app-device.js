@@ -158,7 +158,6 @@
 			phone: browserDetector.isPhone(),
 			tablet: browserDetector.isTablet(),
 			events: {
-				pick: 'pointerup',
 				click: 'click',
 				enter: 'pointerenter',
 				up: 'pointerup',
@@ -186,21 +185,13 @@
 	
 	// User Agent short-hands
 	$.iphone = browserDetector.isIphone();
-	
 	$.ipad = browserDetector.isIpad();
-	
 	$.ios = browserDetector.isIos();
-	
 	$.mobile = browserDetector.isMobile();
-	
 	$.android = browserDetector.isAndroid();
-	
 	$.phone = browserDetector.isPhone();
-	
 	$.tablet = browserDetector.isTablet();
-	
 	$.touch = $.ios || $.android;
-	
-	$.click = App.device.events.pick;
+	$.click = App.device.events.click;
 	
 })(jQuery, window);
