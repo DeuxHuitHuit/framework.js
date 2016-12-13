@@ -1,4 +1,4 @@
-/*! framework.js - v1.5.3 - 3bd1962 - build 151 - 2016-12-09
+/*! framework.js - v1.6.0 - 703fc6d - build 152 - 2016-12-13
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2016 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -395,7 +395,6 @@
 			phone: browserDetector.isPhone(),
 			tablet: browserDetector.isTablet(),
 			events: {
-				pick: 'pointerup',
 				click: 'click',
 				enter: 'pointerenter',
 				up: 'pointerup',
@@ -423,22 +422,14 @@
 	
 	// User Agent short-hands
 	$.iphone = browserDetector.isIphone();
-	
 	$.ipad = browserDetector.isIpad();
-	
 	$.ios = browserDetector.isIos();
-	
 	$.mobile = browserDetector.isMobile();
-	
 	$.android = browserDetector.isAndroid();
-	
 	$.phone = browserDetector.isPhone();
-	
 	$.tablet = browserDetector.isTablet();
-	
 	$.touch = $.ios || $.android;
-	
-	$.click = App.device.events.pick;
+	$.click = App.device.events.click;
 	
 })(jQuery, window);
 
