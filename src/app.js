@@ -86,6 +86,8 @@
 			if (res !== undefined) {
 				App.callback(cb, [currentPage.key(), res]);
 			}
+		} else {
+			App.log({args: 'Can not notify page: No current page set.', fx: 'error'});
 		}
 		return this;
 	};
@@ -741,6 +743,11 @@
 				this.init({firstTime: true});
 				this.isInited = true;
 				
+				// Check if we already found it
+				if (!!currentPage) {
+					return false;
+				}
+				
 				// find if this is our current page
 				// current route found ?
 				if (!!~App.pages._matchRoute(currentRouteUrl, this.routes())) {
@@ -774,9 +781,13 @@
 			}
 		});
 		
-		notifyAll('app.init', {
-			page: currentPage
-		});
+		if (!currentPage) {
+			App.log({args: 'Can not init application: No current page set.', fx: 'error'});
+		} else {
+			notifyAll('app.init', {
+				page: currentPage
+			});
+		}
 	};
 	
 	/**
