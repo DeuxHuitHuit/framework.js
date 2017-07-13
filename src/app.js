@@ -434,7 +434,7 @@
 							route: route,
 							isRedirect: true
 						});
-						App.log('redirected next page is the current one');
+						App.log('Redirected next page is the current one');
 					} else {
 						/**
 						 * Start new transition
@@ -579,7 +579,7 @@
 							page: nextPage,
 							route: route
 						});
-						App.log('next page is the current one');
+						App.log('Next page is the current one');
 						
 					} else {
 						
