@@ -743,14 +743,19 @@
 				this.init({firstTime: true});
 				this.isInited = true;
 				
-				// Check if we already found it
-				if (!!currentPage) {
-					return false;
-				}
-				
 				// find if this is our current page
 				// current route found ?
 				if (!!~App.pages._matchRoute(currentRouteUrl, this.routes())) {
+					if (!!currentPage) {
+						App.log({
+							args: ['Previous current page will be changed', {
+								currentPage: currentPage,
+								previousPage: previousPage,
+								newPage: this
+							}],
+							fx: 'warning'
+						});
+					}
 					// initialise page variable
 					currentPage = this;
 					previousPage = this; // Set the same for the first time
