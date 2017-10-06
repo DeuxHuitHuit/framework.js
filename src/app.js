@@ -224,7 +224,7 @@
 			var responseUrl = htmldata.find(ROOT + ' > [data-response-url]')
 				.attr('data-response-url');
 			
-			if (!!responseUrl && responseUrl != obj) {
+			if (!!responseUrl && responseUrl != obj.split('#')[0]) {
 				
 				var redirectedPage = nextPage;
 				
