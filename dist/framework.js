@@ -1,6 +1,6 @@
-/*! framework.js - v1.6.0 - 703fc6d - build 152 - 2016-12-13
+/*! framework.js - v1.6.1 - 8af6a2a1da - build 154 - 2017-10-10
  * https://github.com/DeuxHuitHuit/framework.js
- * Copyright (c) 2016 Deux Huit Huit (https://deuxhuithuit.com/);
+ * Copyright (c) 2017 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
  * @author Deux Huit Huit
  *
@@ -1032,7 +1032,7 @@
 			var responseUrl = htmldata.find(ROOT + ' > [data-response-url]')
 				.attr('data-response-url');
 			
-			if (!!responseUrl && responseUrl != obj) {
+			if (!!responseUrl && responseUrl != obj.split('#')[0]) {
 				
 				var redirectedPage = nextPage;
 				
