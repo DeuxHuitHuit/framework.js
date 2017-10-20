@@ -751,14 +751,15 @@
 							args: ['Previous current page will be changed', {
 								currentPage: currentPage,
 								previousPage: previousPage,
-								newPage: this
+								newCurrentPage : this
 							}],
 							fx: 'warning'
 						});
 					}
 					// initialise page variable
 					currentPage = this;
-					previousPage = this; // Set the same for the first time
+					previousPage = previousPage || this;
+
 					/**
 					 * @event App#page:entering
 					 * @type {object}
