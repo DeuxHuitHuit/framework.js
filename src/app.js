@@ -751,12 +751,12 @@
 							args: ['Previous current page will be changed', {
 								currentPage: currentPage,
 								previousPage: previousPage,
-								newCurrentPage : this
+								newCurrentPage: this
 							}],
 							fx: 'warning'
 						});
 					}
-					// initialise page variable
+					// initialize page variable
 					currentPage = this;
 					previousPage = previousPage || this;
 
