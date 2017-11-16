@@ -126,8 +126,21 @@
 			isMsie: function (userAgent) {
 				return testUserAgent(/msie/mi, userAgent) ||
 					testUserAgent(/trident/mi, userAgent);
+			},
+
+			isSafari: function (userAgent) {
+				return !(testUserAgent(/Chrome/i, userAgent)) &&
+					testUserAgent(/Safari/i, userAgent);
+			},
+
+			isChrome: function (userAgent) {
+				return testUserAgent(/Chrome/i, userAgent);
+			},
+
+			isFirefox: function (userAgent) {
+				return testUserAgent(/Firefox/i, userAgent);
 			}
-			
+
 			/*isUnsupported : function (userAgent) {
 				var
 				b;
