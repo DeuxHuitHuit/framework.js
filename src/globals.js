@@ -12,8 +12,12 @@
 	 * Cheap modrnzr
 	 */
 	// add device css class to html
-	var deviceClasses = deviceClasses = ['iphone', 'ipad', 'ios', 'mobile', 'android',
-		'phone', 'tablet', 'touch', 'chrome', 'firefox', 'safari', 'internetexplorer', 'edge'];
+	var deviceClasses = [
+		'iphone', 'ipad', 'ios',
+		'android',
+		'mobile', 'phone', 'tablet', 'touch',
+		'chrome', 'firefox', 'safari', 'internetexplorer', 'edge'
+	];
 	$.each(deviceClasses, function (i, c) {
 		if (!!$[c]) {
 			$('html').addClass(c);
