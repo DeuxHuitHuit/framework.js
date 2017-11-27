@@ -11,9 +11,10 @@
 	/*
 	 * Cheap modrnzr
 	 */
-	// add mobile css class to html
-	var mobileClasses = ['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'tablet', 'touch'];
-	$.each(mobileClasses, function (i, c) {
+	// add device css class to html
+	var deviceClasses = deviceClasses = ['iphone', 'ipad', 'ios', 'mobile', 'android',
+		'phone', 'tablet', 'touch', 'chrome', 'firefox', 'safari', 'internetexplorer', 'edge'];
+	$.each(deviceClasses, function (i, c) {
 		if (!!$[c]) {
 			$('html').addClass(c);
 		}

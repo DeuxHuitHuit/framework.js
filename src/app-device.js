@@ -126,8 +126,25 @@
 			isMsie: function (userAgent) {
 				return testUserAgent(/msie/mi, userAgent) ||
 					testUserAgent(/trident/mi, userAgent);
+			},
+
+			isSafari: function (userAgent) {
+				return !(testUserAgent(/Chrome/i, userAgent)) &&
+					testUserAgent(/Safari/i, userAgent);
+			},
+
+			isFirefox: function (userAgent) {
+				return testUserAgent(/Firefox/i, userAgent);
+			},
+
+			isEdge: function (userAgent) {
+				return testUserAgent(/Edge/i, userAgent);
+			},
+
+			isChrome: function (userAgent) {
+				return testUserAgent(/Chrome/i, userAgent) && !detector.isEdge();
 			}
-			
+
 			/*isUnsupported : function (userAgent) {
 				var
 				b;
@@ -157,6 +174,11 @@
 			mobile: browserDetector.isMobile(),
 			phone: browserDetector.isPhone(),
 			tablet: browserDetector.isTablet(),
+			chrome: browserDetector.isChrome(),
+			firefox: browserDetector.isFirefox(),
+			safari: browserDetector.isSafari(),
+			internetexplorer: browserDetector.isMsie(),
+			edge: browserDetector.isEdge(),
 			events: {
 				click: 'click',
 				enter: 'pointerenter',
@@ -184,6 +206,11 @@
 	global.BrowserDetector = browserDetector;
 	
 	// User Agent short-hands
+	$.chrome = browserDetector.isChrome();
+	$.firefox = browserDetector.isFirefox();
+	$.safari = browserDetector.isSafari();
+	$.internetexplorer = browserDetector.isMsie();
+	$.edge = browserDetector.isEdge();
 	$.iphone = browserDetector.isIphone();
 	$.ipad = browserDetector.isIpad();
 	$.ios = browserDetector.isIos();
