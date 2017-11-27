@@ -1,4 +1,4 @@
-/*! framework.js - v1.6.1 - 8af6a2a1da - build 154 - 2017-10-10
+/*! framework.js - v1.7.0 - 501e89810e - build 156 - 2017-11-27
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2017 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -363,8 +363,25 @@
 			isMsie: function (userAgent) {
 				return testUserAgent(/msie/mi, userAgent) ||
 					testUserAgent(/trident/mi, userAgent);
+			},
+
+			isSafari: function (userAgent) {
+				return !(testUserAgent(/Chrome/i, userAgent)) &&
+					testUserAgent(/Safari/i, userAgent);
+			},
+
+			isFirefox: function (userAgent) {
+				return testUserAgent(/Firefox/i, userAgent);
+			},
+
+			isEdge: function (userAgent) {
+				return testUserAgent(/Edge/i, userAgent);
+			},
+
+			isChrome: function (userAgent) {
+				return testUserAgent(/Chrome/i, userAgent) && !detector.isEdge();
 			}
-			
+
 			/*isUnsupported : function (userAgent) {
 				var
 				b;
@@ -394,6 +411,11 @@
 			mobile: browserDetector.isMobile(),
 			phone: browserDetector.isPhone(),
 			tablet: browserDetector.isTablet(),
+			chrome: browserDetector.isChrome(),
+			firefox: browserDetector.isFirefox(),
+			safari: browserDetector.isSafari(),
+			internetexplorer: browserDetector.isMsie(),
+			edge: browserDetector.isEdge(),
 			events: {
 				click: 'click',
 				enter: 'pointerenter',
@@ -421,6 +443,11 @@
 	global.BrowserDetector = browserDetector;
 	
 	// User Agent short-hands
+	$.chrome = browserDetector.isChrome();
+	$.firefox = browserDetector.isFirefox();
+	$.safari = browserDetector.isSafari();
+	$.internetexplorer = browserDetector.isMsie();
+	$.edge = browserDetector.isEdge();
 	$.iphone = browserDetector.isIphone();
 	$.ipad = browserDetector.isIpad();
 	$.ios = browserDetector.isIos();
@@ -1510,9 +1537,14 @@
 	/*
 	 * Cheap modrnzr
 	 */
-	// add mobile css class to html
-	var mobileClasses = ['iphone', 'ipad', 'ios', 'mobile', 'android', 'phone', 'tablet', 'touch'];
-	$.each(mobileClasses, function (i, c) {
+	// add device css class to html
+	var deviceClasses = [
+		'iphone', 'ipad', 'ios',
+		'android',
+		'mobile', 'phone', 'tablet', 'touch',
+		'chrome', 'firefox', 'safari', 'internetexplorer', 'edge'
+	];
+	$.each(deviceClasses, function (i, c) {
 		if (!!$[c]) {
 			$('html').addClass(c);
 		}
