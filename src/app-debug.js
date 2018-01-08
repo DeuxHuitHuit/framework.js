@@ -1,8 +1,12 @@
 /**
- * @author Deux Huit Huit
- *
  * App Debug and Log
  *
+ * @fileoverview Defines and exports log and debug
+ *
+ * @author Deux Huit Huit <http://deuxhuithuit.com>
+ * @license MIT <http://deuxhuithuit.mit-license.org>
+ *
+ * @module App
  */
 (function ($, global, undefined) {
 

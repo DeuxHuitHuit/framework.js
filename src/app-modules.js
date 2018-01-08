@@ -1,7 +1,13 @@
 /**
- * @author Deux Huit Huit
+ * Module are singleton that lives across pages
  *
- * Modules
+ * @fileoverview Defines and exports components
+ *
+ * @author Deux Huit Huit <http://deuxhuithuit.com>
+ * @license MIT <http://deuxhuithuit.mit-license.org>
+ *
+ * @module App.modules
+ * @requires App
  */
 (function ($, global, undefined) {
 

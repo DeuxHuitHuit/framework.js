@@ -206,6 +206,15 @@ module.exports = function fxGruntConfig (grunt) {
 					]
 				}
 			}
+		},
+		jsdoc: {
+			dist: {
+				src: SRC_FILES.concat('README.md'),
+				options: {
+					destination: 'doc',
+					private: true
+				}
+			}
 		}
 	};
 	
@@ -258,6 +267,7 @@ module.exports = function fxGruntConfig (grunt) {
 		});
 		
 		// Default task.
+		grunt.registerTask('doc', ['jsdoc']);
 		grunt.registerTask('test', ['connect', 'qunit']);
 		grunt.registerTask('dev', ['jshint', 'jscs', 'complexity']);
 		grunt.registerTask('build', [
