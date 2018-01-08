@@ -7,6 +7,7 @@
  * @license MIT <http://deuxhuithuit.mit-license.org>
  *
  * @requires jQuery
+ * @module App
  */
 (function ($, global, undefined) {
 	
@@ -28,6 +29,14 @@
 	var previousPage = null;
 	var previousUrl = '';
 	
+	/**
+	 * Find and execute the methods that matches with the notify key
+	 * 
+	 * @param {Function|Object} actions Object of methods that can be matches with the key's value
+	 * @param {String} key 
+	 * @param {Object} data Bag of data
+	 * @returns {Boolean} Callback's result
+	 */
 	var _callAction = function (actions, key, data) {
 		if ($.isFunction(actions)) {
 			actions = actions();
@@ -52,6 +61,15 @@
 		}
 	};
 	
+	/**
+	 * Scope the _callAction actions only for the current page
+	 * 
+	 * @param {String} key notify key
+	 * @param {Object} data bag of data
+	 * @param {Function} cb Callback executed after all the _callAction are executed
+	 * @this {Object} Mediator
+	 * @returns this
+	 */
 	var notifyPage = function (key, data, cb) {
 		if (!!currentPage) {
 			if ($.isFunction(data) && !cb) {
@@ -66,7 +84,10 @@
 		return this;
 	};
 	
-	// Validation
+	/**
+	 * Check if the mediator is loading a page
+	 * @returns {Boolean}
+	 */
 	var _validateMediatorState = function () {
 		if (mediatorIsLoadingPage) {
 			App.log({args: 'Mediator is busy waiting for a page load.', fx: 'error'});
@@ -75,6 +96,11 @@
 		return !mediatorIsLoadingPage;
 	};
 	
+	/**
+	 * Check if the page is valid or not
+	 * @param {Object} nextPage
+	 * @returns {Boolean}
+	 */
 	var _validateNextPage = function (nextPage) {
 		var result = true;
 			
@@ -85,6 +111,12 @@
 		return result;
 	};
 	
+	/**
+	 * Check if we can enter the next page
+	 * 
+	 * @param {Object} nextPage next page instence
+	 * @returns {Boolean}
+	 */
 	var _canEnterNextPage = function (nextPage) {
 		var result = true;
 		
@@ -96,6 +128,10 @@
 		return result;
 	};
 	
+	/**
+	 * Check if we can leave the current page
+	 * @returns {Boolean}
+	 */
 	var _canLeaveCurrentPage = function () {
 		var result = false;
 		
@@ -111,13 +147,16 @@
 	};
 	
 	//Actions
-	
+
 	/**
-	* Notify all registered component and page
-	*
-	* @see AER in http://addyosmani.com/largescalejavascript/
-	* @see pub/sub http://freshbrewedcode.com/jimcowart/tag/pubsub/
-	*/
+	 * Notify all registered component and page
+	 * @param {String} key Notify key
+	 * @param {Object} data Object passed to notified methods
+	 * @param {Function} cb Callback executed when the notify is done
+	 * @this Mediator
+	 * @returns this
+	 * @see AER in http://addyosmani.com/largescalejavascript/
+	 */
 	var notifyAll = function (key, data, cb) {
 		
 		// propagate action to current page only
@@ -128,15 +167,22 @@
 		
 		return this;
 	};
-	
+
 	/**
-	* Change the current page to the requested route
-	* Do nothing if the current page is already the requested route
-	*/
+	 * Change the current page to the requested route
+	 * Do nothing if the current page is already the requested route
+	 * @param {String} obj page requested
+	 * @param {String} previousPoppedUrl 
+	 */
 	var gotoPage = function (obj, previousPoppedUrl) {
 		var nextPage;
 		var route = '';
 		
+		/**
+		 * Try to parse the data in jQuery to be sure it's valid
+		 * @param {String} data response data
+		 * @returns {jQueryElement}
+		 */
 		var safeParseData = function (data) {
 			try {
 				return $(data);
