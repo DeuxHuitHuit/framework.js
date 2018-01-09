@@ -275,7 +275,8 @@ module.exports = function fxGruntConfig (grunt) {
 			'revision',
 			'concat',
 			'uglify',
-			'fix-source-map'
+			'fix-source-map',
+			'doc'
 		]);
 		grunt.registerTask('default', ['dev', 'test', 'build']);
 	};

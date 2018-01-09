@@ -3,10 +3,10 @@
  *
  * @fileoverview Defines and exports components
  *
- * @author Deux Huit Huit <http://deuxhuithuit.com>
- * @license MIT <http://deuxhuithuit.mit-license.org>
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @module App.components
+ * @namespace App.components
  * @requires App
  */
 (function ($, global, undefined) {
@@ -18,7 +18,9 @@
 
 	/**
 	 * Create a default model of a component with an init function
-	 * 
+	 * @name _createAbstractComponent
+	 * @method
+	 * @memberof App.components
 	 * @private
 	 * @return {Object}
 	 */
@@ -31,9 +33,12 @@
 	/**
 	 * Merge the created component with the default model
 	 * just to be sure there's an init method
-	 * 
+	 * @name extendComponent
+	 * @method
+	 * @memberof App.components
 	 * @param {Object} component
 	 * @return {Object} component
+	 * @private
 	 */
 	var extendComponent = function (component) {
 		return $.extend(_createAbstractComponent(), component);
@@ -42,10 +47,13 @@
 	/**
 	 * Make sure the component is unique by key verification
 	 * and stores it with all the other components
-	 * 
+	 * @name exports
+	 * @method
+	 * @memberof App.components
 	 * @param {String} key unique identifier
 	 * @param {Function} component model of the component
 	 * @param {Boolean} override fake news
+	 * @public
 	 */
 	var exportComponent = function (key, component, override) {
 		if (!$.type(key)) {
@@ -61,10 +69,13 @@
 
 	/**
 	 * Create an instence of the component
-	 * 
+	 * @name create
+	 * @method
+	 * @memberof App.components
 	 * @param {String} key unique identifier
 	 * @param {Object} options object passed to the component's code
 	 * @return {Object} Merged component with the default model and the acual component code
+	 * @public
 	 */
 	var createComponent = function (key, options) {
 		if (!components[key]) {
@@ -88,7 +99,14 @@
 		// Components
 		components: {
 			
-			// private
+			/**
+			 * Get all components models
+			 * @public
+			 * @name models
+			 * @method
+			 * @memberof App.components
+			 * @returns {Objects}
+			 */
 			models: function () {
 				return components;
 			},

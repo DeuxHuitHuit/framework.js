@@ -3,11 +3,11 @@
  *
  * @fileoverview Defines the App Mediator
  *
- * @author Deux Huit Huit <http://deuxhuithuit.com>
- * @license MIT <http://deuxhuithuit.mit-license.org>
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
  *
  * @requires jQuery
- * @module App
+ * @namespace App
  */
 (function ($, global, undefined) {
 	
@@ -31,11 +31,14 @@
 	
 	/**
 	 * Find and execute the methods that matches with the notify key
-	 * 
+	 * @name _callAction
+	 * @memberof App
+	 * @method
 	 * @param {Function|Object} actions Object of methods that can be matches with the key's value
-	 * @param {String} key 
+	 * @param {String} key Action key
 	 * @param {Object} data Bag of data
 	 * @returns {Boolean} Callback's result
+	 * @private
 	 */
 	var _callAction = function (actions, key, data) {
 		if ($.isFunction(actions)) {
@@ -63,12 +66,15 @@
 	
 	/**
 	 * Scope the _callAction actions only for the current page
-	 * 
-	 * @param {String} key notify key
-	 * @param {Object} data bag of data
+	 * @name notifyCurrentPage
+	 * @memberof App
+	 * @method
+	 * @param {String} key Notify key
+	 * @param {Object} data Bag of data
 	 * @param {Function} cb Callback executed after all the _callAction are executed
 	 * @this {Object} Mediator
 	 * @returns this
+	 * @public
 	 */
 	var notifyPage = function (key, data, cb) {
 		if (!!currentPage) {
@@ -86,7 +92,11 @@
 	
 	/**
 	 * Check if the mediator is loading a page
+	 * @name _validateMediatorState
+	 * @memberof App
+	 * @method
 	 * @returns {Boolean}
+	 * @private
 	 */
 	var _validateMediatorState = function () {
 		if (mediatorIsLoadingPage) {
@@ -98,8 +108,12 @@
 	
 	/**
 	 * Check if the page is valid or not
-	 * @param {Object} nextPage
+	 * @name _validateNextPage
+	 * @memberof App
+	 * @method
+	 * @param {Object} nextPage PageObject
 	 * @returns {Boolean}
+	 * @private
 	 */
 	var _validateNextPage = function (nextPage) {
 		var result = true;
@@ -113,9 +127,12 @@
 	
 	/**
 	 * Check if we can enter the next page
-	 * 
-	 * @param {Object} nextPage next page instence
+	 * @name _canEnterNextPage
+	 * @memberof App
+	 * @method
+	 * @param {Object} nextPage Next page instence
 	 * @returns {Boolean}
+	 * @private
 	 */
 	var _canEnterNextPage = function (nextPage) {
 		var result = true;
@@ -130,7 +147,11 @@
 	
 	/**
 	 * Check if we can leave the current page
+	 * @name _canLeaveCurrentPage
+	 * @memberof App
+	 * @method
 	 * @returns {Boolean}
+	 * @private
 	 */
 	var _canLeaveCurrentPage = function () {
 		var result = false;
@@ -150,12 +171,16 @@
 
 	/**
 	 * Notify all registered component and page
+	 * @name notify
+	 * @memberof App
+	 * @method
 	 * @param {String} key Notify key
 	 * @param {Object} data Object passed to notified methods
 	 * @param {Function} cb Callback executed when the notify is done
 	 * @this Mediator
 	 * @returns this
 	 * @see AER in http://addyosmani.com/largescalejavascript/
+	 * @public
 	 */
 	var notifyAll = function (key, data, cb) {
 		
@@ -171,8 +196,17 @@
 	/**
 	 * Change the current page to the requested route
 	 * Do nothing if the current page is already the requested route
-	 * @param {String} obj page requested
-	 * @param {String} previousPoppedUrl
+	 * @name goto
+	 * @memberof App
+	 * @method 
+	 * @param {String} obj Page requested
+	 * @param {String} previousPoppedUrl Url
+	 * @fires App#page:leave
+	 * @fires App#page:enter
+	 * @fires App#pages:failedtoparse
+	 * @fires App#pages:requestPageTransition
+	 * @fires App#page:leaving
+	 * @fires App#page:entering
 	 * @this App
 	 */
 	var gotoPage = function (obj, previousPoppedUrl) {
@@ -182,7 +216,7 @@
 		/**
 		 * Try to parse the data in jQuery to be sure it's valid
 		 * @param {String} data response data
-		 * @returns {jQueryElement}
+		 * @returns {jQuery}
 		 */
 		var safeParseData = function (data) {
 			try {
@@ -190,6 +224,14 @@
 			}
 			catch (ex) {
 				App.log({args: [ex.message], fx: 'error'});
+				/**
+				 * @event App#pages:failedtoparse
+				 * @type {object}
+				 * @property {object} data
+				 * @property {string} route
+				 * @property {object} nextPage PageObject
+				 * @property {object} currentPage PageObject
+				 */
 				App.modules.notify('pages.failedtoparse', {
 					data: data,
 					route: route,
@@ -201,7 +243,7 @@
 		};
 		
 		/**
-		 * 
+		 * Initiate the transition and leave/enter page logic
 		 */
 		var enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable
@@ -223,7 +265,11 @@
 				//clear leavingPage
 				leavingPage = null;
 				
-				//notify all module
+				/**
+				 * @event App#page:leave
+				 * @type {object}
+				 * @property {object} page PageObject
+				 */
 				App.modules.notify('page.leave', {page: previousPage});
 			};
 			
@@ -233,7 +279,12 @@
 			var enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
-				// notify all module
+				
+				/**
+				 * @event App#page:enter
+				 * @type {object}
+				 * @property {object} page PageObject
+				 */
 				App.modules.notify('page.enter', {page: nextPage, route: route});
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
@@ -248,7 +299,11 @@
 				isHandled: false
 			};
 			
-			//Try to find a module to handle page transition
+			/**
+			 * @event App#pages:requestPageTransition
+			 * @type {object}
+			 * @property {object} pageTransitionData
+			 */
 			App.modules.notify('pages.requestPageTransition', pageTransitionData);
 			
 			if (!nextPage.isInited) {
@@ -260,12 +315,22 @@
 			if (!pageTransitionData.isHandled) {
 				//Leave to page the transition job
 				
-				//notify all module
+				/**
+				 * @event App#page:leaving
+				 * @type {object}
+				 * @property {object} page PageObject
+				 */
 				App.modules.notify('page.leaving', {page: leavingPage});
 				
 				//Leave the current page
 				leavingPage.leave(leaveCurrent);
 				
+				/**
+				 * @event App#page:entering
+				 * @type {object}
+				 * @property {object} page PageObject
+				 * @property {string} route url
+				 */
 				App.modules.notify('page.entering', {page: nextPage, route: route});
 				
 				nextPage.enter(enterNext);
@@ -275,7 +340,7 @@
 		/**
 		 * Verify that the data is valid an append the loadded content inside the App's root
 		 * @param {String} data requested data
-		 * @param {String} textStatus 
+		 * @param {String} textStatus Current request status
 		 * @param {Object} jqXHR request instence
 		 */
 		var loadSucess = function (data, textStatus, jqXHR) {
@@ -387,7 +452,11 @@
 		
 		/**
 		 * Disptch a notify for the progress' event
-		 * @param {Event} e 
+		 * @name progress
+		 * @method
+		 * @memberof App
+		 * @private
+		 * @param {Event} e Request progess event
 		 */
 		var progress = function (e) {
 			var total = e.originalEvent.total;
@@ -491,8 +560,13 @@
 	 * Open the wanted page,
 	 * return to the precedent page if the requested on is already open
 	 * or fallback to a default one
-	 * @param {String} route 
-	 * @param {String} fallback 
+	 * @name toggle
+	 * @memberof App
+	 * @method
+	 * @fires App#page:toggleNoPreviousUrl
+	 * @param {String} route Url
+	 * @param {String} fallback Url used for as a fallback
+	 * @public
 	 */
 	var togglePage = function (route, fallback) {
 		if (!!currentPage && _validateMediatorState()) {
@@ -507,6 +581,11 @@
 				} else if (!!fallback) {
 					gotoPage(fallback);
 				} else {
+					/**
+					 * @event App#page:toggleNoPreviousUrl
+					 * @type {object}
+					 * @property {object} currentPage PageObject
+					 */
 					App.modules.notify('page.toggleNoPreviousUrl', { currentPage: nextPage });
 				}
 			}
@@ -515,10 +594,17 @@
 	};
 	
 	/**
-	* Init All the applications
-	* Assign root variable
-	* Call init on all registered page and modules
-	*/
+	 * Init All the applications
+	 * Assign root variable
+	 * Call init on all registered page and modules
+	 * @name initApplication
+	 * @memberof App
+	 * @method
+	 * @fires App#page:entering
+	 * @fires App#page:enter
+	 * @param {String} root CSS selector
+	 * @private
+	 */
 	var initApplication = function (root) {
 		
 		// assure root node
@@ -544,12 +630,24 @@
 					// initialise page variable
 					currentPage = this;
 					previousPage = this; // Set the same for the first time
+					/**
+					 * @event App#page:entering
+					 * @type {object}
+					 * @property {Object} page PageObject
+					 * @property {String} route Url
+					 */
 					App.modules.notify('page.entering', {
 						page: currentPage,
 						route: currentRouteUrl
 					});
 					// enter the page right now
 					currentPage.enter(function _currentPageEnterCallback () {
+						/**
+						 * @event App#page:enter
+						 * @type {object}
+						 * @property {Object} page PageObject
+						 * @property {String} route Url
+						 */
 						App.modules.notify('page.enter', {
 							page: currentPage,
 							route: currentRouteUrl
@@ -566,7 +664,11 @@
 	
 	/**
 	 * Init the app with the given css selector
-	 * @param {String=} root css selector
+	 * @name run
+	 * @memberof App
+	 * @method
+	 * @param {String=} root CSS selector
+	 * @public
 	 */
 	var run = function (root) {
 		initApplication(root);
@@ -596,6 +698,14 @@
 				return currentPage;
 			},
 			
+			/**
+			 * Get the currentPage object
+			 * @name getCurrentPage
+			 * @memberof App
+			 * @method
+			 * @returns {Object} PageObject
+			 * @public
+			 */
 			getCurrentPage: function () {
 				return currentPage;
 			},

@@ -1,15 +1,13 @@
 /**
-* @author Deux Huit Huit
-* 
 * App Callback functionnality
 *
 * @fileoverview Defines and exports callback and loaded
 *
-* @author Deux Huit Huit <http://deuxhuithuit.com>
-* @license MIT <http://deuxhuithuit.mit-license.org>
+* @author Deux Huit Huit <https://deuxhuithuit.com>
+* @license MIT <https://deuxhuithuit.mit-license.org>
 *
- * @module App.callback
- * @requires App
+* @namespace App.callback
+* @requires App
 */
 (function ($, global, undefined) {
 
@@ -17,8 +15,12 @@
 	
 	/**
 	 * Put the args value in a array if it isn't one already
+	 * @name argsToArray
+	 * @method
+	 * @memberof App.callback
 	 * @param {*} args
 	 * @return {Array}
+	 * @private
 	 */
 	var argsToArray = function (args) {
 		var isNull = (args === null);
@@ -37,11 +39,14 @@
 	
 	/**
 	 * Execute the method recived with the arguments recived
-	 * 
+	 * @name callback
+	 * @method
+	 * @memberof App.callback
 	 * @this App
 	 * @param {function} fx 
 	 * @param {*} args
 	 * @return undefined
+	 * @public
 	 */
 	var callback = function (fx, args) {
 		try {
@@ -65,11 +70,15 @@
 	
 	/**
 	 * Check if a ressource is loaded and callback when it is.
-	 * @param {*} v ressource to test
-	 * @param {Function} fx callback to execute when the ressource is loaded
-	 * @param {Integer} delay delay between each checks in ms
-	 * @param {Integer} maxRetriesCount max checks for a ressource
-	 * @param {Integer} counter memo for the recursive function
+	 * @name loaded
+	 * @method
+	 * @memberof App.callback
+	 * @param {*} v Ressource to test
+	 * @param {Function} fx Callback to execute when the ressource is loaded
+	 * @param {Integer} delay Delay between each checks in ms
+	 * @param {Integer} maxRetriesCount Max checks for a ressource
+	 * @param {Integer} counter Memo for the recursive function
+	 * @public
 	 */
 	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
 		delay = Math.max(delay || 0, 100);

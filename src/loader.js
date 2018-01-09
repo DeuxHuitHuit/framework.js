@@ -2,8 +2,8 @@
  *  Assets loader: Basically a wrap around $.ajax in order
  *  to priorize and serialize resource loading.
  * 
- * @author Deux Huit Huit <http://deuxhuithuit.com>
- * @license MIT <http://deuxhuithuit.mit-license.org>
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
  *
  */
 (function ($, global, undefined) {

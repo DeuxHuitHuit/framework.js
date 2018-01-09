@@ -1,9 +1,13 @@
 /**
- * @author Deux Huit Huit
- */
-
-/**
- * Browser Support/Detection
+ * App device detector
+ * 
+ * @fileoverview Analyse the user agent
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace App.device
+ * @requires App
  */
 (function ($, global, undefined) {
 	'use strict';
@@ -21,8 +25,12 @@
 		
 		/**
 		 * Format the querystring into an object
+		 * @name prase
+		 * @memberof App.routing
+		 * @method
 		 * @param {String} qs
 		 * @returns {Object}
+		 * @public
 		 */
 		var parse = function (qs) {
 			var u = {};
@@ -45,7 +53,12 @@
 		
 		/**
 		 * Format the object into a valid query string
-		 * @param {Object} qs 
+		 * @name stringify
+		 * @memberof App.routing
+		 * @method
+		 * @param {Object} qs Object needed to be transformed into a string
+		 * @returns {String} Result
+		 * @public
 		 */
 		var stringify = function (qs) {
 			var aqs = [];
@@ -68,14 +81,22 @@
 	
 	/**
 	 * Factory for the browser detector
+	 * @name browserDetector
+	 * @memberof App.device
+	 * @method
 	 * @returns {Object} accessible functions
+	 * @private
 	 */
 	var browserDetector = (function () {
 
 		/**
 		 * Get the user agent
+		 * @name getUserAgent
+		 * @memberof App.device
+		 * @method
 		 * @param {String} userAgent
 		 * @returns {String} user agent
+		 * @private
 		 */
 		var getUserAgent = function (userAgent) {
 			if (!userAgent) {
@@ -86,9 +107,13 @@
 		
 		/**
 		 * Test the user agent with the given regular expression
+		 * @name testUserAgent
+		 * @memberof App.device
+		 * @method
 		 * @param {RegExp} regexp 
 		 * @param {String} userAgent
 		 * @returns {Boolean} if the test passed or not
+		 * @private
 		 */
 		var testUserAgent = function (regexp, userAgent) {
 			userAgent = getUserAgent(userAgent);
@@ -99,23 +124,31 @@
 		
 			/**
 			 * Check if the device is a mobile one and not an iPhone
-			 * @param {String} userAgent the browser user agent
+			 * @name isTablet
+			 * @memberof App.device
+			 * @method
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isTablet: function (userAgent) {
 				return detector.isMobile(userAgent) &&
 					!detector.isPhone(userAgent);
 			},
 			
-			/* @deprecated */
+			/** @deprecated */
 			isTablette: function (userAgent) {
 				return this.isTablet(userAgent);
 			},
 			
 			/**
 			 * Check if the device is an iPhone or an iPad
-			 * @param {String} userAgent the browser user agent
+			 * @name isIos
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isIos: function (userAgent) {
 				return detector.isIphone(userAgent) ||
@@ -124,8 +157,12 @@
 			
 			/**
 			 * Check if the user agent contains the word 'iPhone' or 'iPod'
-			 * @param {String} userAgent the browser user agent
+			 * @name isIphone
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isIphone: function (userAgent) {
 				return !detector.isIpad(userAgent) &&
@@ -134,8 +171,12 @@
 			
 			/**
 			 * Check if the user agent contains the word 'iPad'
-			 * @param {String} userAgent the browser user agent
+			 * @name isIpad
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isIpad: function (userAgent) {
 				return testUserAgent(/iPad/i, userAgent);
@@ -143,8 +184,12 @@
 			
 			/**
 			 * Check if the user agent contains the word 'Android'
-			 * @param {String} userAgent the browser user agent
+			 * @name isAndroid
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isAndroid: function (userAgent) {
 				return testUserAgent(/Android/i, userAgent);
@@ -153,8 +198,12 @@
 			/**
 			 * Check if the device runs on Android
 			 * and the user agent contains the word 'mobile'
-			 * @param {String} userAgent the browser user agent
+			 * @name isAndroidPhone
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isAndroidPhone: function (userAgent) {
 				return detector.isAndroid(userAgent) &&
@@ -163,8 +212,12 @@
 			
 			/**
 			 * Check if the device is a phone
-			 * @param {String} userAgent the browser user agent
+			 * @name isPhone
+			 * @method
+			 * @memberof isIphone
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isPhone: function (userAgent) {
 				return !detector.isIpad(userAgent) && (
@@ -175,8 +228,12 @@
 			
 			/**
 			 * Check if the user agent contains the word 'phone'
-			 * @param {String} userAgent the browser user agent
+			 * @name isOtherPhone
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isOtherPhone: function (userAgent) {
 				return testUserAgent(/phone/i, userAgent);
@@ -185,8 +242,12 @@
 			/**
 			 * Check if the user agent contains the word 'mobile'
 			 * of if it's another phone
-			 * @param {String} userAgent the browser user agent
+			 * @name isOtherMobile
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isOtherMobile: function (userAgent) {
 				return testUserAgent(/mobile/i, userAgent) ||
@@ -195,8 +256,12 @@
 			
 			/**
 			 * Check if the device runs on Android, iOs or other mobile
-			 * @param {String} userAgent the browser user agent
+			 * @name isMobile
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isMobile: function (userAgent) {
 				return detector.isIos(userAgent) ||
@@ -206,8 +271,12 @@
 			
 			/**
 			 * Check if the user agent contains the word 'msie' or 'trident'
-			 * @param {String} userAgent the browser user agent
+			 * @name isMsie
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isMsie: function (userAgent) {
 				return testUserAgent(/msie/mi, userAgent) ||
@@ -217,8 +286,12 @@
 			/**
 			 * Check if the user agent contains the word 'Safari' and does not
 			 * contain the word 'Chrome'
-			 * @param {String} userAgent the browser user agent
+			 * @name isSafari
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isSafari: function (userAgent) {
 				return !(testUserAgent(/Chrome/i, userAgent)) &&
@@ -227,8 +300,12 @@
 
 			/**
 			 * Check if the user agent contains the word 'Firefox'
-			 * @param {String} userAgent the browser user agent
+			 * @name isFirefox
+			 * @method
+			 * @memberof isFirefox
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isFirefox: function (userAgent) {
 				return testUserAgent(/Firefox/i, userAgent);
@@ -236,8 +313,12 @@
 
 			/**
 			 * Check if the user agent contains the word 'Edge'
-			 * @param {String} userAgent the browser user agent
+			 * @name isEdge
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isEdge: function (userAgent) {
 				return testUserAgent(/Edge/i, userAgent);
@@ -245,8 +326,12 @@
 
 			/**
 			 * Check if the user agent contains the word 'Chrome' and it's not Edge
-			 * @param {String} userAgent the browser user agent
+			 * @name isChrome
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isChrome: function (userAgent) {
 				return testUserAgent(/Chrome/i, userAgent) && !detector.isEdge();

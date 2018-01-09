@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Global</title>
+    <title>JSDoc: Namespace: App.debug</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Global</h1>
+    <h1 class="page-title">Namespace: App.debug</h1>
 
     
 
@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2></h2>
+        <h2>App.debug</h2>
         
     
 </header>
@@ -36,6 +36,8 @@
 <article>
     <div class="container-overview">
     
+        
+            <div class="description">Defines and exports log and debug</div>
         
 
         
@@ -60,13 +62,28 @@
     
 
     
-
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Deux Huit Huit &lt;https://deuxhuithuit.com></li>
+        </ul>
+    </dd>
     
 
     
 
     
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT <https://deuxhuithuit.mit-license.org></li></ul></dd>
+    
 
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-debug.js.html">app-debug.js</a>, <a href="app-debug.js.html#line1">line 1</a>
+    </li></ul></dd>
     
 
     
@@ -84,7 +101,11 @@
     
 
     
+        <h3 class="subsection-title">Requires</h3>
 
+        <ul>
+            <li>module:App</li>
+        </ul>
     
 
     
@@ -96,103 +117,19 @@
     
 
     
-        <h3 class="subsection-title">Methods</h3>
+        <h3 class="subsection-title">Members</h3>
 
         
             
+<h4 class="name" id=".argsToObject"><span class="type-signature">(static) </span>argsToObject<span class="type-signature"></span></h4>
 
-    
-
-    
-    <h4 class="name" id="pd"><span class="type-signature"></span>pd<span class="signature">(e, stopPropagation)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-    
-
-    
 
 
 
 <div class="description">
-    Facade to stop the propagation of events
+    Format the passed arguments and the displayed message
 </div>
 
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>e</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Event</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Event object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>stopPropagation</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Flag to stop the event propagation or not</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -228,7 +165,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="globals.js.html">globals.js</a>, <a href="globals.js.html#line49">line 49</a>
+        <a href="app-debug.js.html">app-debug.js</a>, <a href="app-debug.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -244,41 +181,133 @@
 
 
 
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
         
-<div class="param-desc">
-    false, always.
+            
+<h4 class="name" id=".debug"><span class="type-signature">(static) </span>debug<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Set or get the debug flag for the App
 </div>
 
 
 
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Boolean</span>
 
 
-    </dd>
-</dl>
+
+
+<dl class="details">
 
     
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-debug.js.html">app-debug.js</a>, <a href="app-debug.js.html#line19">line 19</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
 
 
 
 
         
+            
+<h4 class="name" id=".log"><span class="type-signature">(static) </span>log<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Log the recived data with the appropriate effect (log, error, info...)
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-debug.js.html">app-debug.js</a>, <a href="app-debug.js.html#line64">line 64</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
     
 
     

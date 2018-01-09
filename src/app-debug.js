@@ -3,10 +3,11 @@
  *
  * @fileoverview Defines and exports log and debug
  *
- * @author Deux Huit Huit <http://deuxhuithuit.com>
- * @license MIT <http://deuxhuithuit.mit-license.org>
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
  * 
- * @module App.debug
+ * @namespace App.debug
+ * @requires App
  */
 (function ($, global, undefined) {
 
@@ -17,6 +18,8 @@
 	
 	/**
 	 * Set or get the debug flag for the App
+	 * @name debug
+	 * @memberof App.debug
 	 * @param {Boolean=} value
 	 */
 	var debug = function (value) {
@@ -30,6 +33,8 @@
 	
 	/**
 	 * Format the passed arguments and the displayed message
+	 * @name argsToObject
+	 * @memberof App.debug
 	 * @param {Object} arg 
 	 * @returns {Object} Formated object
 	 */
@@ -58,6 +63,8 @@
 
 	/**
 	 * Log the recived data with the appropriate effect (log, error, info...)
+	 * @name log
+	 * @memberof App.debug
 	 * @param {Array} arg
 	 */
 	var log = function (arg) {

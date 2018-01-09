@@ -1,8 +1,8 @@
 /**
  * General customization alongside the framework
  *
- * @author Deux Huit Huit <http://deuxhuithuit.com>
- * @license MIT <http://deuxhuithuit.mit-license.org>
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
  *
  * @requires jQuery
  * @requires App
@@ -48,10 +48,13 @@
 	
 	/**
 	 * Facade to stop the propagation of events
+	 * @name pd
+	 * @method
 	 * @param {Event} e Event object
 	 * @param {Boolean} stopPropagation Flag to stop the event propagation or not
 	 * @returns {Boolean} false, always.
 	 * @global
+	 * @public
 	 */
 	global.pd = function (e, stopPropagation) {
 		if (!!e) {

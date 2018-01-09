@@ -27,11 +27,15 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @author Deux Huit Huit
- */
-
-/**
- * Browser Support/Detection
+ * App device detector
+ * 
+ * @fileoverview Analyse the user agent
+ *
+ * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
+ * @license MIT &lt;https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace App.device
+ * @requires App
  */
 (function ($, global, undefined) {
 	'use strict';
@@ -49,8 +53,12 @@
 		
 		/**
 		 * Format the querystring into an object
+		 * @name prase
+		 * @memberof App.routing
+		 * @method
 		 * @param {String} qs
 		 * @returns {Object}
+		 * @public
 		 */
 		var parse = function (qs) {
 			var u = {};
@@ -73,7 +81,12 @@
 		
 		/**
 		 * Format the object into a valid query string
-		 * @param {Object} qs 
+		 * @name stringify
+		 * @memberof App.routing
+		 * @method
+		 * @param {Object} qs Object needed to be transformed into a string
+		 * @returns {String} Result
+		 * @public
 		 */
 		var stringify = function (qs) {
 			var aqs = [];
@@ -96,14 +109,22 @@
 	
 	/**
 	 * Factory for the browser detector
+	 * @name browserDetector
+	 * @memberof App.device
+	 * @method
 	 * @returns {Object} accessible functions
+	 * @private
 	 */
 	var browserDetector = (function () {
 
 		/**
 		 * Get the user agent
+		 * @name getUserAgent
+		 * @memberof App.device
+		 * @method
 		 * @param {String} userAgent
 		 * @returns {String} user agent
+		 * @private
 		 */
 		var getUserAgent = function (userAgent) {
 			if (!userAgent) {
@@ -114,9 +135,13 @@
 		
 		/**
 		 * Test the user agent with the given regular expression
+		 * @name testUserAgent
+		 * @memberof App.device
+		 * @method
 		 * @param {RegExp} regexp 
 		 * @param {String} userAgent
 		 * @returns {Boolean} if the test passed or not
+		 * @private
 		 */
 		var testUserAgent = function (regexp, userAgent) {
 			userAgent = getUserAgent(userAgent);
@@ -127,23 +152,31 @@
 		
 			/**
 			 * Check if the device is a mobile one and not an iPhone
-			 * @param {String} userAgent the browser user agent
+			 * @name isTablet
+			 * @memberof App.device
+			 * @method
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isTablet: function (userAgent) {
 				return detector.isMobile(userAgent) &amp;&amp;
 					!detector.isPhone(userAgent);
 			},
 			
-			/* @deprecated */
+			/** @deprecated */
 			isTablette: function (userAgent) {
 				return this.isTablet(userAgent);
 			},
 			
 			/**
 			 * Check if the device is an iPhone or an iPad
-			 * @param {String} userAgent the browser user agent
+			 * @name isIos
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isIos: function (userAgent) {
 				return detector.isIphone(userAgent) ||
@@ -152,8 +185,12 @@
 			
 			/**
 			 * Check if the user agent contains the word 'iPhone' or 'iPod'
-			 * @param {String} userAgent the browser user agent
+			 * @name isIphone
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isIphone: function (userAgent) {
 				return !detector.isIpad(userAgent) &amp;&amp;
@@ -162,8 +199,12 @@
 			
 			/**
 			 * Check if the user agent contains the word 'iPad'
-			 * @param {String} userAgent the browser user agent
+			 * @name isIpad
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isIpad: function (userAgent) {
 				return testUserAgent(/iPad/i, userAgent);
@@ -171,8 +212,12 @@
 			
 			/**
 			 * Check if the user agent contains the word 'Android'
-			 * @param {String} userAgent the browser user agent
+			 * @name isAndroid
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isAndroid: function (userAgent) {
 				return testUserAgent(/Android/i, userAgent);
@@ -181,8 +226,12 @@
 			/**
 			 * Check if the device runs on Android
 			 * and the user agent contains the word 'mobile'
-			 * @param {String} userAgent the browser user agent
+			 * @name isAndroidPhone
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isAndroidPhone: function (userAgent) {
 				return detector.isAndroid(userAgent) &amp;&amp;
@@ -191,8 +240,12 @@
 			
 			/**
 			 * Check if the device is a phone
-			 * @param {String} userAgent the browser user agent
+			 * @name isPhone
+			 * @method
+			 * @memberof isIphone
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isPhone: function (userAgent) {
 				return !detector.isIpad(userAgent) &amp;&amp; (
@@ -203,8 +256,12 @@
 			
 			/**
 			 * Check if the user agent contains the word 'phone'
-			 * @param {String} userAgent the browser user agent
+			 * @name isOtherPhone
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isOtherPhone: function (userAgent) {
 				return testUserAgent(/phone/i, userAgent);
@@ -213,8 +270,12 @@
 			/**
 			 * Check if the user agent contains the word 'mobile'
 			 * of if it's another phone
-			 * @param {String} userAgent the browser user agent
+			 * @name isOtherMobile
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isOtherMobile: function (userAgent) {
 				return testUserAgent(/mobile/i, userAgent) ||
@@ -223,8 +284,12 @@
 			
 			/**
 			 * Check if the device runs on Android, iOs or other mobile
-			 * @param {String} userAgent the browser user agent
+			 * @name isMobile
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isMobile: function (userAgent) {
 				return detector.isIos(userAgent) ||
@@ -234,8 +299,12 @@
 			
 			/**
 			 * Check if the user agent contains the word 'msie' or 'trident'
-			 * @param {String} userAgent the browser user agent
+			 * @name isMsie
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isMsie: function (userAgent) {
 				return testUserAgent(/msie/mi, userAgent) ||
@@ -245,8 +314,12 @@
 			/**
 			 * Check if the user agent contains the word 'Safari' and does not
 			 * contain the word 'Chrome'
-			 * @param {String} userAgent the browser user agent
+			 * @name isSafari
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isSafari: function (userAgent) {
 				return !(testUserAgent(/Chrome/i, userAgent)) &amp;&amp;
@@ -255,8 +328,12 @@
 
 			/**
 			 * Check if the user agent contains the word 'Firefox'
-			 * @param {String} userAgent the browser user agent
+			 * @name isFirefox
+			 * @method
+			 * @memberof isFirefox
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isFirefox: function (userAgent) {
 				return testUserAgent(/Firefox/i, userAgent);
@@ -264,8 +341,12 @@
 
 			/**
 			 * Check if the user agent contains the word 'Edge'
-			 * @param {String} userAgent the browser user agent
+			 * @name isEdge
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isEdge: function (userAgent) {
 				return testUserAgent(/Edge/i, userAgent);
@@ -273,8 +354,12 @@
 
 			/**
 			 * Check if the user agent contains the word 'Chrome' and it's not Edge
-			 * @param {String} userAgent the browser user agent
+			 * @name isChrome
+			 * @method
+			 * @memberof App.device
+			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
+			 * @private
 			 */
 			isChrome: function (userAgent) {
 				return testUserAgent(/Chrome/i, userAgent) &amp;&amp; !detector.isEdge();
@@ -367,13 +452,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="App.module_callback.html">App.callback</a></li><li><a href="App.module_components.html">App.components</a></li><li><a href="App.module_debug.html">App.debug</a></li><li><a href="App.module_modules.html">App.modules</a></li><li><a href="App.module_pages.html">App.pages</a></li><li><a href="module-App.html">App</a></li><li><a href="module-Storage.html">Storage</a></li></ul><h3>Namespaces</h3><ul><li><a href="App.pages.html">pages</a></li></ul><h3>Global</h3><ul><li><a href="global.html#pd">pd</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Events</h3><ul><li><a href="App.html#event:page:enter">page:enter</a></li><li><a href="App.html#event:page:entering">page:entering</a></li><li><a href="App.html#event:page:leave">page:leave</a></li><li><a href="App.html#event:page:leaving">page:leaving</a></li><li><a href="App.html#event:page:toggleNoPreviousUrl">page:toggleNoPreviousUrl</a></li><li><a href="App.html#event:pages:failedtoparse">pages:failedtoparse</a></li><li><a href="App.html#event:pages:requestPageTransition">pages:requestPageTransition</a></li></ul><h3>Namespaces</h3><ul><li><a href="App.html">App</a></li><li><a href="App.callback.html">App.callback</a></li><li><a href="App.components.html">App.components</a></li><li><a href="App.debug.html">App.debug</a></li><li><a href="App.device.html">App.device</a></li><li><a href="App.modules.html">App.modules</a></li><li><a href="App.pages.html">App.pages</a></li><li><a href="Storage.html">Storage</a></li></ul><h3>Global</h3><ul><li><a href="global.html#pd">pd</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jan 09 2018 11:20:17 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jan 09 2018 16:46:50 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

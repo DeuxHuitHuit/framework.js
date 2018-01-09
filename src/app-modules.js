@@ -3,10 +3,10 @@
  *
  * @fileoverview Defines and exports components
  *
- * @author Deux Huit Huit <http://deuxhuithuit.com>
- * @license MIT <http://deuxhuithuit.mit-license.org>
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @module App.modules
+ * @namespace App.modules
  * @requires App
  */
 (function ($, global, undefined) {
@@ -18,7 +18,11 @@
 	
 	/**
 	 * Create a basic module with the minimum required methods
+	 * @name _createAbstractModule
+	 * @method
+	 * @memberof App.modules
 	 * @returns {Object}
+	 * @private
 	 */
 	var _createAbstractModule = function () {
 		return {
@@ -30,7 +34,11 @@
 	/**
 	 * Merge the module with the basic one
 	 * to be sure the minimum required methods are present
-	 * @param {Object} module 
+	 * @name createModule
+	 * @method
+	 * @memberof App.modules
+	 * @param {Object} module ModuleObject
+	 * @private
 	 */
 	var createModule = function (module) {
 		return $.extend(_createAbstractModule(), module);
@@ -38,9 +46,13 @@
 	
 	/**
 	 * Register the module and make sure his key is unique
+	 * @name exports
+	 * @method
+	 * @memberof App.modules
 	 * @param {String} key Module's unique identifier
 	 * @param {Object} module
 	 * @param {Boolean} override
+	 * @public
 	 */
 	var exportModule = function (key, module, override) {
 		if (!$.type(key)) {
@@ -55,11 +67,15 @@
 	
 	/**
 	 * Execute _callAction on all modules
+	 * @name notify
+	 * @method
+	 * @memberof App.modules
 	 * @param {String} key Notify key
 	 * @param {Object=} data Bag of data
 	 * @param {Function} cb Callback executed after all the notifications
 	 * @this App
 	 * @returns this
+	 * @public
 	 */
 	var notifyModules = function (key, data, cb) {
 		if ($.isFunction(data) && !cb) {
@@ -81,7 +97,14 @@
 		// Modules
 		modules: {
 			
-			// private
+			/**
+			 * Returns all the modules
+			 * @name models
+			 * @method
+			 * @memberof App.modules
+			 * @returns {Object} All modules models
+			 * @public
+			 */
 			models: function () {
 				return modules;
 			},

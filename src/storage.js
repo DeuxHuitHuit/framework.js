@@ -1,12 +1,10 @@
 /**
  * Facade to access the browser's localstorage and session storage
  *
- * @fileoverview 
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @author Deux Huit Huit <http://deuxhuithuit.com>
- * @license MIT <http://deuxhuithuit.mit-license.org>
- *
- * @module Storage
+ * @namespace Storage
  * @requires App
  */
 (function ($, global, undefined) {
@@ -17,8 +15,10 @@
 
 			/**
 			 * Return the value associated with the given key
-			 * 
-			 * @param {string} key
+			 * @name get
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
 			 * @return {String}
 			 */
 			get: function (key) {
@@ -31,9 +31,11 @@
 
 			/**
 			 * Set and save a value to the given key in the storage
-			 * 
-			 * @param {string} key
-			 * @param {*} value
+			 * @name set
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @param {*} value Value wanted to be saved
 			 * @return {Boolean}
 			 */
 			set: function (key, value) {
@@ -57,8 +59,10 @@
 
 			/**
 			 * Delete the storage data associated with the given key
-			 * 
-			 * @param {string} key
+			 * @name remove
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
 			 * @return {Boolean}
 			 */
 			remove: function (key) {
@@ -83,8 +87,10 @@
 			/**
 			 * Delete the data from the storage matching 
 			 * the Regular Expression or all the data if none is provided
-			 * 
-			 * @param {RegExp} regexp
+			 * @name clear
+			 * @memberof Storage
+			 * @method
+			 * @param {RegExp} regexp Regular Expression to match the key
 			 * @return {Boolean}
 			 */
 			clear: function (regexp) {
