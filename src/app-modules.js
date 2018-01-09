@@ -16,6 +16,10 @@
 	/** Modules **/
 	var modules = {};
 	
+	/**
+	 * Create a basic module with the minimum required methods
+	 * @returns {Object}
+	 */
 	var _createAbstractModule = function () {
 		return {
 			actions: $.noop,
@@ -23,10 +27,21 @@
 		};
 	};
 	
+	/**
+	 * Merge the module with the basic one
+	 * to be sure the minimum required methods are present
+	 * @param {Object} module 
+	 */
 	var createModule = function (module) {
 		return $.extend(_createAbstractModule(), module);
 	};
 	
+	/**
+	 * Register the module and make sure his key is unique
+	 * @param {String} key Module's unique identifier
+	 * @param {Object} module
+	 * @param {Boolean} override
+	 */
 	var exportModule = function (key, module, override) {
 		if (!$.type(key)) {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
@@ -38,6 +53,13 @@
 		return modules[key];
 	};
 	
+	/**
+	 * Execute _callAction on all modules
+	 * @param {String} key Notify key
+	 * @param {Object=} data Bag of data
+	 * @param {Function} cb Callback executed after all the notifications
+	 * @this App
+	 */
 	var notifyModules = function (key, data, cb) {
 		if ($.isFunction(data) && !cb) {
 			cb = data;
