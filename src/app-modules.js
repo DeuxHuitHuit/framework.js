@@ -59,6 +59,7 @@
 	 * @param {Object=} data Bag of data
 	 * @param {Function} cb Callback executed after all the notifications
 	 * @this App
+	 * @returns this
 	 */
 	var notifyModules = function (key, data, cb) {
 		if ($.isFunction(data) && !cb) {
