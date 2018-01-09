@@ -172,7 +172,8 @@
 	 * Change the current page to the requested route
 	 * Do nothing if the current page is already the requested route
 	 * @param {String} obj page requested
-	 * @param {String} previousPoppedUrl 
+	 * @param {String} previousPoppedUrl
+	 * @this App
 	 */
 	var gotoPage = function (obj, previousPoppedUrl) {
 		var nextPage;
@@ -199,11 +200,17 @@
 			return $();
 		};
 		
+		/**
+		 * 
+		 */
 		var enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable
 			//The currentPage pointer will be cleared after the next call
 			var leavingPage = currentPage;
 			
+			/**
+			 * Block all interaction with the framework and notify the page leave
+			 */
 			var leaveCurrent = function () {
 				currentPage = null; // clean currentPage pointer,this will block all interactions
 				
@@ -220,6 +227,9 @@
 				App.modules.notify('page.leave', {page: previousPage});
 			};
 			
+			/**
+			 * Set the current page to the new one
+			 */
 			var enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
@@ -262,6 +272,12 @@
 			}
 		};
 		
+		/**
+		 * Verify that the data is valid an append the loadded content inside the App's root
+		 * @param {String} data requested data
+		 * @param {String} textStatus 
+		 * @param {Object} jqXHR request instence
+		 */
 		var loadSucess = function (data, textStatus, jqXHR) {
 			var htmldata = safeParseData(data);
 			
@@ -369,6 +385,10 @@
 			}
 		};
 		
+		/**
+		 * Disptch a notify for the progress' event
+		 * @param {Event} e 
+		 */
 		var progress = function (e) {
 			var total = e.originalEvent.total;
 			var loaded = e.originalEvent.loaded;
@@ -467,6 +487,13 @@
 		return this;
 	};
 	
+	/**
+	 * Open the wanted page,
+	 * return to the precedent page if the requested on is already open
+	 * or fallback to a default one
+	 * @param {String} route 
+	 * @param {String} fallback 
+	 */
 	var togglePage = function (route, fallback) {
 		if (!!currentPage && _validateMediatorState()) {
 			var
@@ -537,7 +564,10 @@
 		});
 	};
 	
-	/** App **/
+	/**
+	 * Init the app with the given css selector
+	 * @param {String=} root css selector
+	 */
 	var run = function (root) {
 		initApplication(root);
 		return App;
