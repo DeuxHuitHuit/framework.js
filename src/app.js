@@ -204,7 +204,15 @@
 	 * @fires App#page:leave
 	 * @fires App#page:enter
 	 * @fires App#pages:failedtoparse
+	 * @fires App#pages:loaded
+	 * @fires App#pages:loadfatalerror
+	 * @fires App#pages:loaderror
+	 * @fires App#pages:requestBeginPageTransition
+	 * @fires App#pages:navigateToCurrent
 	 * @fires App#pages:requestPageTransition
+	 * @fires App#pages:routeNotFound
+	 * @fires App#pages:loadprogress
+	 * @fires App#pages:notfound
 	 * @fires App#page:leaving
 	 * @fires App#page:entering
 	 * @this App
@@ -363,7 +371,16 @@
 				// Find the right page
 				nextPage = App.pages.getPageForRoute(responseUrl);
 				
-				// Offer a bail out door
+				/**
+				 * Offer a bail out door
+				 * @event App#pages:redirected
+				 * @type {Object}
+				 * @property {String} route Url
+				 * @property {String} requestedRoute Url
+				 * @property {Object} nextPage PageObject
+				 * @property {Object} currentPage PageObject
+				 * @property {Object} redirectedPage PageObject
+				 */
 				App.modules.notify('pages.redirected', {
 					currentPage: currentPage,
 					nextPage: nextPage,
@@ -371,8 +388,15 @@
 					requestedRoute: route,
 					responseRoute: responseUrl
 				});
-				
-				// Cancel current transition
+
+				/**
+				 * Cancel current transition
+				 * @event App#pages:requestCancelPageTransition
+				 * @type {Object}
+				 * @property {String} route Url
+				 * @property {Object} nextPage PageObject
+				 * @property {Object} currentPage PageObject
+				 */
 				App.modules.notify('pages.requestCancelPageTransition', {
 					currentPage: currentPage,
 					nextPage: nextPage,
@@ -380,6 +404,13 @@
 				});
 				
 				if (!_validateNextPage(nextPage)) {
+					/**
+					 * @event App#pages:routeNotFound
+					 * @type {object}
+					 * @property {String} url Url
+					 * @property {Boolean} isRedirect PageObject
+					 * @property {Object} page PageObject
+					 */
 					App.modules.notify('pages.routeNotFound', {
 						page: currentPage,
 						url: obj,
@@ -390,6 +421,13 @@
 				} else {
 					node = htmldata.find(nextPage.key());
 					if (nextPage === currentPage) {
+						/**
+						 * @event App#pages:navigateToCurrent
+						 * @type {object}
+						 * @property {String} url Url
+						 * @property {Boolean} isRedirect PageObject
+						 * @property {Object} page PageObject
+						 */
 						App.modules.notify('pages.navigateToCurrent', {
 							page: nextPage,
 							route: route,
@@ -397,7 +435,15 @@
 						});
 						App.log('redirected next page is the current one');
 					} else {
-						// Start new transition
+						/**
+						 * Start new transition
+						 * @event App#pages:requestBeginPageTransition
+						 * @type {object}
+						 * @property {String} route Url
+						 * @property {Boolean} isRedirect PageObject
+						 * @property {Object} nextPage PageObject
+						 * @property {Object} currentPage PageObject
+						 */
 						App.modules.notify('pages.requestBeginPageTransition', {
 							currentPage: currentPage,
 							nextPage: nextPage,
@@ -416,7 +462,14 @@
 				// free the mediator
 				mediatorIsLoadingPage = false;
 				
-				// notify
+				/**
+				 * @event App#pages:notfound
+				 * @type {Object}
+				 * @property {String} data Loaded raw content
+				 * @property {String} url request url
+				 * @property {Object} xhr Request object instence
+				 * @property {String} status Status of the request
+				 */
 				App.modules.notify('pages.notfound', {
 					data: data,
 					url: obj,
@@ -435,6 +488,17 @@
 				
 				node.hide();
 				
+				/**
+				 * @event App#pages:loaded
+				 * @type {Object}
+				 * @property {jQuery} elem Loaded content
+				 * @property {String} data Loaded raw content
+				 * @property {String} url request url
+				 * @property {Object} page PageObject
+				 * @property {jQuery} node Page element
+				 * @property {Object} xhr Request object instence
+				 * @property {String} status Status of the request
+				 */
 				App.modules.notify('pages.loaded', {
 					elem: elem,
 					data: data,
@@ -463,6 +527,15 @@
 			var loaded = e.originalEvent.loaded;
 			var percent = total > 0 ? loaded / total : 0;
 
+			/**
+			 * @event App#pages:loadprogress
+			 * @type {Object}
+			 * @property {Object} event Request progress event
+			 * @property {String} url Request url
+			 * @property {Integer} total Total bytes
+			 * @property {Integer} loaded Total bytes loaded
+			 * @property {Integer} percent
+			 */
 			App.mediator.notify('pages.loadprogress', {
 				event: e,
 				url: obj,
@@ -481,6 +554,12 @@
 			}
 			
 			if (!_validateNextPage(nextPage)) {
+				/**
+				 * @event App#pages:routeNotFound
+				 * @type {Object}
+				 * @property {Object} page PageObject
+				 * @property {String} url Request url
+				 */
 				App.modules.notify('pages.routeNotFound', {
 					page: currentPage,
 					url: obj
@@ -489,6 +568,12 @@
 			} else {
 				if (_canEnterNextPage(nextPage)) {
 					if (nextPage === currentPage) {
+						/**
+						 * @event App#pages:navigateToCurrent
+						 * @type {Object}
+						 * @property {Object} page PageObject
+						 * @property {String} route Request url
+						 */
 						App.modules.notify('pages.navigateToCurrent', {
 							page: nextPage,
 							route: route
@@ -497,10 +582,22 @@
 						
 					} else {
 						
+						/**
+						 * @event App#pages:loading
+						 * @type {Object}
+						 * @property {Object} page PageObject
+						 */
 						App.modules.notify('pages.loading', {
 							page: nextPage
 						});
 						
+						/**
+						 * @event App#pages:requestBeginPageTransition
+						 * @type {Object}
+						 * @property {Object} currentPage PageObject
+						 * @property {Object} nextPage PageObject
+						 * @property {String} route Request url
+						 */
 						App.modules.notify('pages.requestBeginPageTransition', {
 							currentPage: currentPage,
 							nextPage: nextPage,
@@ -520,6 +617,12 @@
 								success: loadSucess,
 								progress: progress,
 								error: function (e) {
+									/**
+									 * @event App#pages:loaderror
+									 * @type {Object}
+									 * @property {Object} event Request event
+									 * @property {String} url Request url
+									 */
 									App.modules.notify('pages.loaderror', {
 										event: e,
 										url: obj
@@ -532,6 +635,12 @@
 									
 									App.log({args: 'Giving up!', me: 'Loader'});
 									
+									/**
+									 * @event App#pages:loadfatalerror
+									 * @type {Object}
+									 * @property {Object} event Request event
+									 * @property {String} url Request url
+									 */
 									App.modules.notify('pages.loadfatalerror', {
 										event: e,
 										url: obj
@@ -541,6 +650,13 @@
 						} else {
 							enterLeave();
 							
+							/**
+							 * @event App#pages:loaded
+							 * @type {Object}
+							 * @property {jQuery} elem Root element
+							 * @property {Object} event Request event
+							 * @property {String} url Request url
+							 */
 							App.modules.notify('pages.loaded', {
 								elem: $(ROOT),
 								url: obj,
