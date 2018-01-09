@@ -39,7 +39,7 @@
 	 * Execute the method recived with the arguments recived
 	 * 
 	 * @this App
-	 * @param {Function} fx 
+	 * @param {function} fx 
 	 * @param {*} args
 	 * @return undefined
 	 */
@@ -65,7 +65,6 @@
 	
 	/**
 	 * Check if a ressource is loaded and callback when it is.
-	 * 
 	 * @param {*} v ressource to test
 	 * @param {Function} fx callback to execute when the ressource is loaded
 	 * @param {Integer} delay delay between each checks in ms

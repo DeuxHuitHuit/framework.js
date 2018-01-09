@@ -8,6 +8,10 @@
 (function ($, global, undefined) {
 	'use strict';
 	
+	/**
+	 * Factory for the query string parser
+	 * @return {Object} accessible methods
+	 */
 	var queryStringParser = (function () {
 		var a = /\+/g; // Regex for replacing addition symbol with a space
 		var r = /([^&=]+)=?([^&]*)/gi;
@@ -15,6 +19,11 @@
 			return decodeURIComponent(s.replace(a, ' '));
 		};
 		
+		/**
+		 * Format the querystring into an object
+		 * @param {String} qs
+		 * @returns {Object}
+		 */
 		var parse = function (qs) {
 			var u = {};
 			var e, q;
@@ -34,6 +43,10 @@
 			return u;
 		};
 		
+		/**
+		 * Format the object into a valid query string
+		 * @param {Object} qs 
+		 */
 		var stringify = function (qs) {
 			var aqs = [];
 			$.each(qs, function (k, v) {
@@ -53,7 +66,17 @@
 		};
 	})();
 	
+	/**
+	 * Factory for the browser detector
+	 * @returns {Object} accessible functions
+	 */
 	var browserDetector = (function () {
+
+		/**
+		 * Get the user agent
+		 * @param {String} userAgent
+		 * @returns {String} user agent
+		 */
 		var getUserAgent = function (userAgent) {
 			if (!userAgent) {
 				return window.navigator.userAgent;
@@ -61,6 +84,12 @@
 			return userAgent;
 		};
 		
+		/**
+		 * Test the user agent with the given regular expression
+		 * @param {RegExp} regexp 
+		 * @param {String} userAgent
+		 * @returns {Boolean} if the test passed or not
+		 */
 		var testUserAgent = function (regexp, userAgent) {
 			userAgent = getUserAgent(userAgent);
 			return regexp.test(userAgent);
@@ -68,6 +97,11 @@
 		
 		var detector = {
 		
+			/**
+			 * Check if the device is a mobile one and not an iPhone
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isTablet: function (userAgent) {
 				return detector.isMobile(userAgent) &&
 					!detector.isPhone(userAgent);
@@ -78,29 +112,60 @@
 				return this.isTablet(userAgent);
 			},
 			
+			/**
+			 * Check if the device is an iPhone or an iPad
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isIos: function (userAgent) {
 				return detector.isIphone(userAgent) ||
 					detector.isIpad(userAgent);
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'iPhone' or 'iPod'
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isIphone: function (userAgent) {
 				return !detector.isIpad(userAgent) &&
 					(testUserAgent(/iPhone/i, userAgent) || testUserAgent(/iPod/i, userAgent));
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'iPad'
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isIpad: function (userAgent) {
 				return testUserAgent(/iPad/i, userAgent);
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'Android'
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isAndroid: function (userAgent) {
 				return testUserAgent(/Android/i, userAgent);
 			},
 			
+			/**
+			 * Check if the device runs on Android
+			 * and the user agent contains the word 'mobile'
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isAndroidPhone: function (userAgent) {
 				return detector.isAndroid(userAgent) &&
 					testUserAgent(/mobile/i, userAgent);
 			},
 			
+			/**
+			 * Check if the device is a phone
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isPhone: function (userAgent) {
 				return !detector.isIpad(userAgent) && (
 					detector.isOtherPhone(userAgent) ||
@@ -108,39 +173,81 @@
 					detector.isIphone(userAgent));
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'phone'
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isOtherPhone: function (userAgent) {
 				return testUserAgent(/phone/i, userAgent);
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'mobile'
+			 * of if it's another phone
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isOtherMobile: function (userAgent) {
 				return testUserAgent(/mobile/i, userAgent) ||
 					detector.isOtherPhone(userAgent);
 			},
 			
+			/**
+			 * Check if the device runs on Android, iOs or other mobile
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isMobile: function (userAgent) {
 				return detector.isIos(userAgent) ||
 					detector.isAndroid(userAgent) ||
 					detector.isOtherMobile(userAgent);
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'msie' or 'trident'
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isMsie: function (userAgent) {
 				return testUserAgent(/msie/mi, userAgent) ||
 					testUserAgent(/trident/mi, userAgent);
 			},
 
+			/**
+			 * Check if the user agent contains the word 'Safari' and does not
+			 * contain the word 'Chrome'
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isSafari: function (userAgent) {
 				return !(testUserAgent(/Chrome/i, userAgent)) &&
 					testUserAgent(/Safari/i, userAgent);
 			},
 
+			/**
+			 * Check if the user agent contains the word 'Firefox'
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isFirefox: function (userAgent) {
 				return testUserAgent(/Firefox/i, userAgent);
 			},
 
+			/**
+			 * Check if the user agent contains the word 'Edge'
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isEdge: function (userAgent) {
 				return testUserAgent(/Edge/i, userAgent);
 			},
 
+			/**
+			 * Check if the user agent contains the word 'Chrome' and it's not Edge
+			 * @param {String} userAgent the browser user agent
+			 * @returns {Boolean}
+			 */
 			isChrome: function (userAgent) {
 				return testUserAgent(/Chrome/i, userAgent) && !detector.isEdge();
 			}

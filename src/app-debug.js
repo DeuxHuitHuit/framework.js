@@ -5,7 +5,8 @@
  *
  * @author Deux Huit Huit <http://deuxhuithuit.com>
  * @license MIT <http://deuxhuithuit.mit-license.org>
- *
+ * 
+ * @module App.debug
  */
 (function ($, global, undefined) {
 
@@ -14,6 +15,10 @@
 	/** Debug **/
 	var isDebuging = false;
 	
+	/**
+	 * Set or get the debug flag for the App
+	 * @param {Boolean=} value
+	 */
 	var debug = function (value) {
 		if (value === true || value === false) {
 			isDebuging = value;
@@ -23,6 +28,11 @@
 		return isDebuging;
 	};
 	
+	/**
+	 * Format the passed arguments and the displayed message
+	 * @param {Object} arg 
+	 * @returns {Object} Formated object
+	 */
 	var argsToObject = function (arg) {
 		// ensure that args is an array
 		if (!!arg.args && !$.isArray(arg.args)) {
@@ -45,6 +55,11 @@
 	};
 	
 	var logs = [];
+
+	/**
+	 * Log the recived data with the appropriate effect (log, error, info...)
+	 * @param {Array} arg
+	 */
 	var log = function (arg) {
 		// no args, exit
 		if (!arg) {
