@@ -13,6 +13,10 @@ The framework use jQuery and Underscore.js and extends some functionality.
 
 ## History
 
+* **1.8.x**
+	* Documented the source code
+	* Added jsdoc
+	* Added doc task to the build
 * **1.5.x**
 	* Added jscs to the build
 	* Introduce App.device and App.routing

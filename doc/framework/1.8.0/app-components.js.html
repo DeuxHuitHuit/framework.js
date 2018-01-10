@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Storage - Documentation</title>
+    <title>app-components.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,765 +29,161 @@
 
 <div id="main">
     
-    <h1 class="page-title">Storage</h1>
-    
-
-    
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>
-        Storage
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description">Facade to access the browser's localstorage and session storage</div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Deux Huit Huit &lt;https://deuxhuithuit.com></li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT <https://deuxhuithuit.mit-license.org></li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".clear"><span class="type-signature">(static) </span>clear<span class="signature">(regexp)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Delete the data from the storage matching 
-the Regular Expression or all the data if none is provided
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line87">line 87</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>regexp</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>RegExp</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Regular Expression to match the key
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Boolean</code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".get"><span class="type-signature">(static) </span>get<span class="signature">(key)</span><span class="type-signature"> &rarr; {String}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Return the value associated with the given key
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line16">line 16</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>key</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>string</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Access key to the storage object
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>String</code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".remove"><span class="type-signature">(static) </span>remove<span class="signature">(key)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Delete the storage data associated with the given key
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line60">line 60</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>key</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>string</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Access key to the storage object
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Boolean</code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".set"><span class="type-signature">(static) </span>set<span class="signature">(key, value)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Set and save a value to the given key in the storage
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line32">line 32</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>key</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>string</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Access key to the storage object
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>*</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Value wanted to be saved
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Boolean</code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-</div>
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <h1 class="page-title">app-components.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Components are factory method that will generate a instance of a component.
+ *
+ * @fileoverview Defines and exports components
+ *
+ * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
+ * @license MIT &lt;https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace App.components
+ * @requires App
+ */
+(function ($, global, undefined) {
+
+	'use strict';
+	
+	/** Components **/
+	var components = {};
+
+	/**
+	 * Create a default model of a component with an init function
+	 * @name _createAbstractComponent
+	 * @method
+	 * @memberof App.components
+	 * @private
+	 * @return {Object}
+	 */
+	var _createAbstractComponent = function () {
+		return {
+			init: $.noop
+		};
+	};
+
+	/**
+	 * Merge the created component with the default model
+	 * just to be sure there's an init method
+	 * @name extendComponent
+	 * @method
+	 * @memberof App.components
+	 * @param {Object} component
+	 * @return {Object} component
+	 * @private
+	 */
+	var extendComponent = function (component) {
+		return $.extend(_createAbstractComponent(), component);
+	};
+
+	/**
+	 * Make sure the component is unique by key verification
+	 * and stores it with all the other components
+	 * @name exportComponent
+	 * @method
+	 * @memberof App.components
+	 * @param {String} key unique identifier
+	 * @param {Function} component model of the component
+	 * @param {Boolean} override fake news
+	 * @private
+	 */
+	var exportComponent = function (key, component, override) {
+		if (!$.type(key)) {
+			App.log({args: ['`key` must be a string', key], fx: 'error'});
+		} else if (!!components[key] &amp;&amp; !override) {
+			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
+		} else {
+			components[key] = component;
+			return component;
+		}
+		return false;
+	};
+
+	/**
+	 * Create an instence of the component
+	 * @name createComponent
+	 * @method
+	 * @memberof App.components
+	 * @param {String} key unique identifier
+	 * @param {Object} options object passed to the component's code
+	 * @return {Object} Merged component with the default model and the acual component code
+	 * @private
+	 */
+	var createComponent = function (key, options) {
+		if (!components[key]) {
+			App.log({args: ['Component %s is not found', key], fx: 'error'});
+			return extendComponent({});
+		}
+		
+		var c = components[key];
+		
+		if (!$.isFunction(c)) {
+			App.log({args: ['Component %s is not a function', key], fx: 'error'});
+			return extendComponent({});
+		}
+		
+		return extendComponent(c.call(c, options));
+	};
+	
+	/** Public Interfaces **/
+	global.App = $.extend(global.App, {
+		
+		// Components
+		components: {
+			
+			/**
+			 * Get all components models
+			 * @public
+			 * @name models
+			 * @method
+			 * @memberof App.components
+			 * @returns {Objects}
+			 */
+			models: function () {
+				return components;
+			},
+			
+			/**
+			 * Create an instence of the component
+			 * @name create
+			 * @method
+			 * @memberof App.components
+			 * @param {String} key unique identifier
+			 * @param {Object} options object passed to the component's code
+			 * @return {Object} Merged component with the default model and the acual component code
+			 * @public
+			 */
+			create: createComponent,
+
+			/**
+			 * Make sure the component is unique by key verification
+			 * and stores it with all the other components
+			 * @name exports
+			 * @method
+			 * @memberof App.components
+			 * @param {String} key unique identifier
+			 * @param {Function} component model of the component
+			 * @param {Boolean} override fake news
+			 * @public
+			 */
+			exports: exportComponent
+		}
+	
+	});
+	
+})(jQuery, window);
+</code></pre>
+        </article>
+    </section>
 
 
 
@@ -797,7 +193,7 @@ the Regular Expression or all the data if none is provided
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 11:31:21 GMT-0500 (Eastern Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 12:59:42 GMT-0500 (Eastern Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

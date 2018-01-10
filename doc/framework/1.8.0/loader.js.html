@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>app-components.js - Documentation</title>
+    <title>loader.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">app-components.js</h1>
+    <h1 class="page-title">loader.js</h1>
     
 
     
@@ -40,144 +40,410 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Components are factory method that will generate a instance of a component.
- *
- * @fileoverview Defines and exports components
- *
+ *  Assets loader: Basically a wrap around $.ajax in order
+ *  to priorize and serialize resource loading.
+ * 
+ * @fileoverview Assets Loader, wrap around $.ajax
+ * 
  * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
  * @license MIT &lt;https://deuxhuithuit.mit-license.org>
+ * @namespace App.loader
  *
- * @namespace App.components
- * @requires App
  */
 (function ($, global, undefined) {
-
-	'use strict';
 	
-	/** Components **/
-	var components = {};
+	'use strict';
 
+	// Forked: https://gist.github.com/nitriques/6583457
+	(function addXhrProgressEvent () {
+		var originalXhr = $.ajaxSettings.xhr;
+		$.ajaxSetup({
+			progress: $.noop,
+			upload: $.noop,
+			xhr: function () {
+				var self = this;
+				var req = originalXhr();
+				if (req) {
+					if ($.isFunction(req.addEventListener)) {
+						req.addEventListener('progress', function (e) {
+							self.progress($.Event(e)); // make sure it's jQuery-ize
+						}, false);
+					}
+					if (!!req.upload &amp;&amp; $.isFunction(req.upload.addEventListener)) {
+						req.upload.addEventListener('progress', function (e) {
+							self.upload($.Event(e)); // make sure it's jQuery-ize
+						}, false);
+					}
+				}
+				return req;
+			}
+		});
+	})();
+	
+	var assets = []; // FIFO
+	
+	var loaderIsWorking = false;
+	
+	var currentUrl = null;
+	
 	/**
-	 * Create a default model of a component with an init function
-	 * @name _createAbstractComponent
+	 * Check if a given url is loading (Only GET request)
+	 * @name isLoading
 	 * @method
-	 * @memberof App.components
+	 * @memberof App.loader
+	 * @param {Object} url Url object to check
+	 * @returns {Boolean}
 	 * @private
-	 * @return {Object}
 	 */
-	var _createAbstractComponent = function () {
+	var isLoading = function (url) {
+		if (!$.isPlainObject(url)) {
+			url = {url: url};
+		}
+		if (!!url.method &amp;&amp; url.method !== 'GET') {
+			return false;
+		}
+		return !!currentUrl &amp;&amp; currentUrl === url.url;
+	};
+	
+	/**
+	 * Check if a given url is in the queue
+	 * @name inQueue
+	 * @method
+	 * @memberof App.loader
+	 * @param {Object} url Url object to check
+	 * @returns {Boolean}
+	 * @private
+	 */
+	var inQueue = function (url) {
+		var foundIndex = -1;
+		$.each(assets, function eachAsset (index, asset) {
+			if (asset.url === url) {
+				foundIndex = index;
+				return false; // early exit
+			}
+			return true;
+		});
+		return foundIndex;
+	};
+	
+	/**
+	 * Return the appropriate storage engine for the given url
+	 * @name getStorageEngine
+	 * @method
+	 * @memberof App.loader
+	 * @param {Object} url Url object to check
+	 * @private
+	 */
+	var getStorageEngine = function (url) {
+		if (url.cache === true) {
+			url.cache = 'session';
+		}
+		return global.AppStorage &amp;&amp; global.AppStorage[url.cache];
+	};
+	
+	// This breaks the call dependency cycle
+	var recursiveLoad = $.noop;
+	var loadAsset = $.noop;
+	
+	var defaultParameters = function (asset) {
 		return {
-			init: $.noop
+			progress: function () {
+				// callback
+				App.callback.call(this, asset.progress, arguments);
+			},
+			success: function (data) {
+				// clear pointer
+				currentUrl = null;
+				
+				// register next
+				recursiveLoad();
+				
+				// callback
+				App.callback.call(this, asset.success, arguments);
+				
+				// store in cache
+				if (!!asset.cache) {
+					var storage = getStorageEngine(asset);
+					if (!!storage) {
+						storage.set(asset.url, data);
+					}
+				}
+			},
+			error: function () {
+				var maxRetriesFactor = !!asset.vip ? 2 : 1;
+				
+				// clear pointer
+				currentUrl = null;
+				
+				App.log({args: ['Error loading url %s', asset.url], me: 'Loader'});
+				
+				// if no vip access is granted
+				//if (!asset.vip) {
+				// decrease priority
+				// this avoids looping for a unload-able asset
+				asset.priority += ++asset.retries; // out of bounds checking is done later
+				//}
+				
+				// @todo: check for the error code
+				// and do something smart with it
+				// 404 will sometimes wait for timeout, so it's better to skip it fast
+				
+				// if we already re-tried  less than x times
+				if (asset.retries &lt;= (asset.maxRetries * maxRetriesFactor)) {
+					// push it back into the queue and retry
+					loadAsset(asset);
+				} else {
+					// we give up!
+					App.callback.call(this, asset.giveup, arguments);
+				}
+				
+				// next
+				recursiveLoad();
+				
+				// callback
+				App.callback.call(this, asset.error, arguments);
+			}
 		};
 	};
-
+	
 	/**
-	 * Merge the created component with the default model
-	 * just to be sure there's an init method
-	 * @name extendComponent
+	 * Load the first item in the queue
+	 * @name loadOneAsset
 	 * @method
-	 * @memberof App.components
-	 * @param {Object} component
-	 * @return {Object} component
 	 * @private
+	 * @memberof App.loader
 	 */
-	var extendComponent = function (component) {
-		return $.extend(_createAbstractComponent(), component);
+	var loadOneAsset = function () {
+		// grab first item
+		var asset = assets.shift();
+		// extend it
+		var param = $.extend({}, asset, defaultParameters(asset));
+		// actual loading
+		$.ajax(param);
+		// set the pointer
+		currentUrl = param.url;
 	};
-
+	
 	/**
-	 * Make sure the component is unique by key verification
-	 * and stores it with all the other components
-	 * @name exportComponent
+	 * Trigger loadOneAsset as long as there's entries in the queue
+	 * @name recursiveLoad
 	 * @method
-	 * @memberof App.components
-	 * @param {String} key unique identifier
-	 * @param {Function} component model of the component
-	 * @param {Boolean} override fake news
+	 * @memberof App.loader
 	 * @private
 	 */
-	var exportComponent = function (key, component, override) {
-		if (!$.type(key)) {
-			App.log({args: ['`key` must be a string', key], fx: 'error'});
-		} else if (!!components[key] &amp;&amp; !override) {
-			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
+	recursiveLoad = function () {
+		if (!!assets.length) {
+			// start next one
+			loadOneAsset();
 		} else {
-			components[key] = component;
-			return component;
+			// work is done
+			loaderIsWorking = false;
+		}
+	};
+	
+	/**
+	 * Validate and format url's data
+	 * @name valideUrlArags
+	 * @method
+	 * @memberof App.loader
+	 * @private
+	 * @param {Object} url Url object
+	 * @param {Integer} priority Priority of the url
+	 * @returns {Object} Url object
+	 */
+	var validateUrlArgs = function (url, priority) {
+		// ensure we are dealing with an object
+		if (!$.isPlainObject(url)) {
+			url = {url: url};
+		}
+		
+		// pass the priority param into the object
+		if ($.isNumeric(priority) &amp;&amp; Math.abs(priority) &lt; assets.length) {
+			url.priority = priority;
+		}
+		
+		// ensure that the priority is valid
+		if (!$.isNumeric(url.priority) || Math.abs(url.priority) > assets.length) {
+			url.priority = assets.length;
+		}
+		
+		// ensure we have a value for the retries
+		if (!$.isNumeric(url.retries)) {
+			url.retries = 0;
+		}
+		if (!$.isNumeric(url.maxRetries)) {
+			url.maxRetries = 2;
+		}
+		
+		return url;
+	};
+	
+	/**
+	 * Trigger the loading if nothing is happening 
+	 * @name launchLoad
+	 * @method
+	 * @private
+	 * @memberof App.loader
+	 */
+	var launchLoad = function () {
+		// start now if nothing is loading
+		if (!loaderIsWorking) {
+			loaderIsWorking = true;
+			loadOneAsset();
+			App.log({args: 'Load worker has been started', me: 'Loader'});
+		}
+	};
+	
+	/**
+	 * Get the value from the cache if it's available
+	 * @name getValueFromCache
+	 * @method
+	 * @memberof App.loader
+	 * @param {Object} url Url object
+	 * @returns {Boolean}
+	 * @private
+	 */
+	var getValueFromCache = function (url) {
+		var storage = getStorageEngine(url);
+		if (!!storage) {
+			var item = storage.get(url.url);
+			if (!!item) {
+				// if the cache-hit is valid
+				if (App.callback.call(this, url.cachehit, item) !== false) {
+					// return the cache
+					App.callback.call(this, url.success, item);
+					return true;
+				}
+			}
 		}
 		return false;
 	};
-
+	
 	/**
-	 * Create an instence of the component
-	 * @name createComponent
+	 * Update a request priority in the queue
+	 * @name updatePriority
 	 * @method
-	 * @memberof App.components
-	 * @param {String} key unique identifier
-	 * @param {Object} options object passed to the component's code
-	 * @return {Object} Merged component with the default model and the acual component code
+	 * @memberof App.loader
 	 * @private
+	 * @param {Object} url Url object
+	 * @param {Integer} index
 	 */
-	var createComponent = function (key, options) {
-		if (!components[key]) {
-			App.log({args: ['Component %s is not found', key], fx: 'error'});
-			return extendComponent({});
+	var updatePrioriy = function (url, index) {
+		// promote if new priority is different
+		var oldAsset = assets[index];
+		if (oldAsset.priority != url.priority) {
+			// remove
+			assets.splice(index, 1);
+			// add
+			assets.splice(url.priority, 1, url);
 		}
-		
-		var c = components[key];
-		
-		if (!$.isFunction(c)) {
-			App.log({args: ['Component %s is not a function', key], fx: 'error'});
-			return extendComponent({});
-		}
-		
-		return extendComponent(c.call(c, options));
+		App.log({
+			args: [
+				'Url %s was shifted from %s to %s',
+				url.url,
+				oldAsset.priority, url.priority
+			],
+			me: 'Loader'
+		});
 	};
 	
-	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
-		
-		// Components
-		components: {
-			
-			/**
-			 * Get all components models
-			 * @public
-			 * @name models
-			 * @method
-			 * @memberof App.components
-			 * @returns {Objects}
-			 */
-			models: function () {
-				return components;
-			},
-			
-			/**
-			 * Create an instence of the component
-			 * @name create
-			 * @method
-			 * @memberof App.components
-			 * @param {String} key unique identifier
-			 * @param {Object} options object passed to the component's code
-			 * @return {Object} Merged component with the default model and the acual component code
-			 * @public
-			 */
-			create: createComponent,
-
-			/**
-			 * Make sure the component is unique by key verification
-			 * and stores it with all the other components
-			 * @name exports
-			 * @method
-			 * @memberof App.components
-			 * @param {String} key unique identifier
-			 * @param {Function} component model of the component
-			 * @param {Boolean} override fake news
-			 * @public
-			 */
-			exports: exportComponent
+	/**
+	 * Put the request in the queue and trigger the load
+	 * @name loadAsset
+	 * @method
+	 * @memberof App.loader
+	 * @private
+	 * @param {Object} url Url Object
+	 * @param {Integer} priority
+	 * @this App
+	 * @returns this
+	 */
+	loadAsset = function (url, priority) {
+		if (!url) {
+			App.log({args: 'No url given', me: 'Loader'});
+			return this;
 		}
+		
+		url = validateUrlArgs(url, priority);
+		
+		// ensure that asset is not current
+		if (isLoading(url)) {
+			App.log({args: ['Url %s is already loading', url.url], me: 'Loader'});
+			return this;
+		}
+		
+		// check cache
+		if (!!url.cache) {
+			if (getValueFromCache(url)) {
+				return this;
+			}
+		}
+		
+		var index = inQueue(url.url);
+		
+		// ensure that asset is not in the queue
+		if (!~index) {
+			// insert in array
+			assets.splice(url.priority, 1, url);
+			App.log({args: ['Url %s has been insert at %s', url.url, url.priority], me: 'Loader'});
+			
+		} else {
+			updatePrioriy(url, index);
+		}
+		
+		launchLoad();
+		
+		return this;
+	};
 	
+	global.Loader = $.extend(global.Loader, {
+
+		/**
+		 * Put the request in the queue and trigger the load
+		 * @name load
+		 * @method
+		 * @memberof App.loader
+		 * @public
+		 * @param {Object} url Url Object
+		 * @param {Integer} priority
+		 * @this App
+		 * @returns this
+		 */
+		load: loadAsset,
+
+		/**
+		 * Check if a given url is loading (Only GET request)
+		 * @name isLoading
+		 * @method
+		 * @memberof App.loader
+		 * @param {Object} url Url object to check
+		 * @returns {Boolean}
+		 * @public
+		 */
+		isLoading: isLoading,
+
+		/**
+		 * Check if a given url is in the queue
+		 * @name inQueue
+		 * @method
+		 * @memberof App.loader
+		 * @param {Object} url Url object to check
+		 * @returns {Boolean}
+		 * @public
+		 */
+		inQueue: inQueue,
+
+		/**
+		 * Get the flag if the loader is working or not
+		 * @name working
+		 * @method
+		 * @memberof App.loader
+		 * @public
+		 * @returns {Boolean}
+		 */
+		working: function () {
+			return loaderIsWorking;
+		}
 	});
 	
 })(jQuery, window);
@@ -193,7 +459,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 11:31:21 GMT-0500 (Eastern Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 12:59:42 GMT-0500 (Eastern Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

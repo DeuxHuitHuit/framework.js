@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>App.debug - Documentation</title>
+    <title>storage.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,504 +29,156 @@
 
 <div id="main">
     
-    <h1 class="page-title">App.debug</h1>
-    
-
-    
-
-
-
-
-<section>
-
-<header>
-    
-        <h2>
-        App.debug
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description">Defines and exports log and debug</div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Deux Huit Huit &lt;https://deuxhuithuit.com></li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT <https://deuxhuithuit.mit-license.org></li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-debug.js.html">app-debug.js</a>, <a href="app-debug.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".debug"><span class="type-signature">(static) </span>debug<span class="signature">(value<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Set or get the debug flag for the App
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-debug.js.html">app-debug.js</a>, <a href="app-debug.js.html#line106">line 106</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Boolean</code></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">
-                
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".log"><span class="type-signature">(static) </span>log<span class="signature">(arg)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Log the recived data with the appropriate effect (log, error, info...)
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-debug.js.html">app-debug.js</a>, <a href="app-debug.js.html#line116">line 116</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>arg</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Array</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".logs"><span class="type-signature">(static) </span>logs<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Get all the logs
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-debug.js.html">app-debug.js</a>, <a href="app-debug.js.html#line126">line 126</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Array</code></span>
-
-
-    </dd>
-</dl>
-
-
-<div class="param-desc">
-    All the logs
-</div>
-
-    
-</div>
-
-
-
-</div>
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <h1 class="page-title">storage.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Facade to access the browser's localstorage and session storage
+ *
+ * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
+ * @license MIT &lt;https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace Storage
+ * @requires App
+ */
+(function ($, global, undefined) {
+	'use strict';
+
+	var storage = function (storage) {
+		return {
+
+			/**
+			 * Return the value associated with the given key
+			 * @name get
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @return {String}
+			 */
+			get: function (key) {
+				if (!key) {
+					return;
+				}
+				key += ''; // make it a string
+				return storage[key];
+			},
+
+			/**
+			 * Set and save a value to the given key in the storage
+			 * @name set
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @param {*} value Value wanted to be saved
+			 * @return {Boolean}
+			 */
+			set: function (key, value) {
+				var result = false;
+				if (!!key) {
+					key += ''; // make it a string
+					try {
+						storage[key] = !value ? '' : value + '';
+						result = true;
+					} catch (e) {
+						App.log({
+							args: e.message,
+							me: 'Storage',
+							fx: 'error'
+						});
+						result = false;
+					}
+				}
+				return result;
+			},
+
+			/**
+			 * Delete the storage data associated with the given key
+			 * @name remove
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @return {Boolean}
+			 */
+			remove: function (key) {
+				var result = false;
+				if (!!key) {
+					key += ''; // make it a string
+					try {
+						storage.removeItem(key);
+						result = true;
+					} catch (e) {
+						App.log({
+							args: e.message,
+							me: 'Storage',
+							fx: 'error'
+						});
+						result = false;
+					}
+				}
+				return result;
+			},
+
+			/**
+			 * Delete the data from the storage matching 
+			 * the Regular Expression or all the data if none is provided
+			 * @name clear
+			 * @memberof Storage
+			 * @method
+			 * @param {RegExp} regexp Regular Expression to match the key
+			 * @return {Boolean}
+			 */
+			clear: function (regexp) {
+				var result = false;
+				try {
+					if (!regexp) {
+						storage.clear();
+					} else {
+						var remove = [];
+						for (var i = 0; i &lt; storage.length; i++) {
+							var key = storage.key(i);
+							if (regexp.test(key)) {
+								remove.push(key);
+							}
+						}
+						for (i = 0; i &lt; remove.length; i++) {
+							storage.removeItem(remove[i]);
+						}
+					}
+					result = true;
+				} catch (e) {
+					App.log({
+						args: e.message,
+						me: 'Storage',
+						fx: 'error'
+					});
+					result = false;
+				}
+				return result;
+			}
+		};
+	};
+
+	/** @deprecated */
+	global.AppStorage = $.extend(global.AppStorage, {
+		factory: storage,
+		local: storage(window.localStorage),
+		session: storage(window.sessionStorage)
+	});
+	
+	/** @deprecated */
+	global.Storage = $.extend(global.Storage, global.AppStorage);
+	
+})(jQuery, window);
+</code></pre>
+        </article>
+    </section>
 
 
 
@@ -536,7 +188,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 11:31:21 GMT-0500 (Eastern Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 12:59:42 GMT-0500 (Eastern Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

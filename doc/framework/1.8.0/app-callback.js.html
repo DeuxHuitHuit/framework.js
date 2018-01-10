@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>app-modules.js - Documentation</title>
+    <title>app-callback.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">app-modules.js</h1>
+    <h1 class="page-title">app-callback.js</h1>
     
 
     
@@ -40,145 +40,132 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Module are singleton that lives across pages
- *
- * @fileoverview Defines and exports components
- *
- * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
- * @license MIT &lt;https://deuxhuithuit.mit-license.org>
- *
- * @namespace App.modules
- * @requires App
- */
+* App Callback functionnality
+*
+* @fileoverview Defines and exports callback and loaded
+*
+* @author Deux Huit Huit &lt;https://deuxhuithuit.com>
+* @license MIT &lt;https://deuxhuithuit.mit-license.org>
+*
+* @namespace App.callback
+* @requires App
+*/
 (function ($, global, undefined) {
 
 	'use strict';
 	
-	/** Modules **/
-	var modules = {};
-	
 	/**
-	 * Create a basic module with the minimum required methods
-	 * @name _createAbstractModule
+	 * Put the args value in a array if it isn't one already
+	 * @name argsToArray
 	 * @method
-	 * @memberof App.modules
-	 * @returns {Object}
+	 * @memberof App.callback
+	 * @param {*} args
+	 * @return {Array}
 	 * @private
 	 */
-	var _createAbstractModule = function () {
-		return {
-			actions: $.noop,
-			init: $.noop
-		};
-	};
-	
-	/**
-	 * Merge the module with the basic one
-	 * to be sure the minimum required methods are present
-	 * @name createModule
-	 * @method
-	 * @memberof App.modules
-	 * @param {Object} module ModuleObject
-	 * @private
-	 */
-	var createModule = function (module) {
-		return $.extend(_createAbstractModule(), module);
-	};
-	
-	/**
-	 * Register the module and make sure his key is unique
-	 * @name exportModule
-	 * @method
-	 * @memberof App.modules
-	 * @param {String} key Module's unique identifier
-	 * @param {Object} module
-	 * @param {Boolean} override
-	 * @private
-	 */
-	var exportModule = function (key, module, override) {
-		if (!$.type(key)) {
-			App.log({args: ['`key` must be a string', key], fx: 'error'});
-		} else if (!!modules[key] &amp;&amp; !override) {
-			App.log({args: ['Overwriting module key %s is not allowed', key], fx: 'error'});
-		} else {
-			modules[key] = createModule(module);
+	var argsToArray = function (args) {
+		var isNull = (args === null);
+		var isNotUndefined = (args !== undefined);
+		var isNotAnArray = !$.isArray(args);
+		var noLength = !!args &amp;&amp; !$.isNumeric(args.length);
+		var isString = $.type(args) === 'string';
+		var isjQuery = !!args &amp;&amp; !!args.jquery;
+		
+		if (isNull || (isNotUndefined &amp;&amp; isNotAnArray &amp;&amp; (noLength || isString || isjQuery))) {
+			// put single parameter inside an array
+			args = [args];
 		}
-		return modules[key];
+		return args;
 	};
 	
 	/**
-	 * Execute _callAction on all modules
-	 * @name notifyModules
+	 * Execute the method recived with the arguments recived
+	 * @name callback
 	 * @method
-	 * @memberof App.modules
-	 * @param {String} key Notify key
-	 * @param {Object=} data Bag of data
-	 * @param {Function} cb Callback executed after all the notifications
+	 * @memberof App.callback
 	 * @this App
-	 * @returns this
+	 * @param {function} fx 
+	 * @param {*} args
+	 * @return undefined
 	 * @private
 	 */
-	var notifyModules = function (key, data, cb) {
-		if ($.isFunction(data) &amp;&amp; !cb) {
-			cb = data;
-			data = undefined;
-		}
-		$.each(modules, function actionToAllModules (index) {
-			var res = App._callAction(this.actions, key, data, cb);
-			if (res !== undefined) {
-				App.callback(cb, [index, res]);
+	var callback = function (fx, args) {
+		try {
+			args = argsToArray(args);
+			
+			if ($.isFunction(fx)) {
+				// IE8 does not allow null/undefined args
+				return fx.apply(this, args || []);
+				
+			} else if ($.isPlainObject(fx)) {
+				return fx;
 			}
-		});
-		return this;
+		} catch (err) {
+			var stack = err.stack;
+			var msg = (err.message || err) + '\n' + (stack || '');
+			
+			App.log({args: [msg, err], fx: 'error'});
+		}
+		return undefined;
+	};
+	
+	/**
+	 * Check if a ressource is loaded and callback when it is.
+	 * @name loaded
+	 * @method
+	 * @memberof App.callback
+	 * @param {*} v Ressource to test
+	 * @param {Function} fx Callback to execute when the ressource is loaded
+	 * @param {Integer} delay Delay between each checks in ms
+	 * @param {Integer} maxRetriesCount Max checks for a ressource
+	 * @param {Integer} counter Memo for the recursive function
+	 * @private
+	 */
+	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
+		delay = Math.max(delay || 0, 100);
+		maxRetriesCount = maxRetriesCount || 10;
+		counter = counter || 1;
+		// get the value
+		var value = callback(v, [counter]);
+		// if the value exists
+		if (!!value) {
+			// call the function, with the value
+			return callback(fx, [value, counter]);
+		} else if (counter &lt; maxRetriesCount) {
+			// recurse
+			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
+		}
 	};
 	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
-		// Modules
-		modules: {
-			
-			/**
-			 * Returns all the modules
-			 * @name models
-			 * @method
-			 * @memberof App.modules
-			 * @returns {Object} All modules models
-			 * @public
-			 */
-			models: function () {
-				return modules;
-			},
-			
-			//create: createModule,
-			
-			/**
-			 * Register the module and make sure his key is unique
-			 * @name exports
-			 * @method
-			 * @memberof App.modules
-			 * @param {String} key Module's unique identifier
-			 * @param {Object} module
-			 * @param {Boolean} override
-			 * @public
-			 */
-			exports: exportModule,
-			
-			/**
-			 * Execute _callAction on all modules
-			 * @name notify
-			 * @method
-			 * @memberof App.modules
-			 * @param {String} key Notify key
-			 * @param {Object=} data Bag of data
-			 * @param {Function} cb Callback executed after all the notifications
-			 * @this App
-			 * @returns this
-			 * @public
-			 */
-			notify: notifyModules
-		}
-	
+		/**
+		 * Execute the method recived with the arguments recived
+		 * @name callback
+		 * @method
+		 * @memberof App.callback
+		 * @this App
+		 * @param {function} fx 
+		 * @param {*} args
+		 * @return undefined
+		 * @private
+		 */
+		callback: callback,
+		
+		/**
+		 * Check if a ressource is loaded and callback when it is.
+		 * @name loaded
+		 * @method
+		 * @memberof App.callback
+		 * @param {*} v Ressource to test
+		 * @param {Function} fx Callback to execute when the ressource is loaded
+		 * @param {Integer} delay Delay between each checks in ms
+		 * @param {Integer} maxRetriesCount Max checks for a ressource
+		 * @param {Integer} counter Memo for the recursive function
+		 * @public
+		 */
+		loaded: loaded
 	});
 	
 })(jQuery, window);
@@ -194,7 +181,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 11:31:21 GMT-0500 (Eastern Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 12:59:42 GMT-0500 (Eastern Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
