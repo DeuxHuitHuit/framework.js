@@ -213,7 +213,8 @@ module.exports = function fxGruntConfig (grunt) {
 				options: {
 					destination: 'doc',
 					private: true,
-					package: './package.json'
+					package: './package.json',
+					template: './node_modules/minami'
 				}
 			}
 		}
