@@ -19,8 +19,10 @@
 	/**
 	 * Set or get the debug flag for the App
 	 * @name debug
+	 * @method
 	 * @memberof App.debug
 	 * @param {Boolean=} value
+	 * @private
 	 */
 	var debug = function (value) {
 		if (value === true || value === false) {
@@ -34,9 +36,11 @@
 	/**
 	 * Format the passed arguments and the displayed message
 	 * @name argsToObject
+	 * @method
 	 * @memberof App.debug
 	 * @param {Object} arg 
 	 * @returns {Object} Formated object
+	 * @private
 	 */
 	var argsToObject = function (arg) {
 		// ensure that args is an array
@@ -64,8 +68,10 @@
 	/**
 	 * Log the recived data with the appropriate effect (log, error, info...)
 	 * @name log
+	 * @method
 	 * @memberof App.debug
 	 * @param {Array} arg
+	 * @private
 	 */
 	var log = function (arg) {
 		// no args, exit
@@ -97,13 +103,34 @@
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
-		// get/set the debug flag
+		/**
+		 * Set or get the debug flag for the App
+		 * @name debug
+		 * @method
+		 * @memberof App.debug
+		 * @param {Boolean=} value
+		 * @public
+		 */
 		debug: debug,
 		
-		// log
+		/**
+		 * Log the recived data with the appropriate effect (log, error, info...)
+		 * @name log
+		 * @method
+		 * @memberof App.debug
+		 * @param {Array} arg
+		 * @public
+		 */
 		log: log,
 		
-		// logs
+		/**
+		 * Get all the logs
+		 * @name logs
+		 * @method
+		 * @memberof App.debug
+		 * @returns {Array} All the logs
+		 * @public
+		 */
 		logs: function () {
 			return logs;
 		}
