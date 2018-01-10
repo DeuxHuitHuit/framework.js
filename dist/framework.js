@@ -1,17 +1,31 @@
-/*! framework.js - v1.7.0 - 501e89810e - build 156 - 2017-11-27
+/*! framework.js - v1.8.0 - aee4750 - build 157 - 2018-01-10
  * https://github.com/DeuxHuitHuit/framework.js
- * Copyright (c) 2017 Deux Huit Huit (https://deuxhuithuit.com/);
+ * Copyright (c) 2018 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
- * @author Deux Huit Huit
- *
  * App Callback functionnality
  *
+ * @fileoverview Defines and exports callback and loaded
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace callback
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 
 	'use strict';
 	
-	/** Utility **/
+	/**
+	 * Put the args value in a array if it isn't one already
+	 * @name argsToArray
+	 * @method
+	 * @memberof callback
+	 * @param {*} args
+	 * @return {Array}
+	 * @private
+	 */
 	var argsToArray = function (args) {
 		var isNull = (args === null);
 		var isNotUndefined = (args !== undefined);
@@ -27,6 +41,17 @@
 		return args;
 	};
 	
+	/**
+	 * Execute the method recived with the arguments recived
+	 * @name callback
+	 * @method
+	 * @memberof callback
+	 * @this App
+	 * @param {function} fx 
+	 * @param {*} args
+	 * @return undefined
+	 * @private
+	 */
 	var callback = function (fx, args) {
 		try {
 			args = argsToArray(args);
@@ -47,7 +72,18 @@
 		return undefined;
 	};
 	
-	// external lib load check
+	/**
+	 * Check if a ressource is loaded and callback when it is.
+	 * @name loaded
+	 * @method
+	 * @memberof callback
+	 * @param {*} v Ressource to test
+	 * @param {Function} fx Callback to execute when the ressource is loaded
+	 * @param {Integer} delay Delay between each checks in ms
+	 * @param {Integer} maxRetriesCount Max checks for a ressource
+	 * @param {Integer} counter Memo for the recursive function
+	 * @private
+	 */
 	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
 		delay = Math.max(delay || 0, 100);
 		maxRetriesCount = maxRetriesCount || 10;
@@ -67,20 +103,47 @@
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
-		// callback utility
+		/**
+		 * Execute the method recived with the arguments recived
+		 * @name callback
+		 * @method
+		 * @memberof callback
+		 * @this App
+		 * @param {function} fx 
+		 * @param {*} args
+		 * @return undefined
+		 * @private
+		 */
 		callback: callback,
 		
-		// loaded utility
+		/**
+		 * Check if a ressource is loaded and callback when it is.
+		 * @name loaded
+		 * @method
+		 * @memberof callback
+		 * @param {*} v Ressource to test
+		 * @param {Function} fx Callback to execute when the ressource is loaded
+		 * @param {Integer} delay Delay between each checks in ms
+		 * @param {Integer} maxRetriesCount Max checks for a ressource
+		 * @param {Integer} counter Memo for the recursive function
+		 * @public
+		 */
 		loaded: loaded
 	});
 	
 })(jQuery, window);
 
 /**
- * @author Deux Huit Huit
- *
- * Components
  * Components are factory method that will generate a instance of a component.
+ *
+ * @fileoverview Defines and exports components
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace components
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 
@@ -88,17 +151,46 @@
 	
 	/** Components **/
 	var components = {};
-	
+
+	/**
+	 * Create a default model of a component with an init function
+	 * @name _createAbstractComponent
+	 * @method
+	 * @memberof components
+	 * @private
+	 * @return {Object}
+	 */
 	var _createAbstractComponent = function () {
 		return {
 			init: $.noop
 		};
 	};
-	
+
+	/**
+	 * Merge the created component with the default model
+	 * just to be sure there's an init method
+	 * @name extendComponent
+	 * @method
+	 * @memberof components
+	 * @param {Object} component
+	 * @return {Object} component
+	 * @private
+	 */
 	var extendComponent = function (component) {
 		return $.extend(_createAbstractComponent(), component);
 	};
-	
+
+	/**
+	 * Make sure the component is unique by key verification
+	 * and stores it with all the other components
+	 * @name exportComponent
+	 * @method
+	 * @memberof components
+	 * @param {String} key unique identifier
+	 * @param {Function} component model of the component
+	 * @param {Boolean} override fake news
+	 * @private
+	 */
 	var exportComponent = function (key, component, override) {
 		if (!$.type(key)) {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
@@ -110,7 +202,17 @@
 		}
 		return false;
 	};
-	
+
+	/**
+	 * Create an instence of the component
+	 * @name createComponent
+	 * @method
+	 * @memberof components
+	 * @param {String} key unique identifier
+	 * @param {Object} options object passed to the component's code
+	 * @return {Object} Merged component with the default model and the acual component code
+	 * @private
+	 */
 	var createComponent = function (key, options) {
 		if (!components[key]) {
 			App.log({args: ['Component %s is not found', key], fx: 'error'});
@@ -133,13 +235,41 @@
 		// Components
 		components: {
 			
-			// private
+			/**
+			 * Get all components models
+			 * @public
+			 * @name models
+			 * @method
+			 * @memberof components
+			 * @returns {Objects}
+			 */
 			models: function () {
 				return components;
 			},
 			
+			/**
+			 * Create an instence of the component
+			 * @name create
+			 * @method
+			 * @memberof components
+			 * @param {String} key unique identifier
+			 * @param {Object} options object passed to the component's code
+			 * @return {Object} Merged component with the default model and the acual component code
+			 * @public
+			 */
 			create: createComponent,
-			
+
+			/**
+			 * Make sure the component is unique by key verification
+			 * and stores it with all the other components
+			 * @name exports
+			 * @method
+			 * @memberof components
+			 * @param {String} key unique identifier
+			 * @param {Function} component model of the component
+			 * @param {Boolean} override fake news
+			 * @public
+			 */
 			exports: exportComponent
 		}
 	
@@ -148,10 +278,16 @@
 })(jQuery, window);
 
 /**
- * @author Deux Huit Huit
- *
  * App Debug and Log
  *
+ * @fileoverview Defines and exports log and debug
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace debug
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 
@@ -160,6 +296,14 @@
 	/** Debug **/
 	var isDebuging = false;
 	
+	/**
+	 * Set or get the debug flag for the App
+	 * @name debug
+	 * @method
+	 * @memberof debug
+	 * @param {Boolean=} value
+	 * @private
+	 */
 	var debug = function (value) {
 		if (value === true || value === false) {
 			isDebuging = value;
@@ -169,6 +313,15 @@
 		return isDebuging;
 	};
 	
+	/**
+	 * Format the passed arguments and the displayed message
+	 * @name argsToObject
+	 * @method
+	 * @memberof debug
+	 * @param {Object} arg 
+	 * @returns {Object} Formated object
+	 * @private
+	 */
 	var argsToObject = function (arg) {
 		// ensure that args is an array
 		if (!!arg.args && !$.isArray(arg.args)) {
@@ -191,6 +344,15 @@
 	};
 	
 	var logs = [];
+
+	/**
+	 * Log the recived data with the appropriate effect (log, error, info...)
+	 * @name log
+	 * @method
+	 * @memberof debug
+	 * @param {Array} arg
+	 * @private
+	 */
 	var log = function (arg) {
 		// no args, exit
 		if (!arg) {
@@ -221,13 +383,34 @@
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
-		// get/set the debug flag
+		/**
+		 * Set or get the debug flag for the App
+		 * @name debug
+		 * @method
+		 * @memberof debug
+		 * @param {Boolean=} value
+		 * @public
+		 */
 		debug: debug,
 		
-		// log
+		/**
+		 * Log the recived data with the appropriate effect (log, error, info...)
+		 * @name log
+		 * @method
+		 * @memberof debug
+		 * @param {Array} arg
+		 * @public
+		 */
 		log: log,
 		
-		// logs
+		/**
+		 * Get all the logs
+		 * @name logs
+		 * @method
+		 * @memberof debug
+		 * @returns {Array} All the logs
+		 * @public
+		 */
 		logs: function () {
 			return logs;
 		}
@@ -236,15 +419,24 @@
 })(jQuery, window);
 
 /**
- * @author Deux Huit Huit
- */
-
-/**
- * Browser Support/Detection
+ * App device detector
+ * 
+ * @fileoverview Analyse the user agent
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace device
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 	'use strict';
 	
+	/**
+	 * Factory for the query string parser
+	 * @return {Object} accessible methods
+	 */
 	var queryStringParser = (function () {
 		var a = /\+/g; // Regex for replacing addition symbol with a space
 		var r = /([^&=]+)=?([^&]*)/gi;
@@ -252,6 +444,15 @@
 			return decodeURIComponent(s.replace(a, ' '));
 		};
 		
+		/**
+		 * Format the querystring into an object
+		 * @name prase
+		 * @memberof App.routing
+		 * @method
+		 * @param {String} qs
+		 * @returns {Object}
+		 * @public
+		 */
 		var parse = function (qs) {
 			var u = {};
 			var e, q;
@@ -271,6 +472,15 @@
 			return u;
 		};
 		
+		/**
+		 * Format the object into a valid query string
+		 * @name stringify
+		 * @memberof App.routing
+		 * @method
+		 * @param {Object} qs Object needed to be transformed into a string
+		 * @returns {String} Result
+		 * @public
+		 */
 		var stringify = function (qs) {
 			var aqs = [];
 			$.each(qs, function (k, v) {
@@ -290,7 +500,25 @@
 		};
 	})();
 	
+	/**
+	 * Factory for the browser detector
+	 * @name browserDetector
+	 * @memberof device
+	 * @method
+	 * @returns {Object} accessible functions
+	 * @private
+	 */
 	var browserDetector = (function () {
+
+		/**
+		 * Get the user agent
+		 * @name getUserAgent
+		 * @memberof device
+		 * @method
+		 * @param {String} userAgent
+		 * @returns {String} user agent
+		 * @private
+		 */
 		var getUserAgent = function (userAgent) {
 			if (!userAgent) {
 				return window.navigator.userAgent;
@@ -298,6 +526,16 @@
 			return userAgent;
 		};
 		
+		/**
+		 * Test the user agent with the given regular expression
+		 * @name testUserAgent
+		 * @memberof device
+		 * @method
+		 * @param {RegExp} regexp 
+		 * @param {String} userAgent
+		 * @returns {Boolean} if the test passed or not
+		 * @private
+		 */
 		var testUserAgent = function (regexp, userAgent) {
 			userAgent = getUserAgent(userAgent);
 			return regexp.test(userAgent);
@@ -305,39 +543,103 @@
 		
 		var detector = {
 		
+			/**
+			 * Check if the device is a mobile one and not an iPhone
+			 * @name isTablet
+			 * @memberof device
+			 * @method
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isTablet: function (userAgent) {
 				return detector.isMobile(userAgent) &&
 					!detector.isPhone(userAgent);
 			},
 			
-			/* @deprecated */
+			/** @deprecated */
 			isTablette: function (userAgent) {
 				return this.isTablet(userAgent);
 			},
 			
+			/**
+			 * Check if the device is an iPhone or an iPad
+			 * @name isIos
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isIos: function (userAgent) {
 				return detector.isIphone(userAgent) ||
 					detector.isIpad(userAgent);
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'iPhone' or 'iPod'
+			 * @name isIphone
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isIphone: function (userAgent) {
 				return !detector.isIpad(userAgent) &&
 					(testUserAgent(/iPhone/i, userAgent) || testUserAgent(/iPod/i, userAgent));
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'iPad'
+			 * @name isIpad
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isIpad: function (userAgent) {
 				return testUserAgent(/iPad/i, userAgent);
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'Android'
+			 * @name isAndroid
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isAndroid: function (userAgent) {
 				return testUserAgent(/Android/i, userAgent);
 			},
 			
+			/**
+			 * Check if the device runs on Android
+			 * and the user agent contains the word 'mobile'
+			 * @name isAndroidPhone
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isAndroidPhone: function (userAgent) {
 				return detector.isAndroid(userAgent) &&
 					testUserAgent(/mobile/i, userAgent);
 			},
 			
+			/**
+			 * Check if the device is a phone
+			 * @name isPhone
+			 * @method
+			 * @memberof isIphone
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isPhone: function (userAgent) {
 				return !detector.isIpad(userAgent) && (
 					detector.isOtherPhone(userAgent) ||
@@ -345,39 +647,113 @@
 					detector.isIphone(userAgent));
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'phone'
+			 * @name isOtherPhone
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isOtherPhone: function (userAgent) {
 				return testUserAgent(/phone/i, userAgent);
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'mobile'
+			 * of if it's another phone
+			 * @name isOtherMobile
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isOtherMobile: function (userAgent) {
 				return testUserAgent(/mobile/i, userAgent) ||
 					detector.isOtherPhone(userAgent);
 			},
 			
+			/**
+			 * Check if the device runs on Android, iOs or other mobile
+			 * @name isMobile
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isMobile: function (userAgent) {
 				return detector.isIos(userAgent) ||
 					detector.isAndroid(userAgent) ||
 					detector.isOtherMobile(userAgent);
 			},
 			
+			/**
+			 * Check if the user agent contains the word 'msie' or 'trident'
+			 * @name isMsie
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isMsie: function (userAgent) {
 				return testUserAgent(/msie/mi, userAgent) ||
 					testUserAgent(/trident/mi, userAgent);
 			},
 
+			/**
+			 * Check if the user agent contains the word 'Safari' and does not
+			 * contain the word 'Chrome'
+			 * @name isSafari
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isSafari: function (userAgent) {
 				return !(testUserAgent(/Chrome/i, userAgent)) &&
 					testUserAgent(/Safari/i, userAgent);
 			},
 
+			/**
+			 * Check if the user agent contains the word 'Firefox'
+			 * @name isFirefox
+			 * @method
+			 * @memberof isFirefox
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isFirefox: function (userAgent) {
 				return testUserAgent(/Firefox/i, userAgent);
 			},
 
+			/**
+			 * Check if the user agent contains the word 'Edge'
+			 * @name isEdge
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isEdge: function (userAgent) {
 				return testUserAgent(/Edge/i, userAgent);
 			},
 
+			/**
+			 * Check if the user agent contains the word 'Chrome' and it's not Edge
+			 * @name isChrome
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
 			isChrome: function (userAgent) {
 				return testUserAgent(/Chrome/i, userAgent) && !detector.isEdge();
 			}
@@ -403,19 +779,138 @@
 		},
 		
 		device: {
+
+			/**
+			 * Object with all the device detection methods
+			 * @name detector
+			 * @public
+			 * @memberof device
+			 * @returns {Object} Detector
+			 */
 			detector: browserDetector,
+
+			/**
+			 * Check if the device is an iPhone
+			 * @name iphone
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			iphone: browserDetector.isIphone(),
+
+			/**
+			 * Check if the device is an iPad
+			 * @name ipad
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			ipad: browserDetector.isIpad(),
+
+			/**
+			 * Check if the device run on iOs
+			 * @name ios
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			ios: browserDetector.isIos(),
+
+			/**
+			 * Check if the device run on Android
+			 * @name android
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			android: browserDetector.isAndroid(),
+
+			/**
+			 * Check if the device is a mobile
+			 * @name mobile
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			mobile: browserDetector.isMobile(),
+
+			/**
+			 * Check if the device is a phone
+			 * @name phone
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			phone: browserDetector.isPhone(),
+
+			/**
+			 * Check if the device is a tablet
+			 * @name tablet
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			tablet: browserDetector.isTablet(),
+
+			/**
+			 * Check if the browser is Chrome
+			 * @name chrome
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			chrome: browserDetector.isChrome(),
+
+			/**
+			 * Check if the browser is Firefox
+			 * @name firefox
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			firefox: browserDetector.isFirefox(),
+
+			/**
+			 * Check if the browser is Safari
+			 * @name safari
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			safari: browserDetector.isSafari(),
+
+			/**
+			 * Check if the browser is Internet Explorer
+			 * @name internetexplorer
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			internetexplorer: browserDetector.isMsie(),
+
+			/**
+			 * Check if the browser is Edge
+			 * @name edge
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
 			edge: browserDetector.isEdge(),
+
+			/**
+			 * @name events
+			 * @constant
+			 * @public
+			 * @memberof device
+			 * @property {String} click Click event
+			 * @property {String} enter 'pointerenter' equivalent
+			 * @property {String} up 'pointerup' equivalent
+			 * @property {String} down 'pointerdown' equivalent
+			 * @property {String} move 'pointermove' equivalent
+			 * @property {String} over 'pointerover' equivalent
+			 * @property {String} out 'pointerout' equivalent
+			 * @property {String} leave 'pointerleave' equivalent
+			 */
 			events: {
 				click: 'click',
 				enter: 'pointerenter',
@@ -461,9 +956,16 @@
 })(jQuery, window);
 
 /**
- * @author Deux Huit Huit
+ * Module are singleton that lives across pages
  *
- * Modules
+ * @fileoverview Defines and exports components
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace modules
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 
@@ -472,6 +974,14 @@
 	/** Modules **/
 	var modules = {};
 	
+	/**
+	 * Create a basic module with the minimum required methods
+	 * @name _createAbstractModule
+	 * @method
+	 * @memberof modules
+	 * @returns {Object}
+	 * @private
+	 */
 	var _createAbstractModule = function () {
 		return {
 			actions: $.noop,
@@ -479,10 +989,29 @@
 		};
 	};
 	
+	/**
+	 * Merge the module with the basic one
+	 * to be sure the minimum required methods are present
+	 * @name createModule
+	 * @method
+	 * @memberof modules
+	 * @param {Object} module ModuleObject
+	 * @private
+	 */
 	var createModule = function (module) {
 		return $.extend(_createAbstractModule(), module);
 	};
 	
+	/**
+	 * Register the module and make sure his key is unique
+	 * @name exportModule
+	 * @method
+	 * @memberof modules
+	 * @param {String} key Module's unique identifier
+	 * @param {Object} module
+	 * @param {Boolean} override
+	 * @private
+	 */
 	var exportModule = function (key, module, override) {
 		if (!$.type(key)) {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
@@ -494,6 +1023,18 @@
 		return modules[key];
 	};
 	
+	/**
+	 * Execute _callAction on all modules
+	 * @name notifyModules
+	 * @method
+	 * @memberof modules
+	 * @param {String} key Notify key
+	 * @param {Object=} data Bag of data
+	 * @param {Function} cb Callback executed after all the notifications
+	 * @this App
+	 * @returns this
+	 * @private
+	 */
 	var notifyModules = function (key, data, cb) {
 		if ($.isFunction(data) && !cb) {
 			cb = data;
@@ -514,15 +1055,44 @@
 		// Modules
 		modules: {
 			
-			// private
+			/**
+			 * Returns all the modules
+			 * @name models
+			 * @method
+			 * @memberof modules
+			 * @returns {Object} All modules models
+			 * @public
+			 */
 			models: function () {
 				return modules;
 			},
 			
 			//create: createModule,
 			
+			/**
+			 * Register the module and make sure his key is unique
+			 * @name exports
+			 * @method
+			 * @memberof modules
+			 * @param {String} key Module's unique identifier
+			 * @param {Object} module
+			 * @param {Boolean} override
+			 * @public
+			 */
 			exports: exportModule,
 			
+			/**
+			 * Execute _callAction on all modules
+			 * @name notify
+			 * @method
+			 * @memberof modules
+			 * @param {String} key Notify key
+			 * @param {Object=} data Bag of data
+			 * @param {Function} cb Callback executed after all the notifications
+			 * @this App
+			 * @returns this
+			 * @public
+			 */
 			notify: notifyModules
 		}
 	
@@ -531,9 +1101,16 @@
 })(jQuery, window);
 
 /**
- * @author Deux Huit Huit
+ * Pages are controller that are activated on a url basis.
  *
- * Pages
+ * @fileoverview Defines and exports pages
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace pages
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 
@@ -541,7 +1118,21 @@
 	
 	var pageModels = {};
 	var pageInstances = {};
-	
+
+	/**
+	 * Creates and a new factory function based on the
+	 * given parameters
+	 * @name _createPageModel
+	 * @memberof pages
+	 * @method
+	 * @param {String} key The unique key for this page model
+	 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type
+	 *   or a pageCreator function that returns a page object.
+	 * @param {Boolean} [override=false] Allows overriding an existing page model
+	 *
+	 * @returns {pageModel} The newly built factory function
+	 * @private
+	 */
 	var _createPageModel = function (key, model, override) {
 		var ftrue = function () {
 			return true;
@@ -550,7 +1141,18 @@
 		var enterLeave = function (next) {
 			App.callback(next);
 		};
-		
+
+		/**
+		 * Page Param
+		 * @memberof pages
+		 * @typedef {Object} pageParam
+		 * @param {Function} actions @returns {object}
+		 * @param {Function} init
+		 * @param {Function} enter
+		 * @param {Function} leave
+		 * @param {Function} canEnter @returns {boolean}
+		 * @param {Function} canLeave @returns {boolean}
+		 */
 		var base = {
 			actions: $.noop,
 			init: $.noop,
@@ -560,7 +1162,15 @@
 			canLeave: ftrue
 		};
 		
-		// This is the method that creates page instances
+		/**
+		 * Page Model is a Factory function for page instances.
+		 * @name factory
+		 * @memberof pages
+		 * @method
+		 * @param {Object} pageData PageObject
+		 * @returns page
+		 * @private
+		 */
 		var factory = function (pageData) {
 			var _pageData = pageData;
 			var modelRef;
@@ -622,6 +1232,17 @@
 		return factory;
 	};
 	
+	/**
+	 * Creates a page with the specified model.
+	 * @name createPage
+	 * @memberof pages
+	 * @method
+	 * @param {Object} pageData An data bag for your page
+	 * @param {String} keyModel The page model's unique key
+	 * @param {Boolean} [override=false] Allows overriding an existing page instance
+	 * @returns {?page} Null if something goes wrong
+	 * @private
+	 */
 	var createPage = function (pageData, keyModel, override) {
 		//Find the page model associated
 		var pageModel = pageModels[keyModel];
@@ -646,7 +1267,19 @@
 		}
 		return false;
 	};
-	
+
+	/**
+	 * Registers a pageModel instance.
+	 * @name registerPageModel
+	 * @memberof pages
+	 * @method
+	 * @param {String} key The model unique key
+	 * @param {pageModel} pageModel The page model
+	 * @param {Boolean} [override=false] Allows overriding an existing page instance
+	 *
+	 * @returns {pageModel}
+	 * @private
+	 */
 	var registerPageModel = function (key, pageModel, override) {
 		var keyType = $.type(key);
 		if (keyType !== 'string') {
@@ -669,7 +1302,21 @@
 		return false;
 	};
 	
-	// Create a function to create a new page
+	/**
+	 * Create a new pageModel, i.e. a function to create a new pages.
+	 * It first calls {@link _createPageModel} and then calls {@link registerPageModel}
+	 * with the output of the first call.
+	 * @name exportPage
+	 * @memberof pages
+	 * @method
+	 * @param {String} key The model unique key
+	 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type
+	 *   or a pageCreator function that returns a page object.
+	 * @param {Boolean} [override=false] Allows overriding an existing page instance
+	 *
+	 * @return {pageModel}
+	 * @private
+	 */
 	var exportPage = function (key, model, override) {
 		// Pass all args to the factory
 		var pageModel = _createPageModel(key, model, override);
@@ -677,7 +1324,14 @@
 		return registerPageModel(key, pageModel, override);
 	};
 	
-	// Validation
+	/**
+	 * Validate a route object
+	 * @name _validateRoute
+	 * @memberof pages
+	 * @method
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var _validateRoute = function (route) {
 		var result = false;
 		
@@ -741,6 +1395,18 @@
 		}
 	};
 	
+	/**
+	 * Tries to match the given route against the given
+	 * array of possible routes.
+	 * @name _matchRoute
+	 * @memberof pages
+	 * @method
+	 * @param {String} route The route to search match for
+	 * @param {String[]|RegExp[]} routes The allowed routes
+	 *
+	 * @returns {Integer} The index of the matched route or -1 if no match
+	 * @private
+	 */
 	var _matchRoute = function (route, routes) {
 		var index = -1;
 		var found = function (i) {
@@ -776,7 +1442,17 @@
 		
 		return index;
 	};
-	
+
+	/**
+	 * Returns the first page object that matches the route param
+	 * @name _getPageForRoute
+	 * @memberof pages
+	 * @method
+	 * @param {String} route The route to search match for
+	 *
+	 * @returns {?page} The page object or null if not found
+	 * @private
+	 */
 	var _getPageForRoute = function (route) {
 		var page = null;
 		if (_validateRoute(route)) {
@@ -791,27 +1467,76 @@
 		}
 		return page;
 	};
-	
+
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
-		// Page creation
 		pages: {
-			// private
+			/**
+			 * @name _matchRoute
+			 * @method
+			 * @memberof pages
+			 * {@link App.pages~_matchRoute}
+			 * @private
+			 */
 			_matchRoute: _matchRoute,
+
+			/**
+			 * @name _validateRoute
+			 * @method
+			 * @memberof pages
+			 * {@link App.pages~_validateRoute}
+			 * @private
+			 */
 			_validateRoute: _validateRoute,
+
+			/**
+			 * Getter for all instances of a particular one
+			 * @param [key] - the optinal key to search for.
+			 *   If falsy, will return all instances
+			 * @returns {page|page[]}
+			 * @private
+			 */
 			instances: function (key) {
 				if (!!key) {
 					return pageInstances[key];
 				}
 				return pageInstances;
 			},
+
+			/**
+			 * Returns all models
+			 * @method
+			 * @name models
+			 * @memberof pages
+			 * @returns {Object}
+			 * @public
+			 */
 			models: function () {
 				return pageModels;
 			},
-			
-			// public
+
+			/**
+			 * Returns the first page object that matches the route param
+			 * @name getPageForRoute
+			 * @memberof pages
+			 * @method
+			 * @param {String} route The route to search match for
+			 *
+			 * @returns {?page} The page object or null if not found
+			 * @public
+			 */
 			getPageForRoute: _getPageForRoute,
-			
+
+			/**
+			 * Returns the page based the key and fallbacks to
+			 * the [route]{@link getPageForRoute} if noting is found.
+			 * @name page
+			 * @method
+			 * @memberof pages
+			 * @param {string} keyOrRoute - the key or the route of the page
+			 * @returns {page}
+			 * @public
+			 */
 			page: function (keyOrRoute) {
 				//Try to get the page by the key
 				var result = pageInstances[keyOrRoute];
@@ -823,10 +1548,35 @@
 				
 				return result;
 			},
-			
+
+			/**
+			 * Creates a page with the specified model.
+			 * @name create
+			 * @memberof pages
+			 * @method
+			 * @param {Object} pageData An data bag for your page
+			 * @param {String} keyModel The page model's unique key
+			 * @param {Boolean} [override=false] Allows overriding an existing page instance
+			 * @returns {?page} Null if something goes wrong
+			 * @public
+			 */
 			create: createPage,
-			
-			//Add a new template to the list of page templates exports(key,model,override)
+
+			/**
+			 * Create a new pageModel, i.e. a function to create a new pages.
+			 * It first calls {@link _createPageModel} and then calls {@link registerPageModel}
+			 * with the output of the first call.
+			 * @name exports
+			 * @memberof pages
+			 * @method
+			 * @param {String} key The model unique key
+			 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type
+			 *   or a pageCreator function that returns a page object.
+			 * @param {Boolean} [override=false] Allows overriding an existing page instance
+			 *
+			 * @return {pageModel}
+			 * @public
+			 */
 			exports: exportPage
 		}
 	});
@@ -834,9 +1584,15 @@
 })(jQuery, window);
 
 /**
- * @author Deux Huit Huit
- *
  * Superlight App Framework
+ *
+ * @fileoverview Defines the App Mediator
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @requires jQuery
+ * @namespace App
  */
 (function ($, global, undefined) {
 	
@@ -858,6 +1614,17 @@
 	var previousPage = null;
 	var previousUrl = '';
 	
+	/**
+	 * Find and execute the methods that matches with the notify key
+	 * @name _callAction
+	 * @memberof App
+	 * @method
+	 * @param {Function|Object} actions Object of methods that can be matches with the key's value
+	 * @param {String} key Action key
+	 * @param {Object} data Bag of data
+	 * @returns {Boolean} Callback's result
+	 * @private
+	 */
 	var _callAction = function (actions, key, data) {
 		if ($.isFunction(actions)) {
 			actions = actions();
@@ -882,6 +1649,18 @@
 		}
 	};
 	
+	/**
+	 * Scope the _callAction actions only for the current page
+	 * @name notifyPage
+	 * @memberof App
+	 * @method
+	 * @param {String} key Notify key
+	 * @param {Object} data Bag of data
+	 * @param {Function} cb Callback executed after all the _callAction are executed
+	 * @this {Object} Mediator
+	 * @returns this
+	 * @private
+	 */
 	var notifyPage = function (key, data, cb) {
 		if (!!currentPage) {
 			if ($.isFunction(data) && !cb) {
@@ -896,7 +1675,14 @@
 		return this;
 	};
 	
-	// Validation
+	/**
+	 * Check if the mediator is loading a page
+	 * @name _validateMediatorState
+	 * @memberof App
+	 * @method
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var _validateMediatorState = function () {
 		if (mediatorIsLoadingPage) {
 			App.log({args: 'Mediator is busy waiting for a page load.', fx: 'error'});
@@ -905,6 +1691,15 @@
 		return !mediatorIsLoadingPage;
 	};
 	
+	/**
+	 * Check if the page is valid or not
+	 * @name _validateNextPage
+	 * @memberof App
+	 * @method
+	 * @param {Object} nextPage PageObject
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var _validateNextPage = function (nextPage) {
 		var result = true;
 			
@@ -915,6 +1710,15 @@
 		return result;
 	};
 	
+	/**
+	 * Check if we can enter the next page
+	 * @name _canEnterNextPage
+	 * @memberof App
+	 * @method
+	 * @param {Object} nextPage Next page instence
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var _canEnterNextPage = function (nextPage) {
 		var result = true;
 		
@@ -926,6 +1730,14 @@
 		return result;
 	};
 	
+	/**
+	 * Check if we can leave the current page
+	 * @name _canLeaveCurrentPage
+	 * @memberof App
+	 * @method
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var _canLeaveCurrentPage = function () {
 		var result = false;
 		
@@ -941,13 +1753,20 @@
 	};
 	
 	//Actions
-	
+
 	/**
-	* Notify all registered component and page
-	*
-	* @see AER in http://addyosmani.com/largescalejavascript/
-	* @see pub/sub http://freshbrewedcode.com/jimcowart/tag/pubsub/
-	*/
+	 * Notify all registered component and page
+	 * @name notifyAll
+	 * @memberof App
+	 * @method
+	 * @param {String} key Notify key
+	 * @param {Object} data Object passed to notified methods
+	 * @param {Function} cb Callback executed when the notify is done
+	 * @this Mediator
+	 * @returns this
+	 * @see AER in http://addyosmani.com/largescalejavascript/
+	 * @private
+	 */
 	var notifyAll = function (key, data, cb) {
 		
 		// propagate action to current page only
@@ -958,21 +1777,55 @@
 		
 		return this;
 	};
-	
+
 	/**
-	* Change the current page to the requested route
-	* Do nothing if the current page is already the requested route
-	*/
+	 * Change the current page to the requested route
+	 * Do nothing if the current page is already the requested route
+	 * @name gotoPage
+	 * @memberof App
+	 * @method 
+	 * @param {String} obj Page requested
+	 * @param {String} previousPoppedUrl Url
+	 * @fires App#page:leave
+	 * @fires App#page:enter
+	 * @fires App#pages:failedtoparse
+	 * @fires App#pages:loaded
+	 * @fires App#pages:loadfatalerror
+	 * @fires App#pages:loaderror
+	 * @fires App#pages:requestBeginPageTransition
+	 * @fires App#pages:navigateToCurrent
+	 * @fires App#pages:requestPageTransition
+	 * @fires App#pages:routeNotFound
+	 * @fires App#pages:loadprogress
+	 * @fires App#pages:notfound
+	 * @fires App#page:leaving
+	 * @fires App#page:entering
+	 * @this App
+	 * @private
+	 */
 	var gotoPage = function (obj, previousPoppedUrl) {
 		var nextPage;
 		var route = '';
 		
+		/**
+		 * Try to parse the data in jQuery to be sure it's valid
+		 * @param {String} data response data
+		 * @returns {jQuery}
+		 */
 		var safeParseData = function (data) {
 			try {
 				return $(data);
 			}
 			catch (ex) {
 				App.log({args: [ex.message], fx: 'error'});
+				/**
+				 * @event App#pages:failedtoparse
+				 * @type {object}
+				 * @property {object} data
+				 * @property {string} route
+				 * @property {object} nextPage PageObject
+				 * @property {object} currentPage PageObject
+				 */
 				App.modules.notify('pages.failedtoparse', {
 					data: data,
 					route: route,
@@ -983,11 +1836,17 @@
 			return $();
 		};
 		
+		/**
+		 * Initiate the transition and leave/enter page logic
+		 */
 		var enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable
 			//The currentPage pointer will be cleared after the next call
 			var leavingPage = currentPage;
 			
+			/**
+			 * Block all interaction with the framework and notify the page leave
+			 */
 			var leaveCurrent = function () {
 				currentPage = null; // clean currentPage pointer,this will block all interactions
 				
@@ -1000,14 +1859,26 @@
 				//clear leavingPage
 				leavingPage = null;
 				
-				//notify all module
+				/**
+				 * @event App#page:leave
+				 * @type {object}
+				 * @property {object} page PageObject
+				 */
 				App.modules.notify('page.leave', {page: previousPage});
 			};
 			
+			/**
+			 * Set the current page to the new one
+			 */
 			var enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
-				// notify all module
+				
+				/**
+				 * @event App#page:enter
+				 * @type {object}
+				 * @property {object} page PageObject
+				 */
 				App.modules.notify('page.enter', {page: nextPage, route: route});
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
@@ -1022,7 +1893,11 @@
 				isHandled: false
 			};
 			
-			//Try to find a module to handle page transition
+			/**
+			 * @event App#pages:requestPageTransition
+			 * @type {object}
+			 * @property {object} pageTransitionData
+			 */
 			App.modules.notify('pages.requestPageTransition', pageTransitionData);
 			
 			if (!nextPage.isInited) {
@@ -1034,18 +1909,34 @@
 			if (!pageTransitionData.isHandled) {
 				//Leave to page the transition job
 				
-				//notify all module
+				/**
+				 * @event App#page:leaving
+				 * @type {object}
+				 * @property {object} page PageObject
+				 */
 				App.modules.notify('page.leaving', {page: leavingPage});
 				
 				//Leave the current page
 				leavingPage.leave(leaveCurrent);
 				
+				/**
+				 * @event App#page:entering
+				 * @type {object}
+				 * @property {object} page PageObject
+				 * @property {string} route url
+				 */
 				App.modules.notify('page.entering', {page: nextPage, route: route});
 				
 				nextPage.enter(enterNext);
 			}
 		};
 		
+		/**
+		 * Verify that the data is valid an append the loadded content inside the App's root
+		 * @param {String} data requested data
+		 * @param {String} textStatus Current request status
+		 * @param {Object} jqXHR request instence
+		 */
 		var loadSucess = function (data, textStatus, jqXHR) {
 			var htmldata = safeParseData(data);
 			
@@ -1066,7 +1957,16 @@
 				// Find the right page
 				nextPage = App.pages.getPageForRoute(responseUrl);
 				
-				// Offer a bail out door
+				/**
+				 * Offer a bail out door
+				 * @event App#pages:redirected
+				 * @type {Object}
+				 * @property {String} route Url
+				 * @property {String} requestedRoute Url
+				 * @property {Object} nextPage PageObject
+				 * @property {Object} currentPage PageObject
+				 * @property {Object} redirectedPage PageObject
+				 */
 				App.modules.notify('pages.redirected', {
 					currentPage: currentPage,
 					nextPage: nextPage,
@@ -1074,8 +1974,15 @@
 					requestedRoute: route,
 					responseRoute: responseUrl
 				});
-				
-				// Cancel current transition
+
+				/**
+				 * Cancel current transition
+				 * @event App#pages:requestCancelPageTransition
+				 * @type {Object}
+				 * @property {String} route Url
+				 * @property {Object} nextPage PageObject
+				 * @property {Object} currentPage PageObject
+				 */
 				App.modules.notify('pages.requestCancelPageTransition', {
 					currentPage: currentPage,
 					nextPage: nextPage,
@@ -1083,6 +1990,13 @@
 				});
 				
 				if (!_validateNextPage(nextPage)) {
+					/**
+					 * @event App#pages:routeNotFound
+					 * @type {object}
+					 * @property {String} url Url
+					 * @property {Boolean} isRedirect PageObject
+					 * @property {Object} page PageObject
+					 */
 					App.modules.notify('pages.routeNotFound', {
 						page: currentPage,
 						url: obj,
@@ -1093,6 +2007,13 @@
 				} else {
 					node = htmldata.find(nextPage.key());
 					if (nextPage === currentPage) {
+						/**
+						 * @event App#pages:navigateToCurrent
+						 * @type {object}
+						 * @property {String} url Url
+						 * @property {Boolean} isRedirect PageObject
+						 * @property {Object} page PageObject
+						 */
 						App.modules.notify('pages.navigateToCurrent', {
 							page: nextPage,
 							route: route,
@@ -1100,7 +2021,15 @@
 						});
 						App.log('redirected next page is the current one');
 					} else {
-						// Start new transition
+						/**
+						 * Start new transition
+						 * @event App#pages:requestBeginPageTransition
+						 * @type {object}
+						 * @property {String} route Url
+						 * @property {Boolean} isRedirect PageObject
+						 * @property {Object} nextPage PageObject
+						 * @property {Object} currentPage PageObject
+						 */
 						App.modules.notify('pages.requestBeginPageTransition', {
 							currentPage: currentPage,
 							nextPage: nextPage,
@@ -1119,7 +2048,14 @@
 				// free the mediator
 				mediatorIsLoadingPage = false;
 				
-				// notify
+				/**
+				 * @event App#pages:notfound
+				 * @type {Object}
+				 * @property {String} data Loaded raw content
+				 * @property {String} url request url
+				 * @property {Object} xhr Request object instence
+				 * @property {String} status Status of the request
+				 */
 				App.modules.notify('pages.notfound', {
 					data: data,
 					url: obj,
@@ -1138,6 +2074,17 @@
 				
 				node.hide();
 				
+				/**
+				 * @event App#pages:loaded
+				 * @type {Object}
+				 * @property {jQuery} elem Loaded content
+				 * @property {String} data Loaded raw content
+				 * @property {String} url request url
+				 * @property {Object} page PageObject
+				 * @property {jQuery} node Page element
+				 * @property {Object} xhr Request object instence
+				 * @property {String} status Status of the request
+				 */
 				App.modules.notify('pages.loaded', {
 					elem: elem,
 					data: data,
@@ -1153,11 +2100,28 @@
 			}
 		};
 		
+		/**
+		 * Disptch a notify for the progress' event
+		 * @name progress
+		 * @method
+		 * @memberof App
+		 * @private
+		 * @param {Event} e Request progess event
+		 */
 		var progress = function (e) {
 			var total = e.originalEvent.total;
 			var loaded = e.originalEvent.loaded;
 			var percent = total > 0 ? loaded / total : 0;
 
+			/**
+			 * @event App#pages:loadprogress
+			 * @type {Object}
+			 * @property {Object} event Request progress event
+			 * @property {String} url Request url
+			 * @property {Integer} total Total bytes
+			 * @property {Integer} loaded Total bytes loaded
+			 * @property {Integer} percent
+			 */
 			App.mediator.notify('pages.loadprogress', {
 				event: e,
 				url: obj,
@@ -1176,6 +2140,12 @@
 			}
 			
 			if (!_validateNextPage(nextPage)) {
+				/**
+				 * @event App#pages:routeNotFound
+				 * @type {Object}
+				 * @property {Object} page PageObject
+				 * @property {String} url Request url
+				 */
 				App.modules.notify('pages.routeNotFound', {
 					page: currentPage,
 					url: obj
@@ -1184,6 +2154,12 @@
 			} else {
 				if (_canEnterNextPage(nextPage)) {
 					if (nextPage === currentPage) {
+						/**
+						 * @event App#pages:navigateToCurrent
+						 * @type {Object}
+						 * @property {Object} page PageObject
+						 * @property {String} route Request url
+						 */
 						App.modules.notify('pages.navigateToCurrent', {
 							page: nextPage,
 							route: route
@@ -1192,10 +2168,22 @@
 						
 					} else {
 						
+						/**
+						 * @event App#pages:loading
+						 * @type {Object}
+						 * @property {Object} page PageObject
+						 */
 						App.modules.notify('pages.loading', {
 							page: nextPage
 						});
 						
+						/**
+						 * @event App#pages:requestBeginPageTransition
+						 * @type {Object}
+						 * @property {Object} currentPage PageObject
+						 * @property {Object} nextPage PageObject
+						 * @property {String} route Request url
+						 */
 						App.modules.notify('pages.requestBeginPageTransition', {
 							currentPage: currentPage,
 							nextPage: nextPage,
@@ -1215,6 +2203,12 @@
 								success: loadSucess,
 								progress: progress,
 								error: function (e) {
+									/**
+									 * @event App#pages:loaderror
+									 * @type {Object}
+									 * @property {Object} event Request event
+									 * @property {String} url Request url
+									 */
 									App.modules.notify('pages.loaderror', {
 										event: e,
 										url: obj
@@ -1227,6 +2221,12 @@
 									
 									App.log({args: 'Giving up!', me: 'Loader'});
 									
+									/**
+									 * @event App#pages:loadfatalerror
+									 * @type {Object}
+									 * @property {Object} event Request event
+									 * @property {String} url Request url
+									 */
 									App.modules.notify('pages.loadfatalerror', {
 										event: e,
 										url: obj
@@ -1236,6 +2236,13 @@
 						} else {
 							enterLeave();
 							
+							/**
+							 * @event App#pages:loaded
+							 * @type {Object}
+							 * @property {jQuery} elem Root element
+							 * @property {Object} event Request event
+							 * @property {String} url Request url
+							 */
 							App.modules.notify('pages.loaded', {
 								elem: $(ROOT),
 								url: obj,
@@ -1251,6 +2258,18 @@
 		return this;
 	};
 	
+	/**
+	 * Open the wanted page,
+	 * return to the precedent page if the requested on is already open
+	 * or fallback to a default one
+	 * @name togglePage
+	 * @memberof App
+	 * @method
+	 * @fires App#page:toggleNoPreviousUrl
+	 * @param {String} route Url
+	 * @param {String} fallback Url used for as a fallback
+	 * @private
+	 */
 	var togglePage = function (route, fallback) {
 		if (!!currentPage && _validateMediatorState()) {
 			var
@@ -1264,6 +2283,11 @@
 				} else if (!!fallback) {
 					gotoPage(fallback);
 				} else {
+					/**
+					 * @event App#page:toggleNoPreviousUrl
+					 * @type {object}
+					 * @property {object} currentPage PageObject
+					 */
 					App.modules.notify('page.toggleNoPreviousUrl', { currentPage: nextPage });
 				}
 			}
@@ -1272,10 +2296,17 @@
 	};
 	
 	/**
-	* Init All the applications
-	* Assign root variable
-	* Call init on all registered page and modules
-	*/
+	 * Init All the applications
+	 * Assign root variable
+	 * Call init on all registered page and modules
+	 * @name initApplication
+	 * @memberof App
+	 * @method
+	 * @fires App#page:entering
+	 * @fires App#page:enter
+	 * @param {String} root CSS selector
+	 * @private
+	 */
 	var initApplication = function (root) {
 		
 		// assure root node
@@ -1301,12 +2332,24 @@
 					// initialise page variable
 					currentPage = this;
 					previousPage = this; // Set the same for the first time
+					/**
+					 * @event App#page:entering
+					 * @type {object}
+					 * @property {Object} page PageObject
+					 * @property {String} route Url
+					 */
 					App.modules.notify('page.entering', {
 						page: currentPage,
 						route: currentRouteUrl
 					});
 					// enter the page right now
 					currentPage.enter(function _currentPageEnterCallback () {
+						/**
+						 * @event App#page:enter
+						 * @type {object}
+						 * @property {Object} page PageObject
+						 * @property {String} route Url
+						 */
 						App.modules.notify('page.enter', {
 							page: currentPage,
 							route: currentRouteUrl
@@ -1321,7 +2364,14 @@
 		});
 	};
 	
-	/** App **/
+	/**
+	 * Init the app with the given css selector
+	 * @name run
+	 * @memberof App
+	 * @method
+	 * @param {String=} root CSS selector
+	 * @private
+	 */
 	var run = function (root) {
 		initApplication(root);
 		return App;
@@ -1329,18 +2379,46 @@
 	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
-		// private
+		
+		/**
+		 * Find and execute the methods that matches with the notify key
+		 * @name _callAction
+		 * @memberof App
+		 * @method
+		 * @param {Function|Object} actions Object of methods that can be matches with the key's value
+		 * @param {String} key Action key
+		 * @param {Object} data Bag of data
+		 * @returns {Boolean} Callback's result
+		 * @public
+		 */
 		_callAction: _callAction,
 		
-		// root node for the pages
+		/**
+		 * Get the root css selector
+		 * @name root
+		 * @method
+		 * @memberof App
+		 * @returns {String} Root CSS selector
+		 * @public
+		 */
 		root: function () {
 			return ROOT;
 		},
 		
-		// main entrance
+		/**
+		 * Init the app with the given css selector
+		 * @name run
+		 * @memberof App
+		 * @method
+		 * @param {String=} root CSS selector
+		 * @public
+		 */
 		run: run,
 		
-		// mediator object
+		/**
+		 * @namespace mediator
+		 * @memberof App
+		 * */
 		mediator: {
 			// private
 			_currentPage: function (page) {
@@ -1350,24 +2428,85 @@
 				return currentPage;
 			},
 			
+			/**
+			 * Get the currentPage object
+			 * @name getCurrentPage
+			 * @memberof App.mediator
+			 * @method
+			 * @returns {Object} PageObject
+			 * @public
+			 */
 			getCurrentPage: function () {
 				return currentPage;
 			},
-			
-			// event dispatcher to the
-			// current Page and Modules
+
+			/**
+			 * Notify all registered component and page
+			 * @name notify
+			 * @memberof App.mediator
+			 * @method
+			 * @param {String} key Notify key
+			 * @param {Object} data Object passed to notified methods
+			 * @param {Function} cb Callback executed when the notify is done
+			 * @this Mediator
+			 * @returns this
+			 * @see AER in http://addyosmani.com/largescalejavascript/
+			 * @public
+			 */
 			notify: notifyAll,
 			
-			// event dispatcher to the
-			// current Page only
+			/**
+			 * Scope the _callAction actions only for the current page
+			 * @name notifyCurrentPage
+			 * @memberof App.mediator
+			 * @method
+			 * @param {String} key Notify key
+			 * @param {Object} data Bag of data
+			 * @param {Function} cb Callback executed after all the _callAction are executed
+			 * @this {Object} Mediator
+			 * @returns this
+			 * @public
+			 */
 			notifyCurrentPage: notifyPage,
 			
-			// leave the current Page and
-			// enter a new one, specified by the url
+			/**
+			 * Change the current page to the requested route
+			 * Do nothing if the current page is already the requested route
+			 * @name goto
+			 * @memberof App.mediator
+			 * @method 
+			 * @param {String} obj Page requested
+			 * @param {String} previousPoppedUrl Url
+			 * @fires App#page:leave
+			 * @fires App#page:enter
+			 * @fires App#pages:failedtoparse
+			 * @fires App#pages:loaded
+			 * @fires App#pages:loadfatalerror
+			 * @fires App#pages:loaderror
+			 * @fires App#pages:requestBeginPageTransition
+			 * @fires App#pages:navigateToCurrent
+			 * @fires App#pages:requestPageTransition
+			 * @fires App#pages:routeNotFound
+			 * @fires App#pages:loadprogress
+			 * @fires App#pages:notfound
+			 * @fires App#page:leaving
+			 * @fires App#page:entering
+			 * @this App
+			 */
 			goto: gotoPage,
 			
-			// toggle the requested page (may be enter or leave the requested page)
-			//if leaving (already current page) then the previous page is using for the goto
+			/**
+			 * Open the wanted page,
+			 * return to the precedent page if the requested on is already open
+			 * or fallback to a default one
+			 * @name toggle
+			 * @memberof App.mediator
+			 * @method
+			 * @fires App#page:toggleNoPreviousUrl
+			 * @param {String} route Url
+			 * @param {String} fallback Url used for as a fallback
+			 * @public
+			 */
 			toggle: togglePage
 		}
 	});
@@ -1525,19 +2664,17 @@
 })(jQuery, window);
 
 /**
- * @author Deux Huit Huit
- */
-
-/**
- * General customization
+ * General customization alongside the framework
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @requires jQuery
+ * @requires App
  */
 (function ($, global, undefined) {
 	'use strict';
-	
-	/*
-	 * Cheap modrnzr
-	 */
-	// add device css class to html
+
 	var deviceClasses = [
 		'iphone', 'ipad', 'ios',
 		'android',
@@ -1551,23 +2688,19 @@
 	});
 	// easing support
 	$.easing.def = ($.mobile ? 'linear' : 'easeOutQuad');
-	
-	/*
+
+	/**
 	 * Patching console object.
-	 * See: https://developers.google.com/chrome-developer-tools/docs/console-api
-	 * Snippet
-		var c=[];
-		$('ol.toc li').each(function () {
-			var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])
-		});
-		console.log(c);
-	*/
-	
+	 * @see https://developers.google.com/chrome-developer-tools/docs/console-api
+	 */
 	var consoleFx = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'group',
 		'group', 'group', 'info', 'log', 'profile', 'profile', 'time', 'time', 'time',
 		'trace', 'warn'];
 	
-	// console support
+	/**
+	 * Console support
+	 * @global
+	 */
 	if (!global.console) {
 		global.console = {};
 	}
@@ -1576,11 +2709,18 @@
 		global.console[key] = global.console[key] || $.noop;
 	});
 	
-	/*
-	 * Global tools
-	 */
+
 	
-	// prevent default macro
+	/**
+	 * Facade to stop the propagation of events
+	 * @name pd
+	 * @method
+	 * @param {Event} e Event object
+	 * @param {Boolean} stopPropagation Flag to stop the event propagation or not
+	 * @returns {Boolean} false, always.
+	 * @global
+	 * @public
+	 */
 	global.pd = function (e, stopPropagation) {
 		if (!!e) {
 			if ($.isFunction(e.preventDefault)) {
@@ -1596,10 +2736,14 @@
 })(jQuery, window);
 
 /**
- * @author Deux Huit Huit
- *
- * Assets loader: Basically a wrap around $.ajax in order
- *   to priorize and serialize resource loading.
+ *  Assets loader: Basically a wrap around $.ajax in order
+ *  to priorize and serialize resource loading.
+ * 
+ * @fileoverview Assets Loader, wrap around $.ajax
+ * 
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ * @namespace Loader
  */
 (function ($, global, undefined) {
 	
@@ -1637,6 +2781,15 @@
 	
 	var currentUrl = null;
 	
+	/**
+	 * Check if a given url is loading (Only GET request)
+	 * @name isLoading
+	 * @method
+	 * @memberof Loader
+	 * @param {Object} url Url object to check
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var isLoading = function (url) {
 		if (!$.isPlainObject(url)) {
 			url = {url: url};
@@ -1647,6 +2800,15 @@
 		return !!currentUrl && currentUrl === url.url;
 	};
 	
+	/**
+	 * Check if a given url is in the queue
+	 * @name inQueue
+	 * @method
+	 * @memberof Loader
+	 * @param {Object} url Url object to check
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var inQueue = function (url) {
 		var foundIndex = -1;
 		$.each(assets, function eachAsset (index, asset) {
@@ -1659,6 +2821,14 @@
 		return foundIndex;
 	};
 	
+	/**
+	 * Return the appropriate storage engine for the given url
+	 * @name getStorageEngine
+	 * @method
+	 * @memberof Loader
+	 * @param {Object} url Url object to check
+	 * @private
+	 */
 	var getStorageEngine = function (url) {
 		if (url.cache === true) {
 			url.cache = 'session';
@@ -1731,6 +2901,13 @@
 		};
 	};
 	
+	/**
+	 * Load the first item in the queue
+	 * @name loadOneAsset
+	 * @method
+	 * @private
+	 * @memberof Loader
+	 */
 	var loadOneAsset = function () {
 		// grab first item
 		var asset = assets.shift();
@@ -1742,6 +2919,13 @@
 		currentUrl = param.url;
 	};
 	
+	/**
+	 * Trigger loadOneAsset as long as there's entries in the queue
+	 * @name recursiveLoad
+	 * @method
+	 * @memberof Loader
+	 * @private
+	 */
 	recursiveLoad = function () {
 		if (!!assets.length) {
 			// start next one
@@ -1752,6 +2936,16 @@
 		}
 	};
 	
+	/**
+	 * Validate and format url's data
+	 * @name valideUrlArags
+	 * @method
+	 * @memberof Loader
+	 * @private
+	 * @param {Object} url Url object
+	 * @param {Integer} priority Priority of the url
+	 * @returns {Object} Url object
+	 */
 	var validateUrlArgs = function (url, priority) {
 		// ensure we are dealing with an object
 		if (!$.isPlainObject(url)) {
@@ -1779,6 +2973,13 @@
 		return url;
 	};
 	
+	/**
+	 * Trigger the loading if nothing is happening 
+	 * @name launchLoad
+	 * @method
+	 * @private
+	 * @memberof Loader
+	 */
 	var launchLoad = function () {
 		// start now if nothing is loading
 		if (!loaderIsWorking) {
@@ -1788,6 +2989,15 @@
 		}
 	};
 	
+	/**
+	 * Get the value from the cache if it's available
+	 * @name getValueFromCache
+	 * @method
+	 * @memberof Loader
+	 * @param {Object} url Url object
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var getValueFromCache = function (url) {
 		var storage = getStorageEngine(url);
 		if (!!storage) {
@@ -1804,6 +3014,15 @@
 		return false;
 	};
 	
+	/**
+	 * Update a request priority in the queue
+	 * @name updatePriority
+	 * @method
+	 * @memberof Loader
+	 * @private
+	 * @param {Object} url Url object
+	 * @param {Integer} index
+	 */
 	var updatePrioriy = function (url, index) {
 		// promote if new priority is different
 		var oldAsset = assets[index];
@@ -1823,6 +3042,17 @@
 		});
 	};
 	
+	/**
+	 * Put the request in the queue and trigger the load
+	 * @name loadAsset
+	 * @method
+	 * @memberof Loader
+	 * @private
+	 * @param {Object} url Url Object
+	 * @param {Integer} priority
+	 * @this App
+	 * @returns this
+	 */
 	loadAsset = function (url, priority) {
 		if (!url) {
 			App.log({args: 'No url given', me: 'Loader'});
@@ -1862,9 +3092,50 @@
 	};
 	
 	global.Loader = $.extend(global.Loader, {
+
+		/**
+		 * Put the request in the queue and trigger the load
+		 * @name load
+		 * @method
+		 * @memberof Loader
+		 * @public
+		 * @param {Object} url Url Object
+		 * @param {Integer} priority
+		 * @this App
+		 * @returns this
+		 */
 		load: loadAsset,
+
+		/**
+		 * Check if a given url is loading (Only GET request)
+		 * @name isLoading
+		 * @method
+		 * @memberof Loader
+		 * @param {Object} url Url object to check
+		 * @returns {Boolean}
+		 * @public
+		 */
 		isLoading: isLoading,
+
+		/**
+		 * Check if a given url is in the queue
+		 * @name inQueue
+		 * @method
+		 * @memberof Loader
+		 * @param {Object} url Url object to check
+		 * @returns {Boolean}
+		 * @public
+		 */
 		inQueue: inQueue,
+
+		/**
+		 * Get the flag if the loader is working or not
+		 * @name working
+		 * @method
+		 * @memberof Loader
+		 * @public
+		 * @returns {Boolean}
+		 */
 		working: function () {
 			return loaderIsWorking;
 		}
@@ -1873,15 +3144,28 @@
 })(jQuery, window);
 
 /**
- * @author Deux Huit Huit
+ * Facade to access the browser's localstorage and session storage
  *
- * Storage: A safe wrapper around window.localStorage/sessionStorage
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace Storage
+ * @requires App
  */
 (function ($, global, undefined) {
 	'use strict';
-	
+
 	var storage = function (storage) {
 		return {
+
+			/**
+			 * Return the value associated with the given key
+			 * @name get
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @return {String}
+			 */
 			get: function (key) {
 				if (!key) {
 					return;
@@ -1889,6 +3173,16 @@
 				key += ''; // make it a string
 				return storage[key];
 			},
+
+			/**
+			 * Set and save a value to the given key in the storage
+			 * @name set
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @param {*} value Value wanted to be saved
+			 * @return {Boolean}
+			 */
 			set: function (key, value) {
 				var result = false;
 				if (!!key) {
@@ -1907,6 +3201,15 @@
 				}
 				return result;
 			},
+
+			/**
+			 * Delete the storage data associated with the given key
+			 * @name remove
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @return {Boolean}
+			 */
 			remove: function (key) {
 				var result = false;
 				if (!!key) {
@@ -1925,6 +3228,16 @@
 				}
 				return result;
 			},
+
+			/**
+			 * Delete the data from the storage matching 
+			 * the Regular Expression or all the data if none is provided
+			 * @name clear
+			 * @memberof Storage
+			 * @method
+			 * @param {RegExp} regexp Regular Expression to match the key
+			 * @return {Boolean}
+			 */
 			clear: function (regexp) {
 				var result = false;
 				try {
@@ -1956,13 +3269,14 @@
 		};
 	};
 
+	/** @deprecated */
 	global.AppStorage = $.extend(global.AppStorage, {
 		factory: storage,
 		local: storage(window.localStorage),
 		session: storage(window.sessionStorage)
 	});
 	
-	// @deprecated
+	/** @deprecated */
 	global.Storage = $.extend(global.Storage, global.AppStorage);
 	
 })(jQuery, window);
