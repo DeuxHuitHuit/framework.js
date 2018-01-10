@@ -212,7 +212,7 @@ module.exports = function fxGruntConfig (grunt) {
 				src: SRC_FILES.concat('README.md'),
 				options: {
 					destination: 'doc',
-					private: true,
+					private: false,
 					package: './package.json',
 					template: './node_modules/minami'
 				}
