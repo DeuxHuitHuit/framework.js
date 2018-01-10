@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>app-components.js - Documentation</title>
+    <title>callback - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,162 +29,355 @@
 
 <div id="main">
     
-    <h1 class="page-title">app-components.js</h1>
+    <h1 class="page-title">callback</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Components are factory method that will generate a instance of a component.
- *
- * @fileoverview Defines and exports components
- *
- * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
- * @license MIT &lt;https://deuxhuithuit.mit-license.org>
- *
- * @namespace components
- * @memberof App
- * @requires App
- */
-(function ($, global, undefined) {
+        <h2>
+            <span class="ancestors"><a href="App.html">App</a></span>
+        
+        callback
+        </h2>
+        
+    
+</header>
 
-	'use strict';
-	
-	/** Components **/
-	var components = {};
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Defines and exports callback and loaded</div>
+        
 
-	/**
-	 * Create a default model of a component with an init function
-	 * @name _createAbstractComponent
-	 * @method
-	 * @memberof components
-	 * @private
-	 * @return {Object}
-	 */
-	var _createAbstractComponent = function () {
-		return {
-			init: $.noop
-		};
-	};
+        
 
-	/**
-	 * Merge the created component with the default model
-	 * just to be sure there's an init method
-	 * @name extendComponent
-	 * @method
-	 * @memberof components
-	 * @param {Object} component
-	 * @return {Object} component
-	 * @private
-	 */
-	var extendComponent = function (component) {
-		return $.extend(_createAbstractComponent(), component);
-	};
 
-	/**
-	 * Make sure the component is unique by key verification
-	 * and stores it with all the other components
-	 * @name exportComponent
-	 * @method
-	 * @memberof components
-	 * @param {String} key unique identifier
-	 * @param {Function} component model of the component
-	 * @param {Boolean} override fake news
-	 * @private
-	 */
-	var exportComponent = function (key, component, override) {
-		if (!$.type(key)) {
-			App.log({args: ['`key` must be a string', key], fx: 'error'});
-		} else if (!!components[key] &amp;&amp; !override) {
-			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
-		} else {
-			components[key] = component;
-			return component;
-		}
-		return false;
-	};
+<dl class="details">
 
-	/**
-	 * Create an instence of the component
-	 * @name createComponent
-	 * @method
-	 * @memberof components
-	 * @param {String} key unique identifier
-	 * @param {Object} options object passed to the component's code
-	 * @return {Object} Merged component with the default model and the acual component code
-	 * @private
-	 */
-	var createComponent = function (key, options) {
-		if (!components[key]) {
-			App.log({args: ['Component %s is not found', key], fx: 'error'});
-			return extendComponent({});
-		}
-		
-		var c = components[key];
-		
-		if (!$.isFunction(c)) {
-			App.log({args: ['Component %s is not a function', key], fx: 'error'});
-			return extendComponent({});
-		}
-		
-		return extendComponent(c.call(c, options));
-	};
-	
-	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
-		
-		// Components
-		components: {
-			
-			/**
-			 * Get all components models
-			 * @public
-			 * @name models
-			 * @method
-			 * @memberof components
-			 * @returns {Objects}
-			 */
-			models: function () {
-				return components;
-			},
-			
-			/**
-			 * Create an instence of the component
-			 * @name create
-			 * @method
-			 * @memberof components
-			 * @param {String} key unique identifier
-			 * @param {Object} options object passed to the component's code
-			 * @return {Object} Merged component with the default model and the acual component code
-			 * @public
-			 */
-			create: createComponent,
+    
 
-			/**
-			 * Make sure the component is unique by key verification
-			 * and stores it with all the other components
-			 * @name exports
-			 * @method
-			 * @memberof components
-			 * @param {String} key unique identifier
-			 * @param {Function} component model of the component
-			 * @param {Boolean} override fake news
-			 * @public
-			 */
-			exports: exportComponent
-		}
-	
-	});
-	
-})(jQuery, window);
-</code></pre>
-        </article>
-    </section>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Deux Huit Huit &lt;https://deuxhuithuit.com></li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT <https://deuxhuithuit.mit-license.org></li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-callback.js.html">app-callback.js</a>, <a href="app-callback.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".loaded"><span class="type-signature">(static) </span>loaded<span class="signature">(v, fx, delay, maxRetriesCount, counter)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Check if a ressource is loaded and callback when it is.
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-callback.js.html">app-callback.js</a>, <a href="app-callback.js.html#line116">line 116</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>*</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Ressource to test
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fx</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>function</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Callback to execute when the ressource is loaded
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>delay</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Delay between each checks in ms
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>maxRetriesCount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Max checks for a ressource
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>counter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Integer</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Memo for the recursive function
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
@@ -194,7 +387,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 13:33:18 GMT-0500 (Eastern Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 15:54:38 GMT-0500 (Eastern Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

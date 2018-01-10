@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>app-callback.js - Documentation</title>
+    <title>app-components.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">app-callback.js</h1>
+    <h1 class="page-title">app-components.js</h1>
     
 
     
@@ -40,14 +40,14 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * App Callback functionnality
+ * Components are factory method that will generate a instance of a component.
  *
- * @fileoverview Defines and exports callback and loaded
+ * @fileoverview Defines and exports components
  *
  * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
  * @license MIT &lt;https://deuxhuithuit.mit-license.org>
  *
- * @namespace callback
+ * @namespace components
  * @memberof App
  * @requires App
  */
@@ -55,118 +55,130 @@
 
 	'use strict';
 	
+	/** Components **/
+	var components = {};
+
 	/**
-	 * Put the args value in a array if it isn't one already
-	 * @name argsToArray
+	 * Create a default model of a component with an init function
+	 * @name _createAbstractComponent
 	 * @method
-	 * @memberof callback
-	 * @param {*} args
-	 * @return {Array}
+	 * @memberof components
+	 * @private
+	 * @return {Object}
+	 */
+	var _createAbstractComponent = function () {
+		return {
+			init: $.noop
+		};
+	};
+
+	/**
+	 * Merge the created component with the default model
+	 * just to be sure there's an init method
+	 * @name extendComponent
+	 * @method
+	 * @memberof components
+	 * @param {Object} component
+	 * @return {Object} component
 	 * @private
 	 */
-	var argsToArray = function (args) {
-		var isNull = (args === null);
-		var isNotUndefined = (args !== undefined);
-		var isNotAnArray = !$.isArray(args);
-		var noLength = !!args &amp;&amp; !$.isNumeric(args.length);
-		var isString = $.type(args) === 'string';
-		var isjQuery = !!args &amp;&amp; !!args.jquery;
+	var extendComponent = function (component) {
+		return $.extend(_createAbstractComponent(), component);
+	};
+
+	/**
+	 * Make sure the component is unique by key verification
+	 * and stores it with all the other components
+	 * @name exportComponent
+	 * @method
+	 * @memberof components
+	 * @param {String} key unique identifier
+	 * @param {Function} component model of the component
+	 * @param {Boolean} override fake news
+	 * @private
+	 */
+	var exportComponent = function (key, component, override) {
+		if (!$.type(key)) {
+			App.log({args: ['`key` must be a string', key], fx: 'error'});
+		} else if (!!components[key] &amp;&amp; !override) {
+			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
+		} else {
+			components[key] = component;
+			return component;
+		}
+		return false;
+	};
+
+	/**
+	 * Create an instence of the component
+	 * @name createComponent
+	 * @method
+	 * @memberof components
+	 * @param {String} key unique identifier
+	 * @param {Object} options object passed to the component's code
+	 * @return {Object} Merged component with the default model and the acual component code
+	 * @private
+	 */
+	var createComponent = function (key, options) {
+		if (!components[key]) {
+			App.log({args: ['Component %s is not found', key], fx: 'error'});
+			return extendComponent({});
+		}
 		
-		if (isNull || (isNotUndefined &amp;&amp; isNotAnArray &amp;&amp; (noLength || isString || isjQuery))) {
-			// put single parameter inside an array
-			args = [args];
+		var c = components[key];
+		
+		if (!$.isFunction(c)) {
+			App.log({args: ['Component %s is not a function', key], fx: 'error'});
+			return extendComponent({});
 		}
-		return args;
-	};
-	
-	/**
-	 * Execute the method recived with the arguments recived
-	 * @name callback
-	 * @method
-	 * @memberof callback
-	 * @this App
-	 * @param {function} fx 
-	 * @param {*} args
-	 * @return undefined
-	 * @private
-	 */
-	var callback = function (fx, args) {
-		try {
-			args = argsToArray(args);
-			
-			if ($.isFunction(fx)) {
-				// IE8 does not allow null/undefined args
-				return fx.apply(this, args || []);
-				
-			} else if ($.isPlainObject(fx)) {
-				return fx;
-			}
-		} catch (err) {
-			var stack = err.stack;
-			var msg = (err.message || err) + '\n' + (stack || '');
-			
-			App.log({args: [msg, err], fx: 'error'});
-		}
-		return undefined;
-	};
-	
-	/**
-	 * Check if a ressource is loaded and callback when it is.
-	 * @name loaded
-	 * @method
-	 * @memberof callback
-	 * @param {*} v Ressource to test
-	 * @param {Function} fx Callback to execute when the ressource is loaded
-	 * @param {Integer} delay Delay between each checks in ms
-	 * @param {Integer} maxRetriesCount Max checks for a ressource
-	 * @param {Integer} counter Memo for the recursive function
-	 * @private
-	 */
-	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
-		delay = Math.max(delay || 0, 100);
-		maxRetriesCount = maxRetriesCount || 10;
-		counter = counter || 1;
-		// get the value
-		var value = callback(v, [counter]);
-		// if the value exists
-		if (!!value) {
-			// call the function, with the value
-			return callback(fx, [value, counter]);
-		} else if (counter &lt; maxRetriesCount) {
-			// recurse
-			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
-		}
+		
+		return extendComponent(c.call(c, options));
 	};
 	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
-		/**
-		 * Execute the method recived with the arguments recived
-		 * @name callback
-		 * @method
-		 * @memberof callback
-		 * @this App
-		 * @param {function} fx 
-		 * @param {*} args
-		 * @return undefined
-		 * @private
-		 */
-		callback: callback,
-		
-		/**
-		 * Check if a ressource is loaded and callback when it is.
-		 * @name loaded
-		 * @method
-		 * @memberof callback
-		 * @param {*} v Ressource to test
-		 * @param {Function} fx Callback to execute when the ressource is loaded
-		 * @param {Integer} delay Delay between each checks in ms
-		 * @param {Integer} maxRetriesCount Max checks for a ressource
-		 * @param {Integer} counter Memo for the recursive function
-		 * @public
-		 */
-		loaded: loaded
+		// Components
+		components: {
+			
+			/**
+			 * Get all components models
+			 * @public
+			 * @name models
+			 * @method
+			 * @memberof components
+			 * @returns {Objects}
+			 */
+			models: function () {
+				return components;
+			},
+			
+			/**
+			 * Create an instence of the component
+			 * @name create
+			 * @method
+			 * @memberof components
+			 * @param {String} key unique identifier
+			 * @param {Object} options object passed to the component's code
+			 * @return {Object} Merged component with the default model and the acual component code
+			 * @public
+			 */
+			create: createComponent,
+
+			/**
+			 * Make sure the component is unique by key verification
+			 * and stores it with all the other components
+			 * @name exports
+			 * @method
+			 * @memberof components
+			 * @param {String} key unique identifier
+			 * @param {Function} component model of the component
+			 * @param {Boolean} override fake news
+			 * @public
+			 */
+			exports: exportComponent
+		}
+	
 	});
 	
 })(jQuery, window);
@@ -182,7 +194,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 13:33:18 GMT-0500 (Eastern Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 15:54:38 GMT-0500 (Eastern Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

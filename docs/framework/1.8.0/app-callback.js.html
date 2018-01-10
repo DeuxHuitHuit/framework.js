@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>storage.js - Documentation</title>
+    <title>app-callback.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">storage.js</h1>
+    <h1 class="page-title">app-callback.js</h1>
     
 
     
@@ -40,140 +40,134 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Facade to access the browser's localstorage and session storage
+ * App Callback functionnality
+ *
+ * @fileoverview Defines and exports callback and loaded
  *
  * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
  * @license MIT &lt;https://deuxhuithuit.mit-license.org>
  *
- * @namespace Storage
+ * @namespace callback
+ * @memberof App
  * @requires App
  */
 (function ($, global, undefined) {
+
 	'use strict';
-
-	var storage = function (storage) {
-		return {
-
-			/**
-			 * Return the value associated with the given key
-			 * @name get
-			 * @memberof Storage
-			 * @method
-			 * @param {string} key Access key to the storage object
-			 * @return {String}
-			 */
-			get: function (key) {
-				if (!key) {
-					return;
-				}
-				key += ''; // make it a string
-				return storage[key];
-			},
-
-			/**
-			 * Set and save a value to the given key in the storage
-			 * @name set
-			 * @memberof Storage
-			 * @method
-			 * @param {string} key Access key to the storage object
-			 * @param {*} value Value wanted to be saved
-			 * @return {Boolean}
-			 */
-			set: function (key, value) {
-				var result = false;
-				if (!!key) {
-					key += ''; // make it a string
-					try {
-						storage[key] = !value ? '' : value + '';
-						result = true;
-					} catch (e) {
-						App.log({
-							args: e.message,
-							me: 'Storage',
-							fx: 'error'
-						});
-						result = false;
-					}
-				}
-				return result;
-			},
-
-			/**
-			 * Delete the storage data associated with the given key
-			 * @name remove
-			 * @memberof Storage
-			 * @method
-			 * @param {string} key Access key to the storage object
-			 * @return {Boolean}
-			 */
-			remove: function (key) {
-				var result = false;
-				if (!!key) {
-					key += ''; // make it a string
-					try {
-						storage.removeItem(key);
-						result = true;
-					} catch (e) {
-						App.log({
-							args: e.message,
-							me: 'Storage',
-							fx: 'error'
-						});
-						result = false;
-					}
-				}
-				return result;
-			},
-
-			/**
-			 * Delete the data from the storage matching 
-			 * the Regular Expression or all the data if none is provided
-			 * @name clear
-			 * @memberof Storage
-			 * @method
-			 * @param {RegExp} regexp Regular Expression to match the key
-			 * @return {Boolean}
-			 */
-			clear: function (regexp) {
-				var result = false;
-				try {
-					if (!regexp) {
-						storage.clear();
-					} else {
-						var remove = [];
-						for (var i = 0; i &lt; storage.length; i++) {
-							var key = storage.key(i);
-							if (regexp.test(key)) {
-								remove.push(key);
-							}
-						}
-						for (i = 0; i &lt; remove.length; i++) {
-							storage.removeItem(remove[i]);
-						}
-					}
-					result = true;
-				} catch (e) {
-					App.log({
-						args: e.message,
-						me: 'Storage',
-						fx: 'error'
-					});
-					result = false;
-				}
-				return result;
-			}
-		};
-	};
-
-	/** @deprecated */
-	global.AppStorage = $.extend(global.AppStorage, {
-		factory: storage,
-		local: storage(window.localStorage),
-		session: storage(window.sessionStorage)
-	});
 	
-	/** @deprecated */
-	global.Storage = $.extend(global.Storage, global.AppStorage);
+	/**
+	 * Put the args value in a array if it isn't one already
+	 * @name argsToArray
+	 * @method
+	 * @memberof callback
+	 * @param {*} args
+	 * @return {Array}
+	 * @private
+	 */
+	var argsToArray = function (args) {
+		var isNull = (args === null);
+		var isNotUndefined = (args !== undefined);
+		var isNotAnArray = !$.isArray(args);
+		var noLength = !!args &amp;&amp; !$.isNumeric(args.length);
+		var isString = $.type(args) === 'string';
+		var isjQuery = !!args &amp;&amp; !!args.jquery;
+		
+		if (isNull || (isNotUndefined &amp;&amp; isNotAnArray &amp;&amp; (noLength || isString || isjQuery))) {
+			// put single parameter inside an array
+			args = [args];
+		}
+		return args;
+	};
+	
+	/**
+	 * Execute the method recived with the arguments recived
+	 * @name callback
+	 * @method
+	 * @memberof callback
+	 * @this App
+	 * @param {function} fx 
+	 * @param {*} args
+	 * @return undefined
+	 * @private
+	 */
+	var callback = function (fx, args) {
+		try {
+			args = argsToArray(args);
+			
+			if ($.isFunction(fx)) {
+				// IE8 does not allow null/undefined args
+				return fx.apply(this, args || []);
+				
+			} else if ($.isPlainObject(fx)) {
+				return fx;
+			}
+		} catch (err) {
+			var stack = err.stack;
+			var msg = (err.message || err) + '\n' + (stack || '');
+			
+			App.log({args: [msg, err], fx: 'error'});
+		}
+		return undefined;
+	};
+	
+	/**
+	 * Check if a ressource is loaded and callback when it is.
+	 * @name loaded
+	 * @method
+	 * @memberof callback
+	 * @param {*} v Ressource to test
+	 * @param {Function} fx Callback to execute when the ressource is loaded
+	 * @param {Integer} delay Delay between each checks in ms
+	 * @param {Integer} maxRetriesCount Max checks for a ressource
+	 * @param {Integer} counter Memo for the recursive function
+	 * @private
+	 */
+	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
+		delay = Math.max(delay || 0, 100);
+		maxRetriesCount = maxRetriesCount || 10;
+		counter = counter || 1;
+		// get the value
+		var value = callback(v, [counter]);
+		// if the value exists
+		if (!!value) {
+			// call the function, with the value
+			return callback(fx, [value, counter]);
+		} else if (counter &lt; maxRetriesCount) {
+			// recurse
+			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
+		}
+	};
+	
+	/** Public Interfaces **/
+	global.App = $.extend(global.App, {
+		
+		/**
+		 * Execute the method recived with the arguments recived
+		 * @name callback
+		 * @method
+		 * @memberof callback
+		 * @this App
+		 * @param {function} fx 
+		 * @param {*} args
+		 * @return undefined
+		 * @private
+		 */
+		callback: callback,
+		
+		/**
+		 * Check if a ressource is loaded and callback when it is.
+		 * @name loaded
+		 * @method
+		 * @memberof callback
+		 * @param {*} v Ressource to test
+		 * @param {Function} fx Callback to execute when the ressource is loaded
+		 * @param {Integer} delay Delay between each checks in ms
+		 * @param {Integer} maxRetriesCount Max checks for a ressource
+		 * @param {Integer} counter Memo for the recursive function
+		 * @public
+		 */
+		loaded: loaded
+	});
 	
 })(jQuery, window);
 </code></pre>
@@ -188,7 +182,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 13:33:18 GMT-0500 (Eastern Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 15:54:38 GMT-0500 (Eastern Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

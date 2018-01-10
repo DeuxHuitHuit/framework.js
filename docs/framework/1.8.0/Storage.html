@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>app-debug.js - Documentation</title>
+    <title>Storage - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,159 +29,765 @@
 
 <div id="main">
     
-    <h1 class="page-title">app-debug.js</h1>
+    <h1 class="page-title">Storage</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * App Debug and Log
- *
- * @fileoverview Defines and exports log and debug
- *
- * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
- * @license MIT &lt;https://deuxhuithuit.mit-license.org>
- * 
- * @namespace debug
- * @memberof App
- * @requires App
- */
-(function ($, global, undefined) {
+        <h2>
+        Storage
+        </h2>
+        
+    
+</header>
 
-	'use strict';
-	
-	/** Debug **/
-	var isDebuging = false;
-	
-	/**
-	 * Set or get the debug flag for the App
-	 * @name debug
-	 * @method
-	 * @memberof debug
-	 * @param {Boolean=} value
-	 * @private
-	 */
-	var debug = function (value) {
-		if (value === true || value === false) {
-			isDebuging = value;
-		} else if (value === '!') {
-			isDebuging = !isDebuging;
-		}
-		return isDebuging;
-	};
-	
-	/**
-	 * Format the passed arguments and the displayed message
-	 * @name argsToObject
-	 * @method
-	 * @memberof debug
-	 * @param {Object} arg 
-	 * @returns {Object} Formated object
-	 * @private
-	 */
-	var argsToObject = function (arg) {
-		// ensure that args is an array
-		if (!!arg.args &amp;&amp; !$.isArray(arg.args)) {
-			arg.args = [arg.args];
-		}
-		
-		// our copy
-		var a = {
-			args: arg.args || arguments,
-			fx: arg.fx || 'warn',
-			me: arg.me || 'App'
-		},
-		t1 = $.type(a.args[0]);
-		
-		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
-			// append me before a.args[0]
-			a.args[0] = '[' + a.me + '] ' + a.args[0];
-		}
-		return a;
-	};
-	
-	var logs = [];
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Facade to access the browser's localstorage and session storage</div>
+        
 
-	/**
-	 * Log the recived data with the appropriate effect (log, error, info...)
-	 * @name log
-	 * @method
-	 * @memberof debug
-	 * @param {Array} arg
-	 * @private
-	 */
-	var log = function (arg) {
-		// no args, exit
-		if (!arg) {
-			return this;
-		}
-		
-		var a = argsToObject(arg);
-		
-		if (isDebuging) {
-			// make sure fx exists
-			if (!$.isFunction(console[a.fx])) {
-				a.fx = 'log';
-			}
-			// call it
-			if (!!window.console[a.fx].apply) {
-				window.console[a.fx].apply(window.console, a.args);
-			} else {
-				$.each(a.args, function logArgs (index, arg) {
-					window.console[a.fx](arg);
-				});
-			}
-		}
-		logs.push(a);
-		
-		return this;
-	};
-	
-	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
-		
-		/**
-		 * Set or get the debug flag for the App
-		 * @name debug
-		 * @method
-		 * @memberof debug
-		 * @param {Boolean=} value
-		 * @public
-		 */
-		debug: debug,
-		
-		/**
-		 * Log the recived data with the appropriate effect (log, error, info...)
-		 * @name log
-		 * @method
-		 * @memberof debug
-		 * @param {Array} arg
-		 * @public
-		 */
-		log: log,
-		
-		/**
-		 * Get all the logs
-		 * @name logs
-		 * @method
-		 * @memberof debug
-		 * @returns {Array} All the logs
-		 * @public
-		 */
-		logs: function () {
-			return logs;
-		}
-	});
-	
-})(jQuery, window);
-</code></pre>
-        </article>
-    </section>
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Deux Huit Huit &lt;https://deuxhuithuit.com></li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT <https://deuxhuithuit.mit-license.org></li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".clear"><span class="type-signature">(static) </span>clear<span class="signature">(regexp)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Delete the data from the storage matching 
+the Regular Expression or all the data if none is provided
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line87">line 87</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>regexp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>RegExp</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Regular Expression to match the key
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Boolean</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".get"><span class="type-signature">(static) </span>get<span class="signature">(key)</span><span class="type-signature"> &rarr; {String}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Return the value associated with the given key
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Access key to the storage object
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>String</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".remove"><span class="type-signature">(static) </span>remove<span class="signature">(key)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Delete the storage data associated with the given key
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line60">line 60</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Access key to the storage object
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Boolean</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".set"><span class="type-signature">(static) </span>set<span class="signature">(key, value)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Set and save a value to the given key in the storage
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line32">line 32</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>string</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Access key to the storage object
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>*</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Value wanted to be saved
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Boolean</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+</div>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
@@ -191,7 +797,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 13:33:18 GMT-0500 (Eastern Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 15:54:38 GMT-0500 (Eastern Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
