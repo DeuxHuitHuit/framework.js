@@ -2,8 +2,11 @@
  *  Assets loader: Basically a wrap around $.ajax in order
  *  to priorize and serialize resource loading.
  * 
+ * @fileoverview Assets Loader, wrap around $.ajax
+ * 
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
+ * @namespace App.loader
  *
  */
 (function ($, global, undefined) {
@@ -42,6 +45,15 @@
 	
 	var currentUrl = null;
 	
+	/**
+	 * Check if a given url is loading (Only GET request)
+	 * @name isLoading
+	 * @method
+	 * @memberof App.loader
+	 * @param {Object} url Url object to check
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var isLoading = function (url) {
 		if (!$.isPlainObject(url)) {
 			url = {url: url};
@@ -52,6 +64,15 @@
 		return !!currentUrl && currentUrl === url.url;
 	};
 	
+	/**
+	 * Check if a given url is in the queue
+	 * @name inQueue
+	 * @method
+	 * @memberof App.loader
+	 * @param {Object} url Url object to check
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var inQueue = function (url) {
 		var foundIndex = -1;
 		$.each(assets, function eachAsset (index, asset) {
@@ -64,6 +85,14 @@
 		return foundIndex;
 	};
 	
+	/**
+	 * Return the appropriate storage engine for the given url
+	 * @name getStorageEngine
+	 * @method
+	 * @memberof App.loader
+	 * @param {Object} url Url object to check
+	 * @private
+	 */
 	var getStorageEngine = function (url) {
 		if (url.cache === true) {
 			url.cache = 'session';
@@ -136,6 +165,13 @@
 		};
 	};
 	
+	/**
+	 * Load the first item in the queue
+	 * @name loadOneAsset
+	 * @method
+	 * @private
+	 * @memberof App.loader
+	 */
 	var loadOneAsset = function () {
 		// grab first item
 		var asset = assets.shift();
@@ -147,6 +183,13 @@
 		currentUrl = param.url;
 	};
 	
+	/**
+	 * Trigger loadOneAsset as long as there's entries in the queue
+	 * @name recursiveLoad
+	 * @method
+	 * @memberof App.loader
+	 * @private
+	 */
 	recursiveLoad = function () {
 		if (!!assets.length) {
 			// start next one
@@ -157,6 +200,16 @@
 		}
 	};
 	
+	/**
+	 * Validate and format url's data
+	 * @name valideUrlArags
+	 * @method
+	 * @memberof App.loader
+	 * @private
+	 * @param {Object} url Url object
+	 * @param {Integer} priority Priority of the url
+	 * @returns {Object} Url object
+	 */
 	var validateUrlArgs = function (url, priority) {
 		// ensure we are dealing with an object
 		if (!$.isPlainObject(url)) {
@@ -184,6 +237,13 @@
 		return url;
 	};
 	
+	/**
+	 * Trigger the loading if nothing is happening 
+	 * @name launchLoad
+	 * @method
+	 * @private
+	 * @memberof App.loader
+	 */
 	var launchLoad = function () {
 		// start now if nothing is loading
 		if (!loaderIsWorking) {
@@ -193,6 +253,15 @@
 		}
 	};
 	
+	/**
+	 * Get the value from the cache if it's available
+	 * @name getValueFromCache
+	 * @method
+	 * @memberof App.loader
+	 * @param {Object} url Url object
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var getValueFromCache = function (url) {
 		var storage = getStorageEngine(url);
 		if (!!storage) {
@@ -209,6 +278,15 @@
 		return false;
 	};
 	
+	/**
+	 * Update a request priority in the queue
+	 * @name updatePriority
+	 * @method
+	 * @memberof App.loader
+	 * @private
+	 * @param {Object} url Url object
+	 * @param {Integer} index
+	 */
 	var updatePrioriy = function (url, index) {
 		// promote if new priority is different
 		var oldAsset = assets[index];
@@ -228,6 +306,17 @@
 		});
 	};
 	
+	/**
+	 * Put the request in the queue and trigger the load
+	 * @name loadAsset
+	 * @method
+	 * @memberof App.loader
+	 * @private
+	 * @param {Object} url Url Object
+	 * @param {Integer} priority
+	 * @this App
+	 * @returns this
+	 */
 	loadAsset = function (url, priority) {
 		if (!url) {
 			App.log({args: 'No url given', me: 'Loader'});
@@ -267,9 +356,50 @@
 	};
 	
 	global.Loader = $.extend(global.Loader, {
+
+		/**
+		 * Put the request in the queue and trigger the load
+		 * @name load
+		 * @method
+		 * @memberof App.loader
+		 * @public
+		 * @param {Object} url Url Object
+		 * @param {Integer} priority
+		 * @this App
+		 * @returns this
+		 */
 		load: loadAsset,
+
+		/**
+		 * Check if a given url is loading (Only GET request)
+		 * @name isLoading
+		 * @method
+		 * @memberof App.loader
+		 * @param {Object} url Url object to check
+		 * @returns {Boolean}
+		 * @public
+		 */
 		isLoading: isLoading,
+
+		/**
+		 * Check if a given url is in the queue
+		 * @name inQueue
+		 * @method
+		 * @memberof App.loader
+		 * @param {Object} url Url object to check
+		 * @returns {Boolean}
+		 * @public
+		 */
 		inQueue: inQueue,
+
+		/**
+		 * Get the flag if the loader is working or not
+		 * @name working
+		 * @method
+		 * @memberof App.loader
+		 * @public
+		 * @returns {Boolean}
+		 */
 		working: function () {
 			return loaderIsWorking;
 		}
