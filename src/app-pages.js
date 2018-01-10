@@ -131,14 +131,14 @@
 	
 	/**
 	 * Creates a page with the specified model.
-	 * @name create
+	 * @name createPage
 	 * @memberof App.pages
 	 * @method
 	 * @param {Object} pageData An data bag for your page
 	 * @param {String} keyModel The page model's unique key
 	 * @param {Boolean} [override=false] Allows overriding an existing page instance
 	 * @returns {?page} Null if something goes wrong
-	 * @public
+	 * @private
 	 */
 	var createPage = function (pageData, keyModel, override) {
 		//Find the page model associated
@@ -203,7 +203,7 @@
 	 * Create a new pageModel, i.e. a function to create a new pages.
 	 * It first calls {@link _createPageModel} and then calls {@link registerPageModel}
 	 * with the output of the first call.
-	 * @name exports
+	 * @name exportPage
 	 * @memberof App.pages
 	 * @method
 	 * @param {String} key The model unique key
@@ -212,7 +212,7 @@
 	 * @param {Boolean} [override=false] Allows overriding an existing page instance
 	 *
 	 * @return {pageModel}
-	 * @public
+	 * @private
 	 */
 	var exportPage = function (key, model, override) {
 		// Pass all args to the factory
@@ -342,7 +342,7 @@
 
 	/**
 	 * Returns the first page object that matches the route param
-	 * @name getPageForRoute
+	 * @name _getPageForRoute
 	 * @memberof App.pages
 	 * @method
 	 * @param {String} route The route to search match for
@@ -369,12 +369,18 @@
 	global.App = $.extend(global.App, {
 		pages: {
 			/**
+			 * @name _matchRoute
+			 * @method
+			 * @memberof App.pages
 			 * {@link App.pages~_matchRoute}
 			 * @private
 			 */
 			_matchRoute: _matchRoute,
 
 			/**
+			 * @name _validateRoute
+			 * @method
+			 * @memberof App.pages
 			 * {@link App.pages~_validateRoute}
 			 * @private
 			 */
@@ -406,6 +412,16 @@
 				return pageModels;
 			},
 
+			/**
+			 * Returns the first page object that matches the route param
+			 * @name getPageForRoute
+			 * @memberof App.pages
+			 * @method
+			 * @param {String} route The route to search match for
+			 *
+			 * @returns {?page} The page object or null if not found
+			 * @public
+			 */
 			getPageForRoute: _getPageForRoute,
 
 			/**
@@ -430,8 +446,34 @@
 				return result;
 			},
 
+			/**
+			 * Creates a page with the specified model.
+			 * @name create
+			 * @memberof App.pages
+			 * @method
+			 * @param {Object} pageData An data bag for your page
+			 * @param {String} keyModel The page model's unique key
+			 * @param {Boolean} [override=false] Allows overriding an existing page instance
+			 * @returns {?page} Null if something goes wrong
+			 * @public
+			 */
 			create: createPage,
 
+			/**
+			 * Create a new pageModel, i.e. a function to create a new pages.
+			 * It first calls {@link _createPageModel} and then calls {@link registerPageModel}
+			 * with the output of the first call.
+			 * @name exports
+			 * @memberof App.pages
+			 * @method
+			 * @param {String} key The model unique key
+			 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type
+			 *   or a pageCreator function that returns a page object.
+			 * @param {Boolean} [override=false] Allows overriding an existing page instance
+			 *
+			 * @return {pageModel}
+			 * @public
+			 */
 			exports: exportPage
 		}
 	});

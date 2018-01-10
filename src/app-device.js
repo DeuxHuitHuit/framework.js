@@ -358,19 +358,138 @@
 		},
 		
 		device: {
+
+			/**
+			 * Object with all the device detection methods
+			 * @name detector
+			 * @public
+			 * @memberof App.device
+			 * @returns {Object} Detector
+			 */
 			detector: browserDetector,
+
+			/**
+			 * Check if the device is an iPhone
+			 * @name iphone
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			iphone: browserDetector.isIphone(),
+
+			/**
+			 * Check if the device is an iPad
+			 * @name ipad
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			ipad: browserDetector.isIpad(),
+
+			/**
+			 * Check if the device run on iOs
+			 * @name ios
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			ios: browserDetector.isIos(),
+
+			/**
+			 * Check if the device run on Android
+			 * @name android
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			android: browserDetector.isAndroid(),
+
+			/**
+			 * Check if the device is a mobile
+			 * @name mobile
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			mobile: browserDetector.isMobile(),
+
+			/**
+			 * Check if the device is a phone
+			 * @name phone
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			phone: browserDetector.isPhone(),
+
+			/**
+			 * Check if the device is a tablet
+			 * @name tablet
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			tablet: browserDetector.isTablet(),
+
+			/**
+			 * Check if the browser is Chrome
+			 * @name chrome
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			chrome: browserDetector.isChrome(),
+
+			/**
+			 * Check if the browser is Firefox
+			 * @name firefox
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			firefox: browserDetector.isFirefox(),
+
+			/**
+			 * Check if the browser is Safari
+			 * @name safari
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			safari: browserDetector.isSafari(),
+
+			/**
+			 * Check if the browser is Internet Explorer
+			 * @name internetexplorer
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			internetexplorer: browserDetector.isMsie(),
+
+			/**
+			 * Check if the browser is Edge
+			 * @name edge
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 */
 			edge: browserDetector.isEdge(),
+
+			/**
+			 * @name events
+			 * @constant
+			 * @public
+			 * @memberof App.device
+			 * @property {String} click Click event
+			 * @property {String} enter 'pointerenter' equivalent
+			 * @property {String} up 'pointerup' equivalent
+			 * @property {String} down 'pointerdown' equivalent
+			 * @property {String} move 'pointermove' equivalent
+			 * @property {String} over 'pointerover' equivalent
+			 * @property {String} out 'pointerout' equivalent
+			 * @property {String} leave 'pointerleave' equivalent
+			 */
 			events: {
 				click: 'click',
 				enter: 'pointerenter',

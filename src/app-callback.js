@@ -46,7 +46,7 @@
 	 * @param {function} fx 
 	 * @param {*} args
 	 * @return undefined
-	 * @public
+	 * @private
 	 */
 	var callback = function (fx, args) {
 		try {
@@ -78,7 +78,7 @@
 	 * @param {Integer} delay Delay between each checks in ms
 	 * @param {Integer} maxRetriesCount Max checks for a ressource
 	 * @param {Integer} counter Memo for the recursive function
-	 * @public
+	 * @private
 	 */
 	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
 		delay = Math.max(delay || 0, 100);
@@ -99,10 +99,31 @@
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
-		// callback utility
+		/**
+		 * Execute the method recived with the arguments recived
+		 * @name callback
+		 * @method
+		 * @memberof App.callback
+		 * @this App
+		 * @param {function} fx 
+		 * @param {*} args
+		 * @return undefined
+		 * @private
+		 */
 		callback: callback,
 		
-		// loaded utility
+		/**
+		 * Check if a ressource is loaded and callback when it is.
+		 * @name loaded
+		 * @method
+		 * @memberof App.callback
+		 * @param {*} v Ressource to test
+		 * @param {Function} fx Callback to execute when the ressource is loaded
+		 * @param {Integer} delay Delay between each checks in ms
+		 * @param {Integer} maxRetriesCount Max checks for a ressource
+		 * @param {Integer} counter Memo for the recursive function
+		 * @public
+		 */
 		loaded: loaded
 	});
 	

@@ -47,13 +47,13 @@
 	/**
 	 * Make sure the component is unique by key verification
 	 * and stores it with all the other components
-	 * @name exports
+	 * @name exportComponent
 	 * @method
 	 * @memberof App.components
 	 * @param {String} key unique identifier
 	 * @param {Function} component model of the component
 	 * @param {Boolean} override fake news
-	 * @public
+	 * @private
 	 */
 	var exportComponent = function (key, component, override) {
 		if (!$.type(key)) {
@@ -69,13 +69,13 @@
 
 	/**
 	 * Create an instence of the component
-	 * @name create
+	 * @name createComponent
 	 * @method
 	 * @memberof App.components
 	 * @param {String} key unique identifier
 	 * @param {Object} options object passed to the component's code
 	 * @return {Object} Merged component with the default model and the acual component code
-	 * @public
+	 * @private
 	 */
 	var createComponent = function (key, options) {
 		if (!components[key]) {
@@ -111,8 +111,29 @@
 				return components;
 			},
 			
+			/**
+			 * Create an instence of the component
+			 * @name create
+			 * @method
+			 * @memberof App.components
+			 * @param {String} key unique identifier
+			 * @param {Object} options object passed to the component's code
+			 * @return {Object} Merged component with the default model and the acual component code
+			 * @public
+			 */
 			create: createComponent,
-			
+
+			/**
+			 * Make sure the component is unique by key verification
+			 * and stores it with all the other components
+			 * @name exports
+			 * @method
+			 * @memberof App.components
+			 * @param {String} key unique identifier
+			 * @param {Function} component model of the component
+			 * @param {Boolean} override fake news
+			 * @public
+			 */
 			exports: exportComponent
 		}
 	

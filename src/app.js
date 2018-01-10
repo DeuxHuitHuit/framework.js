@@ -66,7 +66,7 @@
 	
 	/**
 	 * Scope the _callAction actions only for the current page
-	 * @name notifyCurrentPage
+	 * @name notifyPage
 	 * @memberof App
 	 * @method
 	 * @param {String} key Notify key
@@ -74,7 +74,7 @@
 	 * @param {Function} cb Callback executed after all the _callAction are executed
 	 * @this {Object} Mediator
 	 * @returns this
-	 * @public
+	 * @private
 	 */
 	var notifyPage = function (key, data, cb) {
 		if (!!currentPage) {
@@ -171,7 +171,7 @@
 
 	/**
 	 * Notify all registered component and page
-	 * @name notify
+	 * @name notifyAll
 	 * @memberof App
 	 * @method
 	 * @param {String} key Notify key
@@ -180,7 +180,7 @@
 	 * @this Mediator
 	 * @returns this
 	 * @see AER in http://addyosmani.com/largescalejavascript/
-	 * @public
+	 * @private
 	 */
 	var notifyAll = function (key, data, cb) {
 		
@@ -196,7 +196,7 @@
 	/**
 	 * Change the current page to the requested route
 	 * Do nothing if the current page is already the requested route
-	 * @name goto
+	 * @name gotoPage
 	 * @memberof App
 	 * @method 
 	 * @param {String} obj Page requested
@@ -216,6 +216,7 @@
 	 * @fires App#page:leaving
 	 * @fires App#page:entering
 	 * @this App
+	 * @private
 	 */
 	var gotoPage = function (obj, previousPoppedUrl) {
 		var nextPage;
@@ -676,13 +677,13 @@
 	 * Open the wanted page,
 	 * return to the precedent page if the requested on is already open
 	 * or fallback to a default one
-	 * @name toggle
+	 * @name togglePage
 	 * @memberof App
 	 * @method
 	 * @fires App#page:toggleNoPreviousUrl
 	 * @param {String} route Url
 	 * @param {String} fallback Url used for as a fallback
-	 * @public
+	 * @private
 	 */
 	var togglePage = function (route, fallback) {
 		if (!!currentPage && _validateMediatorState()) {
@@ -784,7 +785,7 @@
 	 * @memberof App
 	 * @method
 	 * @param {String=} root CSS selector
-	 * @public
+	 * @private
 	 */
 	var run = function (root) {
 		initApplication(root);
@@ -793,15 +794,40 @@
 	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
-		// private
+		
+		/**
+		 * Find and execute the methods that matches with the notify key
+		 * @name _callAction
+		 * @memberof App
+		 * @method
+		 * @param {Function|Object} actions Object of methods that can be matches with the key's value
+		 * @param {String} key Action key
+		 * @param {Object} data Bag of data
+		 * @returns {Boolean} Callback's result
+		 * @public
+		 */
 		_callAction: _callAction,
 		
-		// root node for the pages
+		/**
+		 * Get the root css selector
+		 * @name root
+		 * @method
+		 * @memberof App
+		 * @returns {String} Root CSS selector
+		 * @public
+		 */
 		root: function () {
 			return ROOT;
 		},
 		
-		// main entrance
+		/**
+		 * Init the app with the given css selector
+		 * @name run
+		 * @memberof App
+		 * @method
+		 * @param {String=} root CSS selector
+		 * @public
+		 */
 		run: run,
 		
 		// mediator object
@@ -817,7 +843,7 @@
 			/**
 			 * Get the currentPage object
 			 * @name getCurrentPage
-			 * @memberof App
+			 * @memberof App.mediator
 			 * @method
 			 * @returns {Object} PageObject
 			 * @public
@@ -825,21 +851,74 @@
 			getCurrentPage: function () {
 				return currentPage;
 			},
-			
-			// event dispatcher to the
-			// current Page and Modules
+
+			/**
+			 * Notify all registered component and page
+			 * @name notify
+			 * @memberof App.mediator
+			 * @method
+			 * @param {String} key Notify key
+			 * @param {Object} data Object passed to notified methods
+			 * @param {Function} cb Callback executed when the notify is done
+			 * @this Mediator
+			 * @returns this
+			 * @see AER in http://addyosmani.com/largescalejavascript/
+			 * @public
+			 */
 			notify: notifyAll,
 			
-			// event dispatcher to the
-			// current Page only
+			/**
+			 * Scope the _callAction actions only for the current page
+			 * @name notifyCurrentPage
+			 * @memberof App.mediator
+			 * @method
+			 * @param {String} key Notify key
+			 * @param {Object} data Bag of data
+			 * @param {Function} cb Callback executed after all the _callAction are executed
+			 * @this {Object} Mediator
+			 * @returns this
+			 * @public
+			 */
 			notifyCurrentPage: notifyPage,
 			
-			// leave the current Page and
-			// enter a new one, specified by the url
+			/**
+			 * Change the current page to the requested route
+			 * Do nothing if the current page is already the requested route
+			 * @name goto
+			 * @memberof App.mediator
+			 * @method 
+			 * @param {String} obj Page requested
+			 * @param {String} previousPoppedUrl Url
+			 * @fires App#page:leave
+			 * @fires App#page:enter
+			 * @fires App#pages:failedtoparse
+			 * @fires App#pages:loaded
+			 * @fires App#pages:loadfatalerror
+			 * @fires App#pages:loaderror
+			 * @fires App#pages:requestBeginPageTransition
+			 * @fires App#pages:navigateToCurrent
+			 * @fires App#pages:requestPageTransition
+			 * @fires App#pages:routeNotFound
+			 * @fires App#pages:loadprogress
+			 * @fires App#pages:notfound
+			 * @fires App#page:leaving
+			 * @fires App#page:entering
+			 * @this App
+			 */
 			goto: gotoPage,
 			
-			// toggle the requested page (may be enter or leave the requested page)
-			//if leaving (already current page) then the previous page is using for the goto
+			/**
+			 * Open the wanted page,
+			 * return to the precedent page if the requested on is already open
+			 * or fallback to a default one
+			 * @name toggle
+			 * @memberof App.mediator
+			 * @method
+			 * @fires App#page:toggleNoPreviousUrl
+			 * @param {String} route Url
+			 * @param {String} fallback Url used for as a fallback
+			 * @public
+			 */
 			toggle: togglePage
 		}
 	});

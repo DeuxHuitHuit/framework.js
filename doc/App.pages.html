@@ -379,6 +379,163 @@ given parameters
     
 
     
+    <h4 class="name" id="._getPageForRoute"><span class="type-signature">(private, static) </span>_getPageForRoute<span class="signature">(route)</span><span class="type-signature"> &rarr; (nullable) {page}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Returns the first page object that matches the route param
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>route</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The route to search match for</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-pages.js.html">app-pages.js</a>, <a href="app-pages.js.html#line343">line 343</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The page object or null if not found
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">page</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="._matchRoute"><span class="type-signature">(private, static) </span>_matchRoute<span class="signature">(route, routes)</span><span class="type-signature"> &rarr; {Integer}</span></h4>
     
 
@@ -858,6 +1015,253 @@ array of possible routes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-pages.js.html">app-pages.js</a>, <a href="app-pages.js.html#line449">line 449</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Null if something goes wrong
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">page</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".createPage"><span class="type-signature">(private, static) </span>createPage<span class="signature">(pageData, keyModel, override<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; (nullable) {page}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a page with the specified model.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pageData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">An data bag for your page</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>keyModel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The page model's unique key</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>override</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Allows overriding an existing page instance</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
         <a href="app-pages.js.html">app-pages.js</a>, <a href="app-pages.js.html#line132">line 132</a>
     </li></ul></dd>
     
@@ -914,7 +1318,7 @@ array of possible routes.
     
 
     
-    <h4 class="name" id=".exports"><span class="type-signature">(static) </span>exports<span class="signature">(key, model, override<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {pageModel}</span></h4>
+    <h4 class="name" id=".exportPage"><span class="type-signature">(private, static) </span>exportPage<span class="signature">(key, model, override<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {pageModel}</span></h4>
     
 
     
@@ -1163,6 +1567,255 @@ with the output of the first call.
     
 
     
+    <h4 class="name" id=".exports"><span class="type-signature">(static) </span>exports<span class="signature">(key, model, override<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {pageModel}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Create a new pageModel, i.e. a function to create a new pages.
+It first calls _createPageModel and then calls registerPageModel
+with the output of the first call.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The model unique key</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>model</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">pageParam</span>
+|
+
+<span class="param-type">pageCreator</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">A page object that conforms with the pageParam type
+  or a pageCreator function that returns a page object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>override</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Allows overriding an existing page instance</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-pages.js.html">app-pages.js</a>, <a href="app-pages.js.html#line462">line 462</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">pageModel</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id=".factory"><span class="type-signature">(private, static) </span>factory<span class="signature">(pageData)</span><span class="type-signature"></span></h4>
     
 
@@ -1308,7 +1961,7 @@ with the output of the first call.
     
 
     
-    <h4 class="name" id=".getPageForRoute"><span class="type-signature">(private, static) </span>getPageForRoute<span class="signature">(route)</span><span class="type-signature"> &rarr; (nullable) {page}</span></h4>
+    <h4 class="name" id=".getPageForRoute"><span class="type-signature">(static) </span>getPageForRoute<span class="signature">(route)</span><span class="type-signature"> &rarr; (nullable) {page}</span></h4>
     
 
     
@@ -1409,7 +2062,7 @@ with the output of the first call.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-pages.js.html">app-pages.js</a>, <a href="app-pages.js.html#line343">line 343</a>
+        <a href="app-pages.js.html">app-pages.js</a>, <a href="app-pages.js.html#line415">line 415</a>
     </li></ul></dd>
     
 
@@ -1517,7 +2170,7 @@ with the output of the first call.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-pages.js.html">app-pages.js</a>, <a href="app-pages.js.html#line397">line 397</a>
+        <a href="app-pages.js.html">app-pages.js</a>, <a href="app-pages.js.html#line403">line 403</a>
     </li></ul></dd>
     
 
@@ -1671,7 +2324,7 @@ the route if noting is found.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-pages.js.html">app-pages.js</a>, <a href="app-pages.js.html#line411">line 411</a>
+        <a href="app-pages.js.html">app-pages.js</a>, <a href="app-pages.js.html#line427">line 427</a>
     </li></ul></dd>
     
 
@@ -2058,7 +2711,7 @@ the route if noting is found.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jan 09 2018 17:21:01 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 09:15:55 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

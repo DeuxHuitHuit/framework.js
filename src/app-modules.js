@@ -46,13 +46,13 @@
 	
 	/**
 	 * Register the module and make sure his key is unique
-	 * @name exports
+	 * @name exportModule
 	 * @method
 	 * @memberof App.modules
 	 * @param {String} key Module's unique identifier
 	 * @param {Object} module
 	 * @param {Boolean} override
-	 * @public
+	 * @private
 	 */
 	var exportModule = function (key, module, override) {
 		if (!$.type(key)) {
@@ -67,7 +67,7 @@
 	
 	/**
 	 * Execute _callAction on all modules
-	 * @name notify
+	 * @name notifyModules
 	 * @method
 	 * @memberof App.modules
 	 * @param {String} key Notify key
@@ -75,7 +75,7 @@
 	 * @param {Function} cb Callback executed after all the notifications
 	 * @this App
 	 * @returns this
-	 * @public
+	 * @private
 	 */
 	var notifyModules = function (key, data, cb) {
 		if ($.isFunction(data) && !cb) {
@@ -111,8 +111,30 @@
 			
 			//create: createModule,
 			
+			/**
+			 * Register the module and make sure his key is unique
+			 * @name exports
+			 * @method
+			 * @memberof App.modules
+			 * @param {String} key Module's unique identifier
+			 * @param {Object} module
+			 * @param {Boolean} override
+			 * @public
+			 */
 			exports: exportModule,
 			
+			/**
+			 * Execute _callAction on all modules
+			 * @name notify
+			 * @method
+			 * @memberof App.modules
+			 * @param {String} key Notify key
+			 * @param {Object=} data Bag of data
+			 * @param {Function} cb Callback executed after all the notifications
+			 * @this App
+			 * @returns this
+			 * @public
+			 */
 			notify: notifyModules
 		}
 	
