@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Global</title>
+    <title>JSDoc: Source: app-debug.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,276 +17,130 @@
 
 <div id="main">
 
-    <h1 class="page-title">Global</h1>
+    <h1 class="page-title">Source: app-debug.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2></h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="pd"><span class="type-signature"></span>pd<span class="signature">(e, stopPropagation)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Facade to stop the propagation of events
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>e</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Event</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Event object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>stopPropagation</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Flag to stop the event propagation or not</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="globals.js.html">globals.js</a>, <a href="globals.js.html#line49">line 49</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    false, always.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * App Debug and Log
+ *
+ * @fileoverview Defines and exports log and debug
+ *
+ * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
+ * @license MIT &lt;https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace App.debug
+ * @requires App
+ */
+(function ($, global, undefined) {
+
+	'use strict';
+	
+	/** Debug **/
+	var isDebuging = false;
+	
+	/**
+	 * Set or get the debug flag for the App
+	 * @name debug
+	 * @memberof App.debug
+	 * @param {Boolean=} value
+	 */
+	var debug = function (value) {
+		if (value === true || value === false) {
+			isDebuging = value;
+		} else if (value === '!') {
+			isDebuging = !isDebuging;
+		}
+		return isDebuging;
+	};
+	
+	/**
+	 * Format the passed arguments and the displayed message
+	 * @name argsToObject
+	 * @memberof App.debug
+	 * @param {Object} arg 
+	 * @returns {Object} Formated object
+	 */
+	var argsToObject = function (arg) {
+		// ensure that args is an array
+		if (!!arg.args &amp;&amp; !$.isArray(arg.args)) {
+			arg.args = [arg.args];
+		}
+		
+		// our copy
+		var a = {
+			args: arg.args || arguments,
+			fx: arg.fx || 'warn',
+			me: arg.me || 'App'
+		},
+		t1 = $.type(a.args[0]);
+		
+		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
+			// append me before a.args[0]
+			a.args[0] = '[' + a.me + '] ' + a.args[0];
+		}
+		return a;
+	};
+	
+	var logs = [];
+
+	/**
+	 * Log the recived data with the appropriate effect (log, error, info...)
+	 * @name log
+	 * @memberof App.debug
+	 * @param {Array} arg
+	 */
+	var log = function (arg) {
+		// no args, exit
+		if (!arg) {
+			return this;
+		}
+		
+		var a = argsToObject(arg);
+		
+		if (isDebuging) {
+			// make sure fx exists
+			if (!$.isFunction(console[a.fx])) {
+				a.fx = 'log';
+			}
+			// call it
+			if (!!window.console[a.fx].apply) {
+				window.console[a.fx].apply(window.console, a.args);
+			} else {
+				$.each(a.args, function logArgs (index, arg) {
+					window.console[a.fx](arg);
+				});
+			}
+		}
+		logs.push(a);
+		
+		return this;
+	};
+	
+	/** Public Interfaces **/
+	global.App = $.extend(global.App, {
+		
+		// get/set the debug flag
+		debug: debug,
+		
+		// log
+		log: log,
+		
+		// logs
+		logs: function () {
+			return logs;
+		}
+	});
+	
+})(jQuery, window);
+</code></pre>
+        </article>
+    </section>
 
 
 
@@ -300,7 +154,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 10:29:39 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 11:03:32 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

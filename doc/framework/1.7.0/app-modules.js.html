@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app-debug.js</title>
+    <title>JSDoc: Source: app-modules.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app-debug.js</h1>
+    <h1 class="page-title">Source: app-modules.js</h1>
 
     
 
@@ -27,114 +27,145 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * App Debug and Log
+ * Module are singleton that lives across pages
  *
- * @fileoverview Defines and exports log and debug
+ * @fileoverview Defines and exports components
  *
  * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
  * @license MIT &lt;https://deuxhuithuit.mit-license.org>
- * 
- * @namespace App.debug
+ *
+ * @namespace App.modules
  * @requires App
  */
 (function ($, global, undefined) {
 
 	'use strict';
 	
-	/** Debug **/
-	var isDebuging = false;
+	/** Modules **/
+	var modules = {};
 	
 	/**
-	 * Set or get the debug flag for the App
-	 * @name debug
-	 * @memberof App.debug
-	 * @param {Boolean=} value
+	 * Create a basic module with the minimum required methods
+	 * @name _createAbstractModule
+	 * @method
+	 * @memberof App.modules
+	 * @returns {Object}
+	 * @private
 	 */
-	var debug = function (value) {
-		if (value === true || value === false) {
-			isDebuging = value;
-		} else if (value === '!') {
-			isDebuging = !isDebuging;
-		}
-		return isDebuging;
+	var _createAbstractModule = function () {
+		return {
+			actions: $.noop,
+			init: $.noop
+		};
 	};
 	
 	/**
-	 * Format the passed arguments and the displayed message
-	 * @name argsToObject
-	 * @memberof App.debug
-	 * @param {Object} arg 
-	 * @returns {Object} Formated object
+	 * Merge the module with the basic one
+	 * to be sure the minimum required methods are present
+	 * @name createModule
+	 * @method
+	 * @memberof App.modules
+	 * @param {Object} module ModuleObject
+	 * @private
 	 */
-	var argsToObject = function (arg) {
-		// ensure that args is an array
-		if (!!arg.args &amp;&amp; !$.isArray(arg.args)) {
-			arg.args = [arg.args];
-		}
-		
-		// our copy
-		var a = {
-			args: arg.args || arguments,
-			fx: arg.fx || 'warn',
-			me: arg.me || 'App'
-		},
-		t1 = $.type(a.args[0]);
-		
-		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
-			// append me before a.args[0]
-			a.args[0] = '[' + a.me + '] ' + a.args[0];
-		}
-		return a;
+	var createModule = function (module) {
+		return $.extend(_createAbstractModule(), module);
 	};
 	
-	var logs = [];
-
 	/**
-	 * Log the recived data with the appropriate effect (log, error, info...)
-	 * @name log
-	 * @memberof App.debug
-	 * @param {Array} arg
+	 * Register the module and make sure his key is unique
+	 * @name exportModule
+	 * @method
+	 * @memberof App.modules
+	 * @param {String} key Module's unique identifier
+	 * @param {Object} module
+	 * @param {Boolean} override
+	 * @private
 	 */
-	var log = function (arg) {
-		// no args, exit
-		if (!arg) {
-			return this;
+	var exportModule = function (key, module, override) {
+		if (!$.type(key)) {
+			App.log({args: ['`key` must be a string', key], fx: 'error'});
+		} else if (!!modules[key] &amp;&amp; !override) {
+			App.log({args: ['Overwriting module key %s is not allowed', key], fx: 'error'});
+		} else {
+			modules[key] = createModule(module);
 		}
-		
-		var a = argsToObject(arg);
-		
-		if (isDebuging) {
-			// make sure fx exists
-			if (!$.isFunction(console[a.fx])) {
-				a.fx = 'log';
-			}
-			// call it
-			if (!!window.console[a.fx].apply) {
-				window.console[a.fx].apply(window.console, a.args);
-			} else {
-				$.each(a.args, function logArgs (index, arg) {
-					window.console[a.fx](arg);
-				});
-			}
+		return modules[key];
+	};
+	
+	/**
+	 * Execute _callAction on all modules
+	 * @name notifyModules
+	 * @method
+	 * @memberof App.modules
+	 * @param {String} key Notify key
+	 * @param {Object=} data Bag of data
+	 * @param {Function} cb Callback executed after all the notifications
+	 * @this App
+	 * @returns this
+	 * @private
+	 */
+	var notifyModules = function (key, data, cb) {
+		if ($.isFunction(data) &amp;&amp; !cb) {
+			cb = data;
+			data = undefined;
 		}
-		logs.push(a);
-		
+		$.each(modules, function actionToAllModules (index) {
+			var res = App._callAction(this.actions, key, data, cb);
+			if (res !== undefined) {
+				App.callback(cb, [index, res]);
+			}
+		});
 		return this;
 	};
 	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
-		// get/set the debug flag
-		debug: debug,
-		
-		// log
-		log: log,
-		
-		// logs
-		logs: function () {
-			return logs;
+		// Modules
+		modules: {
+			
+			/**
+			 * Returns all the modules
+			 * @name models
+			 * @method
+			 * @memberof App.modules
+			 * @returns {Object} All modules models
+			 * @public
+			 */
+			models: function () {
+				return modules;
+			},
+			
+			//create: createModule,
+			
+			/**
+			 * Register the module and make sure his key is unique
+			 * @name exports
+			 * @method
+			 * @memberof App.modules
+			 * @param {String} key Module's unique identifier
+			 * @param {Object} module
+			 * @param {Boolean} override
+			 * @public
+			 */
+			exports: exportModule,
+			
+			/**
+			 * Execute _callAction on all modules
+			 * @name notify
+			 * @method
+			 * @memberof App.modules
+			 * @param {String} key Notify key
+			 * @param {Object=} data Bag of data
+			 * @param {Function} cb Callback executed after all the notifications
+			 * @this App
+			 * @returns this
+			 * @public
+			 */
+			notify: notifyModules
 		}
+	
 	});
 	
 })(jQuery, window);
@@ -154,7 +185,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 10:29:39 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 11:03:32 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

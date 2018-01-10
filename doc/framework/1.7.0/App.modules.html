@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: App.components</title>
+    <title>JSDoc: Namespace: App.modules</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: App.components</h1>
+    <h1 class="page-title">Namespace: App.modules</h1>
 
     
 
@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2>App.components</h2>
+        <h2>App.modules</h2>
         
     
 </header>
@@ -82,7 +82,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line1">line 1</a>
+        <a href="app-modules.js.html">app-modules.js</a>, <a href="app-modules.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -127,7 +127,7 @@
     
 
     
-    <h4 class="name" id="._createAbstractComponent"><span class="type-signature">(private, static) </span>_createAbstractComponent<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="._createAbstractModule"><span class="type-signature">(private, static) </span>_createAbstractModule<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
@@ -135,7 +135,7 @@
 
 
 <div class="description">
-    Create a default model of a component with an init function
+    Create a basic module with the minimum required methods
 </div>
 
 
@@ -179,7 +179,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line19">line 19</a>
+        <a href="app-modules.js.html">app-modules.js</a>, <a href="app-modules.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -231,7 +231,7 @@
     
 
     
-    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(key, options)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".createModule"><span class="type-signature">(private, static) </span>createModule<span class="signature">(module)</span><span class="type-signature"></span></h4>
     
 
     
@@ -239,7 +239,8 @@
 
 
 <div class="description">
-    Create an instence of the component
+    Merge the module with the basic one
+to be sure the minimum required methods are present
 </div>
 
 
@@ -275,30 +276,7 @@
 
         <tr>
             
-                <td class="name"><code>key</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">unique identifier</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>module</code></td>
             
 
             <td class="type">
@@ -314,7 +292,7 @@
 
             
 
-            <td class="description last">object passed to the component's code</td>
+            <td class="description last">ModuleObject</td>
         </tr>
 
     
@@ -355,7 +333,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line114">line 114</a>
+        <a href="app-modules.js.html">app-modules.js</a>, <a href="app-modules.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -378,28 +356,6 @@
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Merged component with the default model and the acual component code
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -411,7 +367,7 @@
     
 
     
-    <h4 class="name" id=".createComponent"><span class="type-signature">(private, static) </span>createComponent<span class="signature">(key, options)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".exportModule"><span class="type-signature">(private, static) </span>exportModule<span class="signature">(key, module, override)</span><span class="type-signature"></span></h4>
     
 
     
@@ -419,7 +375,7 @@
 
 
 <div class="description">
-    Create an instence of the component
+    Register the module and make sure his key is unique
 </div>
 
 
@@ -471,14 +427,14 @@
 
             
 
-            <td class="description last">unique identifier</td>
+            <td class="description last">Module's unique identifier</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>module</code></td>
             
 
             <td class="type">
@@ -494,188 +450,7 @@
 
             
 
-            <td class="description last">object passed to the component's code</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line70">line 70</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Merged component with the default model and the acual component code
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".exportComponent"><span class="type-signature">(private, static) </span>exportComponent<span class="signature">(key, component, override)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Make sure the component is unique by key verification
-and stores it with all the other components
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>key</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">unique identifier</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>component</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">model of the component</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -689,324 +464,6 @@ and stores it with all the other components
             
                 
 <span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">fake news</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line47">line 47</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".exports"><span class="type-signature">(static) </span>exports<span class="signature">(key, component, override)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Make sure the component is unique by key verification
-and stores it with all the other components
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>key</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">unique identifier</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>component</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">model of the component</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>override</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">fake news</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line126">line 126</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".extendComponent"><span class="type-signature">(private, static) </span>extendComponent<span class="signature">(component)</span><span class="type-signature"> &rarr; {Object}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Merge the created component with the default model
-just to be sure there's an init method
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>component</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
 
 
             
@@ -1057,7 +514,7 @@ just to be sure there's an init method
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line33">line 33</a>
+        <a href="app-modules.js.html">app-modules.js</a>, <a href="app-modules.js.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -1080,28 +537,6 @@ just to be sure there's an init method
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    component
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -1113,7 +548,7 @@ just to be sure there's an init method
     
 
     
-    <h4 class="name" id=".models"><span class="type-signature">(static) </span>models<span class="signature">()</span><span class="type-signature"> &rarr; {Objects}</span></h4>
+    <h4 class="name" id=".exports"><span class="type-signature">(static) </span>exports<span class="signature">(key, module, override)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1121,7 +556,188 @@ just to be sure there's an init method
 
 
 <div class="description">
-    Get all components models
+    Register the module and make sure his key is unique
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Module's unique identifier</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>module</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>override</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-modules.js.html">app-modules.js</a>, <a href="app-modules.js.html#line114">line 114</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".models"><span class="type-signature">(static) </span>models<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Returns all the modules
 </div>
 
 
@@ -1165,7 +781,7 @@ just to be sure there's an init method
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line102">line 102</a>
+        <a href="app-modules.js.html">app-modules.js</a>, <a href="app-modules.js.html#line100">line 100</a>
     </li></ul></dd>
     
 
@@ -1191,6 +807,10 @@ just to be sure there's an init method
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    All modules models
+</div>
+
 
 
 <dl>
@@ -1199,11 +819,455 @@ just to be sure there's an init method
     </dt>
     <dd>
         
-<span class="param-type">Objects</span>
+<span class="param-type">Object</span>
 
 
     </dd>
 </dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".notify"><span class="type-signature">(static) </span>notify<span class="signature">(key, data<span class="signature-attributes">opt</span>, cb)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Execute _callAction on all modules
+</div>
+
+
+
+
+
+
+
+    <h5>This:</h5>
+    <ul><li><a href="App.html">App</a></li></ul>
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Notify key</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Bag of data</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cb</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Callback executed after all the notifications</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-modules.js.html">app-modules.js</a>, <a href="app-modules.js.html#line126">line 126</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    this
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".notifyModules"><span class="type-signature">(private, static) </span>notifyModules<span class="signature">(key, data<span class="signature-attributes">opt</span>, cb)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Execute _callAction on all modules
+</div>
+
+
+
+
+
+
+
+    <h5>This:</h5>
+    <ul><li><a href="App.html">App</a></li></ul>
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Notify key</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Bag of data</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cb</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Callback executed after all the notifications</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-modules.js.html">app-modules.js</a>, <a href="app-modules.js.html#line68">line 68</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    this
+</div>
+
+
 
     
 
@@ -1233,7 +1297,7 @@ just to be sure there's an init method
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 10:29:39 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 11:03:32 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

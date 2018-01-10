@@ -212,7 +212,8 @@ module.exports = function fxGruntConfig (grunt) {
 				src: SRC_FILES.concat('README.md'),
 				options: {
 					destination: 'doc',
-					private: true
+					private: true,
+					package: './package.json'
 				}
 			}
 		}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app-modules.js</title>
+    <title>JSDoc: Source: app-components.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app-modules.js</h1>
+    <h1 class="page-title">Source: app-components.js</h1>
 
     
 
@@ -27,143 +27,142 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Module are singleton that lives across pages
+ * Components are factory method that will generate a instance of a component.
  *
  * @fileoverview Defines and exports components
  *
  * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
  * @license MIT &lt;https://deuxhuithuit.mit-license.org>
  *
- * @namespace App.modules
+ * @namespace App.components
  * @requires App
  */
 (function ($, global, undefined) {
 
 	'use strict';
 	
-	/** Modules **/
-	var modules = {};
-	
+	/** Components **/
+	var components = {};
+
 	/**
-	 * Create a basic module with the minimum required methods
-	 * @name _createAbstractModule
+	 * Create a default model of a component with an init function
+	 * @name _createAbstractComponent
 	 * @method
-	 * @memberof App.modules
-	 * @returns {Object}
+	 * @memberof App.components
 	 * @private
+	 * @return {Object}
 	 */
-	var _createAbstractModule = function () {
+	var _createAbstractComponent = function () {
 		return {
-			actions: $.noop,
 			init: $.noop
 		};
 	};
-	
+
 	/**
-	 * Merge the module with the basic one
-	 * to be sure the minimum required methods are present
-	 * @name createModule
+	 * Merge the created component with the default model
+	 * just to be sure there's an init method
+	 * @name extendComponent
 	 * @method
-	 * @memberof App.modules
-	 * @param {Object} module ModuleObject
+	 * @memberof App.components
+	 * @param {Object} component
+	 * @return {Object} component
 	 * @private
 	 */
-	var createModule = function (module) {
-		return $.extend(_createAbstractModule(), module);
+	var extendComponent = function (component) {
+		return $.extend(_createAbstractComponent(), component);
 	};
-	
+
 	/**
-	 * Register the module and make sure his key is unique
-	 * @name exportModule
+	 * Make sure the component is unique by key verification
+	 * and stores it with all the other components
+	 * @name exportComponent
 	 * @method
-	 * @memberof App.modules
-	 * @param {String} key Module's unique identifier
-	 * @param {Object} module
-	 * @param {Boolean} override
+	 * @memberof App.components
+	 * @param {String} key unique identifier
+	 * @param {Function} component model of the component
+	 * @param {Boolean} override fake news
 	 * @private
 	 */
-	var exportModule = function (key, module, override) {
+	var exportComponent = function (key, component, override) {
 		if (!$.type(key)) {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
-		} else if (!!modules[key] &amp;&amp; !override) {
-			App.log({args: ['Overwriting module key %s is not allowed', key], fx: 'error'});
+		} else if (!!components[key] &amp;&amp; !override) {
+			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
 		} else {
-			modules[key] = createModule(module);
+			components[key] = component;
+			return component;
 		}
-		return modules[key];
+		return false;
 	};
-	
+
 	/**
-	 * Execute _callAction on all modules
-	 * @name notifyModules
+	 * Create an instence of the component
+	 * @name createComponent
 	 * @method
-	 * @memberof App.modules
-	 * @param {String} key Notify key
-	 * @param {Object=} data Bag of data
-	 * @param {Function} cb Callback executed after all the notifications
-	 * @this App
-	 * @returns this
+	 * @memberof App.components
+	 * @param {String} key unique identifier
+	 * @param {Object} options object passed to the component's code
+	 * @return {Object} Merged component with the default model and the acual component code
 	 * @private
 	 */
-	var notifyModules = function (key, data, cb) {
-		if ($.isFunction(data) &amp;&amp; !cb) {
-			cb = data;
-			data = undefined;
+	var createComponent = function (key, options) {
+		if (!components[key]) {
+			App.log({args: ['Component %s is not found', key], fx: 'error'});
+			return extendComponent({});
 		}
-		$.each(modules, function actionToAllModules (index) {
-			var res = App._callAction(this.actions, key, data, cb);
-			if (res !== undefined) {
-				App.callback(cb, [index, res]);
-			}
-		});
-		return this;
+		
+		var c = components[key];
+		
+		if (!$.isFunction(c)) {
+			App.log({args: ['Component %s is not a function', key], fx: 'error'});
+			return extendComponent({});
+		}
+		
+		return extendComponent(c.call(c, options));
 	};
 	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
-		// Modules
-		modules: {
+		// Components
+		components: {
 			
 			/**
-			 * Returns all the modules
+			 * Get all components models
+			 * @public
 			 * @name models
 			 * @method
-			 * @memberof App.modules
-			 * @returns {Object} All modules models
-			 * @public
+			 * @memberof App.components
+			 * @returns {Objects}
 			 */
 			models: function () {
-				return modules;
+				return components;
 			},
 			
-			//create: createModule,
-			
 			/**
-			 * Register the module and make sure his key is unique
+			 * Create an instence of the component
+			 * @name create
+			 * @method
+			 * @memberof App.components
+			 * @param {String} key unique identifier
+			 * @param {Object} options object passed to the component's code
+			 * @return {Object} Merged component with the default model and the acual component code
+			 * @public
+			 */
+			create: createComponent,
+
+			/**
+			 * Make sure the component is unique by key verification
+			 * and stores it with all the other components
 			 * @name exports
 			 * @method
-			 * @memberof App.modules
-			 * @param {String} key Module's unique identifier
-			 * @param {Object} module
-			 * @param {Boolean} override
+			 * @memberof App.components
+			 * @param {String} key unique identifier
+			 * @param {Function} component model of the component
+			 * @param {Boolean} override fake news
 			 * @public
 			 */
-			exports: exportModule,
-			
-			/**
-			 * Execute _callAction on all modules
-			 * @name notify
-			 * @method
-			 * @memberof App.modules
-			 * @param {String} key Notify key
-			 * @param {Object=} data Bag of data
-			 * @param {Function} cb Callback executed after all the notifications
-			 * @this App
-			 * @returns this
-			 * @public
-			 */
-			notify: notifyModules
+			exports: exportComponent
 		}
 	
 	});
@@ -185,7 +184,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 10:29:39 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 11:03:32 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
