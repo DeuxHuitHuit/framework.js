@@ -1,14 +1,15 @@
 /**
-* App Callback functionnality
-*
-* @fileoverview Defines and exports callback and loaded
-*
-* @author Deux Huit Huit <https://deuxhuithuit.com>
-* @license MIT <https://deuxhuithuit.mit-license.org>
-*
-* @namespace App.callback
-* @requires App
-*/
+ * App Callback functionnality
+ *
+ * @fileoverview Defines and exports callback and loaded
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace callback
+ * @memberof App
+ * @requires App
+ */
 (function ($, global, undefined) {
 
 	'use strict';
@@ -17,7 +18,7 @@
 	 * Put the args value in a array if it isn't one already
 	 * @name argsToArray
 	 * @method
-	 * @memberof App.callback
+	 * @memberof callback
 	 * @param {*} args
 	 * @return {Array}
 	 * @private
@@ -41,7 +42,7 @@
 	 * Execute the method recived with the arguments recived
 	 * @name callback
 	 * @method
-	 * @memberof App.callback
+	 * @memberof callback
 	 * @this App
 	 * @param {function} fx 
 	 * @param {*} args
@@ -72,7 +73,7 @@
 	 * Check if a ressource is loaded and callback when it is.
 	 * @name loaded
 	 * @method
-	 * @memberof App.callback
+	 * @memberof callback
 	 * @param {*} v Ressource to test
 	 * @param {Function} fx Callback to execute when the ressource is loaded
 	 * @param {Integer} delay Delay between each checks in ms
@@ -103,7 +104,7 @@
 		 * Execute the method recived with the arguments recived
 		 * @name callback
 		 * @method
-		 * @memberof App.callback
+		 * @memberof callback
 		 * @this App
 		 * @param {function} fx 
 		 * @param {*} args
@@ -116,7 +117,7 @@
 		 * Check if a ressource is loaded and callback when it is.
 		 * @name loaded
 		 * @method
-		 * @memberof App.callback
+		 * @memberof callback
 		 * @param {*} v Ressource to test
 		 * @param {Function} fx Callback to execute when the ressource is loaded
 		 * @param {Integer} delay Delay between each checks in ms

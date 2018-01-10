@@ -6,8 +6,7 @@
  * 
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- * @namespace App.loader
- *
+ * @namespace Loader
  */
 (function ($, global, undefined) {
 	
@@ -49,7 +48,7 @@
 	 * Check if a given url is loading (Only GET request)
 	 * @name isLoading
 	 * @method
-	 * @memberof App.loader
+	 * @memberof Loader
 	 * @param {Object} url Url object to check
 	 * @returns {Boolean}
 	 * @private
@@ -68,7 +67,7 @@
 	 * Check if a given url is in the queue
 	 * @name inQueue
 	 * @method
-	 * @memberof App.loader
+	 * @memberof Loader
 	 * @param {Object} url Url object to check
 	 * @returns {Boolean}
 	 * @private
@@ -89,7 +88,7 @@
 	 * Return the appropriate storage engine for the given url
 	 * @name getStorageEngine
 	 * @method
-	 * @memberof App.loader
+	 * @memberof Loader
 	 * @param {Object} url Url object to check
 	 * @private
 	 */
@@ -170,7 +169,7 @@
 	 * @name loadOneAsset
 	 * @method
 	 * @private
-	 * @memberof App.loader
+	 * @memberof Loader
 	 */
 	var loadOneAsset = function () {
 		// grab first item
@@ -187,7 +186,7 @@
 	 * Trigger loadOneAsset as long as there's entries in the queue
 	 * @name recursiveLoad
 	 * @method
-	 * @memberof App.loader
+	 * @memberof Loader
 	 * @private
 	 */
 	recursiveLoad = function () {
@@ -204,7 +203,7 @@
 	 * Validate and format url's data
 	 * @name valideUrlArags
 	 * @method
-	 * @memberof App.loader
+	 * @memberof Loader
 	 * @private
 	 * @param {Object} url Url object
 	 * @param {Integer} priority Priority of the url
@@ -242,7 +241,7 @@
 	 * @name launchLoad
 	 * @method
 	 * @private
-	 * @memberof App.loader
+	 * @memberof Loader
 	 */
 	var launchLoad = function () {
 		// start now if nothing is loading
@@ -257,7 +256,7 @@
 	 * Get the value from the cache if it's available
 	 * @name getValueFromCache
 	 * @method
-	 * @memberof App.loader
+	 * @memberof Loader
 	 * @param {Object} url Url object
 	 * @returns {Boolean}
 	 * @private
@@ -282,7 +281,7 @@
 	 * Update a request priority in the queue
 	 * @name updatePriority
 	 * @method
-	 * @memberof App.loader
+	 * @memberof Loader
 	 * @private
 	 * @param {Object} url Url object
 	 * @param {Integer} index
@@ -310,7 +309,7 @@
 	 * Put the request in the queue and trigger the load
 	 * @name loadAsset
 	 * @method
-	 * @memberof App.loader
+	 * @memberof Loader
 	 * @private
 	 * @param {Object} url Url Object
 	 * @param {Integer} priority
@@ -361,7 +360,7 @@
 		 * Put the request in the queue and trigger the load
 		 * @name load
 		 * @method
-		 * @memberof App.loader
+		 * @memberof Loader
 		 * @public
 		 * @param {Object} url Url Object
 		 * @param {Integer} priority
@@ -374,7 +373,7 @@
 		 * Check if a given url is loading (Only GET request)
 		 * @name isLoading
 		 * @method
-		 * @memberof App.loader
+		 * @memberof Loader
 		 * @param {Object} url Url object to check
 		 * @returns {Boolean}
 		 * @public
@@ -385,7 +384,7 @@
 		 * Check if a given url is in the queue
 		 * @name inQueue
 		 * @method
-		 * @memberof App.loader
+		 * @memberof Loader
 		 * @param {Object} url Url object to check
 		 * @returns {Boolean}
 		 * @public
@@ -396,7 +395,7 @@
 		 * Get the flag if the loader is working or not
 		 * @name working
 		 * @method
-		 * @memberof App.loader
+		 * @memberof Loader
 		 * @public
 		 * @returns {Boolean}
 		 */

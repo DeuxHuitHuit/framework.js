@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Home - Documentation</title>
+    <title>components - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,71 +29,594 @@
 
 <div id="main">
     
+    <h1 class="page-title">components</h1>
+    
 
     
 
 
 
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="App.html">App</a></span>
+        
+        components
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Defines and exports components</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Deux Huit Huit &lt;https://deuxhuithuit.com></li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT <https://deuxhuithuit.mit-license.org></li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(key, options)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
     
 
 
 
+<div class="description">
+    Create an instence of the component
+</div>
 
 
 
 
 
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line115">line 115</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>String</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                unique identifier
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                object passed to the component's code
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Object</code></span>
+
+
+    </dd>
+</dl>
+
+
+<div class="param-desc">
+    Merged component with the default model and the acual component code
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".exports"><span class="type-signature">(static) </span>exports<span class="signature">(key, component, override)</span><span class="type-signature"></span></h4>
 
     
 
 
-    <section class="readme">
-        <article><h1>Deux Huit Huit's framework.js <a href="http://gruntjs.com/"><img src="https://cdn.gruntjs.com/builtwith.png" alt="Built with Grunt"></a> <a href="https://david-dm.org/DeuxHuitHuit/framework.js#info=devDependencies"><img src="https://david-dm.org/DeuxHuitHuit/framework.js/dev-status.svg?style=flat" alt="David DM"></a></h1><blockquote>
-<p>Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.</p>
-</blockquote>
-<p>The framework use jQuery and Underscore.js and extends some functionality.</p>
-<h2>Dependencies</h2><ul>
-<li>https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js</li>
-<li>https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js</li>
-<li>https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js</li>
-<li>https://code.jquery.com/pep/0.4.1/pep.min.js (optional)</li>
-</ul>
-<h2>History</h2><ul>
-<li><strong>1.8.x</strong><ul>
-<li>Documented the source code</li>
-<li>Added jsdoc</li>
-<li>Added doc task to the build</li>
-</ul>
-</li>
-<li><strong>1.5.x</strong><ul>
-<li>Added jscs to the build</li>
-<li>Introduce App.device and App.routing</li>
-<li>Remove the 300ms delay hack and use pointer events instead (see touch-action=&quot;none&quot;)</li>
-</ul>
-</li>
-<li><strong>1.4.x</strong><ul>
-<li>Handle server redirects</li>
-<li>Allow non-GET requests to be queued</li>
-</ul>
-</li>
-<li><strong>1.3.x</strong><ul>
-<li>Ability to preload pages</li>
-<li>Added QueryStringParser.stringify</li>
-<li>Added callback support for actions functions.</li>
-<li>Removed the <code>e</code> parameter on notifies.</li>
-<li>Added the <code>cb</code> parameter on notifies.</li>
-<li>Refactored the syntax a bit with new jshint rules.</li>
-<li>Route matching will remove the query string from the match.</li>
-</ul>
-</li>
-<li><strong>1.2</strong>: Added support for components</li>
-<li><strong>1.1</strong>: Patch update</li>
-<li><strong>1.0</strong>: Initial release</li>
-</ul>
-<h3>LICENSE</h3><p><a href="http://deuxhuithuit.mit-license.org">MIT</a><br>Made with love in Montréal by <a href="https://deuxhuithuit.com">Deux Huit Huit</a><br>Copyrights (c) 2013-2018</p></article>
-    </section>
+
+<div class="description">
+    Make sure the component is unique by key verification
+and stores it with all the other components
+</div>
 
 
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line127">line 127</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>String</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                unique identifier
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>component</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>function</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                model of the component
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>override</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Boolean</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                fake news
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".models"><span class="type-signature">(static) </span>models<span class="signature">()</span><span class="type-signature"> &rarr; {Objects}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Get all components models
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-components.js.html">app-components.js</a>, <a href="app-components.js.html#line103">line 103</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+<dl class="param-type">
+    <dt>
+        Type:
+    </dt>
+    <dd>
+        
+<span class="param-type"><code>Objects</code></span>
+
+
+    </dd>
+</dl>
+
+
+    
+</div>
+
+
+
+</div>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
@@ -103,7 +626,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 13:33:18 GMT-0500 (Eastern Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 13:33:19 GMT-0500 (Eastern Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

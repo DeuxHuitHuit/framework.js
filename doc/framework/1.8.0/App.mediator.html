@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Storage - Documentation</title>
+    <title>mediator - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Storage</h1>
+    <h1 class="page-title">mediator</h1>
     
 
     
@@ -42,7 +42,9 @@
 <header>
     
         <h2>
-        Storage
+            <span class="ancestors"><a href="App.html">App</a>.</span>
+        
+        mediator
         </h2>
         
     
@@ -51,8 +53,6 @@
 <article>
     <div class="container-overview">
     
-        
-            <div class="description">Facade to access the browser's localstorage and session storage</div>
         
 
         
@@ -77,19 +77,9 @@
     
 
     
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Deux Huit Huit &lt;https://deuxhuithuit.com></li>
-        </ul>
-    </dd>
-    
 
     
 
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT <https://deuxhuithuit.mit-license.org></li></ul></dd>
     
 
     
@@ -97,7 +87,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line1">line 1</a>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line833">line 833</a>
     </li></ul></dd>
     
 
@@ -134,15 +124,14 @@
 
     
 
-    <h4 class="name" id=".clear"><span class="type-signature">(static) </span>clear<span class="signature">(regexp)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id=".getCurrentPage"><span class="type-signature">(static) </span>getCurrentPage<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
 
 
 <div class="description">
-    Delete the data from the storage matching 
-the Regular Expression or all the data if none is provided
+    Get the currentPage object
 </div>
 
 
@@ -178,7 +167,7 @@ the Regular Expression or all the data if none is provided
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line87">line 87</a>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line846">line 846</a>
     </li></ul></dd>
     
 
@@ -195,58 +184,6 @@ the Regular Expression or all the data if none is provided
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>regexp</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>RegExp</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Regular Expression to match the key
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -272,12 +209,16 @@ the Regular Expression or all the data if none is provided
     </dt>
     <dd>
         
-<span class="param-type"><code>Boolean</code></span>
+<span class="param-type"><code>Object</code></span>
 
 
     </dd>
 </dl>
 
+
+<div class="param-desc">
+    PageObject
+</div>
 
     
 </div>
@@ -291,14 +232,15 @@ the Regular Expression or all the data if none is provided
 
     
 
-    <h4 class="name" id=".get"><span class="type-signature">(static) </span>get<span class="signature">(key)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id=".goto"><span class="type-signature">(static) </span>goto<span class="signature">(obj, previousPoppedUrl)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Return the value associated with the given key
+    Change the current page to the requested route
+Do nothing if the current page is already the requested route
 </div>
 
 
@@ -334,7 +276,7 @@ the Regular Expression or all the data if none is provided
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line16">line 16</a>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line887">line 887</a>
     </li></ul></dd>
     
 
@@ -350,6 +292,9 @@ the Regular Expression or all the data if none is provided
 
 
 
+
+    <h5>This:</h5>
+    <ul><li><a href="App.html">App</a></li></ul>
 
 
 
@@ -378,65 +323,101 @@ the Regular Expression or all the data if none is provided
 
         <tr>
             
-                <td class="name"><code>key</code></td>
+                <td class="name"><code>obj</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>string</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Access key to the storage object
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
 <span class="param-type"><code>String</code></span>
 
 
-    </dd>
-</dl>
+            
+            </td>
 
+            
+
+            
+
+            <td class="description last">
+                Page requested
+                
+            </td>
+        </tr>
 
     
-</div>
+
+        <tr>
+            
+                <td class="name"><code>previousPoppedUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>String</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Url
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<h5>Fires:</h5>
+<ul>
+    <li><a href="App.html#event:page:leave">App#page:leave</a></li>
+
+    <li><a href="App.html#event:page:enter">App#page:enter</a></li>
+
+    <li><a href="App.html#event:pages:failedtoparse">App#pages:failedtoparse</a></li>
+
+    <li><a href="App.html#event:pages:loaded">App#pages:loaded</a></li>
+
+    <li><a href="App.html#event:pages:loadfatalerror">App#pages:loadfatalerror</a></li>
+
+    <li><a href="App.html#event:pages:loaderror">App#pages:loaderror</a></li>
+
+    <li><a href="App.html#event:pages:requestBeginPageTransition">App#pages:requestBeginPageTransition</a></li>
+
+    <li><a href="App.html#event:pages:navigateToCurrent">App#pages:navigateToCurrent</a></li>
+
+    <li><a href="App.html#event:pages:requestPageTransition">App#pages:requestPageTransition</a></li>
+
+    <li><a href="App.html#event:pages:routeNotFound">App#pages:routeNotFound</a></li>
+
+    <li><a href="App.html#event:pages:loadprogress">App#pages:loadprogress</a></li>
+
+    <li><a href="App.html#event:pages:notfound">App#pages:notfound</a></li>
+
+    <li><a href="App.html#event:page:leaving">App#page:leaving</a></li>
+
+    <li><a href="App.html#event:page:entering">App#page:entering</a></li>
+</ul>
+
+
+
+
+
+
+
+
 
 
 
@@ -447,14 +428,14 @@ the Regular Expression or all the data if none is provided
 
     
 
-    <h4 class="name" id=".remove"><span class="type-signature">(static) </span>remove<span class="signature">(key)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    <h4 class="name" id=".notify"><span class="type-signature">(static) </span>notify<span class="signature">(key, data, cb)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Delete the storage data associated with the given key
+    Notify all registered component and page
 </div>
 
 
@@ -490,7 +471,422 @@ the Regular Expression or all the data if none is provided
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line60">line 60</a>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line858">line 858</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>AER in http://addyosmani.com/largescalejavascript/</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+    <h5>This:</h5>
+    <ul><li>Mediator</li></ul>
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>String</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Notify key
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Object passed to notified methods
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cb</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>function</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Callback executed when the notify is done
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+
+<div class="param-desc">
+    this
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".notifyCurrentPage"><span class="type-signature">(static) </span>notifyCurrentPage<span class="signature">(key, data, cb)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Scope the _callAction actions only for the current page
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line873">line 873</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+    <h5>This:</h5>
+    <ul><li>{Object}</li></ul>
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>String</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Notify key
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Bag of data
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cb</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>function</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Callback executed after all the _callAction are executed
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+
+<div class="param-desc">
+    this
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".toggle"><span class="type-signature">(static) </span>toggle<span class="signature">(route, fallback)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Open the wanted page,
+return to the precedent page if the requested on is already open
+or fallback to a default one
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line913">line 913</a>
     </li></ul></dd>
     
 
@@ -534,13 +930,13 @@ the Regular Expression or all the data if none is provided
 
         <tr>
             
-                <td class="name"><code>key</code></td>
+                <td class="name"><code>route</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>string</code></span>
+<span class="param-type"><code>String</code></span>
 
 
             
@@ -551,7 +947,33 @@ the Regular Expression or all the data if none is provided
             
 
             <td class="description last">
-                Access key to the storage object
+                Url
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fallback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>String</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Url used for as a fallback
                 
             </td>
         </tr>
@@ -565,6 +987,10 @@ the Regular Expression or all the data if none is provided
 
 
 
+<h5>Fires:</h5>
+<ul>
+    <li><a href="App.html#event:page:toggleNoPreviousUrl">App#page:toggleNoPreviousUrl</a></li>
+</ul>
 
 
 
@@ -573,208 +999,6 @@ the Regular Expression or all the data if none is provided
 
 
 
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Boolean</code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
-
-
-
-</div>
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".set"><span class="type-signature">(static) </span>set<span class="signature">(key, value)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Set and save a value to the given key in the storage
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="storage.js.html">storage.js</a>, <a href="storage.js.html#line32">line 32</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>key</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>string</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Access key to the storage object
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>*</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Value wanted to be saved
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section-returns">
-<h5>Returns:</h5>
-
-        
-
-<dl class="param-type">
-    <dt>
-        Type:
-    </dt>
-    <dd>
-        
-<span class="param-type"><code>Boolean</code></span>
-
-
-    </dd>
-</dl>
-
-
-    
-</div>
 
 
 

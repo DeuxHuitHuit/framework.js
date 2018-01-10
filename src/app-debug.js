@@ -6,7 +6,8 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  * 
- * @namespace App.debug
+ * @namespace debug
+ * @memberof App
  * @requires App
  */
 (function ($, global, undefined) {
@@ -20,7 +21,7 @@
 	 * Set or get the debug flag for the App
 	 * @name debug
 	 * @method
-	 * @memberof App.debug
+	 * @memberof debug
 	 * @param {Boolean=} value
 	 * @private
 	 */
@@ -37,7 +38,7 @@
 	 * Format the passed arguments and the displayed message
 	 * @name argsToObject
 	 * @method
-	 * @memberof App.debug
+	 * @memberof debug
 	 * @param {Object} arg 
 	 * @returns {Object} Formated object
 	 * @private
@@ -69,7 +70,7 @@
 	 * Log the recived data with the appropriate effect (log, error, info...)
 	 * @name log
 	 * @method
-	 * @memberof App.debug
+	 * @memberof debug
 	 * @param {Array} arg
 	 * @private
 	 */
@@ -107,7 +108,7 @@
 		 * Set or get the debug flag for the App
 		 * @name debug
 		 * @method
-		 * @memberof App.debug
+		 * @memberof debug
 		 * @param {Boolean=} value
 		 * @public
 		 */
@@ -117,7 +118,7 @@
 		 * Log the recived data with the appropriate effect (log, error, info...)
 		 * @name log
 		 * @method
-		 * @memberof App.debug
+		 * @memberof debug
 		 * @param {Array} arg
 		 * @public
 		 */
@@ -127,7 +128,7 @@
 		 * Get all the logs
 		 * @name logs
 		 * @method
-		 * @memberof App.debug
+		 * @memberof debug
 		 * @returns {Array} All the logs
 		 * @public
 		 */

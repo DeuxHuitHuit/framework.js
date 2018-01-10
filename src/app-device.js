@@ -6,7 +6,8 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  * 
- * @namespace App.device
+ * @namespace device
+ * @memberof App
  * @requires App
  */
 (function ($, global, undefined) {
@@ -82,7 +83,7 @@
 	/**
 	 * Factory for the browser detector
 	 * @name browserDetector
-	 * @memberof App.device
+	 * @memberof device
 	 * @method
 	 * @returns {Object} accessible functions
 	 * @private
@@ -92,7 +93,7 @@
 		/**
 		 * Get the user agent
 		 * @name getUserAgent
-		 * @memberof App.device
+		 * @memberof device
 		 * @method
 		 * @param {String} userAgent
 		 * @returns {String} user agent
@@ -108,7 +109,7 @@
 		/**
 		 * Test the user agent with the given regular expression
 		 * @name testUserAgent
-		 * @memberof App.device
+		 * @memberof device
 		 * @method
 		 * @param {RegExp} regexp 
 		 * @param {String} userAgent
@@ -125,7 +126,7 @@
 			/**
 			 * Check if the device is a mobile one and not an iPhone
 			 * @name isTablet
-			 * @memberof App.device
+			 * @memberof device
 			 * @method
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
@@ -145,7 +146,7 @@
 			 * Check if the device is an iPhone or an iPad
 			 * @name isIos
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -159,7 +160,7 @@
 			 * Check if the user agent contains the word 'iPhone' or 'iPod'
 			 * @name isIphone
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -173,7 +174,7 @@
 			 * Check if the user agent contains the word 'iPad'
 			 * @name isIpad
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -186,7 +187,7 @@
 			 * Check if the user agent contains the word 'Android'
 			 * @name isAndroid
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -200,7 +201,7 @@
 			 * and the user agent contains the word 'mobile'
 			 * @name isAndroidPhone
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -230,7 +231,7 @@
 			 * Check if the user agent contains the word 'phone'
 			 * @name isOtherPhone
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -244,7 +245,7 @@
 			 * of if it's another phone
 			 * @name isOtherMobile
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -258,7 +259,7 @@
 			 * Check if the device runs on Android, iOs or other mobile
 			 * @name isMobile
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -273,7 +274,7 @@
 			 * Check if the user agent contains the word 'msie' or 'trident'
 			 * @name isMsie
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -288,7 +289,7 @@
 			 * contain the word 'Chrome'
 			 * @name isSafari
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -315,7 +316,7 @@
 			 * Check if the user agent contains the word 'Edge'
 			 * @name isEdge
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -328,7 +329,7 @@
 			 * Check if the user agent contains the word 'Chrome' and it's not Edge
 			 * @name isChrome
 			 * @method
-			 * @memberof App.device
+			 * @memberof device
 			 * @param {String} userAgent The browser user agent
 			 * @returns {Boolean}
 			 * @private
@@ -363,7 +364,7 @@
 			 * Object with all the device detection methods
 			 * @name detector
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 * @returns {Object} Detector
 			 */
 			detector: browserDetector,
@@ -373,7 +374,7 @@
 			 * @name iphone
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			iphone: browserDetector.isIphone(),
 
@@ -382,7 +383,7 @@
 			 * @name ipad
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			ipad: browserDetector.isIpad(),
 
@@ -391,7 +392,7 @@
 			 * @name ios
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			ios: browserDetector.isIos(),
 
@@ -400,7 +401,7 @@
 			 * @name android
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			android: browserDetector.isAndroid(),
 
@@ -409,7 +410,7 @@
 			 * @name mobile
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			mobile: browserDetector.isMobile(),
 
@@ -418,7 +419,7 @@
 			 * @name phone
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			phone: browserDetector.isPhone(),
 
@@ -427,7 +428,7 @@
 			 * @name tablet
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			tablet: browserDetector.isTablet(),
 
@@ -436,7 +437,7 @@
 			 * @name chrome
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			chrome: browserDetector.isChrome(),
 
@@ -445,7 +446,7 @@
 			 * @name firefox
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			firefox: browserDetector.isFirefox(),
 
@@ -454,7 +455,7 @@
 			 * @name safari
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			safari: browserDetector.isSafari(),
 
@@ -463,7 +464,7 @@
 			 * @name internetexplorer
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			internetexplorer: browserDetector.isMsie(),
 
@@ -472,7 +473,7 @@
 			 * @name edge
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 */
 			edge: browserDetector.isEdge(),
 
@@ -480,7 +481,7 @@
 			 * @name events
 			 * @constant
 			 * @public
-			 * @memberof App.device
+			 * @memberof device
 			 * @property {String} click Click event
 			 * @property {String} enter 'pointerenter' equivalent
 			 * @property {String} up 'pointerup' equivalent

@@ -5,8 +5,9 @@
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- *
- * @namespace App.modules
+ * 
+ * @namespace modules
+ * @memberof App
  * @requires App
  */
 (function ($, global, undefined) {
@@ -20,7 +21,7 @@
 	 * Create a basic module with the minimum required methods
 	 * @name _createAbstractModule
 	 * @method
-	 * @memberof App.modules
+	 * @memberof modules
 	 * @returns {Object}
 	 * @private
 	 */
@@ -36,7 +37,7 @@
 	 * to be sure the minimum required methods are present
 	 * @name createModule
 	 * @method
-	 * @memberof App.modules
+	 * @memberof modules
 	 * @param {Object} module ModuleObject
 	 * @private
 	 */
@@ -48,7 +49,7 @@
 	 * Register the module and make sure his key is unique
 	 * @name exportModule
 	 * @method
-	 * @memberof App.modules
+	 * @memberof modules
 	 * @param {String} key Module's unique identifier
 	 * @param {Object} module
 	 * @param {Boolean} override
@@ -69,7 +70,7 @@
 	 * Execute _callAction on all modules
 	 * @name notifyModules
 	 * @method
-	 * @memberof App.modules
+	 * @memberof modules
 	 * @param {String} key Notify key
 	 * @param {Object=} data Bag of data
 	 * @param {Function} cb Callback executed after all the notifications
@@ -101,7 +102,7 @@
 			 * Returns all the modules
 			 * @name models
 			 * @method
-			 * @memberof App.modules
+			 * @memberof modules
 			 * @returns {Object} All modules models
 			 * @public
 			 */
@@ -115,7 +116,7 @@
 			 * Register the module and make sure his key is unique
 			 * @name exports
 			 * @method
-			 * @memberof App.modules
+			 * @memberof modules
 			 * @param {String} key Module's unique identifier
 			 * @param {Object} module
 			 * @param {Boolean} override
@@ -127,7 +128,7 @@
 			 * Execute _callAction on all modules
 			 * @name notify
 			 * @method
-			 * @memberof App.modules
+			 * @memberof modules
 			 * @param {String} key Notify key
 			 * @param {Object=} data Bag of data
 			 * @param {Function} cb Callback executed after all the notifications

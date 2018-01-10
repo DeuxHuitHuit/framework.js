@@ -5,8 +5,9 @@
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- *
- * @namespace App.pages
+ * 
+ * @namespace pages
+ * @memberof App
  * @requires App
  */
 (function ($, global, undefined) {
@@ -20,7 +21,7 @@
 	 * Creates and a new factory function based on the
 	 * given parameters
 	 * @name _createPageModel
-	 * @memberof App.pages
+	 * @memberof pages
 	 * @method
 	 * @param {String} key The unique key for this page model
 	 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type
@@ -41,7 +42,7 @@
 
 		/**
 		 * Page Param
-		 * @memberof App.pages
+		 * @memberof pages
 		 * @typedef {Object} pageParam
 		 * @param {Function} actions @returns {object}
 		 * @param {Function} init
@@ -62,7 +63,7 @@
 		/**
 		 * Page Model is a Factory function for page instances.
 		 * @name factory
-		 * @memberof App.pages
+		 * @memberof pages
 		 * @method
 		 * @param {Object} pageData PageObject
 		 * @returns page
@@ -132,7 +133,7 @@
 	/**
 	 * Creates a page with the specified model.
 	 * @name createPage
-	 * @memberof App.pages
+	 * @memberof pages
 	 * @method
 	 * @param {Object} pageData An data bag for your page
 	 * @param {String} keyModel The page model's unique key
@@ -168,7 +169,7 @@
 	/**
 	 * Registers a pageModel instance.
 	 * @name registerPageModel
-	 * @memberof App.pages
+	 * @memberof pages
 	 * @method
 	 * @param {String} key The model unique key
 	 * @param {pageModel} pageModel The page model
@@ -204,7 +205,7 @@
 	 * It first calls {@link _createPageModel} and then calls {@link registerPageModel}
 	 * with the output of the first call.
 	 * @name exportPage
-	 * @memberof App.pages
+	 * @memberof pages
 	 * @method
 	 * @param {String} key The model unique key
 	 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type
@@ -224,7 +225,7 @@
 	/**
 	 * Validate a route object
 	 * @name _validateRoute
-	 * @memberof App.pages
+	 * @memberof pages
 	 * @method
 	 * @returns {Boolean}
 	 * @private
@@ -296,7 +297,7 @@
 	 * Tries to match the given route against the given
 	 * array of possible routes.
 	 * @name _matchRoute
-	 * @memberof App.pages
+	 * @memberof pages
 	 * @method
 	 * @param {String} route The route to search match for
 	 * @param {String[]|RegExp[]} routes The allowed routes
@@ -343,7 +344,7 @@
 	/**
 	 * Returns the first page object that matches the route param
 	 * @name _getPageForRoute
-	 * @memberof App.pages
+	 * @memberof pages
 	 * @method
 	 * @param {String} route The route to search match for
 	 *
@@ -371,7 +372,7 @@
 			/**
 			 * @name _matchRoute
 			 * @method
-			 * @memberof App.pages
+			 * @memberof pages
 			 * {@link App.pages~_matchRoute}
 			 * @private
 			 */
@@ -380,7 +381,7 @@
 			/**
 			 * @name _validateRoute
 			 * @method
-			 * @memberof App.pages
+			 * @memberof pages
 			 * {@link App.pages~_validateRoute}
 			 * @private
 			 */
@@ -404,7 +405,7 @@
 			 * Returns all models
 			 * @method
 			 * @name models
-			 * @memberof App.pages
+			 * @memberof pages
 			 * @returns {Object}
 			 * @public
 			 */
@@ -415,7 +416,7 @@
 			/**
 			 * Returns the first page object that matches the route param
 			 * @name getPageForRoute
-			 * @memberof App.pages
+			 * @memberof pages
 			 * @method
 			 * @param {String} route The route to search match for
 			 *
@@ -429,7 +430,7 @@
 			 * the [route]{@link getPageForRoute} if noting is found.
 			 * @name page
 			 * @method
-			 * @memberof App.pages
+			 * @memberof pages
 			 * @param {string} keyOrRoute - the key or the route of the page
 			 * @returns {page}
 			 * @public
@@ -449,7 +450,7 @@
 			/**
 			 * Creates a page with the specified model.
 			 * @name create
-			 * @memberof App.pages
+			 * @memberof pages
 			 * @method
 			 * @param {Object} pageData An data bag for your page
 			 * @param {String} keyModel The page model's unique key
@@ -464,7 +465,7 @@
 			 * It first calls {@link _createPageModel} and then calls {@link registerPageModel}
 			 * with the output of the first call.
 			 * @name exports
-			 * @memberof App.pages
+			 * @memberof pages
 			 * @method
 			 * @param {String} key The model unique key
 			 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type

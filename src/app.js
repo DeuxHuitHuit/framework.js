@@ -830,7 +830,10 @@
 		 */
 		run: run,
 		
-		// mediator object
+		/**
+		 * @namespace mediator
+		 * @memberof App
+		 * */
 		mediator: {
 			// private
 			_currentPage: function (page) {

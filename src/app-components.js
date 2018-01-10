@@ -6,7 +6,8 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @namespace App.components
+ * @namespace components
+ * @memberof App
  * @requires App
  */
 (function ($, global, undefined) {
@@ -20,7 +21,7 @@
 	 * Create a default model of a component with an init function
 	 * @name _createAbstractComponent
 	 * @method
-	 * @memberof App.components
+	 * @memberof components
 	 * @private
 	 * @return {Object}
 	 */
@@ -35,7 +36,7 @@
 	 * just to be sure there's an init method
 	 * @name extendComponent
 	 * @method
-	 * @memberof App.components
+	 * @memberof components
 	 * @param {Object} component
 	 * @return {Object} component
 	 * @private
@@ -49,7 +50,7 @@
 	 * and stores it with all the other components
 	 * @name exportComponent
 	 * @method
-	 * @memberof App.components
+	 * @memberof components
 	 * @param {String} key unique identifier
 	 * @param {Function} component model of the component
 	 * @param {Boolean} override fake news
@@ -71,7 +72,7 @@
 	 * Create an instence of the component
 	 * @name createComponent
 	 * @method
-	 * @memberof App.components
+	 * @memberof components
 	 * @param {String} key unique identifier
 	 * @param {Object} options object passed to the component's code
 	 * @return {Object} Merged component with the default model and the acual component code
@@ -104,7 +105,7 @@
 			 * @public
 			 * @name models
 			 * @method
-			 * @memberof App.components
+			 * @memberof components
 			 * @returns {Objects}
 			 */
 			models: function () {
@@ -115,7 +116,7 @@
 			 * Create an instence of the component
 			 * @name create
 			 * @method
-			 * @memberof App.components
+			 * @memberof components
 			 * @param {String} key unique identifier
 			 * @param {Object} options object passed to the component's code
 			 * @return {Object} Merged component with the default model and the acual component code
@@ -128,7 +129,7 @@
 			 * and stores it with all the other components
 			 * @name exports
 			 * @method
-			 * @memberof App.components
+			 * @memberof components
 			 * @param {String} key unique identifier
 			 * @param {Function} component model of the component
 			 * @param {Boolean} override fake news
