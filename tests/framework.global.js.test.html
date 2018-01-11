@@ -46,7 +46,6 @@
 	
 	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
 	<script src="../src/globals.js"></script>
-	<script src="../src/globals-keyboard.js"></script>
 	
 	<script>
 	(function ($, w) {
@@ -57,13 +56,6 @@
 		
 		runTests = function  () {
 			module('window');
-			
-			test('isChar', function isCharTest() {
-				ok(w.isChar(w.keys.space_bar), 'space_bar');
-				ok(!w.isChar(w.keys.backspace), 'backspace');
-				ok(w.isChar(w.keys.a), 'a');
-				ok(w.isChar(w.keys.z), 'z');
-			});
 			
 			test('pd(e)', function pdTest() {
 				var e = $.Event('pd-test');

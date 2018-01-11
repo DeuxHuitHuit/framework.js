@@ -13,6 +13,11 @@ The framework use jQuery and Underscore.js and extends some functionality.
 
 ## History
 
+* **2.0.x**
+	* Integrated AppStorage to App.storage
+	* File structure modifications
+	* Removed old deprecated globals and jQuery overrides
+	* Removed globals-keyboard.js
 * **1.8.x**
 	* Documented the source code
 	* Added jsdoc

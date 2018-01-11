@@ -112,29 +112,7 @@
 		 * @param {Boolean=} value
 		 * @public
 		 */
-		debug: debug,
-		
-		/**
-		 * Log the recived data with the appropriate effect (log, error, info...)
-		 * @name log
-		 * @method
-		 * @memberof debug
-		 * @param {Array} arg
-		 * @public
-		 */
-		log: log,
-		
-		/**
-		 * Get all the logs
-		 * @name logs
-		 * @method
-		 * @memberof debug
-		 * @returns {Array} All the logs
-		 * @public
-		 */
-		logs: function () {
-			return logs;
-		}
+		debug: debug
 	});
 	
 })(jQuery, window);

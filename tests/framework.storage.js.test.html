@@ -14,7 +14,7 @@
 		(function (w, doc,co) {
 			// https://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
 			var u = {},
-				e, t,
+				e,
 				a = /\+/g,  // Regex for replacing addition symbol with a space
 				r = /([^&=]+)=?([^&]*)/g,
 				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
@@ -28,27 +28,22 @@
 			if (!!u.jquery) {
 				v = u.jquery;
 			}
-			if (v === 'local') {
-				t = './jquery.js';
-			} else {
-				t = 'https://ajax.googleapis.com/ajax/libs/jquery/'+ v +'/jquery.js'
-			}
-			doc.write('<script src="' + t +'">' + '<' + '/' + 'script>');
+
+			doc.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + "<" + '/' + 'script>');
 			co.log('\nLoading jQuery v' + v + '\n');
 		})(window, document, console);
 	</script>
 </head>
 <body>
-	<h1 id="qunit-header">framework.js: AppStorage</h1>
+	<h1 id="qunit-header">framework.js: App.storage</h1>
 	<h2 id="qunit-banner"></h2>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 
 	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
-	<script src="../src/globals.js"></script>
 	<script src="../src/app-debug.js"></script>
 	<script src="../src/app-callback.js"></script>
-	<script src="../src/storage.js"></script>
+	<script src="../src/app-storage.js"></script>
 
 	<script>
 	(function ($, w) {
@@ -61,7 +56,7 @@
 
 		var runTests = function  () {
 
-			module('AppStorage');
+			module('App.storage');
 			App.debug(true);
 
 			var mock_storage = (function (storage) {
@@ -72,8 +67,8 @@
 				self.clear = function (regexp) {
 					self = {};
 				};
-				return AppStorage.factory(self);
-			})(window.AppStorage);
+				return App.storage.factory(self);
+			})(window.App.storage);
 
 			var getSetTest = function (store, prefix) {
 				var fx = function () {
@@ -127,13 +122,13 @@
 
 			test('mock get/set', getSetTest(mock_storage, 'mock'));
 
-			test('local get/set', getSetTest(AppStorage.local, 'local'));
+			test('local get/set', getSetTest(App.storage.local, 'local'));
 
-			test('session get/set', getSetTest(AppStorage.session, 'session'));
+			test('session get/set', getSetTest(App.storage.session, 'session'));
 
-			test('local clear', clearTest(AppStorage.local, 'local'));
+			test('local clear', clearTest(App.storage.local, 'local'));
 
-			test('session clear', clearTest(AppStorage.session, 'session'));
+			test('session clear', clearTest(App.storage.session, 'session'));
 
 		}; // end run tests
 
