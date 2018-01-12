@@ -1,13 +1,26 @@
 /**
- * @author Deux Huit Huit
+ * Facade to access the browser's localstorage and session storage
  *
- * Storage: A safe wrapper around window.localStorage/sessionStorage
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace Storage
+ * @requires App
  */
 (function ($, global, undefined) {
 	'use strict';
-	
+
 	var storage = function (storage) {
 		return {
+
+			/**
+			 * Return the value associated with the given key
+			 * @name get
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @return {String}
+			 */
 			get: function (key) {
 				if (!key) {
 					return;
@@ -15,6 +28,16 @@
 				key += ''; // make it a string
 				return storage[key];
 			},
+
+			/**
+			 * Set and save a value to the given key in the storage
+			 * @name set
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @param {*} value Value wanted to be saved
+			 * @return {Boolean}
+			 */
 			set: function (key, value) {
 				var result = false;
 				if (!!key) {
@@ -33,6 +56,15 @@
 				}
 				return result;
 			},
+
+			/**
+			 * Delete the storage data associated with the given key
+			 * @name remove
+			 * @memberof Storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @return {Boolean}
+			 */
 			remove: function (key) {
 				var result = false;
 				if (!!key) {
@@ -51,6 +83,16 @@
 				}
 				return result;
 			},
+
+			/**
+			 * Delete the data from the storage matching 
+			 * the Regular Expression or all the data if none is provided
+			 * @name clear
+			 * @memberof Storage
+			 * @method
+			 * @param {RegExp} regexp Regular Expression to match the key
+			 * @return {Boolean}
+			 */
 			clear: function (regexp) {
 				var result = false;
 				try {
@@ -82,13 +124,14 @@
 		};
 	};
 
+	/** @deprecated */
 	global.AppStorage = $.extend(global.AppStorage, {
 		factory: storage,
 		local: storage(window.localStorage),
 		session: storage(window.sessionStorage)
 	});
 	
-	// @deprecated
+	/** @deprecated */
 	global.Storage = $.extend(global.Storage, global.AppStorage);
 	
 })(jQuery, window);

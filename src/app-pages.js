@@ -1,7 +1,14 @@
 /**
- * @author Deux Huit Huit
+ * Pages are controller that are activated on a url basis.
  *
- * Pages
+ * @fileoverview Defines and exports pages
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace pages
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 
@@ -9,7 +16,21 @@
 	
 	var pageModels = {};
 	var pageInstances = {};
-	
+
+	/**
+	 * Creates and a new factory function based on the
+	 * given parameters
+	 * @name _createPageModel
+	 * @memberof pages
+	 * @method
+	 * @param {String} key The unique key for this page model
+	 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type
+	 *   or a pageCreator function that returns a page object.
+	 * @param {Boolean} [override=false] Allows overriding an existing page model
+	 *
+	 * @returns {pageModel} The newly built factory function
+	 * @private
+	 */
 	var _createPageModel = function (key, model, override) {
 		var ftrue = function () {
 			return true;
@@ -18,7 +39,18 @@
 		var enterLeave = function (next) {
 			App.callback(next);
 		};
-		
+
+		/**
+		 * Page Param
+		 * @memberof pages
+		 * @typedef {Object} pageParam
+		 * @param {Function} actions @returns {object}
+		 * @param {Function} init
+		 * @param {Function} enter
+		 * @param {Function} leave
+		 * @param {Function} canEnter @returns {boolean}
+		 * @param {Function} canLeave @returns {boolean}
+		 */
 		var base = {
 			actions: $.noop,
 			init: $.noop,
@@ -28,7 +60,15 @@
 			canLeave: ftrue
 		};
 		
-		// This is the method that creates page instances
+		/**
+		 * Page Model is a Factory function for page instances.
+		 * @name factory
+		 * @memberof pages
+		 * @method
+		 * @param {Object} pageData PageObject
+		 * @returns page
+		 * @private
+		 */
 		var factory = function (pageData) {
 			var _pageData = pageData;
 			var modelRef;
@@ -90,6 +130,17 @@
 		return factory;
 	};
 	
+	/**
+	 * Creates a page with the specified model.
+	 * @name createPage
+	 * @memberof pages
+	 * @method
+	 * @param {Object} pageData An data bag for your page
+	 * @param {String} keyModel The page model's unique key
+	 * @param {Boolean} [override=false] Allows overriding an existing page instance
+	 * @returns {?page} Null if something goes wrong
+	 * @private
+	 */
 	var createPage = function (pageData, keyModel, override) {
 		//Find the page model associated
 		var pageModel = pageModels[keyModel];
@@ -114,7 +165,19 @@
 		}
 		return false;
 	};
-	
+
+	/**
+	 * Registers a pageModel instance.
+	 * @name registerPageModel
+	 * @memberof pages
+	 * @method
+	 * @param {String} key The model unique key
+	 * @param {pageModel} pageModel The page model
+	 * @param {Boolean} [override=false] Allows overriding an existing page instance
+	 *
+	 * @returns {pageModel}
+	 * @private
+	 */
 	var registerPageModel = function (key, pageModel, override) {
 		var keyType = $.type(key);
 		if (keyType !== 'string') {
@@ -137,7 +200,21 @@
 		return false;
 	};
 	
-	// Create a function to create a new page
+	/**
+	 * Create a new pageModel, i.e. a function to create a new pages.
+	 * It first calls {@link _createPageModel} and then calls {@link registerPageModel}
+	 * with the output of the first call.
+	 * @name exportPage
+	 * @memberof pages
+	 * @method
+	 * @param {String} key The model unique key
+	 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type
+	 *   or a pageCreator function that returns a page object.
+	 * @param {Boolean} [override=false] Allows overriding an existing page instance
+	 *
+	 * @return {pageModel}
+	 * @private
+	 */
 	var exportPage = function (key, model, override) {
 		// Pass all args to the factory
 		var pageModel = _createPageModel(key, model, override);
@@ -145,7 +222,14 @@
 		return registerPageModel(key, pageModel, override);
 	};
 	
-	// Validation
+	/**
+	 * Validate a route object
+	 * @name _validateRoute
+	 * @memberof pages
+	 * @method
+	 * @returns {Boolean}
+	 * @private
+	 */
 	var _validateRoute = function (route) {
 		var result = false;
 		
@@ -209,6 +293,18 @@
 		}
 	};
 	
+	/**
+	 * Tries to match the given route against the given
+	 * array of possible routes.
+	 * @name _matchRoute
+	 * @memberof pages
+	 * @method
+	 * @param {String} route The route to search match for
+	 * @param {String[]|RegExp[]} routes The allowed routes
+	 *
+	 * @returns {Integer} The index of the matched route or -1 if no match
+	 * @private
+	 */
 	var _matchRoute = function (route, routes) {
 		var index = -1;
 		var found = function (i) {
@@ -244,7 +340,17 @@
 		
 		return index;
 	};
-	
+
+	/**
+	 * Returns the first page object that matches the route param
+	 * @name _getPageForRoute
+	 * @memberof pages
+	 * @method
+	 * @param {String} route The route to search match for
+	 *
+	 * @returns {?page} The page object or null if not found
+	 * @private
+	 */
 	var _getPageForRoute = function (route) {
 		var page = null;
 		if (_validateRoute(route)) {
@@ -259,27 +365,76 @@
 		}
 		return page;
 	};
-	
+
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
-		// Page creation
 		pages: {
-			// private
+			/**
+			 * @name _matchRoute
+			 * @method
+			 * @memberof pages
+			 * {@link App.pages~_matchRoute}
+			 * @private
+			 */
 			_matchRoute: _matchRoute,
+
+			/**
+			 * @name _validateRoute
+			 * @method
+			 * @memberof pages
+			 * {@link App.pages~_validateRoute}
+			 * @private
+			 */
 			_validateRoute: _validateRoute,
+
+			/**
+			 * Getter for all instances of a particular one
+			 * @param [key] - the optinal key to search for.
+			 *   If falsy, will return all instances
+			 * @returns {page|page[]}
+			 * @private
+			 */
 			instances: function (key) {
 				if (!!key) {
 					return pageInstances[key];
 				}
 				return pageInstances;
 			},
+
+			/**
+			 * Returns all models
+			 * @method
+			 * @name models
+			 * @memberof pages
+			 * @returns {Object}
+			 * @public
+			 */
 			models: function () {
 				return pageModels;
 			},
-			
-			// public
+
+			/**
+			 * Returns the first page object that matches the route param
+			 * @name getPageForRoute
+			 * @memberof pages
+			 * @method
+			 * @param {String} route The route to search match for
+			 *
+			 * @returns {?page} The page object or null if not found
+			 * @public
+			 */
 			getPageForRoute: _getPageForRoute,
-			
+
+			/**
+			 * Returns the page based the key and fallbacks to
+			 * the [route]{@link getPageForRoute} if noting is found.
+			 * @name page
+			 * @method
+			 * @memberof pages
+			 * @param {string} keyOrRoute - the key or the route of the page
+			 * @returns {page}
+			 * @public
+			 */
 			page: function (keyOrRoute) {
 				//Try to get the page by the key
 				var result = pageInstances[keyOrRoute];
@@ -291,10 +446,35 @@
 				
 				return result;
 			},
-			
+
+			/**
+			 * Creates a page with the specified model.
+			 * @name create
+			 * @memberof pages
+			 * @method
+			 * @param {Object} pageData An data bag for your page
+			 * @param {String} keyModel The page model's unique key
+			 * @param {Boolean} [override=false] Allows overriding an existing page instance
+			 * @returns {?page} Null if something goes wrong
+			 * @public
+			 */
 			create: createPage,
-			
-			//Add a new template to the list of page templates exports(key,model,override)
+
+			/**
+			 * Create a new pageModel, i.e. a function to create a new pages.
+			 * It first calls {@link _createPageModel} and then calls {@link registerPageModel}
+			 * with the output of the first call.
+			 * @name exports
+			 * @memberof pages
+			 * @method
+			 * @param {String} key The model unique key
+			 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type
+			 *   or a pageCreator function that returns a page object.
+			 * @param {Boolean} [override=false] Allows overriding an existing page instance
+			 *
+			 * @return {pageModel}
+			 * @public
+			 */
 			exports: exportPage
 		}
 	});

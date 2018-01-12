@@ -47,6 +47,16 @@ module.exports = function fxGruntConfig (grunt) {
 	
 	var config = {
 		pkg: grunt.file.readJSON('package.json'),
+		clean: {
+			options: {
+				force: true
+			},
+			doc: {
+				src: [
+					'docs/<%= pkg.name %>/<%= pkg.version %>/*'
+				]
+			}
+		},
 		buildnum: {
 			options: {
 				file: BUILD_FILE
@@ -206,6 +216,17 @@ module.exports = function fxGruntConfig (grunt) {
 					]
 				}
 			}
+		},
+		jsdoc: {
+			dist: {
+				src: SRC_FILES.concat('README.md'),
+				options: {
+					destination: 'docs',
+					private: false,
+					package: './package.json',
+					template: './node_modules/minami'
+				}
+			}
 		}
 	};
 	
@@ -258,6 +279,7 @@ module.exports = function fxGruntConfig (grunt) {
 		});
 		
 		// Default task.
+		grunt.registerTask('doc', ['clean:doc','jsdoc']);
 		grunt.registerTask('test', ['connect', 'qunit']);
 		grunt.registerTask('dev', ['jshint', 'jscs', 'complexity']);
 		grunt.registerTask('build', [
@@ -265,7 +287,8 @@ module.exports = function fxGruntConfig (grunt) {
 			'revision',
 			'concat',
 			'uglify',
-			'fix-source-map'
+			'fix-source-map',
+			'doc'
 		]);
 		grunt.registerTask('default', ['dev', 'test', 'build']);
 	};

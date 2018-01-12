@@ -1,17 +1,15 @@
 /**
- * @author Deux Huit Huit
- */
-
-/**
- * General customization
+ * General customization alongside the framework
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @requires jQuery
+ * @requires App
  */
 (function ($, global, undefined) {
 	'use strict';
-	
-	/*
-	 * Cheap modrnzr
-	 */
-	// add device css class to html
+
 	var deviceClasses = [
 		'iphone', 'ipad', 'ios',
 		'android',
@@ -25,23 +23,19 @@
 	});
 	// easing support
 	$.easing.def = ($.mobile ? 'linear' : 'easeOutQuad');
-	
-	/*
+
+	/**
 	 * Patching console object.
-	 * See: https://developers.google.com/chrome-developer-tools/docs/console-api
-	 * Snippet
-		var c=[];
-		$('ol.toc li').each(function () {
-			var r = /console\.([a-z]+)/.exec($(this).text());r && c.push(r[1])
-		});
-		console.log(c);
-	*/
-	
+	 * @see https://developers.google.com/chrome-developer-tools/docs/console-api
+	 */
 	var consoleFx = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'group',
 		'group', 'group', 'info', 'log', 'profile', 'profile', 'time', 'time', 'time',
 		'trace', 'warn'];
 	
-	// console support
+	/**
+	 * Console support
+	 * @global
+	 */
 	if (!global.console) {
 		global.console = {};
 	}
@@ -50,11 +44,18 @@
 		global.console[key] = global.console[key] || $.noop;
 	});
 	
-	/*
-	 * Global tools
-	 */
+
 	
-	// prevent default macro
+	/**
+	 * Facade to stop the propagation of events
+	 * @name pd
+	 * @method
+	 * @param {Event} e Event object
+	 * @param {Boolean} stopPropagation Flag to stop the event propagation or not
+	 * @returns {Boolean} false, always.
+	 * @global
+	 * @public
+	 */
 	global.pd = function (e, stopPropagation) {
 		if (!!e) {
 			if ($.isFunction(e.preventDefault)) {

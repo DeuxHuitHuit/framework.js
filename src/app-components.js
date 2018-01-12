@@ -1,8 +1,14 @@
 /**
- * @author Deux Huit Huit
- *
- * Components
  * Components are factory method that will generate a instance of a component.
+ *
+ * @fileoverview Defines and exports components
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace components
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 
@@ -10,17 +16,46 @@
 	
 	/** Components **/
 	var components = {};
-	
+
+	/**
+	 * Create a default model of a component with an init function
+	 * @name _createAbstractComponent
+	 * @method
+	 * @memberof components
+	 * @private
+	 * @return {Object}
+	 */
 	var _createAbstractComponent = function () {
 		return {
 			init: $.noop
 		};
 	};
-	
+
+	/**
+	 * Merge the created component with the default model
+	 * just to be sure there's an init method
+	 * @name extendComponent
+	 * @method
+	 * @memberof components
+	 * @param {Object} component
+	 * @return {Object} component
+	 * @private
+	 */
 	var extendComponent = function (component) {
 		return $.extend(_createAbstractComponent(), component);
 	};
-	
+
+	/**
+	 * Make sure the component is unique by key verification
+	 * and stores it with all the other components
+	 * @name exportComponent
+	 * @method
+	 * @memberof components
+	 * @param {String} key unique identifier
+	 * @param {Function} component model of the component
+	 * @param {Boolean} override fake news
+	 * @private
+	 */
 	var exportComponent = function (key, component, override) {
 		if (!$.type(key)) {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
@@ -32,7 +67,17 @@
 		}
 		return false;
 	};
-	
+
+	/**
+	 * Create an instence of the component
+	 * @name createComponent
+	 * @method
+	 * @memberof components
+	 * @param {String} key unique identifier
+	 * @param {Object} options object passed to the component's code
+	 * @return {Object} Merged component with the default model and the acual component code
+	 * @private
+	 */
 	var createComponent = function (key, options) {
 		if (!components[key]) {
 			App.log({args: ['Component %s is not found', key], fx: 'error'});
@@ -55,13 +100,41 @@
 		// Components
 		components: {
 			
-			// private
+			/**
+			 * Get all components models
+			 * @public
+			 * @name models
+			 * @method
+			 * @memberof components
+			 * @returns {Objects}
+			 */
 			models: function () {
 				return components;
 			},
 			
+			/**
+			 * Create an instence of the component
+			 * @name create
+			 * @method
+			 * @memberof components
+			 * @param {String} key unique identifier
+			 * @param {Object} options object passed to the component's code
+			 * @return {Object} Merged component with the default model and the acual component code
+			 * @public
+			 */
 			create: createComponent,
-			
+
+			/**
+			 * Make sure the component is unique by key verification
+			 * and stores it with all the other components
+			 * @name exports
+			 * @method
+			 * @memberof components
+			 * @param {String} key unique identifier
+			 * @param {Function} component model of the component
+			 * @param {Boolean} override fake news
+			 * @public
+			 */
 			exports: exportComponent
 		}
 	

@@ -1,14 +1,28 @@
 /**
- * @author Deux Huit Huit
- *
  * App Callback functionnality
  *
+ * @fileoverview Defines and exports callback and loaded
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace callback
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 
 	'use strict';
 	
-	/** Utility **/
+	/**
+	 * Put the args value in a array if it isn't one already
+	 * @name argsToArray
+	 * @method
+	 * @memberof callback
+	 * @param {*} args
+	 * @return {Array}
+	 * @private
+	 */
 	var argsToArray = function (args) {
 		var isNull = (args === null);
 		var isNotUndefined = (args !== undefined);
@@ -24,6 +38,17 @@
 		return args;
 	};
 	
+	/**
+	 * Execute the method recived with the arguments recived
+	 * @name callback
+	 * @method
+	 * @memberof callback
+	 * @this App
+	 * @param {function} fx 
+	 * @param {*} args
+	 * @return undefined
+	 * @private
+	 */
 	var callback = function (fx, args) {
 		try {
 			args = argsToArray(args);
@@ -44,7 +69,18 @@
 		return undefined;
 	};
 	
-	// external lib load check
+	/**
+	 * Check if a ressource is loaded and callback when it is.
+	 * @name loaded
+	 * @method
+	 * @memberof callback
+	 * @param {*} v Ressource to test
+	 * @param {Function} fx Callback to execute when the ressource is loaded
+	 * @param {Integer} delay Delay between each checks in ms
+	 * @param {Integer} maxRetriesCount Max checks for a ressource
+	 * @param {Integer} counter Memo for the recursive function
+	 * @private
+	 */
 	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
 		delay = Math.max(delay || 0, 100);
 		maxRetriesCount = maxRetriesCount || 10;
@@ -64,10 +100,31 @@
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
-		// callback utility
+		/**
+		 * Execute the method recived with the arguments recived
+		 * @name callback
+		 * @method
+		 * @memberof callback
+		 * @this App
+		 * @param {function} fx 
+		 * @param {*} args
+		 * @return undefined
+		 * @private
+		 */
 		callback: callback,
 		
-		// loaded utility
+		/**
+		 * Check if a ressource is loaded and callback when it is.
+		 * @name loaded
+		 * @method
+		 * @memberof callback
+		 * @param {*} v Ressource to test
+		 * @param {Function} fx Callback to execute when the ressource is loaded
+		 * @param {Integer} delay Delay between each checks in ms
+		 * @param {Integer} maxRetriesCount Max checks for a ressource
+		 * @param {Integer} counter Memo for the recursive function
+		 * @public
+		 */
 		loaded: loaded
 	});
 	

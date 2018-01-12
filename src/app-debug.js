@@ -1,8 +1,14 @@
 /**
- * @author Deux Huit Huit
- *
  * App Debug and Log
  *
+ * @fileoverview Defines and exports log and debug
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace debug
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 
@@ -11,6 +17,14 @@
 	/** Debug **/
 	var isDebuging = false;
 	
+	/**
+	 * Set or get the debug flag for the App
+	 * @name debug
+	 * @method
+	 * @memberof debug
+	 * @param {Boolean=} value
+	 * @private
+	 */
 	var debug = function (value) {
 		if (value === true || value === false) {
 			isDebuging = value;
@@ -20,6 +34,15 @@
 		return isDebuging;
 	};
 	
+	/**
+	 * Format the passed arguments and the displayed message
+	 * @name argsToObject
+	 * @method
+	 * @memberof debug
+	 * @param {Object} arg 
+	 * @returns {Object} Formated object
+	 * @private
+	 */
 	var argsToObject = function (arg) {
 		// ensure that args is an array
 		if (!!arg.args && !$.isArray(arg.args)) {
@@ -42,6 +65,15 @@
 	};
 	
 	var logs = [];
+
+	/**
+	 * Log the recived data with the appropriate effect (log, error, info...)
+	 * @name log
+	 * @method
+	 * @memberof debug
+	 * @param {Array} arg
+	 * @private
+	 */
 	var log = function (arg) {
 		// no args, exit
 		if (!arg) {
@@ -72,13 +104,34 @@
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
-		// get/set the debug flag
+		/**
+		 * Set or get the debug flag for the App
+		 * @name debug
+		 * @method
+		 * @memberof debug
+		 * @param {Boolean=} value
+		 * @public
+		 */
 		debug: debug,
 		
-		// log
+		/**
+		 * Log the recived data with the appropriate effect (log, error, info...)
+		 * @name log
+		 * @method
+		 * @memberof debug
+		 * @param {Array} arg
+		 * @public
+		 */
 		log: log,
 		
-		// logs
+		/**
+		 * Get all the logs
+		 * @name logs
+		 * @method
+		 * @memberof debug
+		 * @returns {Array} All the logs
+		 * @public
+		 */
 		logs: function () {
 			return logs;
 		}

@@ -2,7 +2,7 @@
   "name": "framework",
   "title": "framework.js",
   "description": "Deux Huit Huit javascript framework",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "homepage": "https://github.com/DeuxHuitHuit/framework.js",
   "author": {
     "name": "Deux Huit Huit",
@@ -21,6 +21,7 @@
     "express": "4.16.2",
     "grunt": "~1.0.1",
     "grunt-complexity": "~1.1",
+    "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-concat": "~1.0.1",
     "grunt-contrib-connect": "~1.0.2",
     "grunt-contrib-jshint": "~1.1.0",
@@ -29,6 +30,7 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-git-revision": "0.0.1",
     "grunt-jscs": "^3.0.1",
+    "grunt-jsdoc": "^2.2.1",
     "grunt-karma": "~2.0.0",
     "karma": "~1.7",
     "karma-chrome-launcher": "~2.2.0",
@@ -38,6 +40,7 @@
     "karma-qunit": "~1.2.1",
     "karma-script-launcher": "~1.0.0",
     "matchdep": "~2.0.0",
+    "minami": "^1.2.3",
     "optimist": "0.6.1",
     "phantomjs": "~2.1.7"
   }

@@ -11,70 +11,12 @@ The framework use jQuery and Underscore.js and extends some functionality.
 * https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js
 * https://code.jquery.com/pep/0.4.1/pep.min.js (optional)
 
-## API
-
-**Loader**
-
-* `load(url, priority)`
-* `isLoading(url)`
-* `inQueue(url)`
-* `working()`
-	
-	
-**App**
-
-* `_callAction()`
-* `root()`
-* `callback(fx, args)`
-* `debug(value)`
-* `run()`
-* `log()`
-* `logs()`
-* `mediator:`
-
-	* `notify(key, data, cb(key, res))`
-	* `notifyCurrentPage(key, data, cb(key, res))`
-	* `goto()`
-	* `toggle()`
-	
-* `pages`
-
-	* `_matchRoute(route, routes)`
-	* `_validateRoute()`
-	* `models()`
-	* `instances()`
-	* `getPageForRoute(route)`
-	* `page(keyOrRoute)`
-	* `create(page)`
-	* `export(key, page)`
-	* `notify(key, data, cb(key, res))`
-	
-* `modules`
-
-	* `models()`
-	* `create(module)`
-	* `export(key, module)`
-	* `notify(key, data, cb(key, res))`
-	
-* `components`
-
-	* `models()`
-	* `instances()`
-	* `create()`
-	* `exports()`
-
-* `device`
-
-	* `iphone` true for userAgent containing 'iPhone' or 'iPod'
-	* `ipad` true for userAgent containing 'iPad'
-	* `ios` true when iPhone is true or userAgent contain 'iPad'
-	* `mobile` true when ios is true or android is true or userAgent contain 'mobile' or 'phone'
-	* `android` true for userAgent containing Android'
-	* `phone` true when userAgent contain 'mobile' or 'phone'
-	* `tablet` true when mobile but not a phone
-
 ## History
 
+* **1.8.x**
+	* Documented the source code
+	* Added jsdoc
+	* Added doc task to the build
 * **1.5.x**
 	* Added jscs to the build
 	* Introduce App.device and App.routing
@@ -98,4 +40,4 @@ The framework use jQuery and Underscore.js and extends some functionality.
 
 [MIT](http://deuxhuithuit.mit-license.org)    
 Made with love in Montréal by [Deux Huit Huit](https://deuxhuithuit.com)    
-Copyrights (c) 2013-2016
+Copyrights (c) 2013-2018
