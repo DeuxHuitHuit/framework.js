@@ -279,7 +279,6 @@ module.exports = function fxGruntConfig (grunt) {
 		});
 		
 		// Default task.
-		grunt.registerTask('doc', ['clean:doc','jsdoc']);
 		grunt.registerTask('test', ['connect', 'qunit']);
 		grunt.registerTask('dev', ['jshint', 'jscs', 'complexity']);
 		grunt.registerTask('build', [
@@ -287,10 +286,10 @@ module.exports = function fxGruntConfig (grunt) {
 			'revision',
 			'concat',
 			'uglify',
-			'fix-source-map',
-			'doc'
+			'fix-source-map'
 		]);
-		grunt.registerTask('default', ['dev', 'test', 'build']);
+		grunt.registerTask('doc', ['clean:doc','jsdoc']);
+		grunt.registerTask('default', ['dev', 'test', 'build', 'doc']);
 	};
 	
 	var load = function (grunt) {
