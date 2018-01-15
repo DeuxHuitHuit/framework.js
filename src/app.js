@@ -788,11 +788,15 @@
 		});
 		
 		if (!currentPage) {
-			App.log({args: 'Can not init application: No current page set.', fx: 'error'});
-		} else {
-			notifyAll('app.init', {
-				page: currentPage
-			});
+			App.log({args: 'No current page set, pages will not work.', fx: 'error'});
+		}
+		
+		notifyAll('app.init', {
+			page: currentPage
+		});
+		
+		if (!currentPage) {
+			App.modules.notify('app.pageNotFound');
 		}
 	};
 	
