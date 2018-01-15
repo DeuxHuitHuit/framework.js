@@ -1,9 +1,9 @@
 /**
  *  Assets loader: Basically a wrap around $.ajax in order
  *  to priorize and serialize resource loading.
- * 
+ *
  * @fileoverview Assets Loader, wrap around $.ajax
- * 
+ *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  * @namespace Loader
@@ -237,7 +237,7 @@
 	};
 	
 	/**
-	 * Trigger the loading if nothing is happening 
+	 * Trigger the loading if nothing is happening
 	 * @name launchLoad
 	 * @method
 	 * @private

@@ -44,7 +44,7 @@
 	 * @method
 	 * @memberof callback
 	 * @this App
-	 * @param {function} fx 
+	 * @param {function} fx
 	 * @param {*} args
 	 * @return undefined
 	 * @private
@@ -106,7 +106,7 @@
 		 * @method
 		 * @memberof callback
 		 * @this App
-		 * @param {function} fx 
+		 * @param {function} fx
 		 * @param {*} args
 		 * @return undefined
 		 * @private

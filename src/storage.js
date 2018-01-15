@@ -85,7 +85,7 @@
 			},
 
 			/**
-			 * Delete the data from the storage matching 
+			 * Delete the data from the storage matching
 			 * the Regular Expression or all the data if none is provided
 			 * @name clear
 			 * @memberof Storage

@@ -198,7 +198,7 @@
 	 * Do nothing if the current page is already the requested route
 	 * @name gotoPage
 	 * @memberof App
-	 * @method 
+	 * @method
 	 * @param {String} obj Page requested
 	 * @param {String} previousPoppedUrl Url
 	 * @fires App#page:leave
@@ -800,7 +800,8 @@
 		 * @name _callAction
 		 * @memberof App
 		 * @method
-		 * @param {Function|Object} actions Object of methods that can be matches with the key's value
+		 * @param {Function|Object} actions Object of methods that can be matches
+		 *   with the key's value
 		 * @param {String} key Action key
 		 * @param {Object} data Bag of data
 		 * @returns {Boolean} Callback's result
@@ -889,7 +890,7 @@
 			 * Do nothing if the current page is already the requested route
 			 * @name goto
 			 * @memberof App.mediator
-			 * @method 
+			 * @method
 			 * @param {String} obj Page requested
 			 * @param {String} previousPoppedUrl Url
 			 * @fires App#page:leave

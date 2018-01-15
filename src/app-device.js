@@ -1,11 +1,11 @@
 /**
  * App device detector
- * 
+ *
  * @fileoverview Analyse the user agent
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- * 
+ *
  * @namespace device
  * @memberof App
  * @requires App
@@ -111,7 +111,7 @@
 		 * @name testUserAgent
 		 * @memberof device
 		 * @method
-		 * @param {RegExp} regexp 
+		 * @param {RegExp} regexp
 		 * @param {String} userAgent
 		 * @returns {Boolean} if the test passed or not
 		 * @private

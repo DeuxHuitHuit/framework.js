@@ -5,7 +5,7 @@
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- * 
+ *
  * @namespace debug
  * @memberof App
  * @requires App
@@ -39,7 +39,7 @@
 	 * @name argsToObject
 	 * @method
 	 * @memberof debug
-	 * @param {Object} arg 
+	 * @param {Object} arg
 	 * @returns {Object} Formated object
 	 * @private
 	 */
