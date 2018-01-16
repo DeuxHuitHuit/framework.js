@@ -613,7 +613,7 @@
 							// of loading a new page
 							mediatorIsLoadingPage = true;
 							
-							Loader.load({
+							App.loader.load({
 								url: obj, // the *actual* route
 								priority: 0, // now
 								vip: true, // don't queue on fail
