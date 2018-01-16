@@ -1,6 +1,4 @@
-# Deux Huit Huit's framework.js [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Build Status](https://travis-ci.org/DeuxHuitHuit/framework.js.svg)](https://travis-ci.org/DeuxHuitHuit/framework.js)[![David DM](https://david-dm.org/DeuxHuitHuit/framework.js/dev-status.svg?style=flat)](https://david-dm.org/DeuxHuitHuit/framework.js#info=devDependencies)
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/DeuxHuitHuit/framework.js.svg)](https://greenkeeper.io/)
+# Deux Huit Huit's framework.js [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Build Status](https://travis-ci.org/DeuxHuitHuit/framework.js.svg)](https://travis-ci.org/DeuxHuitHuit/framework.js)[![David DM](https://david-dm.org/DeuxHuitHuit/framework.js/dev-status.svg?style=flat)](https://david-dm.org/DeuxHuitHuit/framework.js#info=devDependencies) [![Greenkeeper badge](https://badges.greenkeeper.io/DeuxHuitHuit/framework.js.svg)](https://greenkeeper.io/)
 
 > Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
