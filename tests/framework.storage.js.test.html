@@ -14,7 +14,7 @@
 		(function (w, doc,co) {
 			// https://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
 			var u = {},
-				e,
+				e, t,
 				a = /\+/g,  // Regex for replacing addition symbol with a space
 				r = /([^&=]+)=?([^&]*)/g,
 				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
@@ -28,8 +28,12 @@
 			if (!!u.jquery) {
 				v = u.jquery;
 			}
-
-			doc.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + "<" + '/' + 'script>');
+			if (v === 'local') {
+				t = './jquery.js';
+			} else {
+				t = 'https://ajax.googleapis.com/ajax/libs/jquery/' + v + '/jquery.js'
+			}
+			doc.write('<script src="' + t + '">' + '<' + '/' + 'script>');
 			co.log('\nLoading jQuery v' + v + '\n');
 		})(window, document, console);
 	</script>

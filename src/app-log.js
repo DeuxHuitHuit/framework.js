@@ -5,7 +5,7 @@
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- * 
+ *
  * @namespace log
  * @memberof App
  * @requires App
@@ -19,7 +19,7 @@
 	 * @name argsToObject
 	 * @method
 	 * @memberof debug
-	 * @param {Object} arg 
+	 * @param {Object} arg
 	 * @returns {Object} Formated object
 	 * @private
 	 */
@@ -71,7 +71,7 @@
 			if (!!window.console[a.fx].apply) {
 				window.console[a.fx].apply(window.console, a.args);
 			} else {
-				$.each(a.args, function logArgs(index, arg) {
+				$.each(a.args, function logArgs (index, arg) {
 					window.console[a.fx](arg);
 				});
 			}

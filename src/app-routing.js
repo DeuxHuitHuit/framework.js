@@ -1,11 +1,11 @@
 /**
  * App routing
- * 
- * @fileoverview Utility 
+ *
+ * @fileoverview Utility
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- * 
+ *
  * @namespace routing
  * @memberof App
  * @requires App
@@ -88,8 +88,10 @@
 			 * Facade to parse and stringify a query string
 			 * @namespace querystring
 			 * @constant
-			 * @property {Function} parse Parse the current queryString or the provided one returns an object
-			 * @property {Function} stringify Stringify the provided queryString and returns a String
+			 * @property {Function} parse Parse the current queryString or the
+			 *   provided one returns an object
+			 * @property {Function} stringify Stringify the provided queryString
+			 *   and returns a String
 			 * @memberof routing
 			 * @public
 			 */

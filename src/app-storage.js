@@ -1,6 +1,6 @@
 /**
  * Facade to access the browser's localstorage and session storage
- * 
+ *
  * @fileoverview Storage facade compatible with localStorage and sessionStorage
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
@@ -91,7 +91,7 @@
 			},
 
 			/**
-			 * Delete the data from the storage matching 
+			 * Delete the data from the storage matching
 			 * the Regular Expression or all the data if none is provided
 			 * @name clear
 			 * @memberof storage
