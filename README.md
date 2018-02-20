@@ -4,6 +4,11 @@
 
 The framework use jQuery and Underscore.js and extends some functionality.
 
+## Documentation
+
+* [Current Version](https://deuxhuithuit.github.io/framework.js/framework/2.0.0/)
+* [1.8.0](https://deuxhuithuit.github.io/framework.js/framework/1.8.0/)
+
 ## Dependencies
 
 * https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
