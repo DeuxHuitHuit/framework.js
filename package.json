@@ -18,7 +18,7 @@
   "license": "MIT",
   "keywords": [],
   "devDependencies": {
-    "express": "4.16.2",
+    "express": "4.16.3",
     "grunt": "~1.0.1",
     "grunt-complexity": "~1.1",
     "grunt-contrib-clean": "^1.1.0",
@@ -38,7 +38,7 @@
     "karma-firefox-launcher": "~1.1.0",
     "karma-ie-launcher": "~1.0.0",
     "karma-phantomjs-launcher": "~1.0.4",
-    "karma-qunit": "~1.2.1",
+    "karma-qunit": "~2.0.0",
     "karma-script-launcher": "~1.0.0",
     "matchdep": "~2.0.0",
     "minami": "^1.2.3",
