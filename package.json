@@ -37,7 +37,7 @@
     "karma-firefox-launcher": "~1.0.1",
     "karma-ie-launcher": "~1.0.0",
     "karma-phantomjs-launcher": "~1.0.4",
-    "karma-qunit": "~1.2.1",
+    "karma-qunit": "~2.0.0",
     "karma-script-launcher": "~1.0.0",
     "matchdep": "~2.0.0",
     "minami": "^1.2.3",
