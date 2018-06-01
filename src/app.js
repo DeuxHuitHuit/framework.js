@@ -33,6 +33,7 @@
 	 * @memberof App
 	 * @method
 	 * @returns {String} The url
+	 * @private
 	 */
 	var getCurrentUrl = function () {
 		return document.location.href.substring(
@@ -872,7 +873,17 @@
 				}
 				return currentPage;
 			},
-			
+
+			/**
+			 * Get the current url string
+			 * @name getCurrentUrl
+			 * @memberof App.mediator
+			 * @method
+			 * @returns {string} The current url
+			 * @public
+			 */
+			getCurrentUrl: getCurrentUrl,
+
 			/**
 			 * Get the currentPage object
 			 * @name getCurrentPage
@@ -883,6 +894,30 @@
 			 */
 			getCurrentPage: function () {
 				return currentPage;
+			},
+
+			/**
+			 * Get the previous url string
+			 * @name getPreviousUrl
+			 * @memberof App.mediator
+			 * @method
+			 * @returns {string} The previous url
+			 * @public
+			 */
+			getPreviousUrl: function () {
+				return previousUrl;
+			},
+
+			/**
+			 * Get the previousPage object
+			 * @name getPreviousPage
+			 * @memberof App.mediator
+			 * @method
+			 * @returns {Object} PageObject
+			 * @public
+			 */
+			getPreviousPage: function () {
+				return previousPage;
 			},
 
 			/**
