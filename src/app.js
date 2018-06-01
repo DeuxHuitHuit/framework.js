@@ -16,17 +16,6 @@
 	//Default value
 	var ROOT = 'body';
 	
-	/** Mediator **/
-	var mediatorIsLoadingPage = false;
-	var currentRouteUrl = getCurrentUrl();
-	
-	//Store ref to the current page object
-	var currentPage = null;
-	
-	//Store ref to the previous page object
-	var previousPage = null;
-	var previousUrl = '';
-
 	/**
 	 * Returns the current document.location value, without the protocol and host
 	 * @name getCurrentUrl
@@ -40,6 +29,17 @@
 			document.location.protocol.length + 2 + document.location.host.length
 		);
 	};
+
+	/** Mediator **/
+	var mediatorIsLoadingPage = false;
+	var currentRouteUrl = getCurrentUrl();
+	
+	//Store ref to the current page object
+	var currentPage = null;
+	
+	//Store ref to the previous page object
+	var previousPage = null;
+	var previousUrl = '';
 	
 	/**
 	 * Find and execute the methods that matches with the notify key
