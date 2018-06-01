@@ -704,7 +704,7 @@
 			if (_validateNextPage(nextPage) && _canEnterNextPage(nextPage)) {
 				if (nextPage !== currentPage) {
 					gotoPage(route);
-				} else if (!!previousUrl && previousUrl() !== getCurrentUrl()) {
+				} else if (!!previousUrl && previousUrl !== getCurrentUrl()) {
 					gotoPage(previousUrl);
 				} else if (!!fallback) {
 					gotoPage(fallback);
