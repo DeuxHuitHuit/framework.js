@@ -152,7 +152,7 @@
 		var result = true;
 		
 		if (!nextPage.canEnter()) {
-			App.log('Cannot enter page %s.', nextPage.key());
+			App.log({fx: 'error', args: ['Cannot enter page %s.', nextPage.key()]});
 			result = false;
 		}
 		
@@ -173,7 +173,7 @@
 		if (!currentPage) {
 			App.log({args: 'No current page set.', fx: 'error'});
 		} else if (!currentPage.canLeave()) {
-			App.log('Cannot leave page %s.', currentPage.key());
+			App.log({args: ['Cannot leave page %s.', currentPage.key()], fx: 'error'});
 		} else {
 			result = true;
 		}
@@ -645,7 +645,7 @@
 									mediatorIsLoadingPage = false;
 									// Reset the current page
 									
-									App.log({args: 'Giving up!', me: 'Loader'});
+									App.log({args: 'Giving up!', me: 'Loader', fx: 'error'});
 									
 									/**
 									 * @event App#pages:loadfatalerror

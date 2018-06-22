@@ -135,7 +135,7 @@
 				// clear pointer
 				currentUrl = null;
 				
-				App.log({args: ['Error loading url %s', asset.url], me: 'Loader'});
+				App.log({fx: 'info', args: ['Error loading url %s', asset.url], me: 'Loader'});
 				
 				// if no vip access is granted
 				//if (!asset.vip) {
@@ -250,7 +250,7 @@
 		if (!loaderIsWorking) {
 			loaderIsWorking = true;
 			loadOneAsset();
-			App.log({args: 'Load worker has been started', me: 'Loader'});
+			App.log({fx: 'info', args: 'Load worker has been started', me: 'Loader'});
 		}
 	};
 	
@@ -320,7 +320,7 @@
 	 */
 	loadAsset = function (url, priority) {
 		if (!url) {
-			App.log({args: 'No url given', me: 'Loader'});
+			App.log({fx: 'error', args: 'No url given', me: 'Loader'});
 			return this;
 		}
 		
@@ -328,7 +328,7 @@
 		
 		// ensure that asset is not current
 		if (isLoading(url)) {
-			App.log({args: ['Url %s is already loading', url.url], me: 'Loader'});
+			App.log({fx: 'error', args: ['Url %s is already loading', url.url], me: 'Loader'});
 			return this;
 		}
 		
@@ -345,7 +345,11 @@
 		if (!~index) {
 			// insert in array
 			assets.splice(url.priority, 1, url);
-			App.log({args: ['Url %s has been insert at %s', url.url, url.priority], me: 'Loader'});
+			App.log({
+				fx: 'info',
+				args: ['Url %s has been insert at %s', url.url, url.priority],
+				me: 'Loader'
+			});
 			
 		} else {
 			updatePrioriy(url, index);
