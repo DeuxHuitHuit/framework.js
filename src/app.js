@@ -41,13 +41,13 @@
 	var previousUrl = '';
 	
 	/**
-	 * Scope the _callAction actions only for the current page
+	 * Scope the App.actions.callAction actions only for the current page
 	 * @name notifyPage
 	 * @memberof App
 	 * @method
 	 * @param {String} key Notify key
 	 * @param {Object} data Bag of data
-	 * @param {Function} cb Callback executed after all the _callAction are executed
+	 * @param {Function} cb Callback executed after the App.actions.callAction execution
 	 * @this {Object} Mediator
 	 * @returns this
 	 * @private
@@ -885,13 +885,13 @@
 			notify: notifyAll,
 			
 			/**
-			 * Scope the _callAction actions only for the current page
+			 * Scope the App.actions.callAction actions only for the current page
 			 * @name notifyCurrentPage
 			 * @memberof App.mediator
 			 * @method
 			 * @param {String} key Notify key
 			 * @param {Object} data Bag of data
-			 * @param {Function} cb Callback executed after all the _callAction are executed
+			 * @param {Function} cb Callback executed after the App.actions.callAction execution
 			 * @this {Object} Mediator
 			 * @returns this
 			 * @public

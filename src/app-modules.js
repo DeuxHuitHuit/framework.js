@@ -66,13 +66,13 @@
 	};
 	
 	/**
-	 * Execute _callAction on all modules
+	 * Execute App.actions.callAction on all modules
 	 * @name notifyModules
 	 * @method
 	 * @memberof modules
 	 * @param {String} key Notify key
 	 * @param {Object} data Bag of data
-	 * @param {Function} cb Callback executed after all the notifications
+	 * @param {Function} cb Callback executed after each App.actions.callAction executions
 	 * @this App
 	 * @returns this
 	 * @private
@@ -124,13 +124,13 @@
 			exports: exportModule,
 			
 			/**
-			 * Execute _callAction on all modules
+			 * Execute App.actions.callAction on all modules
 			 * @name notify
 			 * @method
 			 * @memberof modules
 			 * @param {String} key Notify key
 			 * @param {Object} data Bag of data
-			 * @param {Function} cb Callback executed after all the notifications
+			 * @param {Function} cb Callback executed after each App.actions.callAction executions
 			 * @this App
 			 * @returns this
 			 * @public
