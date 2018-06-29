@@ -11,7 +11,6 @@
  * @requires App
  */
 (function ($, global, undefined) {
-	
 	'use strict';
 
 	// Forked: https://gist.github.com/nitriques/6583457

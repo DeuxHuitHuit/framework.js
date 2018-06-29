@@ -11,7 +11,6 @@
  * @requires App
  */
 (function ($, global, undefined) {
-
 	'use strict';
 	
 	/**
