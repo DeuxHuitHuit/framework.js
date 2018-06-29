@@ -39,14 +39,15 @@
 	};
 	
 	/**
-	 * Execute the method recived with the arguments recived
+	 * Execute the method received with the arguments received.
+	 * Returns what the method returned.
 	 * @name callback
 	 * @method
 	 * @memberof callback
 	 * @this App
 	 * @param {function} fx
 	 * @param {*} args
-	 * @return undefined
+	 * @return {*}
 	 * @private
 	 */
 	var callback = function (fx, args) {
@@ -73,7 +74,7 @@
 	global.App = $.extend(global.App, {
 		
 		/**
-		 * Execute the method recived with the arguments recived
+		 * Execute the method received with the arguments received
 		 * @name this
 		 * @method
 		 * @memberof callback

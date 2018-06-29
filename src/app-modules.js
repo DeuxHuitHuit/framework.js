@@ -72,7 +72,7 @@
 	 * @method
 	 * @memberof modules
 	 * @param {String} key Notify key
-	 * @param {Object=} data Bag of data
+	 * @param {Object} data Bag of data
 	 * @param {Function} cb Callback executed after all the notifications
 	 * @this App
 	 * @returns this
@@ -84,7 +84,7 @@
 			data = undefined;
 		}
 		$.each(modules, function actionToAllModules (index) {
-			var res = App._callAction(this.actions, key, data, cb);
+			var res = App.actions.callAction(this.actions, key, data, cb);
 			if (res !== undefined) {
 				App.callback(cb, [index, res]);
 			}
@@ -130,7 +130,7 @@
 			 * @method
 			 * @memberof modules
 			 * @param {String} key Notify key
-			 * @param {Object=} data Bag of data
+			 * @param {Object} data Bag of data
 			 * @param {Function} cb Callback executed after all the notifications
 			 * @this App
 			 * @returns this

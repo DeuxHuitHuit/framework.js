@@ -10,7 +10,6 @@
  * @namespace App
  */
 (function ($, global, undefined) {
-	
 	'use strict';
 	
 	//Default value
@@ -42,41 +41,6 @@
 	var previousUrl = '';
 	
 	/**
-	 * Find and execute the methods that matches with the notify key
-	 * @name _callAction
-	 * @memberof App
-	 * @method
-	 * @param {Function|Object} actions Object of methods that can be matches with the key's value
-	 * @param {String} key Action key
-	 * @param {Object} data Bag of data
-	 * @returns {Boolean} Callback's result
-	 * @private
-	 */
-	var _callAction = function (actions, key, data) {
-		if ($.isFunction(actions)) {
-			actions = actions();
-		}
-		if (!!actions) {
-			var tempFx = actions[key];
-			
-			if (!$.isFunction(tempFx) && !!~key.indexOf('.')) {
-				tempFx = actions;
-				// try JSONPath style...
-				var paths = key.split('.');
-				$.each(paths, function eachPath () {
-					tempFx = tempFx[this];
-					if (!$.isPlainObject(tempFx)) {
-						return false; // exit
-					}
-					return true;
-				});
-			}
-			
-			return App.callback(tempFx, [key, data]);
-		}
-	};
-	
-	/**
 	 * Scope the _callAction actions only for the current page
 	 * @name notifyPage
 	 * @memberof App
@@ -94,7 +58,7 @@
 				cb = data;
 				data = undefined;
 			}
-			var res = App._callAction(currentPage.actions, key, data);
+			var res = App.actions.callAction(currentPage.actions, key, data);
 			if (res !== undefined) {
 				App.callback(cb, [currentPage.key(), res]);
 			}
@@ -824,21 +788,6 @@
 	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
-		
-		/**
-		 * Find and execute the methods that matches with the notify key
-		 * @name _callAction
-		 * @memberof App
-		 * @method
-		 * @param {Function|Object} actions Object of methods that can be matches
-		 *   with the key's value
-		 * @param {String} key Action key
-		 * @param {Object} data Bag of data
-		 * @returns {Boolean} Callback's result
-		 * @public
-		 */
-		_callAction: _callAction,
-		
 		/**
 		 * Get the root css selector
 		 * @name root
@@ -864,7 +813,7 @@
 		/**
 		 * @namespace mediator
 		 * @memberof App
-		 * */
+		 */
 		mediator: {
 			// private
 			_currentPage: function (page) {
