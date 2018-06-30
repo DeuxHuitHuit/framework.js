@@ -83,7 +83,7 @@
 			data = undefined;
 		}
 		$.each(modules, function actionToAllModules (index) {
-			var res = App.actions.callAction(this.actions, key, data, cb);
+			var res = App.actions.callAction(this.actions, key, data);
 			if (res !== undefined) {
 				App.callback(cb, [index, res]);
 			}
