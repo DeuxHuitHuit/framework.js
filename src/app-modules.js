@@ -104,8 +104,10 @@
 	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
-		
-		// Modules
+		/**
+		 * @namespace modules
+		 * @memberof App
+		 */
 		modules: {
 			
 			/**
@@ -119,8 +121,6 @@
 			models: function () {
 				return modules;
 			},
-			
-			//create: createModule,
 			
 			/**
 			 * Register the module and make sure his key is unique
