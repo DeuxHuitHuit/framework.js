@@ -10,21 +10,19 @@
 (function ($, global, undefined) {
 	'use strict';
 
-	var deviceClasses = [
-		'iphone', 'ipad', 'ios',
-		'android',
-		'mobile', 'phone', 'tablet', 'touch',
-		'chrome', 'firefox', 'safari', 'internetexplorer', 'edge'
-	];
-
 	if (!!global.app && !!global.app.device) {
-		(function (h) {
-			$.each(deviceClasses, function (i, c) {
+		(function (h, deviceClasses) {
+			deviceClasses.forEach(function (c) {
 				if (!!App.device[c]) {
 					h.addClass(c);
 				}
 			});
-		})($('html'));
+		})($('html'), [
+			'iphone', 'ipad', 'ios',
+			'android',
+			'mobile', 'phone', 'tablet', 'touch',
+			'chrome', 'firefox', 'safari', 'internetexplorer', 'edge'
+		]);
 
 		// easing support
 		$.easing.def = (App.device.mobile ? 'linear' : 'easeOutQuad');
