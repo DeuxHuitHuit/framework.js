@@ -10,7 +10,7 @@
 (function ($, global, undefined) {
 	'use strict';
 
-	if (!!global.app && !!global.app.device) {
+	if (!!global.App && !!global.App.device) {
 		(function (h, deviceClasses) {
 			deviceClasses.forEach(function (c) {
 				if (!!App.device[c]) {
