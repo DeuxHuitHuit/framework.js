@@ -6,3 +6,13 @@ patch:
   'npm:tunnel-agent:20170305':
     - phantomjs > request > tunnel-agent:
         patched: '2018-06-26T08:06:35.512Z'
+  'npm:lodash:20180130':
+    - grunt-karma > lodash:
+        patched: '2018-07-03T07:38:28.040Z'
+    - grunt-jscs > jscs > lodash:
+        patched: '2018-07-03T07:38:28.040Z'
+    - grunt-jscs > jscs > jscs-jsdoc > jsdoctypeparser > lodash:
+        patched: '2018-07-03T07:38:28.040Z'
+    - grunt-jscs > jscs > xmlbuilder > lodash:
+        patched: '2018-07-03T07:38:28.040Z'
+
