@@ -67,7 +67,7 @@
 	 * @private
 	 */
 	var execute = function (actions, key, data, cb) {
-		var i = 0;
+		var sp = 0;
 		var outerCall = false;
 		var read = function (f) {
 			if ($.isFunction(f.read)) {
@@ -108,10 +108,18 @@
 			}
 		});
 		// If outerCall, empty the stack
-		while (outerCall && stack.length > i) {
-			stack.forEach(read);
-			stack.forEach(write);
-			i++;
+		while (outerCall && stack.length > sp) {
+			// Capture current end
+			var sLen = stack.length;
+			// Process current range only
+			for (var x = sp; x < sLen; x++) {
+				read(stack[x]);
+			}
+			for (x = sp; x < sLen; x++) {
+				write(stack[x]);
+			}
+			// Advance the stack pointer
+			sp = sLen;
 		}
 		if (outerCall) {
 			// clean up
