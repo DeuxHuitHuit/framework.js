@@ -16,11 +16,23 @@
 	//Default value
 	var ROOT = 'body';
 	
+	/**
+	 * Returns the current document.location value, without the protocol and host
+	 * @name getCurrentUrl
+	 * @memberof App
+	 * @method
+	 * @returns {String} The url
+	 * @private
+	 */
+	var getCurrentUrl = function () {
+		return document.location.href.substring(
+			document.location.protocol.length + 2 + document.location.host.length
+		);
+	};
+
 	/** Mediator **/
 	var mediatorIsLoadingPage = false;
-	var currentRouteUrl = document.location.href.substring(
-		document.location.protocol.length + 2 + document.location.host.length
-	);
+	var currentRouteUrl = getCurrentUrl();
 	
 	//Store ref to the current page object
 	var currentPage = null;
@@ -269,10 +281,7 @@
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
-				previousUrl = !!previousPoppedUrl ? previousPoppedUrl :
-					document.location.href.substring(
-						document.location.protocol.length + 2 + document.location.host.length
-					);
+				previousUrl = !!previousPoppedUrl ? previousPoppedUrl : getCurrentUrl();
 				//clear leavingPage
 				leavingPage = null;
 				
@@ -695,7 +704,7 @@
 			if (_validateNextPage(nextPage) && _canEnterNextPage(nextPage)) {
 				if (nextPage !== currentPage) {
 					gotoPage(route);
-				} else if (!!previousUrl) {
+				} else if (!!previousUrl && previousUrl !== getCurrentUrl()) {
 					gotoPage(previousUrl);
 				} else if (!!fallback) {
 					gotoPage(fallback);
@@ -864,7 +873,17 @@
 				}
 				return currentPage;
 			},
-			
+
+			/**
+			 * Get the current url string
+			 * @name getCurrentUrl
+			 * @memberof App.mediator
+			 * @method
+			 * @returns {string} The current url
+			 * @public
+			 */
+			getCurrentUrl: getCurrentUrl,
+
 			/**
 			 * Get the currentPage object
 			 * @name getCurrentPage
@@ -875,6 +894,30 @@
 			 */
 			getCurrentPage: function () {
 				return currentPage;
+			},
+
+			/**
+			 * Get the previous url string
+			 * @name getPreviousUrl
+			 * @memberof App.mediator
+			 * @method
+			 * @returns {string} The previous url
+			 * @public
+			 */
+			getPreviousUrl: function () {
+				return previousUrl;
+			},
+
+			/**
+			 * Get the previousPage object
+			 * @name getPreviousPage
+			 * @memberof App.mediator
+			 * @method
+			 * @returns {Object} PageObject
+			 * @public
+			 */
+			getPreviousPage: function () {
+				return previousPage;
 			},
 
 			/**
