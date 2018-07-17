@@ -18,11 +18,13 @@
 	];
 
 	if (!!global.app && !!global.app.device) {
-		$.each(deviceClasses, function (i, c) {
-			if (!!App.device[c]) {
-				$('html').addClass(c);
-			}
-		});
+		(function (h) {
+			$.each(deviceClasses, function (i, c) {
+				if (!!App.device[c]) {
+					h.addClass(c);
+				}
+			});
+		})($('html'));
 
 		// easing support
 		$.easing.def = (App.device.mobile ? 'linear' : 'easeOutQuad');
