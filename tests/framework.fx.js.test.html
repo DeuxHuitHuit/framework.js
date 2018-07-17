@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8" />
-	<title>app-debug.js test suite</title>
+	<title>app-fx.js test suite</title>
 
 	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css" type="text/css" />
 
@@ -40,7 +40,7 @@
 </head>
 
 <body>
-	<h1 id="qunit-header">app-debug.js</h1>
+	<h1 id="qunit-header">app-fx.js</h1>
 	<h2 id="qunit-banner"></h2>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
@@ -66,7 +66,7 @@
 						ok(fx === ret, 'Exports returns function');
 					});
 
-					test('Test exports overwrite', function AppFxExports() {
+					test('Test exports overwrite', function AppFxExportsOverwrite() {
 						var fx = function (key, data) {};
 						var fx2 = function (key, data) {};
 						var ret = App.fx.exports('fx.test2', fx);
@@ -77,7 +77,7 @@
 						ok(fx2 === ret, 'Exports returns overwrite function');
 					});
 
-					test('Test notify null', function AppFxExports() {
+					test('Test notify null', function AppFxNotifyNull() {
 						var cb = function (key, data) {
 							ok(false, 'callback was called when it should not');
 						};
@@ -88,18 +88,23 @@
 						App.fx.notify('fx.test3', null, cb);
 					});
 
-					test('Test notify test4', function AppFxExports() {
+					test('Test notify test4', function AppFxNotify4() {
 						var counter = 0;
 						var fx = function (key, data) {
 							ok(true, 'fx was called');
+							ok(key === 'fx.test4', 'key is test4');
+							ok(!data, 'data is false-y');
+							return true;
 						};
 						var cb = function (key, data) {
+							ok(key === 0, 'key is 0');
+							ok(data, 'ok is true-y');
 							counter++;
-							ok(counter === 1, 'cb was called exactly once');
 						};
 						App.fx.exports('fx.test4', fx);
 						App.fx.notify('fx.test4');
 						App.fx.notify('fx.test4', cb);
+						ok(counter === 1, 'cb was called exactly once');
 					});
 
 				}; // end run tests
