@@ -16,11 +16,23 @@
 	//Default value
 	var ROOT = 'body';
 	
+	/**
+	 * Returns the current document.location value, without the protocol and host
+	 * @name getCurrentUrl
+	 * @memberof App
+	 * @method
+	 * @returns {String} The url
+	 * @private
+	 */
+	var getCurrentUrl = function () {
+		return document.location.href.substring(
+			document.location.protocol.length + 2 + document.location.host.length
+		);
+	};
+
 	/** Mediator **/
 	var mediatorIsLoadingPage = false;
-	var currentRouteUrl = document.location.href.substring(
-		document.location.protocol.length + 2 + document.location.host.length
-	);
+	var currentRouteUrl = getCurrentUrl();
 	
 	//Store ref to the current page object
 	var currentPage = null;
@@ -86,6 +98,8 @@
 			if (res !== undefined) {
 				App.callback(cb, [currentPage.key(), res]);
 			}
+		} else {
+			App.log({args: 'Can not notify page: No current page set.', fx: 'error'});
 		}
 		return this;
 	};
@@ -198,7 +212,7 @@
 	 * Do nothing if the current page is already the requested route
 	 * @name gotoPage
 	 * @memberof App
-	 * @method 
+	 * @method
 	 * @param {String} obj Page requested
 	 * @param {String} previousPoppedUrl Url
 	 * @fires App#page:leave
@@ -267,10 +281,7 @@
 				
 				//set leaving page to be previous one
 				previousPage = leavingPage;
-				previousUrl = !!previousPoppedUrl ? previousPoppedUrl :
-					document.location.href.substring(
-						document.location.protocol.length + 2 + document.location.host.length
-					);
+				previousUrl = !!previousPoppedUrl ? previousPoppedUrl : getCurrentUrl();
 				//clear leavingPage
 				leavingPage = null;
 				
@@ -434,7 +445,7 @@
 							route: route,
 							isRedirect: true
 						});
-						App.log('redirected next page is the current one');
+						App.log('Redirected next page is the current one');
 					} else {
 						/**
 						 * Start new transition
@@ -579,7 +590,7 @@
 							page: nextPage,
 							route: route
 						});
-						App.log('next page is the current one');
+						App.log('Next page is the current one');
 						
 					} else {
 						
@@ -611,7 +622,7 @@
 							// of loading a new page
 							mediatorIsLoadingPage = true;
 							
-							Loader.load({
+							App.loader.load({
 								url: obj, // the *actual* route
 								priority: 0, // now
 								vip: true, // don't queue on fail
@@ -693,7 +704,7 @@
 			if (_validateNextPage(nextPage) && _canEnterNextPage(nextPage)) {
 				if (nextPage !== currentPage) {
 					gotoPage(route);
-				} else if (!!previousUrl) {
+				} else if (!!previousUrl && previousUrl !== getCurrentUrl()) {
 					gotoPage(previousUrl);
 				} else if (!!fallback) {
 					gotoPage(fallback);
@@ -744,9 +755,20 @@
 				// find if this is our current page
 				// current route found ?
 				if (!!~App.pages._matchRoute(currentRouteUrl, this.routes())) {
-					// initialise page variable
+					if (!!currentPage) {
+						App.log({
+							args: ['Previous current page will be changed', {
+								currentPage: currentPage,
+								previousPage: previousPage,
+								newCurrentPage: this
+							}],
+							fx: 'warning'
+						});
+					}
+					// initialize page variable
 					currentPage = this;
-					previousPage = this; // Set the same for the first time
+					previousPage = previousPage || this;
+
 					/**
 					 * @event App#page:entering
 					 * @type {object}
@@ -774,9 +796,17 @@
 			}
 		});
 		
+		if (!currentPage) {
+			App.log({args: 'No current page set, pages will not work.', fx: 'error'});
+		}
+		
 		notifyAll('app.init', {
 			page: currentPage
 		});
+		
+		if (!currentPage) {
+			App.modules.notify('app.pageNotFound');
+		}
 	};
 	
 	/**
@@ -800,7 +830,8 @@
 		 * @name _callAction
 		 * @memberof App
 		 * @method
-		 * @param {Function|Object} actions Object of methods that can be matches with the key's value
+		 * @param {Function|Object} actions Object of methods that can be matches
+		 *   with the key's value
 		 * @param {String} key Action key
 		 * @param {Object} data Bag of data
 		 * @returns {Boolean} Callback's result
@@ -842,7 +873,17 @@
 				}
 				return currentPage;
 			},
-			
+
+			/**
+			 * Get the current url string
+			 * @name getCurrentUrl
+			 * @memberof App.mediator
+			 * @method
+			 * @returns {string} The current url
+			 * @public
+			 */
+			getCurrentUrl: getCurrentUrl,
+
 			/**
 			 * Get the currentPage object
 			 * @name getCurrentPage
@@ -853,6 +894,30 @@
 			 */
 			getCurrentPage: function () {
 				return currentPage;
+			},
+
+			/**
+			 * Get the previous url string
+			 * @name getPreviousUrl
+			 * @memberof App.mediator
+			 * @method
+			 * @returns {string} The previous url
+			 * @public
+			 */
+			getPreviousUrl: function () {
+				return previousUrl;
+			},
+
+			/**
+			 * Get the previousPage object
+			 * @name getPreviousPage
+			 * @memberof App.mediator
+			 * @method
+			 * @returns {Object} PageObject
+			 * @public
+			 */
+			getPreviousPage: function () {
+				return previousPage;
 			},
 
 			/**
@@ -889,7 +954,7 @@
 			 * Do nothing if the current page is already the requested route
 			 * @name goto
 			 * @memberof App.mediator
-			 * @method 
+			 * @method
 			 * @param {String} obj Page requested
 			 * @param {String} previousPoppedUrl Url
 			 * @fires App#page:leave

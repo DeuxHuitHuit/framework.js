@@ -14,7 +14,7 @@
 		(function (w, doc,co) {
 			// https://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
 			var u = {},
-				e,
+				e, t,
 				a = /\+/g,  // Regex for replacing addition symbol with a space
 				r = /([^&=]+)=?([^&]*)/g,
 				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
@@ -24,12 +24,16 @@
 			while (e = r.exec(q)) {
 				u[d(e[1])] = d(e[2]);
 			}
-			
+
 			if (!!u.jquery) {
 				v = u.jquery;
-			}	
-
-			doc.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + "<" + '/' + 'script>');
+			}
+			if (v === 'local') {
+				t = './jquery.js';
+			} else {
+				t = 'https://ajax.googleapis.com/ajax/libs/jquery/' + v + '/jquery.js'
+			}
+			doc.write('<script src="' + t + '">' + '<' + '/' + 'script>');
 			co.log('\nLoading jQuery v' + v + '\n');
 		})(window, document, console);
 	</script>
@@ -42,9 +46,10 @@
 	
 	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
 	<script src="../src/globals.js"></script>
+	<script src="../src/app-log.js"></script>
 	<script src="../src/app-debug.js"></script> 
 	<script src="../src/app-callback.js"></script> 
-	<script src="../src/loader.js"></script> 
+	<script src="../src/app-loader.js"></script>
 	
 	<script>
 	(function ($, w) {
@@ -53,7 +58,7 @@
 		
 		var runTests = function  () {
 			
-			module('Loader');
+			module('App.loader');
 			App.debug(true);
 			
 			test('load', function loaderLoadTest () {
@@ -66,7 +71,7 @@
 
 					stop();
 
-					Loader
+					App.loader
 						.load('framework.js.test.html')
 						.load({
 							url: '1.html', // 404
@@ -107,7 +112,7 @@
 
 					stop();
 
-					Loader.load({
+					App.loader.load({
 						url: '2.html', // valid
 						success: function (e) {
 							successCount++;
@@ -149,7 +154,7 @@
 					
 					// mock Storage
 					var _store = {};
-					w.AppStorage = {
+					w.App.storage = {
 						session: {
 							get: function (key) {
 								return _store[key];
@@ -165,7 +170,7 @@
 						}
 					};
 
-					Loader.load({
+					App.loader.load({
 						url: '2.html', // valid
 						cache: true,
 						success: function (e) {
@@ -176,12 +181,12 @@
 							
 							equal(successCount, 1, '2.html cache successCount is 1');
 							
-							ok(window.AppStorage.session.get('2.html'), '2.html cache storage is present');
-							equal(window.AppStorage.session.get('2.html'), 'test file', '2.html cache is 2.html content');
+							ok(w.App.storage.session.get('2.html'), '2.html cache storage is present');
+							equal(w.App.storage.session.get('2.html'), 'test file', '2.html cache is 2.html content');
 							
 							stop();
 							
-							Loader.load({
+							App.loader.load({
 								url: '2.html', // valid
 								cache: true,
 								cachehit: function () {
@@ -190,9 +195,9 @@
 								success: function (data) {
 									start();
 									equal(cacheCount, 1, '2.html cache cacheCount is 1');
-									equal(data, window.AppStorage.session.get('2.html'), '2.html retreived from cache');
+									equal(data, w.App.storage.session.get('2.html'), '2.html retreived from cache');
 									
-									delete window.AppStorage;
+									delete window.App.storage;
 									
 									fourthTest();
 								}
@@ -202,22 +207,22 @@
 				};
 				
 				var fourthTest = function () {
-					Loader.load({
+					App.loader.load({
 						url: '2.html',
 						complete: function () {
 							start();
 						}
 					});
 					
-					ok(Loader.isLoading('2.html'), '2.html is loading');
-					ok(Loader.isLoading({url: '2.html'}), '{ url: \'2.html\' } is loading');
-					equal(Loader.inQueue('2.html'), -1, '2.html is not in queue');
+					ok(App.loader.isLoading('2.html'), '2.html is loading');
+					ok(App.loader.isLoading({url: '2.html'}), '{ url: \'2.html\' } is loading');
+					equal(App.loader.inQueue('2.html'), -1, '2.html is not in queue');
 					
-					Loader.load({
+					App.loader.load({
 						url: '2.html',
 						method: 'POST'
 					});
-					equal(Loader.inQueue('2.html'), 0, '2.html is not in queue');
+					equal(App.loader.inQueue('2.html'), 0, '2.html is not in queue');
 					
 					stop();
 				};

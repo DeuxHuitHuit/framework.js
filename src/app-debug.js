@@ -5,7 +5,7 @@
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- * 
+ *
  * @namespace debug
  * @memberof App
  * @requires App
@@ -39,7 +39,7 @@
 	 * @name argsToObject
 	 * @method
 	 * @memberof debug
-	 * @param {Object} arg 
+	 * @param {Object} arg
 	 * @returns {Object} Formated object
 	 * @private
 	 */
@@ -112,29 +112,7 @@
 		 * @param {Boolean=} value
 		 * @public
 		 */
-		debug: debug,
-		
-		/**
-		 * Log the recived data with the appropriate effect (log, error, info...)
-		 * @name log
-		 * @method
-		 * @memberof debug
-		 * @param {Array} arg
-		 * @public
-		 */
-		log: log,
-		
-		/**
-		 * Get all the logs
-		 * @name logs
-		 * @method
-		 * @memberof debug
-		 * @returns {Array} All the logs
-		 * @public
-		 */
-		logs: function () {
-			return logs;
-		}
+		debug: debug
 	});
 	
 })(jQuery, window);
