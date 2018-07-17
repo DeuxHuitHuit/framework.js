@@ -1,0 +1,113 @@
+<!DOCTYPE html public "✰">
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<title>app-debug.js test suite</title>
+
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css" type="text/css" />
+
+	<style type="text/css">
+	</style>
+
+	<script>
+		(function (w, doc, co) {
+			// https://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
+			var u = {},
+				e, t,
+				a = /\+/g,  // Regex for replacing addition symbol with a space
+				r = /([^&=]+)=?([^&]*)/g,
+				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
+				q = w.location.search.substring(1),
+				v = '2.2.4';
+
+			while (e = r.exec(q)) {
+				u[d(e[1])] = d(e[2]);
+			}
+
+			if (!!u.jquery) {
+				v = u.jquery;
+			}
+			if (v === 'local') {
+				t = './jquery.js';
+			} else {
+				t = 'https://ajax.googleapis.com/ajax/libs/jquery/' + v + '/jquery.js'
+			}
+			doc.write('<script src="' + t + '">' + '<' + '/' + 'script>');
+			co.log('\nLoading jQuery v' + v + '\n');
+		})(window, document, console);
+	</script>
+</head>
+
+<body>
+	<h1 id="qunit-header">app-debug.js</h1>
+	<h2 id="qunit-banner"></h2>
+	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
+
+	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
+	<script src="../src/app-log.js"></script>
+	<script src="../src/app-callback.js"></script>
+	<script src="../src/app-actions.js"></script>
+	<script src="../src/app-debug.js"></script>
+	<script src="../src/app-fx.js"></script>
+
+	<script>
+		(function ($, w) {
+			"use strict";
+
+			var runTests = function () {
+
+					module('App.fx');
+
+					test('Test exports', function AppFxExports() {
+						var fx = function (key, data) {};
+						var ret = App.fx.exports('fx.test', fx);
+						ok(fx === ret, 'Exports returns function');
+					});
+
+					test('Test exports overwrite', function AppFxExports() {
+						var fx = function (key, data) {};
+						var fx2 = function (key, data) {};
+						var ret = App.fx.exports('fx.test2', fx);
+						ok(fx === ret, 'Exports returns function');
+						ret = App.fx.exports('fx.test2', fx2);
+						ok(fx === ret, 'Exports returns function even if overwrite is denied');
+						ret = App.fx.exports('fx.test2', fx2, true);
+						ok(fx2 === ret, 'Exports returns overwrite function');
+					});
+
+					test('Test notify null', function AppFxExports() {
+						var cb = function (key, data) {
+							ok(false, 'callback was called when it should not');
+						};
+						var ret = App.fx.notify('fx.test3');
+						ok(!!ret, 'Notify returns something');
+						App.fx.notify('fx.test3', cb);
+						App.fx.notify('fx.test3', {}, cb);
+						App.fx.notify('fx.test3', null, cb);
+					});
+
+					test('Test notify test4', function AppFxExports() {
+						var counter = 0;
+						var fx = function (key, data) {
+							ok(true, 'fx was called');
+						};
+						var cb = function (key, data) {
+							counter++;
+							ok(counter === 1, 'cb was called exactly once');
+						};
+						App.fx.exports('fx.test4', fx);
+						App.fx.notify('fx.test4');
+						App.fx.notify('fx.test4', cb);
+					});
+
+				}; // end run tests
+
+			$(w).load(runTests);
+
+		})(jQuery, window);
+	</script>
+</body>
+
+</html>
