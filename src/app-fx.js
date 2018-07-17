@@ -56,7 +56,9 @@
 		} else {
 			// Try to set the name of the function
 			if (App.debug() && Object.defineProperty) {
-				Object.defineProperty(fx, 'name', { value: key });
+				try {
+					Object.defineProperty(fx, 'name', { value: key });
+				} catch (ex) {}
 			}
 			bindings[key] = fx;
 		}
