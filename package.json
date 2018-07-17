@@ -33,7 +33,7 @@
     "grunt-jscs": "^3.0.1",
     "grunt-jsdoc": "^2.2.1",
     "grunt-karma": "~2.0.0",
-    "karma": "~2.0.0",
+    "karma": "~2.0.3",
     "karma-chrome-launcher": "~2.2.0",
     "karma-firefox-launcher": "~1.1.0",
     "karma-ie-launcher": "~1.0.0",
