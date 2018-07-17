@@ -50,8 +50,9 @@
 	 * @method
 	 * @memberof modules
 	 * @param {String} key Module's unique identifier
-	 * @param {Object} module
-	 * @param {Boolean} override
+	 * @param {Object} module The module object
+	 * @param {Boolean} override Flag to control overwriting a module
+	 * @returns {Object} The newly created module
 	 * @private
 	 */
 	var exportModule = function (key, module, override) {
@@ -127,8 +128,9 @@
 			 * @method
 			 * @memberof modules
 			 * @param {String} key Module's unique identifier
-			 * @param {Object} module
-			 * @param {Boolean} override
+			 * @param {Object} module The module object
+			 * @param {Boolean} override Flag to control overwriting a module
+			 * @returns {Object} The newly created module
 			 * @public
 			 */
 			exports: exportModule,
