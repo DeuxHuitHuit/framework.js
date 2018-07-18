@@ -39,35 +39,7 @@
 	//Store ref to the previous page object
 	var previousPage = null;
 	var previousUrl = '';
-	
-	/**
-	 * Scope the App.actions.callAction actions only for the current page
-	 * @name notifyPage
-	 * @memberof App
-	 * @method
-	 * @param {String} key Notify key
-	 * @param {Object} data Bag of data
-	 * @param {Function} cb Callback executed after the App.actions.callAction execution
-	 * @this {Object} Mediator
-	 * @returns this
-	 * @private
-	 */
-	var notifyPage = function (key, data, cb) {
-		if (!!currentPage) {
-			if ($.isFunction(data) && !cb) {
-				cb = data;
-				data = undefined;
-			}
-			var res = App.actions.callAction(currentPage.actions, key, data);
-			if (res !== undefined) {
-				App.callback(cb, [currentPage.key(), res]);
-			}
-		} else {
-			App.log({args: 'Can not notify page: No current page set.', fx: 'error'});
-		}
-		return this;
-	};
-	
+
 	/**
 	 * Check if the mediator is loading a page
 	 * @name _validateMediatorState
@@ -148,26 +120,67 @@
 	//Actions
 
 	/**
-	 * Notify all registered component and page
+	 * Resolves the call to key only for the current page
+	 * @name resolvePageAction
+	 * @memberof App
+	 * @method
+	 * @param {String} key Notify key
+	 * @param {Object} data Bag of data
+	 * @this {Object} Mediator
+	 * @returns {Object} A read/write object, if it exists
+	 * @private
+	 */
+	var resolvePageAction = function (key, data) {
+		if (!!currentPage) {
+			return App.actions.resolve(currentPage.actions, key, data);
+		} else {
+			App.log({ args: 'Can not notify page: No current page set.', fx: 'error' });
+		}
+	};
+
+	/**
+	 * Resolves and executes the action on the page and all modules
 	 * @name notifyAll
 	 * @memberof App
 	 * @method
 	 * @param {String} key Notify key
-	 * @param {Object} data Object passed to notified methods
-	 * @param {Function} cb Callback executed when the notify is done
+	 * @param {Object} data Bag of data
+	 * @param {Function} cb Callback executed after each App.actions.execute execution
 	 * @this Mediator
 	 * @returns this
 	 * @see AER in http://addyosmani.com/largescalejavascript/
 	 * @private
 	 */
 	var notifyAll = function (key, data, cb) {
-		
-		// propagate action to current page only
-		notifyPage(key, data, cb);
-		
-		// propagate action to all modules
-		App.modules.notify(key, data, cb);
-		
+		var actions = [];
+		// resolve action from current page only
+		var pa = resolvePageAction(key, data);
+		if (!!pa) {
+			actions.push(pa);
+		}
+		// resolve action from all modules
+		actions = actions.concat(App.modules.resolve(key, data));
+		// Execute everything
+		App.actions.execute(actions, key, data, cb);
+		return this;
+	};
+
+	/**
+	 * Resolves and executes the action on the page
+	 * @name notifyPage
+	 * @memberof App
+	 * @method
+	 * @param {String} key Notify key
+	 * @param {Object} data Bag of data
+	 * @param {Function} cb Callback executed after each App.actions.execute execution
+	 * @this Mediator
+	 * @returns this
+	 */
+	var notifyPage = function (key, data, cb) {
+		var pa = resolvePageAction(key, data);
+		if (!!pa) {
+			App.actions.execute([pa], key, data, cb);
+		}
 		return this;
 	};
 
@@ -870,13 +883,13 @@
 			},
 
 			/**
-			 * Notify all registered component and page
+			 * Resolves and execute the action on the page and all modules
 			 * @name notify
 			 * @memberof App.mediator
 			 * @method
 			 * @param {String} key Notify key
-			 * @param {Object} data Object passed to notified methods
-			 * @param {Function} cb Callback executed when the notify is done
+			 * @param {Object} data Bag of data
+			 * @param {Function} cb Callback executed after each App.actions.execute execution
 			 * @this Mediator
 			 * @returns this
 			 * @see AER in http://addyosmani.com/largescalejavascript/
@@ -885,13 +898,13 @@
 			notify: notifyAll,
 			
 			/**
-			 * Scope the App.actions.callAction actions only for the current page
+			 * Resolves and executes the action on the page
 			 * @name notifyCurrentPage
 			 * @memberof App.mediator
 			 * @method
 			 * @param {String} key Notify key
 			 * @param {Object} data Bag of data
-			 * @param {Function} cb Callback executed after the App.actions.callAction execution
+			 * @param {Function} cb Callback executed after each App.actions.execute execution
 			 * @this {Object} Mediator
 			 * @returns this
 			 * @public

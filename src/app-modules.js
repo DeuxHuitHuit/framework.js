@@ -64,30 +64,40 @@
 		}
 		return modules[key];
 	};
-	
+
 	/**
-	 * Execute App.actions.callAction on all modules
+	 * Resolves the key action on all modules
+	 * @name resolveActions
+	 * @method
+	 * @memberof modules
+	 * @param {String} key Notify key
+	 * @param {Object} data Bag of data
+	 * @returns {Array} Array of read/write objects for all modules
+	 * @private
+	 */
+	var resolveActions = function (key, data) {
+		return Object.keys(modules).map(function resolveAction (k) {
+			return App.actions.resolve(modules[k].actions, key, data);
+		}).filter(function (a) {
+			return !!a;
+		});
+	};
+
+	/**
+	 * Resolves and execute the action on all modules
 	 * @name notifyModules
 	 * @method
 	 * @memberof modules
 	 * @param {String} key Notify key
 	 * @param {Object} data Bag of data
-	 * @param {Function} cb Callback executed after each App.actions.callAction executions
+	 * @param {Function} cb Callback executed after each App.actions.execute executions
 	 * @this App
 	 * @returns this
 	 * @private
 	 */
 	var notifyModules = function (key, data, cb) {
-		if ($.isFunction(data) && !cb) {
-			cb = data;
-			data = undefined;
-		}
-		$.each(modules, function actionToAllModules (index) {
-			var res = App.actions.callAction(this.actions, key, data);
-			if (res !== undefined) {
-				App.callback(cb, [index, res]);
-			}
-		});
+		var actions = resolveActions(key, data);
+		App.actions.execute(actions, key, data, cb);
 		return this;
 	};
 	
@@ -124,18 +134,30 @@
 			exports: exportModule,
 			
 			/**
-			 * Execute App.actions.callAction on all modules
+			 * Resolves and execute the action on all modules
 			 * @name notify
 			 * @method
 			 * @memberof modules
 			 * @param {String} key Notify key
 			 * @param {Object} data Bag of data
-			 * @param {Function} cb Callback executed after each App.actions.callAction executions
+			 * @param {Function} cb Callback executed after each App.actions.execute executions
 			 * @this App
 			 * @returns this
 			 * @public
 			 */
-			notify: notifyModules
+			notify: notifyModules,
+
+			/**
+			 * Resolves the key action on all modules
+			 * @name resolve
+			 * @method
+			 * @memberof modules
+			 * @param {String} key Notify key
+			 * @param {Object} data Bag of data
+			 * @returns {Array} Array of read/write objects for all modules
+			 * @public
+			 */
+			resolve: resolveActions
 		}
 	
 	});

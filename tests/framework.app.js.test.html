@@ -355,7 +355,7 @@
 				var counter = 0;
 				
 				var cb = function (key, res) {
-					equal($.type(key), 'string', 'key ' + key + ' is a string');
+					equal($.type(key), 'number', 'key ' + key + ' is a number');
 					equal(res, true, 'res is true');
 					counter++;
 				};

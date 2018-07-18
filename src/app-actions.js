@@ -11,29 +11,36 @@
  */
 (function ($, global, undefined) {
 	'use strict';
+	var keys = {};
+	var innerCall = false;
+	var stack = [];
 
 	/**
-	 * Find and execute the methods that matches with the notify key
-	 * @name callAction
+	 * Find the methods that matches with the notify key
+	 * @name resolve
 	 * @memberof App.actions
 	 * @method
 	 * @param {Function|Object} actions Object of methods that can be matches with the key's value
 	 * @param {String} key Action key
 	 * @param {Object} data Bag of data
-	 * @returns {*} Callback's result
+	 * @returns {Function} The function corresponding to the key, if it exists in actions object
 	 * @private
 	 */
-	var callAction = function (actions, key, data) {
+	var resolve = function (actions, key, data) {
 		if ($.isFunction(actions)) {
 			actions = actions();
 		}
 		if (!!actions) {
+			// Try the whole key
 			var tempFx = actions[key];
-			
-			if (!$.isFunction(tempFx) && !!~key.indexOf('.')) {
+			// If not, try JSONPath style...
+			if (!$.isFunction(tempFx)) {
+				var paths = keys[key] || key.split('.');
+				if (paths.length < 2) {
+					return;
+				}
+				keys[key] = paths;
 				tempFx = actions;
-				// try JSONPath style...
-				var paths = key.split('.');
 				$.each(paths, function eachPath () {
 					tempFx = tempFx[this];
 					if (!$.isPlainObject(tempFx)) {
@@ -42,31 +49,122 @@
 					return true;
 				});
 			}
-			
-			return App.callback(tempFx, [key, data]);
+			if ($.isFunction(tempFx)) {
+				return tempFx;
+			}
+		}
+	};
+
+	/**
+	 * Executes all read and write operations present in the actions array.
+	 * @name execute
+	 * @memberof App.actions
+	 * @method
+	 * @param {Array} actions Array of read/write objects
+	 * @param {String} key Action key
+	 * @param {Object} data Bag of data
+	 * @returns {undefined}
+	 * @private
+	 */
+	var execute = function (actions, key, data, cb) {
+		var i = 0;
+		var outerCall = false;
+		var read = function (f) {
+			if ($.isFunction(f.read)) {
+				f.read(key, data);
+			}
+		};
+		var write = function (f) {
+			f.write(key, data);
+		};
+		if (!innerCall) {
+			innerCall = true;
+			outerCall = true;
+		}
+		if (!$.isArray(actions)) {
+			actions = [actions];
+		}
+		if ($.isFunction(data) && !cb) {
+			cb = data;
+			data = undefined;
+		}
+		// Push all resolved actions to the stack
+		actions.forEach(function eachAction (a, index) {
+			var retValue = App.callback(a, [key, data]);
+			if (!!cb && retValue !== undefined) {
+				App.callback(cb, [index, retValue]);
+			}
+			if ($.isFunction(retValue)) {
+				retValue = {
+					read: null,
+					write: retValue
+				};
+			}
+			if ($.isPlainObject(retValue) && $.isFunction(retValue.write)) {
+				if (App.debug() && !retValue.key) {
+					retValue.key = key;
+				}
+				stack.push(retValue);
+			}
+		});
+		// If outerCall, empty the stack
+		while (outerCall && stack.length > i) {
+			stack.forEach(read);
+			stack.forEach(write);
+			i++;
+		}
+		if (outerCall) {
+			// clean up
+			innerCall = false;
+			stack = [];
 		}
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
+	global.App = $.extend(global.App, { // todo, add true everywhere
 		/**
 		 * @namespace actions
 		 * @memberof App
 		 */
 		actions: {
 			/**
-			 * Find and execute the methods that matches with the notify key
-			 * @name callAction
+			 * Find the methods that matches with the notify key
+			 * @name resolve
 			 * @memberof App.actions
 			 * @method
 			 * @param {Function|Object} actions Object of methods that can be matches
 			 *   with the key's value
 			 * @param {String} key Action key
 			 * @param {Object} data Bag of data
-			 * @returns {*} Callback's result
+			 * @returns {Function} The function corresponding to the key, if it exists
 			 * @public
 			 */
-			callAction: callAction
+			resolve: resolve,
+
+			/**
+			 * Executes all read and write operations present in the actions array.
+			 * @name execute
+			 * @memberof App.actions
+			 * @method
+			 * @param {Array} actions Array of read/write objects
+			 * @param {String} key Action key
+			 * @param {Object} data Bag of data
+			 * @returns {undefined}
+			 * @public
+			 */
+			execute: execute,
+
+			/**
+			 * @name stack
+			 * @memberof App.actions
+			 * @method
+			 * @returns {Array} All the operations currently in the stack.
+			 *   Stack operations can already be executed but still in the stack.
+			 * @public
+			 */
+			stack: function () {
+				return stack;
+			}
 		}
 	});
 })(jQuery, window);
