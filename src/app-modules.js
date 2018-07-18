@@ -18,13 +18,13 @@
 	
 	/**
 	 * Create a basic module with the minimum required methods
-	 * @name _createAbstractModule
+	 * @name createAbstractModule
 	 * @method
 	 * @memberof modules
 	 * @returns {Object}
 	 * @private
 	 */
-	var _createAbstractModule = function () {
+	var createAbstractModule = function () {
 		return {
 			actions: $.noop,
 			init: $.noop
@@ -41,7 +41,7 @@
 	 * @private
 	 */
 	var createModule = function (module) {
-		return $.extend(_createAbstractModule(), module);
+		return $.extend(createAbstractModule(), module);
 	};
 	
 	/**

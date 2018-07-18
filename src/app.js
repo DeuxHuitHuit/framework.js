@@ -42,13 +42,13 @@
 
 	/**
 	 * Check if the mediator is loading a page
-	 * @name _validateMediatorState
+	 * @name validateMediatorState
 	 * @memberof App
 	 * @method
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var _validateMediatorState = function () {
+	var validateMediatorState = function () {
 		if (mediatorIsLoadingPage) {
 			App.log({args: 'Mediator is busy waiting for a page load.', fx: 'error'});
 		}
@@ -58,14 +58,14 @@
 	
 	/**
 	 * Check if the page is valid or not
-	 * @name _validateNextPage
+	 * @name validateNextPage
 	 * @memberof App
 	 * @method
 	 * @param {Object} nextPage PageObject
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var _validateNextPage = function (nextPage) {
+	var validateNextPage = function (nextPage) {
 		var result = true;
 			
 		if (!nextPage) {
@@ -77,14 +77,14 @@
 	
 	/**
 	 * Check if we can enter the next page
-	 * @name _canEnterNextPage
+	 * @name canEnterNextPage
 	 * @memberof App
 	 * @method
 	 * @param {Object} nextPage Next page instence
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var _canEnterNextPage = function (nextPage) {
+	var canEnterNextPage = function (nextPage) {
 		var result = true;
 		
 		if (!nextPage.canEnter()) {
@@ -97,13 +97,13 @@
 	
 	/**
 	 * Check if we can leave the current page
-	 * @name _canLeaveCurrentPage
+	 * @name canLeaveCurrentPage
 	 * @memberof App
 	 * @method
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var _canLeaveCurrentPage = function () {
+	var canLeaveCurrentPage = function () {
 		var result = false;
 		
 		if (!currentPage) {
@@ -392,7 +392,7 @@
 					route: route
 				});
 				
-				if (!_validateNextPage(nextPage)) {
+				if (!validateNextPage(nextPage)) {
 					/**
 					 * @event App#pages:routeNotFound
 					 * @type {object}
@@ -534,7 +534,7 @@
 			});
 		};
 		
-		if (_validateMediatorState() && _canLeaveCurrentPage()) {
+		if (validateMediatorState() && canLeaveCurrentPage()) {
 			if ($.type(obj) === 'string') {
 				nextPage = App.pages.getPageForRoute(obj);
 				route = obj;
@@ -542,7 +542,7 @@
 				nextPage = obj;
 			}
 			
-			if (!_validateNextPage(nextPage)) {
+			if (!validateNextPage(nextPage)) {
 				/**
 				 * @event App#pages:routeNotFound
 				 * @type {Object}
@@ -555,7 +555,7 @@
 				});
 				App.log({args: ['Route "%s" was not found.', obj], fx: 'error'});
 			} else {
-				if (_canEnterNextPage(nextPage)) {
+				if (canEnterNextPage(nextPage)) {
 					if (nextPage === currentPage) {
 						/**
 						 * @event App#pages:navigateToCurrent
@@ -673,11 +673,11 @@
 	 * @private
 	 */
 	var togglePage = function (route, fallback) {
-		if (!!currentPage && _validateMediatorState()) {
+		if (!!currentPage && validateMediatorState()) {
 			var
 			nextPage = App.pages.getPageForRoute(route);
 			
-			if (_validateNextPage(nextPage) && _canEnterNextPage(nextPage)) {
+			if (validateNextPage(nextPage) && canEnterNextPage(nextPage)) {
 				if (nextPage !== currentPage) {
 					gotoPage(route);
 				} else if (!!previousUrl && previousUrl !== getCurrentUrl()) {
@@ -717,12 +717,12 @@
 		}
 		
 		// init each Modules
-		$.each(App.modules.models(), function _initModule () {
+		$.each(App.modules.models(), function initModule () {
 			this.init();
 		});
 		
 		// init each Page already loaded
-		$.each(App.pages.instances(), function _initPage () {
+		$.each(App.pages.instances(), function initPage () {
 			if (!!this.loaded()) {
 				// init page
 				this.init({firstTime: true});
@@ -730,7 +730,7 @@
 				
 				// find if this is our current page
 				// current route found ?
-				if (!!~App.pages._matchRoute(currentRouteUrl, this.routes())) {
+				if (!!~App.pages.matchRoute(currentRouteUrl, this.routes())) {
 					if (!!currentPage) {
 						App.log({
 							args: ['Previous current page will be changed', {
@@ -756,7 +756,7 @@
 						route: currentRouteUrl
 					});
 					// enter the page right now
-					currentPage.enter(function _currentPageEnterCallback () {
+					currentPage.enter(function currentPageEnterCallback () {
 						/**
 						 * @event App#page:enter
 						 * @type {object}
@@ -827,14 +827,6 @@
 		 * @memberof App
 		 */
 		mediator: {
-			// private
-			_currentPage: function (page) {
-				if (!!page) {
-					currentPage = page;
-				}
-				return currentPage;
-			},
-
 			/**
 			 * Get the current url string
 			 * @name getCurrentUrl
@@ -855,6 +847,18 @@
 			 */
 			getCurrentPage: function () {
 				return currentPage;
+			},
+
+			/**
+			 * Set the currentPage object
+			 * @name setCurrentPage
+			 * @memberof App.mediator
+			 * @method
+			 * @param {Object} page The PageObject
+			 * @private
+			 */
+			setCurrentPage: function (page) {
+				currentPage = page;
 			},
 
 			/**

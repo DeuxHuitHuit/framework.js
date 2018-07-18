@@ -221,27 +221,7 @@ module.exports = function fxGruntConfig (grunt) {
 			src: SRC_FILES.concat(GRUNT_FILE),
 			options: {
 				config: JSCS_FILE,
-				fix: true,
-				disallowDanglingUnderscores: {
-					allExcept: [
-						'_currentPage',
-						'_createAbstractComponent',
-						'_createAbstractModule',
-						'_createPageModel',
-						'_matchRoute',
-						'_initPage',
-						'_initModule',
-						'_currentPageEnterCallback',
-						'_callAction',
-						'_pageData',
-						'_validateRoute',
-						'_validateMediatorState',
-						'_getPageForRoute',
-						'_validateNextPage',
-						'_canEnterNextPage',
-						'_canLeaveCurrentPage'
-					]
-				}
+				fix: true
 			}
 		},
 		jsdoc: {

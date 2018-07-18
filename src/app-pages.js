@@ -19,7 +19,7 @@
 	/**
 	 * Creates and a new factory function based on the
 	 * given parameters
-	 * @name _createPageModel
+	 * @name createPageModel
 	 * @memberof pages
 	 * @method
 	 * @param {String} key The unique key for this page model
@@ -30,7 +30,7 @@
 	 * @returns {pageModel} The newly built factory function
 	 * @private
 	 */
-	var _createPageModel = function (key, model, override) {
+	var createPageModel = function (key, model, override) {
 		var ftrue = function () {
 			return true;
 		};
@@ -69,13 +69,12 @@
 		 * @private
 		 */
 		var factory = function (pageData) {
-			var _pageData = pageData;
 			var modelRef;
 			
 			if ($.isPlainObject(model)) {
 				modelRef = model;
 			} else if ($.isFunction(model)) {
-				modelRef = model.call(this, key, _pageData, override);
+				modelRef = model.call(this, key, pageData, override);
 				if (!$.isPlainObject(modelRef)) {
 					App.log({
 						args: [
@@ -98,11 +97,11 @@
 			}
 			
 			var getKey = function () {
-				return _pageData.key;
+				return pageData.key;
 			};
 			
 			var routes = function () {
-				return _pageData.routes;
+				return pageData.routes;
 			};
 			
 			var loaded = function () {
@@ -111,7 +110,7 @@
 			
 			// recuperate extra params...
 			var data = function () {
-				return _pageData;
+				return pageData;
 			};
 			
 			// insure this can't be overriden
@@ -201,7 +200,7 @@
 	
 	/**
 	 * Create a new pageModel, i.e. a function to create a new pages.
-	 * It first calls {@link _createPageModel} and then calls {@link registerPageModel}
+	 * It first calls {@link createPageModel} and then calls {@link registerPageModel}
 	 * with the output of the first call.
 	 * @name exportPage
 	 * @memberof pages
@@ -216,20 +215,20 @@
 	 */
 	var exportPage = function (key, model, override) {
 		// Pass all args to the factory
-		var pageModel = _createPageModel(key, model, override);
+		var pageModel = createPageModel(key, model, override);
 		// Only work with pageModel afterwards
 		return registerPageModel(key, pageModel, override);
 	};
 	
 	/**
 	 * Validate a route object
-	 * @name _validateRoute
+	 * @name validateRoute
 	 * @memberof pages
 	 * @method
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var _validateRoute = function (route) {
+	var validateRoute = function (route) {
 		var result = false;
 		
 		if (!route) {
@@ -295,7 +294,7 @@
 	/**
 	 * Tries to match the given route against the given
 	 * array of possible routes.
-	 * @name _matchRoute
+	 * @name matchRoute
 	 * @memberof pages
 	 * @method
 	 * @param {String} route The route to search match for
@@ -304,7 +303,7 @@
 	 * @returns {Integer} The index of the matched route or -1 if no match
 	 * @private
 	 */
-	var _matchRoute = function (route, routes) {
+	var matchRoute = function (route, routes) {
 		var index = -1;
 		var found = function (i) {
 			index = i;
@@ -342,7 +341,7 @@
 
 	/**
 	 * Returns the first page object that matches the route param
-	 * @name _getPageForRoute
+	 * @name getPageForRoute
 	 * @memberof pages
 	 * @method
 	 * @param {String} route The route to search match for
@@ -350,13 +349,13 @@
 	 * @returns {?page} The page object or null if not found
 	 * @private
 	 */
-	var _getPageForRoute = function (route) {
+	var getPageForRoute = function (route) {
 		var page = null;
-		if (_validateRoute(route)) {
+		if (validateRoute(route)) {
 			$.each(pageInstances, function walkPage () {
 				var routes = this.routes();
 				// route found ?
-				if (!!~_matchRoute(route, routes)) {
+				if (!!~matchRoute(route, routes)) {
 					page = this;
 					return false; // exit
 				}
@@ -369,22 +368,22 @@
 	global.App = $.extend(true, global.App, {
 		pages: {
 			/**
-			 * @name _matchRoute
+			 * @name matchRoute
 			 * @method
 			 * @memberof pages
-			 * {@link App.pages~_matchRoute}
+			 * {@link App.pages~matchRoute}
 			 * @private
 			 */
-			_matchRoute: _matchRoute,
+			matchRoute: matchRoute,
 
 			/**
-			 * @name _validateRoute
+			 * @name validateRoute
 			 * @method
 			 * @memberof pages
-			 * {@link App.pages~_validateRoute}
+			 * {@link App.pages~validateRoute}
 			 * @private
 			 */
-			_validateRoute: _validateRoute,
+			validateRoute: validateRoute,
 
 			/**
 			 * Getter for all instances of a particular one
@@ -422,7 +421,7 @@
 			 * @returns {?page} The page object or null if not found
 			 * @public
 			 */
-			getPageForRoute: _getPageForRoute,
+			getPageForRoute: getPageForRoute,
 
 			/**
 			 * Returns the page based the key and fallbacks to
@@ -440,7 +439,7 @@
 				
 				//if no result found try with the route
 				if (!!!result) {
-					result = _getPageForRoute(keyOrRoute);
+					result = getPageForRoute(keyOrRoute);
 				}
 				
 				return result;
@@ -461,7 +460,7 @@
 
 			/**
 			 * Create a new pageModel, i.e. a function to create a new pages.
-			 * It first calls {@link _createPageModel} and then calls {@link registerPageModel}
+			 * It first calls {@link createPageModel} and then calls {@link registerPageModel}
 			 * with the output of the first call.
 			 * @name exports
 			 * @memberof pages

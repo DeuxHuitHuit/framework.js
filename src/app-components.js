@@ -18,13 +18,13 @@
 
 	/**
 	 * Create a default model of a component with an init function
-	 * @name _createAbstractComponent
+	 * @name createAbstractComponent
 	 * @method
 	 * @memberof components
 	 * @private
 	 * @return {Object}
 	 */
-	var _createAbstractComponent = function () {
+	var createAbstractComponent = function () {
 		return {
 			init: $.noop
 		};
@@ -41,7 +41,7 @@
 	 * @private
 	 */
 	var extendComponent = function (component) {
-		return $.extend(_createAbstractComponent(), component);
+		return $.extend(createAbstractComponent(), component);
 	};
 
 	/**
