@@ -359,7 +359,7 @@
 		return this;
 	};
 	
-	global.App = $.extend(global.App, {
+	global.App = $.extend(true, global.App, {
 		loader: {
 			/**
 		 * Put the request in the queue and trigger the load

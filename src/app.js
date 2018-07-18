@@ -800,7 +800,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
+	global.App = $.extend(true, global.App, {
 		/**
 		 * Get the root css selector
 		 * @name root

@@ -81,7 +81,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
+	global.App = $.extend(true, global.App, {
 
 		/**
 		 * Log the recived data with the appropriate effect (log, error, info...)

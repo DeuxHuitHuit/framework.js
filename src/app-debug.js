@@ -101,7 +101,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
+	global.App = $.extend(true, global.App, {
 		
 		/**
 		 * Set or get the debug flag for the App

@@ -42,7 +42,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
+	global.App = $.extend(true, global.App, {
 		/**
 		 * Check if a ressource is loaded and callback when it is.
 		 * @name this

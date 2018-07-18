@@ -129,7 +129,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(global.App, { // todo, add true everywhere
+	global.App = $.extend(true, global.App, {
 		/**
 		 * @namespace actions
 		 * @memberof App

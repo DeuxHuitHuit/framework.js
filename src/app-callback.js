@@ -70,7 +70,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
+	global.App = $.extend(true, global.App, {
 		
 		/**
 		 * Execute the method received with the arguments received
