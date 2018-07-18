@@ -14,6 +14,24 @@
 	var bindings = {};
 
 	/**
+	 * Defines a custom name property on the fx object, if debugging is enabled.
+	 * Ignores any errors.
+	 * @memberof App.fx
+	 * @name setFxName
+	 * @method
+	 * @param {String} key Action key
+	 * @param {Function} fx The function
+	 * @private
+	 */
+	var setFxName = function (key, fx) {
+		if (App.debug() && Object.defineProperty) {
+			try {
+				Object.defineProperty(fx, 'name', { value: key });
+			} catch (ex) { }
+		}
+	};
+
+	/**
 	 * Executes all read and write operations for the key function
 	 * @name execute
 	 * @memberof App.fx
@@ -55,11 +73,7 @@
 			App.log({ args: ['Function key %s is not a function', key], fx: 'error' });
 		} else {
 			// Try to set the name of the function
-			if (App.debug() && Object.defineProperty) {
-				try {
-					Object.defineProperty(fx, 'name', { value: key });
-				} catch (ex) {}
-			}
+			setFxName(fx);
 			bindings[key] = fx;
 		}
 		return bindings[key];
