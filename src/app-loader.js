@@ -134,7 +134,7 @@
 				// clear pointer
 				currentUrl = null;
 				
-				App.log({fx: 'info', args: ['Error loading url %s', asset.url], me: 'Loader'});
+				App.log({fx: 'error', args: ['Error loading url %s', asset.url], me: 'Loader'});
 				
 				// if no vip access is granted
 				//if (!asset.vip) {
