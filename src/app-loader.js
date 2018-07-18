@@ -362,16 +362,16 @@
 	global.App = $.extend(true, global.App, {
 		loader: {
 			/**
-		 * Put the request in the queue and trigger the load
-		 * @name load
-		 * @method
-		 * @memberof loader
-		 * @public
-		 * @param {Object} url Url Object
-		 * @param {Integer} priority
-		 * @this App
-		 * @returns this
-		 */
+			 * Put the request in the queue and trigger the load
+			 * @name load
+			 * @method
+			 * @memberof loader
+			 * @public
+			 * @param {Object} url Url Object
+			 * @param {Integer} priority
+			 * @this App
+			 * @returns this
+			 */
 			load: loadAsset,
 
 			/**
