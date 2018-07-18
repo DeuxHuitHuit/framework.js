@@ -335,12 +335,12 @@
 		};
 		
 		/**
-		 * Verify that the data is valid an append the loadded content inside the App's root
+		 * Verify that the data is valid an append the loaded content inside the App's root
 		 * @param {String} data requested data
 		 * @param {String} textStatus Current request status
-		 * @param {Object} jqXHR request instence
+		 * @param {Object} jqXHR request instance
 		 */
-		var loadSucess = function (data, textStatus, jqXHR) {
+		var loadSuccess = function (data, textStatus, jqXHR) {
 			var htmldata = safeParseData(data);
 			
 			// get the node
@@ -504,12 +504,12 @@
 		};
 		
 		/**
-		 * Disptch a notify for the progress' event
+		 * Dispatch a notify for the progress event
 		 * @name progress
 		 * @method
 		 * @memberof App
 		 * @private
-		 * @param {Event} e Request progess event
+		 * @param {Event} e Request progress event
 		 */
 		var progress = function (e) {
 			var total = e.originalEvent.total;
@@ -603,7 +603,7 @@
 								url: obj, // the *actual* route
 								priority: 0, // now
 								vip: true, // don't queue on fail
-								success: loadSucess,
+								success: loadSuccess,
 								progress: progress,
 								error: function (e) {
 									/**
@@ -620,7 +620,6 @@
 								giveup: function (e) {
 									// Free the mediator
 									mediatorIsLoadingPage = false;
-									// Reset the current page
 									
 									App.log({args: 'Giving up!', me: 'Loader', fx: 'error'});
 									
