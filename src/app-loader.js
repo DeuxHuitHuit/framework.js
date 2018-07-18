@@ -287,7 +287,7 @@
 	 * @param {Object} url Url object
 	 * @param {Integer} index
 	 */
-	var updatePrioriy = function (url, index) {
+	var updatePriority = function (url, index) {
 		// promote if new priority is different
 		var oldAsset = assets[index];
 		if (oldAsset.priority != url.priority) {
@@ -351,7 +351,7 @@
 			});
 			
 		} else {
-			updatePrioriy(url, index);
+			updatePriority(url, index);
 		}
 		
 		launchLoad();
