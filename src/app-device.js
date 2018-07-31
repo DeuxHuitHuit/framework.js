@@ -398,6 +398,7 @@
 			edge: browserDetector.isEdge(),
 
 			/**
+			 * Translate PointerEvents into similar events if we are on Safari
 			 * @name events
 			 * @constant
 			 * @public
@@ -413,13 +414,13 @@
 			 */
 			events: {
 				click: 'click',
-				enter: 'pointerenter',
-				up: 'pointerup',
-				down: 'pointerdown',
-				move: 'pointermove',
-				over: 'pointerover',
-				out: 'pointerout',
-				leave: 'pointerleave'
+				enter: browserDetector.isSafari() ? 'mouseenter' : 'pointerenter',
+				up: browserDetector.isSafari() ? 'mouseup' : 'pointerup',
+				down: browserDetector.isSafari() ? 'mousedown' : 'pointerdown',
+				move: browserDetector.isSafari() ? 'mousemove' : 'pointermove',
+				over: browserDetector.isSafari() ? 'mouseover' : 'pointerover',
+				out: browserDetector.isSafari() ? 'mouseout' : 'pointerout',
+				leave: browserDetector.isSafari() ? 'mouseleave': 'pointerleave'
 			}
 		}
 	});
