@@ -1,10 +1,13 @@
 /**
  * Facade to access the browser's localstorage and session storage
  *
+ * @fileoverview Storage facade compatible with localStorage and sessionStorage
+ *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @namespace Storage
+ * @namespace storage
+ * @memberof App
  * @requires App
  */
 (function ($, global, undefined) {
@@ -16,10 +19,11 @@
 			/**
 			 * Return the value associated with the given key
 			 * @name get
-			 * @memberof Storage
+			 * @memberof storage
 			 * @method
 			 * @param {string} key Access key to the storage object
 			 * @return {String}
+			 * @public
 			 */
 			get: function (key) {
 				if (!key) {
@@ -32,11 +36,12 @@
 			/**
 			 * Set and save a value to the given key in the storage
 			 * @name set
-			 * @memberof Storage
+			 * @memberof storage
 			 * @method
 			 * @param {string} key Access key to the storage object
 			 * @param {*} value Value wanted to be saved
 			 * @return {Boolean}
+			 * @public
 			 */
 			set: function (key, value) {
 				var result = false;
@@ -60,10 +65,11 @@
 			/**
 			 * Delete the storage data associated with the given key
 			 * @name remove
-			 * @memberof Storage
+			 * @memberof storage
 			 * @method
 			 * @param {string} key Access key to the storage object
 			 * @return {Boolean}
+			 * @public
 			 */
 			remove: function (key) {
 				var result = false;
@@ -85,13 +91,14 @@
 			},
 
 			/**
-			 * Delete the data from the storage matching 
+			 * Delete the data from the storage matching
 			 * the Regular Expression or all the data if none is provided
 			 * @name clear
-			 * @memberof Storage
+			 * @memberof storage
 			 * @method
 			 * @param {RegExp} regexp Regular Expression to match the key
 			 * @return {Boolean}
+			 * @public
 			 */
 			clear: function (regexp) {
 				var result = false;
@@ -124,14 +131,38 @@
 		};
 	};
 
-	/** @deprecated */
-	global.AppStorage = $.extend(global.AppStorage, {
-		factory: storage,
-		local: storage(window.localStorage),
-		session: storage(window.sessionStorage)
+
+	global.App = $.extend(global.App, {
+		storage: {
+
+			/**
+			 * Factory of the storage object
+			 * @name factory
+			 * @method
+			 * @memberof storage
+			 * @returns {Object} All storage's methods
+			 * @public
+			 */
+			factory: storage,
+
+			/**
+			 * Storage methods in localStorage mode
+			 * @name local
+			 * @constant
+			 * @public
+			 * @memberof storage
+			 */
+			local: storage(window.localStorage),
+
+			/**
+			 * Storage methods in sessionStorage mode
+			 * @name session
+			 * @constant
+			 * @public
+			 * @memberof storage
+			 */
+			session: storage(window.sessionStorage)
+		}
 	});
-	
-	/** @deprecated */
-	global.Storage = $.extend(global.Storage, global.AppStorage);
 	
 })(jQuery, window);

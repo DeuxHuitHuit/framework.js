@@ -1,8 +1,20 @@
-# Deux Huit Huit's framework.js [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/) [![Build Status](https://travis-ci.org/DeuxHuitHuit/framework.js.svg)](https://travis-ci.org/DeuxHuitHuit/framework.js)[![David DM](https://david-dm.org/DeuxHuitHuit/framework.js/dev-status.svg?style=flat)](https://david-dm.org/DeuxHuitHuit/framework.js#info=devDependencies)
+# Deux Huit Huit's framework.js
+
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+[![Build Status](https://travis-ci.org/DeuxHuitHuit/framework.js.svg)](https://travis-ci.org/DeuxHuitHuit/framework.js)
+![Build Status](https://ci.appveyor.com/api/projects/status/t8sadjjdpbyl48dj?svg=true)
+[![David DM](https://david-dm.org/DeuxHuitHuit/framework.js/dev-status.svg?style=flat)](https://david-dm.org/DeuxHuitHuit/framework.js#info=devDependencies)
+[![Greenkeeper badge](https://badges.greenkeeper.io/DeuxHuitHuit/framework.js.svg)](https://greenkeeper.io/)
+[![Maintainability](https://api.codeclimate.com/v1/badges/afad7fc6575f77e1f43d/maintainability)](https://codeclimate.com/github/DeuxHuitHuit/framework.js/maintainability)
 
 > Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
 The framework use jQuery and Underscore.js and extends some functionality.
+
+## Documentation
+
+* [Current Version](https://deuxhuithuit.github.io/framework.js/framework/2.0.0/)
+* [1.8.0](https://deuxhuithuit.github.io/framework.js/framework/1.8.0/)
 
 ## Dependencies
 
@@ -13,6 +25,11 @@ The framework use jQuery and Underscore.js and extends some functionality.
 
 ## History
 
+* **2.0.x**
+	* Integrated AppStorage to App.storage
+	* File structure modifications
+	* Removed old deprecated globals and jQuery overrides
+	* Removed globals-keyboard.js
 * **1.8.x**
 	* Documented the source code
 	* Added jsdoc

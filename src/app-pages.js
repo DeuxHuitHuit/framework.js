@@ -5,7 +5,7 @@
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- * 
+ *
  * @namespace pages
  * @memberof App
  * @requires App
@@ -468,8 +468,10 @@
 			 * @memberof pages
 			 * @method
 			 * @param {String} key The model unique key
-			 * @param {pageParam|pageCreator} model A page object that conforms with the pageParam type
-			 *   or a pageCreator function that returns a page object.
+			 * @param {pageParam|pageCreator} model A page object that conforms
+			 *   with the pageParam type or a pageCreator function that returns a page object.
+			 * @param {pageParam|pageCreator} model A page object that conforms with the
+			 *   pageParam type or a pageCreator function that returns a page object.
 			 * @param {Boolean} [override=false] Allows overriding an existing page instance
 			 *
 			 * @return {pageModel}
