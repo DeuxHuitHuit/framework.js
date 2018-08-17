@@ -16,13 +16,17 @@
 		'mobile', 'phone', 'tablet', 'touch',
 		'chrome', 'firefox', 'safari', 'internetexplorer', 'edge'
 	];
-	$.each(deviceClasses, function (i, c) {
-		if (!!$[c]) {
-			$('html').addClass(c);
-		}
-	});
-	// easing support
-	$.easing.def = ($.mobile ? 'linear' : 'easeOutQuad');
+
+	if (!!global.app && !!global.app.device) {
+		$.each(deviceClasses, function (i, c) {
+			if (!!App.device[c]) {
+				$('html').addClass(c);
+			}
+		});
+
+		// easing support
+		$.easing.def = (App.device.mobile ? 'linear' : 'easeOutQuad');
+	}
 
 	/**
 	 * Patching console object.
@@ -31,7 +35,7 @@
 	var consoleFx = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'group',
 		'group', 'group', 'info', 'log', 'profile', 'profile', 'time', 'time', 'time',
 		'trace', 'warn'];
-	
+
 	/**
 	 * Console support
 	 * @global
@@ -39,13 +43,11 @@
 	if (!global.console) {
 		global.console = {};
 	}
-	
+
 	$.each(consoleFx, function (i, key) {
 		global.console[key] = global.console[key] || $.noop;
 	});
-	
 
-	
 	/**
 	 * Facade to stop the propagation of events
 	 * @name pd

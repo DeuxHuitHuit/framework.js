@@ -31,6 +31,8 @@ module.exports = function fxGruntConfig (grunt) {
 	];
 	
 	var TEST_URIS = [];
+	var TEST_URIS_LT = [];
+	var TEST_URIS_CI = [];
 	
 	// for qunit
 	var createTestUris = function () {
@@ -42,6 +44,16 @@ module.exports = function fxGruntConfig (grunt) {
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.11.1');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.10.2');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.9.1');
+		}
+	};
+	var createTestUrisLt = function () {
+		for (var c = 0; c < TEST_PATHS.length; c++) {
+			TEST_URIS_LT.push(SERVER_URI + TEST_PATHS[c]);
+		}
+	};
+	var createTestUrisCi = function () {
+		for (var c = 0; c < TEST_PATHS.length; c++) {
+			TEST_URIS_CI.push(SERVER_URI + TEST_PATHS[c] + '&jquery=local');
 		}
 	};
 	
@@ -92,6 +104,16 @@ module.exports = function fxGruntConfig (grunt) {
 			all: {
 				options: {
 					urls: TEST_URIS
+				}
+			},
+			ci: {
+				options: {
+					urls: TEST_URIS_CI
+				}
+			},
+			latest: {
+				options: {
+					urls: TEST_URIS_LT
 				}
 			}
 		},
@@ -169,6 +191,9 @@ module.exports = function fxGruntConfig (grunt) {
 				},
 				preserveComments: false
 			}
+		},
+		curl: {
+			'tests/jquery.js': 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.js'
 		},
 		connect: {
 			server: {
@@ -279,7 +304,9 @@ module.exports = function fxGruntConfig (grunt) {
 		});
 		
 		// Default task.
-		grunt.registerTask('test', ['connect', 'qunit']);
+		grunt.registerTask('test', ['connect', 'qunit:all']);
+		grunt.registerTask('test-latest', ['connect', 'qunit:latest']);
+		grunt.registerTask('test-ci', ['curl', 'connect', 'qunit:ci']);
 		grunt.registerTask('dev', ['jshint', 'jscs', 'complexity']);
 		grunt.registerTask('build', [
 			'buildnum',
@@ -289,6 +316,7 @@ module.exports = function fxGruntConfig (grunt) {
 			'fix-source-map'
 		]);
 		grunt.registerTask('doc', ['clean:doc','jsdoc']);
+		grunt.registerTask('ci', ['dev', 'test-ci', 'build', 'doc']);
 		grunt.registerTask('default', ['dev', 'test', 'build', 'doc']);
 	};
 	
@@ -296,6 +324,8 @@ module.exports = function fxGruntConfig (grunt) {
 		md.filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 		
 		createTestUris();
+		createTestUrisCi();
+		createTestUrisLt();
 		
 		init(grunt);
 		

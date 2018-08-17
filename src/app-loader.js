@@ -1,12 +1,14 @@
 /**
  *  Assets loader: Basically a wrap around $.ajax in order
  *  to priorize and serialize resource loading.
- * 
+ *
  * @fileoverview Assets Loader, wrap around $.ajax
- * 
+ *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- * @namespace Loader
+ * @namespace loader
+ * @memberof App
+ * @requires App
  */
 (function ($, global, undefined) {
 	
@@ -48,7 +50,7 @@
 	 * Check if a given url is loading (Only GET request)
 	 * @name isLoading
 	 * @method
-	 * @memberof Loader
+	 * @memberof loader
 	 * @param {Object} url Url object to check
 	 * @returns {Boolean}
 	 * @private
@@ -67,7 +69,7 @@
 	 * Check if a given url is in the queue
 	 * @name inQueue
 	 * @method
-	 * @memberof Loader
+	 * @memberof loader
 	 * @param {Object} url Url object to check
 	 * @returns {Boolean}
 	 * @private
@@ -88,7 +90,7 @@
 	 * Return the appropriate storage engine for the given url
 	 * @name getStorageEngine
 	 * @method
-	 * @memberof Loader
+	 * @memberof loader
 	 * @param {Object} url Url object to check
 	 * @private
 	 */
@@ -96,7 +98,7 @@
 		if (url.cache === true) {
 			url.cache = 'session';
 		}
-		return global.AppStorage && global.AppStorage[url.cache];
+		return global.App.storage && global.App.storage[url.cache];
 	};
 	
 	// This breaks the call dependency cycle
@@ -133,7 +135,7 @@
 				// clear pointer
 				currentUrl = null;
 				
-				App.log({args: ['Error loading url %s', asset.url], me: 'Loader'});
+				App.log({fx: 'info', args: ['Error loading url %s', asset.url], me: 'Loader'});
 				
 				// if no vip access is granted
 				//if (!asset.vip) {
@@ -169,7 +171,7 @@
 	 * @name loadOneAsset
 	 * @method
 	 * @private
-	 * @memberof Loader
+	 * @memberof loader
 	 */
 	var loadOneAsset = function () {
 		// grab first item
@@ -186,7 +188,7 @@
 	 * Trigger loadOneAsset as long as there's entries in the queue
 	 * @name recursiveLoad
 	 * @method
-	 * @memberof Loader
+	 * @memberof loader
 	 * @private
 	 */
 	recursiveLoad = function () {
@@ -203,7 +205,7 @@
 	 * Validate and format url's data
 	 * @name valideUrlArags
 	 * @method
-	 * @memberof Loader
+	 * @memberof loader
 	 * @private
 	 * @param {Object} url Url object
 	 * @param {Integer} priority Priority of the url
@@ -237,18 +239,18 @@
 	};
 	
 	/**
-	 * Trigger the loading if nothing is happening 
+	 * Trigger the loading if nothing is happening
 	 * @name launchLoad
 	 * @method
 	 * @private
-	 * @memberof Loader
+	 * @memberof loader
 	 */
 	var launchLoad = function () {
 		// start now if nothing is loading
 		if (!loaderIsWorking) {
 			loaderIsWorking = true;
 			loadOneAsset();
-			App.log({args: 'Load worker has been started', me: 'Loader'});
+			App.log({fx: 'info', args: 'Load worker has been started', me: 'Loader'});
 		}
 	};
 	
@@ -256,7 +258,7 @@
 	 * Get the value from the cache if it's available
 	 * @name getValueFromCache
 	 * @method
-	 * @memberof Loader
+	 * @memberof loader
 	 * @param {Object} url Url object
 	 * @returns {Boolean}
 	 * @private
@@ -281,7 +283,7 @@
 	 * Update a request priority in the queue
 	 * @name updatePriority
 	 * @method
-	 * @memberof Loader
+	 * @memberof loader
 	 * @private
 	 * @param {Object} url Url object
 	 * @param {Integer} index
@@ -309,7 +311,7 @@
 	 * Put the request in the queue and trigger the load
 	 * @name loadAsset
 	 * @method
-	 * @memberof Loader
+	 * @memberof loader
 	 * @private
 	 * @param {Object} url Url Object
 	 * @param {Integer} priority
@@ -318,7 +320,7 @@
 	 */
 	loadAsset = function (url, priority) {
 		if (!url) {
-			App.log({args: 'No url given', me: 'Loader'});
+			App.log({fx: 'error', args: 'No url given', me: 'Loader'});
 			return this;
 		}
 		
@@ -326,7 +328,7 @@
 		
 		// ensure that asset is not current
 		if (isLoading(url)) {
-			App.log({args: ['Url %s is already loading', url.url], me: 'Loader'});
+			App.log({fx: 'error', args: ['Url %s is already loading', url.url], me: 'Loader'});
 			return this;
 		}
 		
@@ -343,7 +345,11 @@
 		if (!~index) {
 			// insert in array
 			assets.splice(url.priority, 1, url);
-			App.log({args: ['Url %s has been insert at %s', url.url, url.priority], me: 'Loader'});
+			App.log({
+				fx: 'info',
+				args: ['Url %s has been insert at %s', url.url, url.priority],
+				me: 'Loader'
+			});
 			
 		} else {
 			updatePrioriy(url, index);
@@ -354,53 +360,54 @@
 		return this;
 	};
 	
-	global.Loader = $.extend(global.Loader, {
-
-		/**
+	global.App = $.extend(global.App, {
+		loader: {
+			/**
 		 * Put the request in the queue and trigger the load
 		 * @name load
 		 * @method
-		 * @memberof Loader
+		 * @memberof loader
 		 * @public
 		 * @param {Object} url Url Object
 		 * @param {Integer} priority
 		 * @this App
 		 * @returns this
 		 */
-		load: loadAsset,
+			load: loadAsset,
 
-		/**
-		 * Check if a given url is loading (Only GET request)
-		 * @name isLoading
-		 * @method
-		 * @memberof Loader
-		 * @param {Object} url Url object to check
-		 * @returns {Boolean}
-		 * @public
-		 */
-		isLoading: isLoading,
+			/**
+			 * Check if a given url is loading (Only GET request)
+			 * @name isLoading
+			 * @method
+			 * @memberof loader
+			 * @param {Object} url Url object to check
+			 * @returns {Boolean}
+			 * @public
+			 */
+			isLoading: isLoading,
 
-		/**
-		 * Check if a given url is in the queue
-		 * @name inQueue
-		 * @method
-		 * @memberof Loader
-		 * @param {Object} url Url object to check
-		 * @returns {Boolean}
-		 * @public
-		 */
-		inQueue: inQueue,
+			/**
+			 * Check if a given url is in the queue
+			 * @name inQueue
+			 * @method
+			 * @memberof loader
+			 * @param {Object} url Url object to check
+			 * @returns {Boolean}
+			 * @public
+			 */
+			inQueue: inQueue,
 
-		/**
-		 * Get the flag if the loader is working or not
-		 * @name working
-		 * @method
-		 * @memberof Loader
-		 * @public
-		 * @returns {Boolean}
-		 */
-		working: function () {
-			return loaderIsWorking;
+			/**
+			 * Get the flag if the loader is working or not
+			 * @name working
+			 * @method
+			 * @memberof loader
+			 * @public
+			 * @returns {Boolean}
+			 */
+			working: function () {
+				return loaderIsWorking;
+			}
 		}
 	});
 	

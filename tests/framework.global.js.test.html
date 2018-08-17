@@ -14,7 +14,7 @@
 		(function (w, doc,co) {
 			// https://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
 			var u = {},
-				e,
+				e, t,
 				a = /\+/g,  // Regex for replacing addition symbol with a space
 				r = /([^&=]+)=?([^&]*)/g,
 				d = function (s) { return decodeURIComponent(s.replace(a, " ")); },
@@ -27,22 +27,25 @@
 			
 			if (!!u.jquery) {
 				v = u.jquery;
-			}	
-
-			doc.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + "<" + '/' + 'script>');
+			}
+			if (v === 'local') {
+				t = './jquery.js';
+			} else {
+				t = 'https://ajax.googleapis.com/ajax/libs/jquery/'+ v +'/jquery.js'
+			}
+			doc.write('<script src="' + t +'">' + '<' + '/' + 'script>');
 			co.log('\nLoading jQuery v' + v + '\n');
 		})(window, document, console);
 	</script>
 </head>
 <body>
-	<h1 id="qunit-header">framework.js</h1>  
+	<h1 id="qunit-header">framework.js</h1>
 	<h2 id="qunit-banner"></h2>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 	
 	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
 	<script src="../src/globals.js"></script>
-	<script src="../src/globals-keyboard.js"></script>
 	
 	<script>
 	(function ($, w) {
@@ -53,13 +56,6 @@
 		
 		runTests = function  () {
 			module('window');
-			
-			test('isChar', function isCharTest() {
-				ok(w.isChar(w.keys.space_bar), 'space_bar');
-				ok(!w.isChar(w.keys.backspace), 'backspace');
-				ok(w.isChar(w.keys.a), 'a');
-				ok(w.isChar(w.keys.z), 'z');
-			});
 			
 			test('pd(e)', function pdTest() {
 				var e = $.Event('pd-test');

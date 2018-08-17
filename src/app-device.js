@@ -1,84 +1,17 @@
 /**
  * App device detector
- * 
+ *
  * @fileoverview Analyse the user agent
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
- * 
+ *
  * @namespace device
  * @memberof App
  * @requires App
  */
 (function ($, global, undefined) {
 	'use strict';
-	
-	/**
-	 * Factory for the query string parser
-	 * @return {Object} accessible methods
-	 */
-	var queryStringParser = (function () {
-		var a = /\+/g; // Regex for replacing addition symbol with a space
-		var r = /([^&=]+)=?([^&]*)/gi;
-		var d = function (s) {
-			return decodeURIComponent(s.replace(a, ' '));
-		};
-		
-		/**
-		 * Format the querystring into an object
-		 * @name prase
-		 * @memberof App.routing
-		 * @method
-		 * @param {String} qs
-		 * @returns {Object}
-		 * @public
-		 */
-		var parse = function (qs) {
-			var u = {};
-			var e, q;
-			
-			//if we dont have the parameter qs, use the window location search value
-			if (qs !== '' && !qs) {
-				qs = window.location.search;
-			}
-			
-			//remove the first caracter (?)
-			q = qs.substring(1);
-
-			while ((e = r.exec(q))) {
-				u[d(e[1])] = d(e[2]);
-			}
-			
-			return u;
-		};
-		
-		/**
-		 * Format the object into a valid query string
-		 * @name stringify
-		 * @memberof App.routing
-		 * @method
-		 * @param {Object} qs Object needed to be transformed into a string
-		 * @returns {String} Result
-		 * @public
-		 */
-		var stringify = function (qs) {
-			var aqs = [];
-			$.each(qs, function (k, v) {
-				if (!!v) {
-					aqs.push(k + '=' + global.encodeURIComponent(v));
-				}
-			});
-			if (!aqs.length) {
-				return '';
-			}
-			return '?' + aqs.join('&');
-		};
-		
-		return {
-			parse: parse,
-			stringify: stringify
-		};
-	})();
 	
 	/**
 	 * Factory for the browser detector
@@ -111,7 +44,7 @@
 		 * @name testUserAgent
 		 * @memberof device
 		 * @method
-		 * @param {RegExp} regexp 
+		 * @param {RegExp} regexp
 		 * @param {String} userAgent
 		 * @returns {Boolean} if the test passed or not
 		 * @private
@@ -337,15 +270,6 @@
 			isChrome: function (userAgent) {
 				return testUserAgent(/Chrome/i, userAgent) && !detector.isEdge();
 			}
-
-			/*isUnsupported : function (userAgent) {
-				var
-				b;
-				userAgent = getUserAgent(userAgent);
-				b = $.uaMatch(userAgent);
-				
-				return b.browser === "" || (b.browser == 'msie' && parseInt(b.version,10)) < 9;
-			}*/
 		};
 		
 		// return newly created object
@@ -354,10 +278,6 @@
 	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
-		routing: {
-			querystring: queryStringParser
-		},
-		
 		device: {
 
 			/**
@@ -503,34 +423,5 @@
 			}
 		}
 	});
-	
-	/* @deprecated values */
-	
-	// Query string Parser
-	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
-	
-	global.QueryStringParser = queryStringParser;
-	
-	//Parse the query string and store a copy of the result in the global object
-	global.QS = queryStringParser.parse();
-	
-	// Browser detector
-	global.BrowserDetector = browserDetector;
-	
-	// User Agent short-hands
-	$.chrome = browserDetector.isChrome();
-	$.firefox = browserDetector.isFirefox();
-	$.safari = browserDetector.isSafari();
-	$.internetexplorer = browserDetector.isMsie();
-	$.edge = browserDetector.isEdge();
-	$.iphone = browserDetector.isIphone();
-	$.ipad = browserDetector.isIpad();
-	$.ios = browserDetector.isIos();
-	$.mobile = browserDetector.isMobile();
-	$.android = browserDetector.isAndroid();
-	$.phone = browserDetector.isPhone();
-	$.tablet = browserDetector.isTablet();
-	$.touch = $.ios || $.android;
-	$.click = App.device.events.click;
 	
 })(jQuery, window);

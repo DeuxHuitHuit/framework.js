@@ -14,7 +14,7 @@
 		(function (w, doc,co) {
 			// https://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
 			var u = {},
-				e,
+				e, t,
 				a = /\+/g,  // Regex for replacing addition symbol with a space
 				r = /([^&=]+)=?([^&]*)/g,
 				d = function (s) { return decodeURIComponent(s.replace(a, ' ')); },
@@ -27,27 +27,32 @@
 			
 			if (!!u.jquery) {
 				v = u.jquery;
-			}	
-
-			doc.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/'+v+'/jquery.js">' + '<' + '/' + 'script>');
+			}
+			if (v === 'local') {
+				t = './jquery.js';
+			} else {
+				t = 'https://ajax.googleapis.com/ajax/libs/jquery/'+ v +'/jquery.js'
+			}
+			doc.write('<script src="' + t +'">' + '<' + '/' + 'script>');
 			co.log('\nLoading jQuery v' + v + '\n');
 		})(window, document, console);
 	</script>
 </head>
 <body>
-	<h1 id="qunit-header">framework-app.js</h1>  
+	<h1 id="qunit-header">framework-app.js</h1>
 	<h2 id="qunit-banner"></h2>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 	
 	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
-	<script src="../src/globals.js"></script>
 	<script src="../src/app-debug.js"></script>
 	<script src="../src/app-callback.js"></script>
 	<script src="../src/app-device.js"></script>
 	<script src="../src/app.js"></script>
+	<script src="../src/app-log.js"></script>
 	<script src="../src/app-pages.js"></script>
 	<script src="../src/app-modules.js"></script>
+	<script src="../src/app-routing.js"></script>
 	
 	<script>
 	(function ($, w) {
@@ -66,23 +71,7 @@
 			App.debug(true);
 			
 			module('App.device.detector');
-			
-			/*test('isUnsupported', function browserDetectorIsUnsupported() {
-			
-				//test for empty string
-				ok(w.App.device.detector.isUnsupported('') == true,'empty ua is an unsupported');
-			
-				//test for msie with version 7
-				ok(w.App.device.detector.isUnsupported('Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)') == true,'msie v7 is unsupported');
-				
-				//test for msie with version 8
-				ok(w.App.device.detector.isUnsupported('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)') == true,'msie v8 is unsupported');
-				
-				//test for msie with version 9
-				ok(!w.App.device.detector.isUnsupported('Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)') == true,'msie v9 is supported');
-				
-			});*/
-			
+
 			test('isIphone', function browserDetectorIsIphoneTest() {
 				//test for empty string
 				ok(!w.App.device.detector.isIphone(''),'empty ua is not an iphone');

@@ -1,10 +1,10 @@
-/*! framework.js - v1.8.0 - aee4750 - build 157 - 2018-01-10
+/*! framework.js - v2.0.0 - 0ec4dfa - build 162 - 2018-01-15
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2018 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
  * App Callback functionnality
  *
- * @fileoverview Defines and exports callback and loaded
+ * @fileoverview Defines and exports callback
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
@@ -72,63 +72,20 @@
 		return undefined;
 	};
 	
-	/**
-	 * Check if a ressource is loaded and callback when it is.
-	 * @name loaded
-	 * @method
-	 * @memberof callback
-	 * @param {*} v Ressource to test
-	 * @param {Function} fx Callback to execute when the ressource is loaded
-	 * @param {Integer} delay Delay between each checks in ms
-	 * @param {Integer} maxRetriesCount Max checks for a ressource
-	 * @param {Integer} counter Memo for the recursive function
-	 * @private
-	 */
-	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
-		delay = Math.max(delay || 0, 100);
-		maxRetriesCount = maxRetriesCount || 10;
-		counter = counter || 1;
-		// get the value
-		var value = callback(v, [counter]);
-		// if the value exists
-		if (!!value) {
-			// call the function, with the value
-			return callback(fx, [value, counter]);
-		} else if (counter < maxRetriesCount) {
-			// recurse
-			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
-		}
-	};
-	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
 		/**
 		 * Execute the method recived with the arguments recived
-		 * @name callback
+		 * @name this
 		 * @method
 		 * @memberof callback
-		 * @this App
 		 * @param {function} fx 
 		 * @param {*} args
 		 * @return undefined
-		 * @private
-		 */
-		callback: callback,
-		
-		/**
-		 * Check if a ressource is loaded and callback when it is.
-		 * @name loaded
-		 * @method
-		 * @memberof callback
-		 * @param {*} v Ressource to test
-		 * @param {Function} fx Callback to execute when the ressource is loaded
-		 * @param {Integer} delay Delay between each checks in ms
-		 * @param {Integer} maxRetriesCount Max checks for a ressource
-		 * @param {Integer} counter Memo for the recursive function
 		 * @public
 		 */
-		loaded: loaded
+		callback: callback
 	});
 	
 })(jQuery, window);
@@ -313,73 +270,6 @@
 		return isDebuging;
 	};
 	
-	/**
-	 * Format the passed arguments and the displayed message
-	 * @name argsToObject
-	 * @method
-	 * @memberof debug
-	 * @param {Object} arg 
-	 * @returns {Object} Formated object
-	 * @private
-	 */
-	var argsToObject = function (arg) {
-		// ensure that args is an array
-		if (!!arg.args && !$.isArray(arg.args)) {
-			arg.args = [arg.args];
-		}
-		
-		// our copy
-		var a = {
-			args: arg.args || arguments,
-			fx: arg.fx || 'warn',
-			me: arg.me || 'App'
-		},
-		t1 = $.type(a.args[0]);
-		
-		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
-			// append me before a.args[0]
-			a.args[0] = '[' + a.me + '] ' + a.args[0];
-		}
-		return a;
-	};
-	
-	var logs = [];
-
-	/**
-	 * Log the recived data with the appropriate effect (log, error, info...)
-	 * @name log
-	 * @method
-	 * @memberof debug
-	 * @param {Array} arg
-	 * @private
-	 */
-	var log = function (arg) {
-		// no args, exit
-		if (!arg) {
-			return this;
-		}
-		
-		var a = argsToObject(arg);
-		
-		if (isDebuging) {
-			// make sure fx exists
-			if (!$.isFunction(console[a.fx])) {
-				a.fx = 'log';
-			}
-			// call it
-			if (!!window.console[a.fx].apply) {
-				window.console[a.fx].apply(window.console, a.args);
-			} else {
-				$.each(a.args, function logArgs (index, arg) {
-					window.console[a.fx](arg);
-				});
-			}
-		}
-		logs.push(a);
-		
-		return this;
-	};
-	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
 		
@@ -391,29 +281,7 @@
 		 * @param {Boolean=} value
 		 * @public
 		 */
-		debug: debug,
-		
-		/**
-		 * Log the recived data with the appropriate effect (log, error, info...)
-		 * @name log
-		 * @method
-		 * @memberof debug
-		 * @param {Array} arg
-		 * @public
-		 */
-		log: log,
-		
-		/**
-		 * Get all the logs
-		 * @name logs
-		 * @method
-		 * @memberof debug
-		 * @returns {Array} All the logs
-		 * @public
-		 */
-		logs: function () {
-			return logs;
-		}
+		debug: debug
 	});
 	
 })(jQuery, window);
@@ -432,73 +300,6 @@
  */
 (function ($, global, undefined) {
 	'use strict';
-	
-	/**
-	 * Factory for the query string parser
-	 * @return {Object} accessible methods
-	 */
-	var queryStringParser = (function () {
-		var a = /\+/g; // Regex for replacing addition symbol with a space
-		var r = /([^&=]+)=?([^&]*)/gi;
-		var d = function (s) {
-			return decodeURIComponent(s.replace(a, ' '));
-		};
-		
-		/**
-		 * Format the querystring into an object
-		 * @name prase
-		 * @memberof App.routing
-		 * @method
-		 * @param {String} qs
-		 * @returns {Object}
-		 * @public
-		 */
-		var parse = function (qs) {
-			var u = {};
-			var e, q;
-			
-			//if we dont have the parameter qs, use the window location search value
-			if (qs !== '' && !qs) {
-				qs = window.location.search;
-			}
-			
-			//remove the first caracter (?)
-			q = qs.substring(1);
-
-			while ((e = r.exec(q))) {
-				u[d(e[1])] = d(e[2]);
-			}
-			
-			return u;
-		};
-		
-		/**
-		 * Format the object into a valid query string
-		 * @name stringify
-		 * @memberof App.routing
-		 * @method
-		 * @param {Object} qs Object needed to be transformed into a string
-		 * @returns {String} Result
-		 * @public
-		 */
-		var stringify = function (qs) {
-			var aqs = [];
-			$.each(qs, function (k, v) {
-				if (!!v) {
-					aqs.push(k + '=' + global.encodeURIComponent(v));
-				}
-			});
-			if (!aqs.length) {
-				return '';
-			}
-			return '?' + aqs.join('&');
-		};
-		
-		return {
-			parse: parse,
-			stringify: stringify
-		};
-	})();
 	
 	/**
 	 * Factory for the browser detector
@@ -757,15 +558,6 @@
 			isChrome: function (userAgent) {
 				return testUserAgent(/Chrome/i, userAgent) && !detector.isEdge();
 			}
-
-			/*isUnsupported : function (userAgent) {
-				var
-				b;
-				userAgent = getUserAgent(userAgent);
-				b = $.uaMatch(userAgent);
-				
-				return b.browser === "" || (b.browser == 'msie' && parseInt(b.version,10)) < 9;
-			}*/
 		};
 		
 		// return newly created object
@@ -774,10 +566,6 @@
 	
 	/** Public Interfaces **/
 	global.App = $.extend(global.App, {
-		routing: {
-			querystring: queryStringParser
-		},
-		
 		device: {
 
 			/**
@@ -924,35 +712,180 @@
 		}
 	});
 	
-	/* @deprecated values */
-	
-	// Query string Parser
-	// http://stackoverflow.com/questions/901115/get-query-string-values-in-javascript
-	
-	global.QueryStringParser = queryStringParser;
-	
-	//Parse the query string and store a copy of the result in the global object
-	global.QS = queryStringParser.parse();
-	
-	// Browser detector
-	global.BrowserDetector = browserDetector;
-	
-	// User Agent short-hands
-	$.chrome = browserDetector.isChrome();
-	$.firefox = browserDetector.isFirefox();
-	$.safari = browserDetector.isSafari();
-	$.internetexplorer = browserDetector.isMsie();
-	$.edge = browserDetector.isEdge();
-	$.iphone = browserDetector.isIphone();
-	$.ipad = browserDetector.isIpad();
-	$.ios = browserDetector.isIos();
-	$.mobile = browserDetector.isMobile();
-	$.android = browserDetector.isAndroid();
-	$.phone = browserDetector.isPhone();
-	$.tablet = browserDetector.isTablet();
-	$.touch = $.ios || $.android;
-	$.click = App.device.events.click;
-	
+})(jQuery, window);
+
+/**
+ * App Loaded functionnality
+ *
+ * @fileoverview Defines and exports loaded
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace loaded
+ * @memberof App
+ * @requires App
+ */
+(function ($, global, undefined) {
+
+	'use strict';
+
+	/**
+	 * Check if a ressource is loaded and callback when it is.
+	 * @name loaded
+	 * @method
+	 * @memberof loaded
+	 * @param {*} v Ressource to test
+	 * @param {Function} fx Callback to execute when the ressource is loaded
+	 * @param {Integer} delay Delay between each checks in ms
+	 * @param {Integer} maxRetriesCount Max checks for a ressource
+	 * @param {Integer} counter Memo for the recursive function
+	 * @private
+	 */
+	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
+		delay = Math.max(delay || 0, 100);
+		maxRetriesCount = maxRetriesCount || 10;
+		counter = counter || 1;
+		// get the value
+		var value = App.callback(v, [counter]);
+		// if the value exists
+		if (!!value) {
+			// call the function, with the value
+			return App.callback(fx, [value, counter]);
+		} else if (counter < maxRetriesCount) {
+			// recurse
+			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
+		}
+	};
+
+	/** Public Interfaces **/
+	global.App = $.extend(global.App, {
+		/**
+		 * Check if a ressource is loaded and callback when it is.
+		 * @name this
+		 * @method
+		 * @memberof loaded
+		 * @param {*} v Ressource to test
+		 * @param {Function} fx Callback to execute when the ressource is loaded
+		 * @param {Integer} delay Delay between each checks in ms
+		 * @param {Integer} maxRetriesCount Max checks for a ressource
+		 * @param {Integer} counter Memo for the recursive function
+		 * @public
+		 */
+		loaded: loaded
+	});
+
+})(jQuery, window);
+
+/**
+ * App  Log
+ *
+ * @fileoverview Defines and exports log
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace log
+ * @memberof App
+ * @requires App
+ */
+(function ($, global, undefined) {
+
+	'use strict';
+
+	/**
+	 * Format the passed arguments and the displayed message
+	 * @name argsToObject
+	 * @method
+	 * @memberof debug
+	 * @param {Object} arg 
+	 * @returns {Object} Formated object
+	 * @private
+	 */
+	var argsToObject = function (arg) {
+		// ensure that args is an array
+		if (!!arg.args && !$.isArray(arg.args)) {
+			arg.args = [arg.args];
+		}
+
+		// our copy
+		var a = {
+			args: arg.args || arguments,
+			fx: arg.fx || 'warn',
+			me: arg.me || 'App'
+		},
+			t1 = $.type(a.args[0]);
+
+		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
+			// append me before a.args[0]
+			a.args[0] = '[' + a.me + '] ' + a.args[0];
+		}
+		return a;
+	};
+
+	var logs = [];
+
+	/**
+	 * Log the recived data with the appropriate effect (log, error, info...)
+	 * @name log
+	 * @method
+	 * @memberof debug
+	 * @param {Array} arg
+	 * @private
+	 */
+	var log = function (arg) {
+		// no args, exit
+		if (!arg) {
+			return this;
+		}
+
+		var a = argsToObject(arg);
+
+		if (App.debug()) {
+			// make sure fx exists
+			if (!$.isFunction(console[a.fx])) {
+				a.fx = 'log';
+			}
+			// call it
+			if (!!window.console[a.fx].apply) {
+				window.console[a.fx].apply(window.console, a.args);
+			} else {
+				$.each(a.args, function logArgs(index, arg) {
+					window.console[a.fx](arg);
+				});
+			}
+		}
+		logs.push(a);
+
+		return this;
+	};
+
+	/** Public Interfaces **/
+	global.App = $.extend(global.App, {
+
+		/**
+		 * Log the recived data with the appropriate effect (log, error, info...)
+		 * @name this
+		 * @method
+		 * @memberof log
+		 * @param {Array} arg
+		 * @public
+		 */
+		log: log,
+
+		/**
+		 * Get all the logs
+		 * @name logs
+		 * @method
+		 * @memberof log
+		 * @returns {Array} All the logs
+		 * @public
+		 */
+		logs: function () {
+			return logs;
+		}
+	});
+
 })(jQuery, window);
 
 /**
@@ -1578,6 +1511,276 @@
 			 * @public
 			 */
 			exports: exportPage
+		}
+	});
+	
+})(jQuery, window);
+
+/**
+ * App routing
+ * 
+ * @fileoverview Utility 
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ * 
+ * @namespace routing
+ * @memberof App
+ * @requires App
+ */
+(function ($, global, undefined) {
+	'use strict';
+
+	/**
+	 * Factory for the query string parser
+	 * @return {Object} accessible methods
+	 */
+	var queryStringParser = (function () {
+		var a = /\+/g; // Regex for replacing addition symbol with a space
+		var r = /([^&=]+)=?([^&]*)/gi;
+		var d = function (s) {
+			return decodeURIComponent(s.replace(a, ' '));
+		};
+
+		/**
+		 * Format the querystring into an object
+		 * @name prase
+		 * @memberof querystring
+		 * @method
+		 * @param {String} qs
+		 * @returns {Object}
+		 * @public
+		 */
+		var parse = function (qs) {
+			var u = {};
+			var e, q;
+
+			//if we dont have the parameter qs, use the window location search value
+			if (qs !== '' && !qs) {
+				qs = window.location.search;
+			}
+
+			//remove the first caracter (?)
+			q = qs.substring(1);
+
+			while ((e = r.exec(q))) {
+				u[d(e[1])] = d(e[2]);
+			}
+
+			return u;
+		};
+
+		/**
+		 * Format the object into a valid query string
+		 * @name stringify
+		 * @memberof querystring
+		 * @method
+		 * @param {Object} qs Object needed to be transformed into a string
+		 * @returns {String} Result
+		 * @public
+		 */
+		var stringify = function (qs) {
+			var aqs = [];
+			$.each(qs, function (k, v) {
+				if (!!v) {
+					aqs.push(k + '=' + global.encodeURIComponent(v));
+				}
+			});
+			if (!aqs.length) {
+				return '';
+			}
+			return '?' + aqs.join('&');
+		};
+
+		return {
+			parse: parse,
+			stringify: stringify
+		};
+	})();
+
+	/** Public Interfaces **/
+	global.App = $.extend(global.App, {
+		routing: {
+
+			/**
+			 * Facade to parse and stringify a query string
+			 * @namespace querystring
+			 * @constant
+			 * @property {Function} parse Parse the current queryString or the provided one returns an object
+			 * @property {Function} stringify Stringify the provided queryString and returns a String
+			 * @memberof routing
+			 * @public
+			 */
+			querystring: queryStringParser
+		}
+	});
+
+})(jQuery, window);
+
+/**
+ * Facade to access the browser's localstorage and session storage
+ * 
+ * @fileoverview Storage facade compatible with localStorage and sessionStorage
+ *
+ * @author Deux Huit Huit <https://deuxhuithuit.com>
+ * @license MIT <https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace storage
+ * @memberof App
+ * @requires App
+ */
+(function ($, global, undefined) {
+	'use strict';
+
+	var storage = function (storage) {
+		return {
+
+			/**
+			 * Return the value associated with the given key
+			 * @name get
+			 * @memberof storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @return {String}
+			 * @public
+			 */
+			get: function (key) {
+				if (!key) {
+					return;
+				}
+				key += ''; // make it a string
+				return storage[key];
+			},
+
+			/**
+			 * Set and save a value to the given key in the storage
+			 * @name set
+			 * @memberof storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @param {*} value Value wanted to be saved
+			 * @return {Boolean}
+			 * @public
+			 */
+			set: function (key, value) {
+				var result = false;
+				if (!!key) {
+					key += ''; // make it a string
+					try {
+						storage[key] = !value ? '' : value + '';
+						result = true;
+					} catch (e) {
+						App.log({
+							args: e.message,
+							me: 'Storage',
+							fx: 'error'
+						});
+						result = false;
+					}
+				}
+				return result;
+			},
+
+			/**
+			 * Delete the storage data associated with the given key
+			 * @name remove
+			 * @memberof storage
+			 * @method
+			 * @param {string} key Access key to the storage object
+			 * @return {Boolean}
+			 * @public
+			 */
+			remove: function (key) {
+				var result = false;
+				if (!!key) {
+					key += ''; // make it a string
+					try {
+						storage.removeItem(key);
+						result = true;
+					} catch (e) {
+						App.log({
+							args: e.message,
+							me: 'Storage',
+							fx: 'error'
+						});
+						result = false;
+					}
+				}
+				return result;
+			},
+
+			/**
+			 * Delete the data from the storage matching 
+			 * the Regular Expression or all the data if none is provided
+			 * @name clear
+			 * @memberof storage
+			 * @method
+			 * @param {RegExp} regexp Regular Expression to match the key
+			 * @return {Boolean}
+			 * @public
+			 */
+			clear: function (regexp) {
+				var result = false;
+				try {
+					if (!regexp) {
+						storage.clear();
+					} else {
+						var remove = [];
+						for (var i = 0; i < storage.length; i++) {
+							var key = storage.key(i);
+							if (regexp.test(key)) {
+								remove.push(key);
+							}
+						}
+						for (i = 0; i < remove.length; i++) {
+							storage.removeItem(remove[i]);
+						}
+					}
+					result = true;
+				} catch (e) {
+					App.log({
+						args: e.message,
+						me: 'Storage',
+						fx: 'error'
+					});
+					result = false;
+				}
+				return result;
+			}
+		};
+	};
+
+
+	global.App = $.extend(global.App, {
+		storage: {
+
+			/**
+			 * Factory of the storage object
+			 * @name factory
+			 * @method
+			 * @memberof storage
+			 * @returns {Object} All storage's methods
+			 * @public
+			 */
+			factory: storage,
+
+			/**
+			 * Storage methods in localStorage mode
+			 * @name local
+			 * @constant
+			 * @public
+			 * @memberof storage
+			 */
+			local: storage(window.localStorage),
+
+			/**
+			 * Storage methods in sessionStorage mode
+			 * @name session
+			 * @constant
+			 * @public
+			 * @memberof storage
+			 */
+			session: storage(window.sessionStorage)
 		}
 	});
 	
@@ -2514,156 +2717,6 @@
 })(jQuery, window);
 
 /**
- * @author Deux Huit Huit
- */
- 
-/*
-	* Browser Support/Detection
-	*/
-(function ($, global, undefined) {
-	
-	'use strict';
-	
-	/**
-	 * Keyboard keys
-	 */
-	// from:
-	// https://github.com/drobati/django-homepage/
-	// blob/1a75e9ba31c24cb77d87ff3eb435333932056af7/media/js/jquery.keyNav.js
-	global.keys = {
-		'?': 0,
-		backspace: 8,
-		tab: 9,
-		enter: 13,
-		shift: 16,
-		ctrl: 17,
-		alt: 18,
-		pause_break: 19,
-		caps_lock: 20,
-		escape: 27,
-		space_bar: 32,
-		page_up: 33,
-		page_down: 34,
-		end: 35,
-		home: 36,
-		left_arrow: 37,
-		up_arrow: 38,
-		right_arrow: 39,
-		down_arrow: 40,
-		insert: 45,
-		delete: 46,
-		0: 48,
-		1: 49,
-		2: 50,
-		3: 51,
-		4: 52,
-		5: 53,
-		6: 54,
-		7: 55,
-		8: 56,
-		9: 57,
-		a: 65,
-		b: 66,
-		c: 67,
-		d: 68,
-		e: 69,
-		f: 70,
-		g: 71,
-		h: 72,
-		i: 73,
-		j: 74,
-		k: 75,
-		l: 76,
-		m: 77,
-		n: 78,
-		o: 79,
-		p: 80,
-		q: 81,
-		r: 82,
-		s: 83,
-		t: 84,
-		u: 85,
-		v: 86,
-		w: 87,
-		x: 88,
-		y: 89,
-		z: 90,
-		left_window_key: 91,
-		right_window_key: 92,
-		select_key: 93,
-		numpad_0: 96,
-		numpad_1: 97,
-		numpad_2: 98,
-		numpad_3: 99,
-		'numpad 4': 100,
-		numpad_5: 101,
-		numpad_6: 102,
-		numpad_7: 103,
-		numpad_8: 104,
-		numpad_9: 105,
-		multiply: 106,
-		add: 107,
-		subtract: 109,
-		'decimal point': 110,
-		divide: 111,
-		f1: 112,
-		f2: 113,
-		f3: 114,
-		f4: 115,
-		f5: 116,
-		f6: 117,
-		f7: 118,
-		f8: 119,
-		f9: 120,
-		f10: 121,
-		f11: 122,
-		f12: 123,
-		num_lock: 144,
-		scroll_lock: 145,
-		semi_colon: 186,
-		';': 186,
-		'=': 187,
-		equal_sign: 187,
-		comma: 188,
-		', ': 188,
-		dash: 189,
-		'ff-dash': 173,
-		'.': 190,
-		period: 190,
-		forward_slash: 191,
-		'/': 191,
-		grave_accent: 192,
-		open_bracket: 219,
-		back_slash: 220,
-		'\\': 220,
-		close_braket: 221,
-		single_quote: 222
-	};
-
-	global.keyFromCode = function (code) {
-		var key = '?';
-		if (!code) {
-			return key;
-		}
-		$.each(window.keys, function (index, value) {
-			if (code === value) {
-				key = index;
-				return false;
-			}
-			
-			return true;
-		});
-		return key;
-	};
-	
-	// Chars
-	global.isChar = function (c) {
-		return c === window.keys.space_bar || (c > window.keys['0'] && c <= window.keys.z);
-	};
-	
-})(jQuery, window);
-
-/**
  * General customization alongside the framework
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
@@ -2681,13 +2734,17 @@
 		'mobile', 'phone', 'tablet', 'touch',
 		'chrome', 'firefox', 'safari', 'internetexplorer', 'edge'
 	];
-	$.each(deviceClasses, function (i, c) {
-		if (!!$[c]) {
-			$('html').addClass(c);
-		}
-	});
-	// easing support
-	$.easing.def = ($.mobile ? 'linear' : 'easeOutQuad');
+
+	if (!!global.app && !!global.app.device) {
+		$.each(deviceClasses, function (i, c) {
+			if (!!App.device[c]) {
+				$('html').addClass(c);
+			}
+		});
+
+		// easing support
+		$.easing.def = (App.device.mobile ? 'linear' : 'easeOutQuad');
+	}
 
 	/**
 	 * Patching console object.
@@ -2696,7 +2753,7 @@
 	var consoleFx = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'group',
 		'group', 'group', 'info', 'log', 'profile', 'profile', 'time', 'time', 'time',
 		'trace', 'warn'];
-	
+
 	/**
 	 * Console support
 	 * @global
@@ -2704,13 +2761,11 @@
 	if (!global.console) {
 		global.console = {};
 	}
-	
+
 	$.each(consoleFx, function (i, key) {
 		global.console[key] = global.console[key] || $.noop;
 	});
-	
 
-	
 	/**
 	 * Facade to stop the propagation of events
 	 * @name pd
@@ -3140,143 +3195,5 @@
 			return loaderIsWorking;
 		}
 	});
-	
-})(jQuery, window);
-
-/**
- * Facade to access the browser's localstorage and session storage
- *
- * @author Deux Huit Huit <https://deuxhuithuit.com>
- * @license MIT <https://deuxhuithuit.mit-license.org>
- *
- * @namespace Storage
- * @requires App
- */
-(function ($, global, undefined) {
-	'use strict';
-
-	var storage = function (storage) {
-		return {
-
-			/**
-			 * Return the value associated with the given key
-			 * @name get
-			 * @memberof Storage
-			 * @method
-			 * @param {string} key Access key to the storage object
-			 * @return {String}
-			 */
-			get: function (key) {
-				if (!key) {
-					return;
-				}
-				key += ''; // make it a string
-				return storage[key];
-			},
-
-			/**
-			 * Set and save a value to the given key in the storage
-			 * @name set
-			 * @memberof Storage
-			 * @method
-			 * @param {string} key Access key to the storage object
-			 * @param {*} value Value wanted to be saved
-			 * @return {Boolean}
-			 */
-			set: function (key, value) {
-				var result = false;
-				if (!!key) {
-					key += ''; // make it a string
-					try {
-						storage[key] = !value ? '' : value + '';
-						result = true;
-					} catch (e) {
-						App.log({
-							args: e.message,
-							me: 'Storage',
-							fx: 'error'
-						});
-						result = false;
-					}
-				}
-				return result;
-			},
-
-			/**
-			 * Delete the storage data associated with the given key
-			 * @name remove
-			 * @memberof Storage
-			 * @method
-			 * @param {string} key Access key to the storage object
-			 * @return {Boolean}
-			 */
-			remove: function (key) {
-				var result = false;
-				if (!!key) {
-					key += ''; // make it a string
-					try {
-						storage.removeItem(key);
-						result = true;
-					} catch (e) {
-						App.log({
-							args: e.message,
-							me: 'Storage',
-							fx: 'error'
-						});
-						result = false;
-					}
-				}
-				return result;
-			},
-
-			/**
-			 * Delete the data from the storage matching 
-			 * the Regular Expression or all the data if none is provided
-			 * @name clear
-			 * @memberof Storage
-			 * @method
-			 * @param {RegExp} regexp Regular Expression to match the key
-			 * @return {Boolean}
-			 */
-			clear: function (regexp) {
-				var result = false;
-				try {
-					if (!regexp) {
-						storage.clear();
-					} else {
-						var remove = [];
-						for (var i = 0; i < storage.length; i++) {
-							var key = storage.key(i);
-							if (regexp.test(key)) {
-								remove.push(key);
-							}
-						}
-						for (i = 0; i < remove.length; i++) {
-							storage.removeItem(remove[i]);
-						}
-					}
-					result = true;
-				} catch (e) {
-					App.log({
-						args: e.message,
-						me: 'Storage',
-						fx: 'error'
-					});
-					result = false;
-				}
-				return result;
-			}
-		};
-	};
-
-	/** @deprecated */
-	global.AppStorage = $.extend(global.AppStorage, {
-		factory: storage,
-		local: storage(window.localStorage),
-		session: storage(window.sessionStorage)
-	});
-	
-	/** @deprecated */
-	global.Storage = $.extend(global.Storage, global.AppStorage);
 	
 })(jQuery, window);
