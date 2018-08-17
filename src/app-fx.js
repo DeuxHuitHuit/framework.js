@@ -33,7 +33,7 @@
 
 	/**
 	 * Executes all read and write operations for the key function
-	 * @name execute
+	 * @name notify
 	 * @memberof App.fx
 	 * @method
 	 * @param {String} key Action key
