@@ -103,6 +103,10 @@ module.exports = function fxGruntConfig (grunt) {
 			}
 		},
 		qunit: {
+			options: {
+				noGlobals: true,
+				timeout: 6000
+			},
 			all: {
 				options: {
 					urls: TEST_URIS

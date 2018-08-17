@@ -55,8 +55,6 @@
 		(function ($, w) {
 			"use strict";
 
-			var runTests = function () {
-
 				module('App.actions');
 				App.debug(true);
 
@@ -149,9 +147,7 @@
 					ok(counter === 6, 'read and write was called exactly three times each');
 					ok(innerCounter === 6, 'inner read and write was called exactly three times each');
 				});
-			}; // end run tests
 
-			$(w).load(runTests);
 
 		})(jQuery, window);
 	</script>
