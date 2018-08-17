@@ -56,7 +56,7 @@
 	 * @private
 	 */
 	var exportComponent = function (key, component, override) {
-		if (!$.type(key)) {
+		if ($.type(key) !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		} else if (!!components[key] && !override) {
 			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});

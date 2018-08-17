@@ -65,7 +65,7 @@
 	 * @private
 	 */
 	var exportsFx = function (key, fx, override) {
-		if (!$.type(key)) {
+		if ($.type(key) !== 'string') {
 			App.log({ args: ['`key` must be a string', key], fx: 'error' });
 		} else if (!!bindings[key] && !override) {
 			App.log({ args: ['Overwriting function key %s is not allowed', key], fx: 'error' });

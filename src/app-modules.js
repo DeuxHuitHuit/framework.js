@@ -56,7 +56,7 @@
 	 * @private
 	 */
 	var exportModule = function (key, module, override) {
-		if (!$.type(key)) {
+		if ($.type(key) !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		} else if (!!modules[key] && !override) {
 			App.log({args: ['Overwriting module key %s is not allowed', key], fx: 'error'});
