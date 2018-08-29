@@ -51,11 +51,6 @@
 	(function ($, w) {
 		
 		"use strict";
-		
-		var 
-		
-		runTests = function  () {
-			module('window');
 			
 			test('pd(e)', function pdTest() {
 				var e = $.Event('pd-test');
@@ -73,10 +68,6 @@
 				equal(e.isDefaultPrevented(), true, 'r is default prevented');
 				equal(e.isPropagationStopped(), false, 'r is not propagation stopped');
 			});
-			
-		}; // end run tests
-		
-		$(w).load(runTests);
 		
 	})(jQuery, window);
 	</script>

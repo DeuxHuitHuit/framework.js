@@ -11,7 +11,6 @@
  * @requires App
  */
 (function ($, global, undefined) {
-	
 	'use strict';
 
 	// Forked: https://gist.github.com/nitriques/6583457
@@ -135,7 +134,7 @@
 				// clear pointer
 				currentUrl = null;
 				
-				App.log({fx: 'info', args: ['Error loading url %s', asset.url], me: 'Loader'});
+				App.log({fx: 'error', args: ['Error loading url %s', asset.url], me: 'Loader'});
 				
 				// if no vip access is granted
 				//if (!asset.vip) {
@@ -288,7 +287,7 @@
 	 * @param {Object} url Url object
 	 * @param {Integer} index
 	 */
-	var updatePrioriy = function (url, index) {
+	var updatePriority = function (url, index) {
 		// promote if new priority is different
 		var oldAsset = assets[index];
 		if (oldAsset.priority != url.priority) {
@@ -352,7 +351,7 @@
 			});
 			
 		} else {
-			updatePrioriy(url, index);
+			updatePriority(url, index);
 		}
 		
 		launchLoad();
@@ -360,19 +359,19 @@
 		return this;
 	};
 	
-	global.App = $.extend(global.App, {
+	global.App = $.extend(true, global.App, {
 		loader: {
 			/**
-		 * Put the request in the queue and trigger the load
-		 * @name load
-		 * @method
-		 * @memberof loader
-		 * @public
-		 * @param {Object} url Url Object
-		 * @param {Integer} priority
-		 * @this App
-		 * @returns this
-		 */
+			 * Put the request in the queue and trigger the load
+			 * @name load
+			 * @method
+			 * @memberof loader
+			 * @public
+			 * @param {Object} url Url Object
+			 * @param {Integer} priority
+			 * @this App
+			 * @returns this
+			 */
 			load: loadAsset,
 
 			/**

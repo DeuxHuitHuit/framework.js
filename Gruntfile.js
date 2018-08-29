@@ -25,9 +25,11 @@ module.exports = function fxGruntConfig (grunt) {
 		'/tests/framework.global.js.test.html?noglobals=true',
 		'/tests/framework.debug.js.test.html?noglobals=true',
 		'/tests/framework.callback.js.test.html?noglobals=true',
+		'/tests/framework.actions.js.test.html?noglobals=true',
+		'/tests/framework.fx.js.test.html?noglobals=true',
 		'/tests/framework.app.js.test.html?noglobals=true',
-		'/tests/loader.js.test.html?noglobals=true',
-		'/tests/storage.js.test.html?noglobals=true'
+		'/tests/framework.loader.js.test.html?noglobals=true',
+		'/tests/framework.storage.js.test.html?noglobals=true'
 	];
 	
 	var TEST_URIS = [];
@@ -101,6 +103,10 @@ module.exports = function fxGruntConfig (grunt) {
 			}
 		},
 		qunit: {
+			options: {
+				noGlobals: true,
+				timeout: 6000
+			},
 			all: {
 				options: {
 					urls: TEST_URIS
@@ -219,27 +225,7 @@ module.exports = function fxGruntConfig (grunt) {
 			src: SRC_FILES.concat(GRUNT_FILE),
 			options: {
 				config: JSCS_FILE,
-				fix: true,
-				disallowDanglingUnderscores: {
-					allExcept: [
-						'_currentPage',
-						'_createAbstractComponent',
-						'_createAbstractModule',
-						'_createPageModel',
-						'_matchRoute',
-						'_initPage',
-						'_initModule',
-						'_currentPageEnterCallback',
-						'_callAction',
-						'_pageData',
-						'_validateRoute',
-						'_validateMediatorState',
-						'_getPageForRoute',
-						'_validateNextPage',
-						'_canEnterNextPage',
-						'_canLeaveCurrentPage'
-					]
-				}
+				fix: true
 			}
 		},
 		jsdoc: {

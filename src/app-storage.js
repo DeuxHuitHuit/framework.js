@@ -132,7 +132,7 @@
 	};
 
 
-	global.App = $.extend(global.App, {
+	global.App = $.extend(true, global.App, {
 		storage: {
 
 			/**

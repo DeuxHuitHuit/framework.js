@@ -48,20 +48,18 @@
 	<script src="../src/app-debug.js"></script>
 	<script src="../src/app-callback.js"></script>
 	<script src="../src/app-device.js"></script>
+	<script src="../src/app-actions.js"></script>
 	<script src="../src/app.js"></script>
 	<script src="../src/app-log.js"></script>
 	<script src="../src/app-pages.js"></script>
 	<script src="../src/app-modules.js"></script>
 	<script src="../src/app-routing.js"></script>
+	<script src="../src/app-mediator.js"></script>
 	
 	<script>
 	(function ($, w) {
 		
 		'use strict';
-		
-		var 
-		
-		runTests = function  () {
 		
 			var initTest = function() {
 				ok(true);
@@ -184,7 +182,7 @@
 				ok(page1 != page2, 'functions creates new scopes');
 			});
 			
-			test('_matchRoute', function appPages_matchRouteTest () {
+			test('matchRoute', function appPagesmatchRouteTest () {
 				var routes = { // can also use array
 					root: '/',
 					contactFR: '/fr/contact/',
@@ -197,47 +195,47 @@
 				route = '';
 			
 				route = routes.root;
-				ok(!!~App.pages._matchRoute(route, routes), route);
+				ok(!!~App.pages.matchRoute(route, routes), route);
 				
 				route = routes.contactFR;
-				ok(!!~App.pages._matchRoute(route, routes), route);
+				ok(!!~App.pages.matchRoute(route, routes), route);
 				
 				route = routes.contactEN;
-				ok(!!~App.pages._matchRoute(route, routes), route);
-				equal(App.pages._matchRoute(route, routes), 'contactEN', route + ' index');
+				ok(!!~App.pages.matchRoute(route, routes), route);
+				equal(App.pages.matchRoute(route, routes), 'contactEN', route + ' index');
 				
 				route = '///kldkslds';
-				ok(!~App.pages._matchRoute(route, routes), '! ' + route);
+				ok(!~App.pages.matchRoute(route, routes), '! ' + route);
 				
 				route = '/fr/test/super-cheap/view';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' widlcard');
+				ok(!!~App.pages.matchRoute(route, routes), route + ' widlcard');
 				
 				route = '/a';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/b';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/c';
-				ok(!~App.pages._matchRoute(route, routes), '! ' + route + ' regexp');
+				ok(!~App.pages.matchRoute(route, routes), '! ' + route + ' regexp');
 				
 				route = '/test/?test=test';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/test/article/test-test/';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/test/article/test-test/#sasasas';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/test/?test[super/\]=test#43434';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' regexp');
+				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/query-string?with-a-query-string';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' with a query string');
+				ok(!!~App.pages.matchRoute(route, routes), route + ' with a query string');
 				
 				route = '/query-string?with-a-query-string?and=another';
-				ok(!!~App.pages._matchRoute(route, routes), route + ' with 2 query strings');
+				ok(!!~App.pages.matchRoute(route, routes), route + ' with 2 query strings');
 			});
 			
 			test('getPageForRoute', function appPages_getPageForRouteTest () {
@@ -354,7 +352,7 @@
 				var counter = 0;
 				
 				var cb = function (key, res) {
-					equal($.type(key), 'string', 'key ' + key + ' is a string');
+					equal($.type(key), 'number', 'key ' + key + ' is a number');
 					equal(res, true, 'res is true');
 					counter++;
 				};
@@ -371,7 +369,7 @@
 				
 				var p = App.pages.create({key: 'page callback', routes: ['page-callback']}, 'page-cb');
 				
-				App.mediator._currentPage(p);
+				App.mediator.setCurrentPage(p);
 				
 				App.modules.exports('callback', {
 					actions: function () {
@@ -391,10 +389,6 @@
 				
 				equal(counter, 3, 'Callback was called 3 times');
 			});
-			
-		}; // end run tests
-		
-		$(w).load(runTests);
 		
 	})(jQuery, window);
 	</script>

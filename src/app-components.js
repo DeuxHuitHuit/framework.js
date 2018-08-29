@@ -11,7 +11,6 @@
  * @requires App
  */
 (function ($, global, undefined) {
-
 	'use strict';
 	
 	/** Components **/
@@ -19,13 +18,13 @@
 
 	/**
 	 * Create a default model of a component with an init function
-	 * @name _createAbstractComponent
+	 * @name createAbstractComponent
 	 * @method
 	 * @memberof components
 	 * @private
 	 * @return {Object}
 	 */
-	var _createAbstractComponent = function () {
+	var createAbstractComponent = function () {
 		return {
 			init: $.noop
 		};
@@ -42,7 +41,7 @@
 	 * @private
 	 */
 	var extendComponent = function (component) {
-		return $.extend(_createAbstractComponent(), component);
+		return $.extend(createAbstractComponent(), component);
 	};
 
 	/**
@@ -57,7 +56,7 @@
 	 * @private
 	 */
 	var exportComponent = function (key, component, override) {
-		if (!$.type(key)) {
+		if ($.type(key) !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		} else if (!!components[key] && !override) {
 			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
@@ -95,7 +94,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
+	global.App = $.extend(true, global.App, {
 		
 		// Components
 		components: {

@@ -11,7 +11,6 @@
  * @requires App
  */
 (function ($, global, undefined) {
-
 	'use strict';
 	
 	/**
@@ -39,14 +38,15 @@
 	};
 	
 	/**
-	 * Execute the method recived with the arguments recived
+	 * Execute the method received with the arguments received.
+	 * Returns what the method returned.
 	 * @name callback
 	 * @method
 	 * @memberof callback
 	 * @this App
 	 * @param {function} fx
 	 * @param {*} args
-	 * @return undefined
+	 * @return {*}
 	 * @private
 	 */
 	var callback = function (fx, args) {
@@ -70,10 +70,10 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(global.App, {
+	global.App = $.extend(true, global.App, {
 		
 		/**
-		 * Execute the method recived with the arguments recived
+		 * Execute the method received with the arguments received
 		 * @name this
 		 * @method
 		 * @memberof callback

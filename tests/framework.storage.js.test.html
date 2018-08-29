@@ -58,8 +58,6 @@
 		window.localStorage.clear();
 		window.sessionStorage.clear();
 
-		var runTests = function  () {
-
 			module('App.storage');
 			App.debug(true);
 
@@ -133,10 +131,6 @@
 			test('local clear', clearTest(App.storage.local, 'local'));
 
 			test('session clear', clearTest(App.storage.session, 'session'));
-
-		}; // end run tests
-
-		$(w).load(runTests);
 
 	})(jQuery, window);
 	</script>
