@@ -74,7 +74,7 @@
 	 * @memberof components
 	 * @param {String} key unique identifier
 	 * @param {Object} options object passed to the component's code
-	 * @return {Object} Merged component with the default model and the acutal component code
+	 * @return {Object} Merged component with the default model and the actual component code
 	 * @private
 	 */
 	var createComponent = function (key, options) {
@@ -119,7 +119,7 @@
 			 * @param {String} key unique identifier
 			 * @param {Object} options object passed to the component's code
 			 * @return {Object} Merged component with the default model and the
-			 *  acutal component code
+			 *  actual component code
 			 * @public
 			 */
 			create: createComponent,
