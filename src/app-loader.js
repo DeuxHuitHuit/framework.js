@@ -106,11 +106,11 @@
 	
 	var defaultParameters = function (asset) {
 		return {
-			progress: function () {
+			progress: function (e) {
 				// callback
-				App.callback.call(this, asset.progress, arguments);
+				App.callback(asset.progress, [e]);
 			},
-			success: function (data) {
+			success: function (data, textStatus, jqXHR) {
 				// clear pointer
 				currentUrl = null;
 				
@@ -118,7 +118,7 @@
 				recursiveLoad();
 				
 				// callback
-				App.callback.call(this, asset.success, arguments);
+				App.callback(asset.success, [data, textStatus, jqXHR]);
 				
 				// store in cache
 				if (!!asset.cache) {
@@ -128,7 +128,7 @@
 					}
 				}
 			},
-			error: function () {
+			error: function (jqXHR, textStatus, errorThrown) {
 				var maxRetriesFactor = !!asset.vip ? 2 : 1;
 				
 				// clear pointer
@@ -153,14 +153,14 @@
 					loadAsset(asset);
 				} else {
 					// we give up!
-					App.callback.call(this, asset.giveup, arguments);
+					App.callback(asset.giveup, [jqXHR, textStatus, errorThrown]);
 				}
 				
 				// next
 				recursiveLoad();
 				
 				// callback
-				App.callback.call(this, asset.error, arguments);
+				App.callback(asset.error, [jqXHR, textStatus, errorThrown]);
 			}
 		};
 	};
@@ -268,9 +268,9 @@
 			var item = storage.get(url.url);
 			if (!!item) {
 				// if the cache-hit is valid
-				if (App.callback.call(this, url.cachehit, item) !== false) {
+				if (App.callback(url.cachehit, [item]) !== false) {
 					// return the cache
-					App.callback.call(this, url.success, item);
+					App.callback(url.success, [item]);
 					return true;
 				}
 			}
