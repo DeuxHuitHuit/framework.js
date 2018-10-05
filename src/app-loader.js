@@ -128,13 +128,17 @@
 					}
 				}
 			},
-			error: function () {
+			error: function (jqXHR, textStatus, errorThrown) {
 				var maxRetriesFactor = !!asset.vip ? 2 : 1;
 				
 				// clear pointer
 				currentUrl = null;
 				
-				App.log({fx: 'error', args: ['Error loading url %s', asset.url], me: 'Loader'});
+				App.log({
+					fx: 'error',
+					args: ['Error loading url %s: %s', asset.url, textStatus + ' ' + errorThrown],
+					me: 'Loader'
+				});
 				
 				// if no vip access is granted
 				//if (!asset.vip) {
