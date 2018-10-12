@@ -68,13 +68,13 @@
 	};
 
 	/**
-	 * Create an instence of the component
+	 * Create an instance of the component
 	 * @name createComponent
 	 * @method
 	 * @memberof components
 	 * @param {String} key unique identifier
 	 * @param {Object} options object passed to the component's code
-	 * @return {Object} Merged component with the default model and the acual component code
+	 * @return {Object} Merged component with the default model and the actual component code
 	 * @private
 	 */
 	var createComponent = function (key, options) {
@@ -112,13 +112,14 @@
 			},
 			
 			/**
-			 * Create an instence of the component
+			 * Create an instance of the component
 			 * @name create
 			 * @method
 			 * @memberof components
 			 * @param {String} key unique identifier
 			 * @param {Object} options object passed to the component's code
-			 * @return {Object} Merged component with the default model and the acual component code
+			 * @return {Object} Merged component with the default model and the
+			 *  actual component code
 			 * @public
 			 */
 			create: createComponent,
