@@ -60,11 +60,12 @@
 			
 			test('load', function loaderLoadTest () {
 				
-				var fisrtTest = function () {
+				var firstTest = function () {
 					var successCount = 0;
 					var errorCount = 0;
 					var completeCount = 0;
 					var giveup = 0;
+					var clienterror = 0;
 
 					stop();
 
@@ -80,18 +81,22 @@
 								errorCount++;
 							},
 							giveup: function () {
-								giveup++;
+								giveup++; // should not get called
+							},
+							clienterror: function () {
+								clienterror++;
 							},
 							complete: function () {
 								completeCount++;
 
-								// should be called at least 2 times
-								if (completeCount > 2) {
+								// should be called only once
+								if (completeCount === 1) {
 
 									start();
-									equal(giveup, 1, '1.html giveup count is 1');
+									equal(clienterror, 1, '1.html clienterror count is 1');
+									equal(giveup, 0, '1.html giveup count is 0');
 									equal(successCount, 0, '1.html successCount is 0');
-									equal(errorCount, 3, '1.html errorCount is 3');
+									equal(errorCount, 1, '1.html errorCount is 1');
 
 									secondTest();
 								}
@@ -224,7 +229,7 @@
 					stop();
 				};
 				
-				fisrtTest();
+				firstTest();
 			});
 		
 	})(jQuery, window);
