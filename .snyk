@@ -1,0 +1,40 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - grunt-contrib-watch > tiny-lr > body-parser > debug:
+        patched: '2018-12-04T07:38:22.323Z'
+    - karma > socket.io > socket.io-adapter > socket.io-parser > debug:
+        patched: '2018-12-04T07:38:22.323Z'
+  'npm:hoek:20180212':
+    - phantomjs > request > hawk > hoek:
+        patched: '2018-12-04T07:38:22.323Z'
+    - phantomjs > request > hawk > boom > hoek:
+        patched: '2018-12-04T07:38:22.323Z'
+    - phantomjs > request > hawk > sntp > hoek:
+        patched: '2018-12-04T07:38:22.323Z'
+    - phantomjs > request > hawk > cryptiles > boom > hoek:
+        patched: '2018-12-04T07:38:22.323Z'
+  'npm:lodash:20180130':
+    - grunt-jscs > jscs > lodash:
+        patched: '2018-12-04T07:38:22.323Z'
+    - grunt-jscs > jscs > xmlbuilder > lodash:
+        patched: '2018-12-04T07:38:22.323Z'
+    - grunt-jscs > jscs > jscs-jsdoc > jsdoctypeparser > lodash:
+        patched: '2018-12-04T07:38:22.323Z'
+  'npm:ms:20170412':
+    - grunt-contrib-watch > tiny-lr > body-parser > debug > ms:
+        patched: '2018-12-04T07:38:22.323Z'
+    - karma > socket.io > socket.io-adapter > socket.io-parser > debug > ms:
+        patched: '2018-12-04T07:38:22.323Z'
+  'npm:request:20160119':
+    - phantomjs > request:
+        patched: '2018-12-04T07:38:22.323Z'
+  'npm:tough-cookie:20170905':
+    - phantomjs > request > tough-cookie:
+        patched: '2018-12-04T07:38:22.323Z'
+  'npm:tunnel-agent:20170305':
+    - phantomjs > request > tunnel-agent:
+        patched: '2018-12-04T07:38:22.323Z'
