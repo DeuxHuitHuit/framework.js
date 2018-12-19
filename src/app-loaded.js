@@ -41,7 +41,10 @@
 			// recurse
 			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
 		} else if (!!App.log) {
-			App.log('App.loaded timed out.');
+			App.log({
+				fx: 'error',
+				args: ['App.loaded timed out after %s attempts.', counter]
+			});
 		}
 	};
 
