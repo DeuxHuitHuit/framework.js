@@ -1,5 +1,5 @@
 /**
- * App Loaded functionnality
+ * App Loaded functionality
  *
  * @fileoverview Defines and exports loaded
  *
@@ -14,14 +14,14 @@
 	'use strict';
 
 	/**
-	 * Check if a ressource is loaded and callback when it is.
+	 * Check if a resource is loaded and callback when it is.
 	 * @name loaded
 	 * @method
 	 * @memberof loaded
-	 * @param {*} v Ressource to test
-	 * @param {Function} fx Callback to execute when the ressource is loaded
+	 * @param {*} v Resource to test
+	 * @param {Function} fx Callback to execute when the resource is loaded
 	 * @param {Integer} delay Delay between each checks in ms
-	 * @param {Integer} maxRetriesCount Max checks for a ressource
+	 * @param {Integer} maxRetriesCount Max checks for a resource
 	 * @param {Integer} counter Memo for the recursive function
 	 * @private
 	 */
