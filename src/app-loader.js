@@ -200,7 +200,7 @@
 	recursiveLoad = function () {
 		if (!!assets.length) {
 			// start next one
-			loadOneAsset();
+			setTimeout(loadOneAsset, 0);
 		} else {
 			// work is done
 			loaderIsWorking = false;
