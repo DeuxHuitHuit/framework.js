@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>loaded - Documentation</title>
+    <title>app-fx.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,355 +29,136 @@
 
 <div id="main">
     
-    <h1 class="page-title">loaded</h1>
+    <h1 class="page-title">app-fx.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2>
-            <span class="ancestors"><a href="App.html">App</a></span>
-        
-        loaded
-        </h2>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description">Defines and exports loaded</div>
-        
-
-        
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Deux Huit Huit &lt;https://deuxhuithuit.com></li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT <https://deuxhuithuit.mit-license.org></li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-loaded.js.html">app-loaded.js</a>, <a href="app-loaded.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-<div class="section-method">
-
-    
-
-    <h4 class="name" id=".this"><span class="type-signature">(static) </span>this<span class="signature">(v, fx, delay, maxRetriesCount, counter)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    Check if a ressource is loaded and callback when it is.
-</div>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-loaded.js.html">app-loaded.js</a>, <a href="app-loaded.js.html#line53">line 53</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>v</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>*</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Ressource to test
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fx</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>function</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Callback to execute when the ressource is loaded
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>delay</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Integer</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Delay between each checks in ms
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>maxRetriesCount</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Integer</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Max checks for a ressource
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>counter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Integer</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Memo for the recursive function
-                
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Functions
+ *
+ * @fileoverview Defines the App Fx
+ *
+ * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
+ * @license MIT &lt;https://deuxhuithuit.mit-license.org>
+ *
+ * @requires jQuery
+ * @namespace App.fx
+ */
+(function ($, global, undefined) {
+	'use strict';
+	var bindings = {};
+
+	/**
+	 * Defines a custom name property on the fx object, if debugging is enabled.
+	 * Ignores any errors.
+	 * @memberof App.fx
+	 * @name setFxName
+	 * @method
+	 * @param {String} key Action key
+	 * @param {Function} fx The function
+	 * @private
+	 */
+	var setFxName = function (key, fx) {
+		if (App.debug() &amp;&amp; Object.defineProperty) {
+			try {
+				Object.defineProperty(fx, 'name', { value: key });
+			} catch (ex) { }
+		}
+	};
+
+	/**
+	 * Executes all read and write operations for the key function
+	 * @name notify
+	 * @memberof App.fx
+	 * @method
+	 * @param {String} key Action key
+	 * @param {Object} data Bag of data
+	 * @param {Function} cb Callback executed after each App.actions.execute execution
+	 * @this fx
+	 * @returns this
+	 * @private
+	 */
+	var notify = function (key, data, cb) {
+		var fx = bindings[key];
+		if (!fx) {
+			App.log({ args: ['Function key %s did not resolve to anything', key], fx: 'warn' });
+		} else {
+			App.actions.execute(fx, key, data, cb);
+		}
+		return this;
+	};
+
+	/**
+	 * Register the function and make sure his key is unique
+	 * @name exportsFx
+	 * @method
+	 * @memberof App.fx
+	 * @param {String} key Module's unique identifier
+	 * @param {Function} fx The function
+	 * @param {Boolean} override Flag to control overwriting a function
+	 * @returns {Object} The newly created function
+	 * @private
+	 */
+	var exportsFx = function (key, fx, override) {
+		if ($.type(key) !== 'string') {
+			App.log({ args: ['`key` must be a string', key], fx: 'error' });
+		} else if (!!bindings[key] &amp;&amp; !override) {
+			App.log({ args: ['Overwriting function key %s is not allowed', key], fx: 'error' });
+		} else if (!$.isFunction(fx)) {
+			App.log({ args: ['Function key %s is not a function', key], fx: 'error' });
+		} else {
+			// Try to set the name of the function
+			setFxName(fx);
+			bindings[key] = fx;
+		}
+		return bindings[key];
+	};
+
+	/** Public Interfaces **/
+	global.App = $.extend(true, global.App, {
+		/**
+		 * @namespace fx
+		 * @memberof App
+		 */
+		fx: {
+			/**
+			 * Executes all read and write operations present in the actions array.
+			 * @name notify
+			 * @memberof App.fx
+			 * @method
+			 * @param {String} key Action key
+			 * @param {Object} data Bag of data
+			 * @param {Function} cb Callback executed after each App.actions.execute execution
+			 * @this fx
+			 * @returns this
+			 * @public
+			 */
+			notify: notify,
+
+			/**
+			 * Register the function and make sure his key is unique
+			 * @name exports
+			 * @method
+			 * @memberof App.fx
+			 * @param {String} key Module's unique identifier
+			 * @param {Function} fx The function
+			 * @param {Boolean} override Flag to control overwriting a function
+			 * @returns {Object} The newly created function
+			 * @private
+			 */
+			exports: exportsFx
+		}
+	});
+})(jQuery, window);
+</code></pre>
+        </article>
+    </section>
 
 
 
@@ -387,7 +168,7 @@
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Apr 24 2019 14:00:21 GMT-0400 (Eastern Daylight Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Apr 24 2019 14:00:20 GMT-0400 (Eastern Daylight Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

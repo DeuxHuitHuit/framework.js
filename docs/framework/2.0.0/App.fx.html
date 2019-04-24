@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>loaded - Documentation</title>
+    <title>fx - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">loaded</h1>
+    <h1 class="page-title">fx</h1>
     
 
     
@@ -42,9 +42,9 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="App.html">App</a></span>
+            <span class="ancestors"><a href="App.html">App</a>.</span>
         
-        loaded
+        fx
         </h2>
         
     
@@ -54,7 +54,305 @@
     <div class="container-overview">
     
         
-            <div class="description">Defines and exports loaded</div>
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-fx.js.html">app-fx.js</a>, <a href="app-fx.js.html#line84">line 84</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id=".notify"><span class="type-signature">(static) </span>notify<span class="signature">(key, data, cb)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Executes all read and write operations present in the actions array.
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app-fx.js.html">app-fx.js</a>, <a href="app-fx.js.html#line89">line 89</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+    <h5>This:</h5>
+    <ul><li>fx</li></ul>
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>String</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Action key
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Bag of data
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cb</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>function</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Callback executed after each App.actions.execute execution
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+
+<div class="param-desc">
+    this
+</div>
+
+    
+</div>
+
+
+
+</div>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        App.fx
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Defines the App Fx</div>
         
 
         
@@ -99,7 +397,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-loaded.js.html">app-loaded.js</a>, <a href="app-loaded.js.html#line1">line 1</a>
+        <a href="app-fx.js.html">app-fx.js</a>, <a href="app-fx.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -136,14 +434,14 @@
 
     
 
-    <h4 class="name" id=".this"><span class="type-signature">(static) </span>this<span class="signature">(v, fx, delay, maxRetriesCount, counter)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".notify"><span class="type-signature">(static) </span>notify<span class="signature">(key, data, cb)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Check if a ressource is loaded and callback when it is.
+    Executes all read and write operations present in the actions array.
 </div>
 
 
@@ -179,7 +477,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app-loaded.js.html">app-loaded.js</a>, <a href="app-loaded.js.html#line53">line 53</a>
+        <a href="app-fx.js.html">app-fx.js</a>, <a href="app-fx.js.html#line89">line 89</a>
     </li></ul></dd>
     
 
@@ -195,6 +493,9 @@
 
 
 
+
+    <h5>This:</h5>
+    <ul><li>fx</li></ul>
 
 
 
@@ -223,13 +524,13 @@
 
         <tr>
             
-                <td class="name"><code>v</code></td>
+                <td class="name"><code>key</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><code>*</code></span>
+<span class="param-type"><code>String</code></span>
 
 
             
@@ -240,7 +541,7 @@
             
 
             <td class="description last">
-                Ressource to test
+                Action key
                 
             </td>
         </tr>
@@ -249,7 +550,33 @@
 
         <tr>
             
-                <td class="name"><code>fx</code></td>
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                Bag of data
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cb</code></td>
             
 
             <td class="type">
@@ -266,85 +593,7 @@
             
 
             <td class="description last">
-                Callback to execute when the ressource is loaded
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>delay</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Integer</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Delay between each checks in ms
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>maxRetriesCount</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Integer</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Max checks for a ressource
-                
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>counter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><code>Integer</code></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                Memo for the recursive function
+                Callback executed after each App.actions.execute execution
                 
             </td>
         </tr>
@@ -365,6 +614,19 @@
 
 
 
+
+<div class="section-returns">
+<h5>Returns:</h5>
+
+        
+
+
+<div class="param-desc">
+    this
+</div>
+
+    
+</div>
 
 
 
