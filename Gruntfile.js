@@ -192,8 +192,7 @@ module.exports = function fxGruntConfig (grunt) {
 						DEBUG: false
 					},
 					dead_code: true,
-					unused: true,
-					warnings: true
+					unused: true
 				},
 				preserveComments: false
 			}
