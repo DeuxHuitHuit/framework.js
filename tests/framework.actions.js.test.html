@@ -5,7 +5,7 @@
 	<meta charset="utf-8" />
 	<title>app-actions.js test suite</title>
 
-	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css" type="text/css" />
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.9.2.css" integrity="sha256-toepOe5D+ddXgUOGsijnhymZna5bakJ0gwRC/3bK1b0=" crossorigin="anonymous" />
 
 	<style type="text/css">
 	</style>
@@ -45,7 +45,7 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 
-	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
+	<script src="https://code.jquery.com/qunit/qunit-2.9.2.js" integrity="sha256-EQ5rv6kPFPKQUYY+P4H6fm/le+yFRLVAb//2PfBswfE=" crossorigin="anonymous"></script>
 	<script src="../src/app-log.js"></script>
 	<script src="../src/app-callback.js"></script>
 	<script src="../src/app-actions.js"></script>
@@ -55,10 +55,10 @@
 		(function ($, w) {
 			'use strict';
 
-			module('App.actions');
+			QUnit.module('App.actions');
 			App.debug(true);
 
-			test('Test resolve', function AppActionsResolve() {
+			QUnit.test('Test resolve', function AppActionsResolve(assert) {
 				var actions = {
 					test: $.noop,
 					site: {
@@ -69,69 +69,69 @@
 						}
 					}
 				};
-				ok(!App.actions.resolve(actions, 'x'), 'x does not resolve');
-				ok($.noop === App.actions.resolve(actions, 'test'), 'test resolves');
-				ok(!App.actions.resolve(actions, 'site'), 'site does not resolve');
-				ok($.noop === App.actions.resolve(actions, 'site.test.test.test'), 'site.test.test.test resolves');
+				assert.ok(!App.actions.resolve(actions, 'x'), 'x does not resolve');
+				assert.ok($.noop === App.actions.resolve(actions, 'test'), 'test resolves');
+				assert.ok(!App.actions.resolve(actions, 'site'), 'site does not resolve');
+				assert.ok($.noop === App.actions.resolve(actions, 'site.test.test.test'), 'site.test.test.test resolves');
 			});
 
-			test('Test execute', function AppActionsExecute() {
+			QUnit.test('Test execute', function AppActionsExecute(assert) {
 				var counter = 0;
 				var fx = function (key, data) {
-					ok(true, 'fx was called');
-					ok(key === 'test4', 'key is test4');
-					ok(!data, 'data is false-y');
+					assert.ok(true, 'fx was called');
+					assert.ok(key === 'test4', 'key is test4');
+					assert.ok(!data, 'data is false-y');
 					return true;
 				};
 				var cb = function (key, data) {
-					ok(key === 0, 'key is 0');
-					ok(data, 'ok is true-y');
+					assert.ok(key === 0, 'key is 0');
+					assert.ok(data, 'ok is true-y');
 					counter++;
 				};
 				App.actions.execute(fx, 'test4', null, cb);
-				ok(counter === 1, 'cb was called exactly once');
+				assert.ok(counter === 1, 'cb was called exactly once');
 			});
 
-			test('Test execute with stack', function AppActionsExecute() {
+			QUnit.test('Test execute with stack', function AppActionsExecute(assert) {
 				var counter = 0;
 				var fx = function (key, data) {
-					ok(true, 'fx read was called');
+					assert.ok(true, 'fx read was called');
 					return function () {
-						ok(true, 'fx write was called');
-						ok(key === 'test4', 'key is test4');
-						ok(!data, 'data is false-y');
+						assert.ok(true, 'fx write was called');
+						assert.ok(key === 'test4', 'key is test4');
+						assert.ok(!data, 'data is false-y');
 						counter++;
 					};
 				};
 				App.actions.execute(fx, 'test4');
-				ok(counter === 1, 'write was called exactly once');
+				assert.ok(counter === 1, 'write was called exactly once');
 				counter = 0;
 				fx = function (key, data) {
 					return {
 						read: function () {
-							ok(true, 'fx read was called');
+							assert.ok(true, 'fx read was called');
 							counter++;
 						},
 						write: function () {
-							ok(true, 'fx write was called');
+							assert.ok(true, 'fx write was called');
 							counter++;
 						}
 					}
 				};
 				App.actions.execute(fx, 'test');
-				ok(counter === 2, 'read and write was called exactly once');
+				assert.ok(counter === 2, 'read and write was called exactly once');
 			});
 			
-			test('Test execute with dynamic stack', function AppActionsExecute() {
+			QUnit.test('Test execute with dynamic stack', function AppActionsExecute(assert) {
 				var counter = 0, innerCounter = 0;
 				var inner = function (key, data) {
 					return {
 						read: function () {
-							ok(App.actions.stack().length > 0, 'read: stack is not empty');
+							assert.ok(App.actions.stack().length > 0, 'read: stack is not empty');
 							innerCounter++;
 						},
 						write: function () {
-							ok(App.actions.stack().length > 0, 'write: stack is not empty');
+							assert.ok(App.actions.stack().length > 0, 'write: stack is not empty');
 							innerCounter++;
 						}
 					}
@@ -144,8 +144,8 @@
 					};
 				};
 				App.actions.execute([fx, fx, fx], 'test');
-				ok(counter === 6, 'read and write was called exactly three times each');
-				ok(innerCounter === 6, 'inner read and write was called exactly three times each');
+				assert.ok(counter === 6, 'read and write was called exactly three times each');
+				assert.ok(innerCounter === 6, 'inner read and write was called exactly three times each');
 			});
 		})(jQuery, window);
 	</script>

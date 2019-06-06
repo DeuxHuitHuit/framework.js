@@ -5,7 +5,7 @@
 	<meta charset="utf-8" />
 	<title>app-fx.js test suite</title>
 
-	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css" type="text/css" />
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.9.2.css" integrity="sha256-toepOe5D+ddXgUOGsijnhymZna5bakJ0gwRC/3bK1b0=" crossorigin="anonymous" />
 
 	<style type="text/css">
 	</style>
@@ -45,7 +45,7 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 
-	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
+	<script src="https://code.jquery.com/qunit/qunit-2.9.2.js" integrity="sha256-EQ5rv6kPFPKQUYY+P4H6fm/le+yFRLVAb//2PfBswfE=" crossorigin="anonymous"></script>
 	<script src="../src/app-log.js"></script>
 	<script src="../src/app-callback.js"></script>
 	<script src="../src/app-actions.js"></script>
@@ -55,54 +55,54 @@
 	<script>
 		(function ($, w) {
 			'use strict';
-			module('App.fx');
+			QUnit.module('App.fx');
 			App.debug(true);
 
-			test('Test exports', function AppFxExports() {
+			QUnit.test('Test exports', function AppFxExports(assert) {
 				var fx = function (key, data) {};
 				var ret = App.fx.exports('fx.test', fx);
-				ok(fx === ret, 'Exports returns function');
+				assert.ok(fx === ret, 'Exports returns function');
 			});
 
-			test('Test exports overwrite', function AppFxExportsOverwrite() {
+			QUnit.test('Test exports overwrite', function AppFxExportsOverwrite(assert) {
 				var fx = function (key, data) {};
 				var fx2 = function (key, data) {};
 				var ret = App.fx.exports('fx.test2', fx);
-				ok(fx === ret, 'Exports returns function');
+				assert.ok(fx === ret, 'Exports returns function');
 				ret = App.fx.exports('fx.test2', fx2);
-				ok(fx === ret, 'Exports returns function even if overwrite is denied');
+				assert.ok(fx === ret, 'Exports returns function even if overwrite is denied');
 				ret = App.fx.exports('fx.test2', fx2, true);
-				ok(fx2 === ret, 'Exports returns overwrite function');
+				assert.ok(fx2 === ret, 'Exports returns overwrite function');
 			});
 
-			test('Test notify null', function AppFxNotifyNull() {
+			QUnit.test('Test notify null', function AppFxNotifyNull(assert) {
 				var cb = function (key, data) {
-					ok(false, 'callback was called when it should not');
+					assert.ok(false, 'callback was called when it should not');
 				};
 				var ret = App.fx.notify('fx.test3');
-				ok(!!ret, 'Notify returns something');
+				assert.ok(!!ret, 'Notify returns something');
 				App.fx.notify('fx.test3', cb);
 				App.fx.notify('fx.test3', {}, cb);
 				App.fx.notify('fx.test3', null, cb);
 			});
 
-			test('Test notify test4', function AppFxNotify4() {
+			QUnit.test('Test notify test4', function AppFxNotify4(assert) {
 				var counter = 0;
 				var fx = function (key, data) {
-					ok(true, 'fx was called');
-					ok(key === 'fx.test4', 'key is test4');
-					ok(!data, 'data is false-y');
+					assert.ok(true, 'fx was called');
+					assert.ok(key === 'fx.test4', 'key is test4');
+					assert.ok(!data, 'data is false-y');
 					return true;
 				};
 				var cb = function (key, data) {
-					ok(key === 0, 'key is 0');
-					ok(data, 'ok is true-y');
+					assert.ok(key === 0, 'key is 0');
+					assert.ok(data, 'ok is true-y');
 					counter++;
 				};
 				App.fx.exports('fx.test4', fx);
 				App.fx.notify('fx.test4');
 				App.fx.notify('fx.test4', cb);
-				ok(counter === 1, 'cb was called exactly once');
+				assert.ok(counter === 1, 'cb was called exactly once');
 			});
 		})(jQuery, window);
 	</script>

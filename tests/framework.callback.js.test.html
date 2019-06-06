@@ -4,7 +4,7 @@
 	<meta charset="utf-8" /> 
 	<title>app-callback.js test suite</title> 
 	
-	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css" type="text/css"/>
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.9.2.css" integrity="sha256-toepOe5D+ddXgUOGsijnhymZna5bakJ0gwRC/3bK1b0=" crossorigin="anonymous" />
 	
 	<style type="text/css">
 
@@ -44,7 +44,7 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 	
-	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
+	<script src="https://code.jquery.com/qunit/qunit-2.9.2.js" integrity="sha256-EQ5rv6kPFPKQUYY+P4H6fm/le+yFRLVAb//2PfBswfE=" crossorigin="anonymous"></script>
 	<script src="../src/app-debug.js"></script>
 	<script src="../src/app-log.js"></script>
 	<script src="../src/app-loaded.js"></script>
@@ -53,29 +53,29 @@
 	<script>
 		(function ($, w) {
 			'use strict';
-			module('App.callback');
+			QUnit.module('App.callback');
 			
-			test('Callback exist', function Callback() {
+			QUnit.test('Callback exist', function Callback(assert) {
 				//test for initial value
-				ok(!!window.App, 'window.App is defined'); 
-				ok(!!window.App.callback, 'window.App.callback is defined'); 
+				assert.ok(!!window.App, 'window.App is defined'); 
+				assert.ok(!!window.App.callback, 'window.App.callback is defined'); 
 			});
 			
-			test('Callback work good with wrong value', function CallbackWrongValue() {
+			QUnit.test('Callback work good with wrong value', function CallbackWrongValue(assert) {
 				//test for initial value
 				var testCallbackWithNumber = 1;
 				
-				ok(App.callback(testCallbackWithNumber) === undefined);
+				assert.ok(App.callback(testCallbackWithNumber) === undefined);
 			});
 			
-			test('Callback work good with object value', function CallbackObject() {
+			QUnit.test('Callback work good with object value', function CallbackObject(assert) {
 				//test for initial value
 				var testCallbackWithObject = {};
 				
-				ok(App.callback(testCallbackWithObject) === testCallbackWithObject);
+				assert.ok(App.callback(testCallbackWithObject) === testCallbackWithObject);
 			});
 			
-			test('Callback handle exception', function CallbackException() {
+			QUnit.test('Callback handle exception', function CallbackException(assert) {
 				//test for initial value
 				var 
 				testCallbackWithException = function() {
@@ -83,7 +83,7 @@
 				},
 				logResult;
 				
-				ok(App.callback(testCallbackWithException) === undefined, "okay with no logger");
+				assert.ok(App.callback(testCallbackWithException) === undefined, "okay with no logger");
 				
 				/* Create a fake logger to test */ 
 				window.App = $.extend(window.App, {
@@ -97,13 +97,13 @@
 				
 				App.callback(testCallbackWithException);
 				
-				equal(logResult.fx, 'error', "okay with logger, exception logged");
-				equal(typeof logResult.args[0], 'string', 'Exception message is present');
-				equal(typeof logResult.args[1], 'object', 'Error object is an object');
+				assert.equal(logResult.fx, 'error', "okay with logger, exception logged");
+				assert.equal(typeof logResult.args[0], 'string', 'Exception message is present');
+				assert.equal(typeof logResult.args[1], 'object', 'Error object is an object');
 				
 			});
 			
-			test('Callback work and return value', function CallbackReturnValue() {
+			QUnit.test('Callback work and return value', function CallbackReturnValue(assert) {
 				//test for initial value
 				var 
 				returnedValue = "test",
@@ -111,61 +111,61 @@
 					return returnedValue;
 				};
 				
-				ok(App.callback(testCallbackReturn) === returnedValue, "Is returning the callback value");
+				assert.ok(App.callback(testCallbackReturn) === returnedValue, "Is returning the callback value");
 			});
 			
-			test('Callback work without array', function NoArray() {
+			QUnit.test('Callback work without array', function NoArray(assert) {
 				var test = function (one, two, three) {
 					return one === 1;
 				};
 				
-				ok(App.callback(test, 1), 'is working without');
-				ok(App.callback(test, [1]), 'is working with');
+				assert.ok(App.callback(test, 1), 'is working without');
+				assert.ok(App.callback(test, [1]), 'is working with');
 			});
 			
-			test('Callback work with jQuery object', function NoArray() {
+			QUnit.test('Callback work with jQuery object', function NoArray(assert) {
 				var test = function (jquery) {
 					return !!jquery.jquery && !!jquery.show;
 				};
 				
-				ok(App.callback(test, $()), 'is working without');
-				ok(App.callback(test, [$()]), 'is working with');
+				assert.ok(App.callback(test, $()), 'is working without');
+				assert.ok(App.callback(test, [$()]), 'is working with');
 			});
 			
-			test('Do now wrap nulls and undefineds and other falsy values', function NoFalsyWraps() {
+			QUnit.test('Do now wrap nulls and undefineds and other falsy values', function NoFalsyWraps(assert) {
 				var test = function (one, two, three) {
 					return !one;
 				};
 				
-				ok(App.callback(test), 'undefined');
-				ok(App.callback(test, undefined), 'real undefined');
-				ok(App.callback(test, null), 'null');
-				ok(App.callback(test, 0), 'zero');
-				ok(App.callback(test, false), 'false');
+				assert.ok(App.callback(test), 'undefined');
+				assert.ok(App.callback(test, undefined), 'real undefined');
+				assert.ok(App.callback(test, null), 'null');
+				assert.ok(App.callback(test, 0), 'zero');
+				assert.ok(App.callback(test, false), 'false');
 			});
 			
-			test('Callback work with native `arguments` array-like object', function ArrayLikeObjects() {
+			QUnit.test('Callback work with native `arguments` array-like object', function ArrayLikeObjects(assert) {
 				var test = function (one, two, three) {
 					return one === 1;
 				};
 				
 				var tester = function () {
-					ok(App.callback(test, arguments), 'is working with arguments');
+					assert.ok(App.callback(test, arguments), 'is working with arguments');
 				};
 				
-				ok(App.callback(test, [1, 2, 3]), 'is working with array');
+				assert.ok(App.callback(test, [1, 2, 3]), 'is working with array');
 				tester(1, 2, 3);
 			});
 			
-			module('App.loaded');
+			QUnit.module('App.loaded');
 			
-			test('Loaded exist', function Loaded() {
+			QUnit.test('Loaded exist', function Loaded(assert) {
 				//test for initial value
-				ok(!!window.App, 'window.App is defined'); 
-				ok(!!window.App.loaded, 'window.App.loaded is defined'); 
+				assert.ok(!!window.App, 'window.App is defined'); 
+				assert.ok(!!window.App.loaded, 'window.App.loaded is defined'); 
 			});
 			
-			test('Loaded works', function LoadedCall() {
+			QUnit.test('Loaded works', function LoadedCall(assert) {
 				var magicNumber = 3;
 				var value = function (counter) {
 					if (counter === magicNumber) {
@@ -174,12 +174,12 @@
 				};
 				
 				var callback = function (value, counter) {
-					start();
-					ok(value, 'value is true!');
-					equal(counter, magicNumber, 'counter is ' + magicNumber);
+					next();
+					assert.ok(value, 'value is true!');
+					assert.equal(counter, magicNumber, 'counter is ' + magicNumber);
 				};
 				
-				stop();
+				var next = assert.async();
 				
 				App.loaded(value, callback);
 			});

@@ -4,7 +4,7 @@
 	<meta charset="utf-8" /> 
 	<title>framework.js test suite</title> 
 	
-	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css" type="text/css" />
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.9.2.css" integrity="sha256-toepOe5D+ddXgUOGsijnhymZna5bakJ0gwRC/3bK1b0=" crossorigin="anonymous" />
 	
 	<style type="text/css">
 
@@ -44,7 +44,7 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 	
-	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
+	<script src="https://code.jquery.com/qunit/qunit-2.9.2.js" integrity="sha256-EQ5rv6kPFPKQUYY+P4H6fm/le+yFRLVAb//2PfBswfE=" crossorigin="anonymous"></script>
 	<script src="../src/globals.js"></script>
 	<script src="../src/app-log.js"></script>
 	<script src="../src/app-debug.js"></script> 
@@ -54,17 +54,17 @@
 	<script>
 		(function ($, w) {
 			'use strict';
-			module('App.loader');
+			QUnit.module('App.loader');
 			App.debug(true);
 			
-			test('load 1 - test load a 200 and a 404', function firstTest () {
+			QUnit.test('load 1 - test load a 200 and a 404', function firstTest (assert) {
 				var successCount = 0;
 				var errorCount = 0;
 				var completeCount = 0;
 				var giveup = 0;
 				var clienterror = 0;
 
-				stop();
+				var next = assert.async();
 
 				App.loader
 					.load('framework.js.test.html')
@@ -88,17 +88,16 @@
 
 							// should be called only once
 							if (completeCount === 1) {
-
-								start();
-								equal(clienterror, 1, '1.html clienterror count is 1');
-								equal(giveup, 0, '1.html giveup count is 0');
-								equal(successCount, 0, '1.html successCount is 0');
-								equal(errorCount, 1, '1.html errorCount is 1');
+								assert.equal(clienterror, 1, '1.html clienterror count is 1');
+								assert.equal(giveup, 0, '1.html giveup count is 0');
+								assert.equal(successCount, 0, '1.html successCount is 0');
+								assert.equal(errorCount, 1, '1.html errorCount is 1');
+								next();
 							}
 						}
 					});
 			});
-			test('load 2 - test progress', function secondTest() {
+			QUnit.test('load 2 - test progress', function second(assert) {
 				var progressCount = 0;
 				var progressE = null;
 
@@ -106,7 +105,7 @@
 				var errorCount = 0;
 				var completeCount = 0;
 
-				stop();
+				var next = assert.async();
 
 				App.loader.load({
 					url: '2.html', // valid
@@ -125,27 +124,25 @@
 						
 						// don't let the retries do that
 						if (completeCount === 1) {
-							start();
-							
-							equal(successCount, 1, '2.html successCount is 1');
-							equal(errorCount, 0, '2.html errorCount is 1');
+							assert.equal(successCount, 1, '2.html successCount is 1');
+							assert.equal(errorCount, 0, '2.html errorCount is 1');
 
-							ok(progressE, '2.html progressE is true');
-							equal(progressCount, 1, '2.html progressCount is 1');
+							assert.ok(progressE, '2.html progressE is true');
+							assert.equal(progressCount, 1, '2.html progressCount is 1');
 							
-							//thirdTest();
+							next();
 						}
 					}
 				});
 			});
-			test('load 3 - test response cache', function thirdTest() {
+			QUnit.test('load 3 - test response cache', function third(assert) {
 				var cacheCount = 0;
 
 				var successCount = 0;
 				var errorCount = 0;
 				var completeCount = 0;
 
-				stop();
+				var next = assert.async();
 				
 				// mock Storage
 				var _store = {};
@@ -172,14 +169,10 @@
 							successCount++;
 						},
 						complete: function () {
-							start();
+							assert.equal(successCount, 1, '2.html cache successCount is 1');
 							
-							equal(successCount, 1, '2.html cache successCount is 1');
-							
-							ok(w.App.storage.session.get('2.html'), '2.html cache storage is present');
-							equal(w.App.storage.session.get('2.html'), 'test file', '2.html cache is 2.html content');
-							
-							stop();
+							assert.ok(w.App.storage.session.get('2.html'), '2.html cache storage is present');
+							assert.equal(w.App.storage.session.get('2.html'), 'test file', '2.html cache is 2.html content');
 							
 							App.loader.load({
 								url: '2.html', // valid
@@ -188,37 +181,35 @@
 									cacheCount++;
 								},
 								success: function (data) {
-									start();
-									equal(cacheCount, 1, '2.html cache cacheCount is 1');
-									equal(data, w.App.storage.session.get('2.html'), '2.html retreived from cache');
+									assert.equal(cacheCount, 1, '2.html cache cacheCount is 1');
+									assert.equal(data, w.App.storage.session.get('2.html'), '2.html retreived from cache');
 									
 									delete window.App.storage;
 									
-									//fourthTest();
+									next();
 								}
 							});
 						}
 					});
 			});
-			test('load 4 - test isLoading and inQueue', function fourthTest() {
+			QUnit.test('load 4 - test isLoading and inQueue', function fourth(assert) {
+				var next = assert.async();
 				App.loader.load({
 					url: '2.html',
 					complete: function () {
-						start();
+						next();
 					}
 				});
 				
-				ok(App.loader.isLoading('2.html'), '2.html is loading');
-				ok(App.loader.isLoading({url: '2.html'}), '{ url: \'2.html\' } is loading');
-				equal(App.loader.inQueue('2.html'), -1, '2.html is not in queue');
+				assert.ok(App.loader.isLoading('2.html'), '2.html is loading');
+				assert.ok(App.loader.isLoading({url: '2.html'}), '{ url: \'2.html\' } is loading');
+				assert.equal(App.loader.inQueue('2.html'), -1, '2.html is not in queue');
 				
 				App.loader.load({
 					url: '2.html',
 					method: 'POST'
 				});
-				equal(App.loader.inQueue('2.html'), 0, '2.html is not in queue');
-				
-				stop();
+				assert.equal(App.loader.inQueue('2.html'), 0, '2.html is not in queue');
 			});
 		})(jQuery, window);
 	</script>

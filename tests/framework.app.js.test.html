@@ -4,7 +4,7 @@
 	<meta charset="utf-8" /> 
 	<title>framework-app.js test suite</title> 
 	
-	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css" type="text/css"/>
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.9.2.css" integrity="sha256-toepOe5D+ddXgUOGsijnhymZna5bakJ0gwRC/3bK1b0=" crossorigin="anonymous" />
 	
 	<style type="text/css">
 
@@ -44,7 +44,7 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 	
-	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
+	<script src="https://code.jquery.com/qunit/qunit-2.9.2.js" integrity="sha256-EQ5rv6kPFPKQUYY+P4H6fm/le+yFRLVAb//2PfBswfE=" crossorigin="anonymous"></script>
 	<script src="../src/app-debug.js"></script>
 	<script src="../src/app-callback.js"></script>
 	<script src="../src/app-device.js"></script>
@@ -60,85 +60,87 @@
 		(function ($, w) {
 			'use strict';
 		
-			var initTest = function() {
-				ok(true);
+			var initTest = function(assert) {
+				return function () {
+					assert.ok(true);
+				};
 			};
 		
 			//Enable debug
 			App.debug(true);
 			
-			module('App.device.detector');
+			QUnit.module('App.device.detector');
 
-			test('isIphone', function browserDetectorIsIphoneTest() {
+			QUnit.test('isIphone', function browserDetectorIsIphone(assert) {
 				//test for empty string
-				ok(!w.App.device.detector.isIphone(''),'empty ua is not an iphone');
+				assert.ok(!w.App.device.detector.isIphone(''),'empty ua is not an iphone');
 				
 				//test for iphone regex
-				ok(w.App.device.detector.isIphone('iphone'),'iphone text ua is an iphone');
-				ok(w.App.device.detector.isIphone('sdfdg-iphonesdf'),'ua contains iphone then is an iphone');
+				assert.ok(w.App.device.detector.isIphone('iphone'),'iphone text ua is an iphone');
+				assert.ok(w.App.device.detector.isIphone('sdfdg-iphonesdf'),'ua contains iphone then is an iphone');
 				
 				//Test for ipod regex
-				ok(w.App.device.detector.isIphone('ipod'),'ipod text ua is an iphone');
-				ok(w.App.device.detector.isIphone('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
+				assert.ok(w.App.device.detector.isIphone('ipod'),'ipod text ua is an iphone');
+				assert.ok(w.App.device.detector.isIphone('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
 				
-				ok(w.App.device.detector.isIphone('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
+				assert.ok(w.App.device.detector.isIphone('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
 				
-				ok(!w.App.device.detector.isIphone('ipad iphone'),'ua contains ipad AND iphone then is NOT iphone');
+				assert.ok(!w.App.device.detector.isIphone('ipad iphone'),'ua contains ipad AND iphone then is NOT iphone');
 			});
 			
-			test('isIpad', function browserDetectorIsIphoneTest() {
+			QUnit.test('isIpad', function browserDetectorIsIphone(assert) {
 				//test for empty string
-				ok(!w.App.device.detector.isIpad(''),'empty ua is not an ipad');
+				assert.ok(!w.App.device.detector.isIpad(''),'empty ua is not an ipad');
 				
 				//test for iphone regex
-				ok(!w.App.device.detector.isIpad('iphone'),'iphone is an not an ipad');
-				ok(!w.App.device.detector.isIpad('sdfdg-iphonesdf'),'ua contains iphone then is not and ipad');
+				assert.ok(!w.App.device.detector.isIpad('iphone'),'iphone is an not an ipad');
+				assert.ok(!w.App.device.detector.isIpad('sdfdg-iphonesdf'),'ua contains iphone then is not and ipad');
 				
 				//Test for ipod regex
-				ok(!w.App.device.detector.isIpad('ipod'),'ipod text ua is not an iphone');
-				ok(!w.App.device.detector.isIpad('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
+				assert.ok(!w.App.device.detector.isIpad('ipod'),'ipod text ua is not an iphone');
+				assert.ok(!w.App.device.detector.isIpad('sdfdg-ipodesdf'),'ua contains ipod then is an iphone');
 				
 				//Test for ipad regex
-				ok(w.App.device.detector.isIpad('sdfdg-ipadesdf'),'ua contains ipad then is an ipad');
-				ok(w.App.device.detector.isIpad('ipad iphone'),'ua contains ipad AND iphone then IS ipad');
+				assert.ok(w.App.device.detector.isIpad('sdfdg-ipadesdf'),'ua contains ipad then is an ipad');
+				assert.ok(w.App.device.detector.isIpad('ipad iphone'),'ua contains ipad AND iphone then IS ipad');
 			});
 			
-			module('App.routing.querystring');
+			QUnit.module('App.routing.querystring');
 			
-			test('parse',function QSTest() {
+			QUnit.test('parse', function QS(assert) {
 				var result;
 				
 				//Test 1
 				result = w.App.routing.querystring.parse('?q=test');
-				ok(result.q === 'test','parse ?q.test is parsed successfully');
+				assert.ok(result.q === 'test','parse ?q.test is parsed successfully');
 				
 				//Test 2
 				result = w.App.routing.querystring.parse('?q=test&r=2');
-				ok(result.q === 'test' && result.r == 2,'parse ?q=test&r=2 is parsed successfully');
+				assert.ok(result.q === 'test' && result.r == 2,'parse ?q=test&r=2 is parsed successfully');
 			});
 			
-			module('App.Pages');
+			QUnit.module('App.Pages');
 			
-			test('exportsPage and createPage', function exportPagesTest() {
+			QUnit.test('exportsPage and createPage', function exportPages(assert) {
 				var modelKey = 'm1',
 				f = {
-					init: initTest
+					init: initTest(assert)
 				};
 				
-				ok(App.pages.exports(modelKey,f), 'page exports work');
+				assert.ok(App.pages.exports(modelKey,f), 'page exports work');
 				
-				ok(!App.pages.exports(modelKey,f), 'page exports dont allow override by default');
+				assert.ok(!App.pages.exports(modelKey,f), 'page exports dont allow override by default');
 				
-				ok(!App.pages.exports(1,f), 'key cant be an int');
-				ok(!App.pages.exports({},f), 'key cant be an object');
-				ok(!App.pages.exports($.noop,f), 'key cant be a function');
-				ok(!App.pages.exports(false,f), 'key cant be a boolean');
+				assert.ok(!App.pages.exports(1,f), 'key cant be an int');
+				assert.ok(!App.pages.exports({},f), 'key cant be an object');
+				assert.ok(!App.pages.exports($.noop,f), 'key cant be a function');
+				assert.ok(!App.pages.exports(false,f), 'key cant be a boolean');
 				
-				ok(!App.pages.exports(modelKey,f,false), 'page exports dont allow override with false override');
+				assert.ok(!App.pages.exports(modelKey,f,false), 'page exports dont allow override with false override');
 				
-				ok(App.pages.exports(modelKey,f,true), 'page exports allow override with true override');
+				assert.ok(App.pages.exports(modelKey,f,true), 'page exports allow override with true override');
 				
-				ok(App.pages.exports(modelKey+'func', function () {
+				assert.ok(App.pages.exports(modelKey+'func', function () {
 					return $.extend({}, f);
 				}), 'page exports allow functions');
 				
@@ -147,40 +149,40 @@
 				
 				var routes = ['/en/test/','/fr/test/'];
 				
-				ok(App.pages.create({
+				assert.ok(App.pages.create({
 					key: 'test', 
 					routes: routes
 				},modelKey), 'Page create worked');
 				
 				var page = App.pages.page('test');
-				ok(page.key() == 'test');
-				ok(page.routes() == routes);
+				assert.ok(page.key() == 'test');
+				assert.ok(page.routes() == routes);
 				
-				ok(!App.pages.create({
+				assert.ok(!App.pages.create({
 					key: 'test', 
 					routes: ['/en/test/','/fr/test/']
 				},modelKey), 'page create dont allow override existing page');
 				
-				ok(App.pages.create({
+				assert.ok(App.pages.create({
 					key: 'test', 
 					routes: ['/en/test/','/fr/test/']
 				},modelKey,true), 'page create allow override existing page with true override');
 				
-				ok(!App.pages.create({
+				assert.ok(!App.pages.create({
 					key: 'test2',
 					routes: ['/en/test/', '/fr/test/']
 				},'m3'), 'page create dont find the model');
 				
-				ok(!App.pages.create(1, modelKey+'int'), 'cant create ints models');
-				ok(!App.pages.create('', modelKey+'string'), 'cant create string models');
+				assert.ok(!App.pages.create(1, modelKey+'int'), 'cant create ints models');
+				assert.ok(!App.pages.create('', modelKey+'string'), 'cant create string models');
 				
 				var page1 = App.pages.create({}, modelKey+'func');
 				var page2 = App.pages.create({}, modelKey+'func');
 				
-				ok(page1 != page2, 'functions creates new scopes');
+				assert.ok(page1 != page2, 'functions creates new scopes');
 			});
 			
-			test('matchRoute', function appPagesmatchRouteTest () {
+			QUnit.test('matchRoute', function appPagesmatchRouteTest (assert) {
 				var routes = { // can also use array
 					root: '/',
 					contactFR: '/fr/contact/',
@@ -193,52 +195,52 @@
 				route = '';
 			
 				route = routes.root;
-				ok(!!~App.pages.matchRoute(route, routes), route);
+				assert.ok(!!~App.pages.matchRoute(route, routes), route);
 				
 				route = routes.contactFR;
-				ok(!!~App.pages.matchRoute(route, routes), route);
+				assert.ok(!!~App.pages.matchRoute(route, routes), route);
 				
 				route = routes.contactEN;
-				ok(!!~App.pages.matchRoute(route, routes), route);
-				equal(App.pages.matchRoute(route, routes), 'contactEN', route + ' index');
+				assert.ok(!!~App.pages.matchRoute(route, routes), route);
+				assert.equal(App.pages.matchRoute(route, routes), 'contactEN', route + ' index');
 				
 				route = '///kldkslds';
-				ok(!~App.pages.matchRoute(route, routes), '! ' + route);
+				assert.ok(!~App.pages.matchRoute(route, routes), '! ' + route);
 				
 				route = '/fr/test/super-cheap/view';
-				ok(!!~App.pages.matchRoute(route, routes), route + ' widlcard');
+				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' widlcard');
 				
 				route = '/a';
-				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/b';
-				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/c';
-				ok(!~App.pages.matchRoute(route, routes), '! ' + route + ' regexp');
+				assert.ok(!~App.pages.matchRoute(route, routes), '! ' + route + ' regexp');
 				
 				route = '/test/?test=test';
-				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/test/article/test-test/';
-				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/test/article/test-test/#sasasas';
-				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/test/?test[super/\]=test#43434';
-				ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
 				
 				route = '/query-string?with-a-query-string';
-				ok(!!~App.pages.matchRoute(route, routes), route + ' with a query string');
+				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' with a query string');
 				
 				route = '/query-string?with-a-query-string?and=another';
-				ok(!!~App.pages.matchRoute(route, routes), route + ' with 2 query strings');
+				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' with 2 query strings');
 			});
 			
-			test('getPageForRoute', function appPages_getPageForRouteTest () {
+			QUnit.test('getPageForRoute', function appPages_getPageForRouteTest (assert) {
 				App.pages.exports('page1', {
-					init : initTest
+					init: initTest(assert)
 				});
 				
 				App.pages.create({key: 'page 1', routes: ['page-1']},'page1');
@@ -247,39 +249,39 @@
 				var page;
 				
 				page = App.pages.getPageForRoute(null);
-				equal(page, null, 'null page');
+				assert.equal(page, null, 'null page');
 				page = App.pages.getPageForRoute('page-1');
-				equal(page.key(), 'page 1', 'page 1');
+				assert.equal(page.key(), 'page 1', 'page 1');
 				page = App.pages.getPageForRoute('page-2');
-				equal(page.key(), 'page 2', 'page 2');
+				assert.equal(page.key(), 'page 2', 'page 2');
 				
-				ok(!page.init(), 'init returns a false-y value');
+				assert.ok(!page.init(), 'init returns a false-y value');
 				
 				page = App.pages.getPageForRoute('page-3');
-				equal(page, null, 'page 3');
+				assert.equal(page, null, 'page 3');
 			});
 			
-			test('page properties', function pagePropertiesTest() {
+			QUnit.test('page properties', function pageProperties(assert) {
 				App.pages.exports('page-properties', {});
 				var page = App.pages.create({
 					key: 'page properties',
 					routes: ['page-1']
 				}, 'page-properties');
 				
-				ok(page, 'page has a value');
-				ok(page.key(), 'key() returns a value');
-				ok(!page.loaded(), 'loaded() returns false');
-				ok(page.routes(), 'key() returns a value');
-				ok(page.data(), 'data() returns a value');
-				ok(page.canEnter(), 'canEnter() returns a value');
-				ok(page.canLeave(), 'canLeave() returns a value');
-				ok(page.enter, 'enter is a value');
-				ok(page.init, 'init is a value');
+				assert.ok(page, 'page has a value');
+				assert.ok(page.key(), 'key() returns a value');
+				assert.ok(!page.loaded(), 'loaded() returns false');
+				assert.ok(page.routes(), 'key() returns a value');
+				assert.ok(page.data(), 'data() returns a value');
+				assert.ok(page.canEnter(), 'canEnter() returns a value');
+				assert.ok(page.canLeave(), 'canLeave() returns a value');
+				assert.ok(page.enter, 'enter is a value');
+				assert.ok(page.init, 'init is a value');
 			});
 			
-			module('App.modules');
+			QUnit.module('App.modules');
 			
-			test('notify', function appModuleNotifyTest () {
+			QUnit.test('notify', function appModuleNotifyTest (assert) {
 				var count = 0;
 				var testModule = {
 					actions: function () {
@@ -297,10 +299,10 @@
 				
 				App.modules.notify('test');
 				
-				equal(count, 3, '3 modules got called');
+				assert.equal(count, 3, '3 modules got called');
 			});
 			
-			test('notify - with actions as an object', function appModuleNotifyTest () {
+			QUnit.test('notify - with actions as an object', function appModuleNotifyTest (assert) {
 				var count = 0;
 				var testModule = {
 					actions: {
@@ -316,10 +318,10 @@
 				
 				App.modules.notify('test');
 				
-				equal(count, 3, '3 modules got called');
+				assert.equal(count, 3, '3 modules got called');
 			});
 			
-			test('notify - JSON Path', function appModuleNotifyJsonPathTest () {
+			QUnit.test('notify - JSON Path', function appModuleNotifyJsonPathTest (assert) {
 				var count = 0;
 				var testModule = {
 					actions: function () {
@@ -343,15 +345,15 @@
 				
 				App.modules.notify('JSONPath.test.fx');
 				
-				equal(count, 1, '1 modules got called');
+				assert.equal(count, 1, '1 modules got called');
 			});
 			
-			test('notify - callback', function appModuleNotifyCallbackTest () {
+			QUnit.test('notify - callback', function appModuleNotifyCallbackTest (assert) {
 				var counter = 0;
 				
 				var cb = function (key, res) {
-					equal($.type(key), 'number', 'key ' + key + ' is a number');
-					equal(res, true, 'res is true');
+					assert.equal($.type(key), 'number', 'key ' + key + ' is a number');
+					assert.equal(res, true, 'res is true');
 					counter++;
 				};
 				
@@ -381,11 +383,11 @@
 				
 				App.modules.notify('cb', null, cb);
 				
-				equal(counter, 1, 'Callback was called 1 time');
+				assert.equal(counter, 1, 'Callback was called 1 time');
 				
 				App.mediator.notify('cb', null, cb);
 				
-				equal(counter, 3, 'Callback was called 3 times');
+				assert.equal(counter, 3, 'Callback was called 3 times');
 			});
 		})(jQuery, window);
 	</script>

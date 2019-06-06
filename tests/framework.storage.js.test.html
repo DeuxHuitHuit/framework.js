@@ -4,7 +4,7 @@
 	<meta charset="utf-8" />
 	<title>framework.js test suite</title>
 
-	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css" type="text/css" />
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.9.2.css" integrity="sha256-toepOe5D+ddXgUOGsijnhymZna5bakJ0gwRC/3bK1b0=" crossorigin="anonymous" />
 
 	<style type="text/css">
 
@@ -44,7 +44,7 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 
-	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
+	<script src="https://code.jquery.com/qunit/qunit-2.9.2.js" integrity="sha256-EQ5rv6kPFPKQUYY+P4H6fm/le+yFRLVAb//2PfBswfE=" crossorigin="anonymous"></script>
 	<script src="../src/app-debug.js"></script>
 	<script src="../src/app-callback.js"></script>
 	<script src="../src/app-storage.js"></script>
@@ -57,7 +57,7 @@
 			window.localStorage.clear();
 			window.sessionStorage.clear();
 
-			module('App.storage');
+			QUnit.module('App.storage');
 			App.debug(true);
 
 			var mock_storage = (function (storage) {
@@ -72,64 +72,64 @@
 			})(window.App.storage);
 
 			var getSetTest = function (store, prefix) {
-				var fx = function () {
+				var fx = function (assert) {
 					var value = 'VALUE';
 
-					ok(store.get(value) === undefined, prefix + ' is empty');
-					ok(store.set(value, value), prefix + ' was set to ' + value);
-					ok(store.get(value) === value, prefix + ' was ' + value);
-					ok(store.get(value + '1') === undefined, prefix + ' value1 still undefined');
-					ok(store.get(value) === value, prefix + ' was ');
-					ok(store.set(value, null), prefix + ' was set to null');
-					ok(store.get(value) === '', prefix + ' was ""');
-					ok(store.set(value, value), prefix + ' was set to ' + value);
-					ok(store.get(value) === value, prefix + ' was ' + value);
-					ok(store.remove(value), prefix + ' was removed');
-					ok(store.get(value) === undefined, prefix + ' is empty');
+					assert.ok(store.get(value) === undefined, prefix + ' is empty');
+					assert.ok(store.set(value, value), prefix + ' was set to ' + value);
+					assert.ok(store.get(value) === value, prefix + ' was ' + value);
+					assert.ok(store.get(value + '1') === undefined, prefix + ' value1 still undefined');
+					assert.ok(store.get(value) === value, prefix + ' was ');
+					assert.ok(store.set(value, null), prefix + ' was set to null');
+					assert.ok(store.get(value) === '', prefix + ' was ""');
+					assert.ok(store.set(value, value), prefix + ' was set to ' + value);
+					assert.ok(store.get(value) === value, prefix + ' was ' + value);
+					assert.ok(store.remove(value), prefix + ' was removed');
+					assert.ok(store.get(value) === undefined, prefix + ' is empty');
 				};
 				fx.displayName = prefix + 'GetSetTest';
 				return fx;
 			};
 
 			var clearTest = function (store, prefix) {
-				var fx = function () {
+				var fx = function (assert) {
 					var key1 = 'bar';
 					var key2 = 'foo';
 					var key3 = 'foo2';
 					var value = 'VALUE';
 
 					$.each([key1, key2, key3], function (i, k) {
-						ok(store.set(k, value), prefix + ' ' + k + ' was set to ' + value);
-						ok(store.get(k) === value, prefix + ' ' + k + ' was ' + value);
+						assert.ok(store.set(k, value), prefix + ' ' + k + ' was set to ' + value);
+						assert.ok(store.get(k) === value, prefix + ' ' + k + ' was ' + value);
 					});
 
-					ok(store.clear(/^foo/), 'clear all foos');
-					ok(store.get(key1) === value, prefix + ' ' + key1  + ' was ' + value);
-					ok(store.get(key2) === undefined, prefix + ' ' + key2 + ' was undefined');
-					ok(store.get(key3) === undefined, prefix + ' ' + key3 + ' was undefined');
+					assert.ok(store.clear(/^foo/), 'clear all foos');
+					assert.ok(store.get(key1) === value, prefix + ' ' + key1  + ' was ' + value);
+					assert.ok(store.get(key2) === undefined, prefix + ' ' + key2 + ' was undefined');
+					assert.ok(store.get(key3) === undefined, prefix + ' ' + key3 + ' was undefined');
 
 					$.each([key1, key2, key3], function (i, k) {
-						ok(store.set(k, value), prefix + ' ' + k + ' was set to ' + value);
+						assert.ok(store.set(k, value), prefix + ' ' + k + ' was set to ' + value);
 					});
 
-					ok(store.clear(), 'clear all');
-					ok(store.get(key1) === undefined, prefix + ' ' + key1 + ' was undefined');
-					ok(store.get(key2) === undefined, prefix + ' ' + key2 + ' was undefined');
-					ok(store.get(key3) === undefined, prefix + ' ' + key3 + ' was undefined');
+					assert.ok(store.clear(), 'clear all');
+					assert.ok(store.get(key1) === undefined, prefix + ' ' + key1 + ' was undefined');
+					assert.ok(store.get(key2) === undefined, prefix + ' ' + key2 + ' was undefined');
+					assert.ok(store.get(key3) === undefined, prefix + ' ' + key3 + ' was undefined');
 				};
 				fx.displayName = prefix + 'ClearTest';
 				return fx;
 			};
 
-			test('mock get/set', getSetTest(mock_storage, 'mock'));
+			QUnit.test('mock get/set', getSetTest(mock_storage, 'mock'));
 
-			test('local get/set', getSetTest(App.storage.local, 'local'));
+			QUnit.test('local get/set', getSetTest(App.storage.local, 'local'));
 
-			test('session get/set', getSetTest(App.storage.session, 'session'));
+			QUnit.test('session get/set', getSetTest(App.storage.session, 'session'));
 
-			test('local clear', clearTest(App.storage.local, 'local'));
+			QUnit.test('local clear', clearTest(App.storage.local, 'local'));
 
-			test('session clear', clearTest(App.storage.session, 'session'));
+			QUnit.test('session clear', clearTest(App.storage.session, 'session'));
 
 		})(jQuery, window);
 	</script>

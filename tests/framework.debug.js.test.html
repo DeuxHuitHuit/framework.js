@@ -4,7 +4,7 @@
 	<meta charset="utf-8" /> 
 	<title>app-debug.js test suite</title> 
 	
-	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.23.1.css" type="text/css"/>
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.9.2.css" integrity="sha256-toepOe5D+ddXgUOGsijnhymZna5bakJ0gwRC/3bK1b0=" crossorigin="anonymous" />
 	
 	<style type="text/css">
 
@@ -44,23 +44,23 @@
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
 	
-	<script src="https://code.jquery.com/qunit/qunit-1.23.1.js"></script>
+	<script src="https://code.jquery.com/qunit/qunit-2.9.2.js" integrity="sha256-EQ5rv6kPFPKQUYY+P4H6fm/le+yFRLVAb//2PfBswfE=" crossorigin="anonymous"></script>
 	<script src="../src/app-debug.js"></script>
 	
 	<script>
 		(function ($, w) {
 			'use strict';
-			module('App.debug');
+			QUnit.module('App.debug');
 			
-			test('Test debug() get/set', function AppDebug() {
+			QUnit.test('Test debug() get/set', function AppDebug(assert) {
 				//test for initial value
-				ok(!App.debug(), 'App.debug() is false by default'); // Should be false
+				assert.ok(!App.debug(), 'App.debug() is false by default'); // Should be false
 				
 				//Test for set true
 				App.debug(true);
-				ok(App.debug(), 'Setter and getter of App.debug() work has expected with true set');	//should be true
-				ok(!App.debug(false), 'Setter and getter of App.debug() work has expected with false set');	//should be false
-				ok(App.debug('!'), 'Setter App.debug("!") work has expected with inverted flag');	//should be true
+				assert.ok(App.debug(), 'Setter and getter of App.debug() work has expected with true set');	//should be true
+				assert.ok(!App.debug(false), 'Setter and getter of App.debug() work has expected with false set');	//should be false
+				assert.ok(App.debug('!'), 'Setter App.debug("!") work has expected with inverted flag');	//should be true
 				
 				//Make sure we got verbose for other test
 				App.debug(true); // adds verbose
