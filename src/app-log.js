@@ -18,7 +18,7 @@
 	 * @name argsToObject
 	 * @method
 	 * @memberof debug
-	 * @param {Object} arg
+	 * @param {String|Object|Array} arg The value or values to log
 	 * @returns {Object} Formated object
 	 * @private
 	 */
@@ -46,11 +46,11 @@
 	var logs = [];
 
 	/**
-	 * Log the recived data with the appropriate effect (log, error, info...)
+	 * Log the received data with the appropriate effect (log, error, info...)
 	 * @name log
 	 * @method
 	 * @memberof debug
-	 * @param {Array} arg
+	 * @param {String|Object|Array} arg The value or values to log
 	 * @private
 	 */
 	var log = function (arg) {
@@ -84,11 +84,11 @@
 	global.App = $.extend(true, global.App, {
 
 		/**
-		 * Log the recived data with the appropriate effect (log, error, info...)
+		 * Log the received data with the appropriate effect (log, error, info...)
 		 * @name this
 		 * @method
 		 * @memberof log
-		 * @param {Array} arg
+		 * @param {String|Object|Array} arg The value or values to log
 		 * @public
 		 */
 		log: log,

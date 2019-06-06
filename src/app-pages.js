@@ -147,7 +147,7 @@
 		if (!pageModel) {
 			App.log({args: ['Model `%s` not found', keyModel], fx: 'error'});
 		} else {
-			//Check to not overide an existing page
+			//Check to not override an existing page
 			if (!!pageInstances[pageData.key] && !override) {
 				App.log({
 					args: ['Overwriting page key `%s` is not allowed', pageData.key],
@@ -240,7 +240,7 @@
 		return result;
 	};
 	
-	var routeMatchStagegies = {
+	var routeMatchStrategies = {
 		regexp: function (testRoute, route, cb) {
 			if (testRoute.test(route)) {
 				return cb();
@@ -322,7 +322,7 @@
 		if (!!route && !!routes) {
 			$.each(routes, function matchOneRoute (i, testRoute) {
 				var routeType = $.type(testRoute);
-				var routeStrategy = routeMatchStagegies[routeType];
+				var routeStrategy = routeMatchStrategies[routeType];
 				var cb = function () {
 					return found(i);
 				};

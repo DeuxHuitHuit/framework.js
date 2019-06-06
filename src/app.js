@@ -55,7 +55,7 @@
 		
 		if (!App.mediator.getCurrentPage()) {
 			App.modules.notify('app.pageNotFound');
-			App.log({ args: 'No current page set, pages will not work.', fx: 'error' });
+			App.log({ fx: 'error', args: 'No current page set, pages will not work.' });
 		}
 	};
 	

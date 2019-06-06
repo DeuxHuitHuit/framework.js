@@ -25,8 +25,8 @@
 		};
 
 		/**
-		 * Format the querystring into an object
-		 * @name prase
+		 * Parses the querystring into an object
+		 * @name parse
 		 * @memberof querystring
 		 * @method
 		 * @param {String} qs
