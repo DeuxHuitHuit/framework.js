@@ -53,102 +53,100 @@
 
 	<script>
 		(function ($, w) {
-			"use strict";
+			'use strict';
 
-				module('App.actions');
-				App.debug(true);
+			module('App.actions');
+			App.debug(true);
 
-				test('Test resolve', function AppActionsResolve() {
-					var actions = {
-						test: $.noop,
-						site: {
+			test('Test resolve', function AppActionsResolve() {
+				var actions = {
+					test: $.noop,
+					site: {
+						test: {
 							test: {
-								test: {
-									test: $.noop
-								}
+								test: $.noop
 							}
 						}
-					};
-					ok(!App.actions.resolve(actions, 'x'), 'x does not resolve');
-					ok($.noop === App.actions.resolve(actions, 'test'), 'test resolves');
-					ok(!App.actions.resolve(actions, 'site'), 'site does not resolve');
-					ok($.noop === App.actions.resolve(actions, 'site.test.test.test'), 'site.test.test.test resolves');
-				});
+					}
+				};
+				ok(!App.actions.resolve(actions, 'x'), 'x does not resolve');
+				ok($.noop === App.actions.resolve(actions, 'test'), 'test resolves');
+				ok(!App.actions.resolve(actions, 'site'), 'site does not resolve');
+				ok($.noop === App.actions.resolve(actions, 'site.test.test.test'), 'site.test.test.test resolves');
+			});
 
-				test('Test execute', function AppActionsExecute() {
-					var counter = 0;
-					var fx = function (key, data) {
-						ok(true, 'fx was called');
+			test('Test execute', function AppActionsExecute() {
+				var counter = 0;
+				var fx = function (key, data) {
+					ok(true, 'fx was called');
+					ok(key === 'test4', 'key is test4');
+					ok(!data, 'data is false-y');
+					return true;
+				};
+				var cb = function (key, data) {
+					ok(key === 0, 'key is 0');
+					ok(data, 'ok is true-y');
+					counter++;
+				};
+				App.actions.execute(fx, 'test4', null, cb);
+				ok(counter === 1, 'cb was called exactly once');
+			});
+
+			test('Test execute with stack', function AppActionsExecute() {
+				var counter = 0;
+				var fx = function (key, data) {
+					ok(true, 'fx read was called');
+					return function () {
+						ok(true, 'fx write was called');
 						ok(key === 'test4', 'key is test4');
 						ok(!data, 'data is false-y');
-						return true;
-					};
-					var cb = function (key, data) {
-						ok(key === 0, 'key is 0');
-						ok(data, 'ok is true-y');
 						counter++;
 					};
-					App.actions.execute(fx, 'test4', null, cb);
-					ok(counter === 1, 'cb was called exactly once');
-				});
-
-				test('Test execute with stack', function AppActionsExecute() {
-					var counter = 0;
-					var fx = function (key, data) {
-						ok(true, 'fx read was called');
-						return function () {
+				};
+				App.actions.execute(fx, 'test4');
+				ok(counter === 1, 'write was called exactly once');
+				counter = 0;
+				fx = function (key, data) {
+					return {
+						read: function () {
+							ok(true, 'fx read was called');
+							counter++;
+						},
+						write: function () {
 							ok(true, 'fx write was called');
-							ok(key === 'test4', 'key is test4');
-							ok(!data, 'data is false-y');
 							counter++;
-						};
-					};
-					App.actions.execute(fx, 'test4');
-					ok(counter === 1, 'write was called exactly once');
-					counter = 0;
-					fx = function (key, data) {
-						return {
-							read: function () {
-								ok(true, 'fx read was called');
-								counter++;
-							},
-							write: function () {
-								ok(true, 'fx write was called');
-								counter++;
-							}
 						}
-					};
-					App.actions.execute(fx, 'test');
-					ok(counter === 2, 'read and write was called exactly once');
-				});
-				
-				test('Test execute with dynamic stack', function AppActionsExecute() {
-					var counter = 0, innerCounter = 0;
-					var inner = function (key, data) {
-						return {
-							read: function () {
-								ok(App.actions.stack().length > 0, 'read: stack is not empty');
-								innerCounter++;
-							},
-							write: function () {
-								ok(App.actions.stack().length > 0, 'write: stack is not empty');
-								innerCounter++;
-							}
+					}
+				};
+				App.actions.execute(fx, 'test');
+				ok(counter === 2, 'read and write was called exactly once');
+			});
+			
+			test('Test execute with dynamic stack', function AppActionsExecute() {
+				var counter = 0, innerCounter = 0;
+				var inner = function (key, data) {
+					return {
+						read: function () {
+							ok(App.actions.stack().length > 0, 'read: stack is not empty');
+							innerCounter++;
+						},
+						write: function () {
+							ok(App.actions.stack().length > 0, 'write: stack is not empty');
+							innerCounter++;
 						}
-					};
-					var fx = function (key, data) {
+					}
+				};
+				var fx = function (key, data) {
+					counter++;
+					App.actions.execute(inner, 'inner');
+					return function () {
 						counter++;
-						App.actions.execute(inner, 'inner');
-						return function () {
-							counter++;
-						};
 					};
-					App.actions.execute([fx, fx, fx], 'test');
-					ok(counter === 6, 'read and write was called exactly three times each');
-					ok(innerCounter === 6, 'inner read and write was called exactly three times each');
-				});
-
-
+				};
+				App.actions.execute([fx, fx, fx], 'test');
+				ok(counter === 6, 'read and write was called exactly three times each');
+				ok(innerCounter === 6, 'inner read and write was called exactly three times each');
+			});
 		})(jQuery, window);
 	</script>
 </body>

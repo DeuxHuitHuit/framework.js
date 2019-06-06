@@ -57,9 +57,8 @@
 	<script src="../src/app-mediator.js"></script>
 	
 	<script>
-	(function ($, w) {
-		
-		'use strict';
+		(function ($, w) {
+			'use strict';
 		
 			var initTest = function() {
 				ok(true);
@@ -86,7 +85,6 @@
 				
 				ok(!w.App.device.detector.isIphone('ipad iphone'),'ua contains ipad AND iphone then is NOT iphone');
 			});
-			
 			
 			test('isIpad', function browserDetectorIsIphoneTest() {
 				//test for empty string
@@ -389,8 +387,7 @@
 				
 				equal(counter, 3, 'Callback was called 3 times');
 			});
-		
-	})(jQuery, window);
+		})(jQuery, window);
 	</script>
 </body>
 </html>

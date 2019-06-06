@@ -54,57 +54,56 @@
 
 	<script>
 		(function ($, w) {
+			'use strict';
+			module('App.fx');
+			App.debug(true);
 
-					module('App.fx');
-					App.debug(true);
+			test('Test exports', function AppFxExports() {
+				var fx = function (key, data) {};
+				var ret = App.fx.exports('fx.test', fx);
+				ok(fx === ret, 'Exports returns function');
+			});
 
-					test('Test exports', function AppFxExports() {
-						var fx = function (key, data) {};
-						var ret = App.fx.exports('fx.test', fx);
-						ok(fx === ret, 'Exports returns function');
-					});
+			test('Test exports overwrite', function AppFxExportsOverwrite() {
+				var fx = function (key, data) {};
+				var fx2 = function (key, data) {};
+				var ret = App.fx.exports('fx.test2', fx);
+				ok(fx === ret, 'Exports returns function');
+				ret = App.fx.exports('fx.test2', fx2);
+				ok(fx === ret, 'Exports returns function even if overwrite is denied');
+				ret = App.fx.exports('fx.test2', fx2, true);
+				ok(fx2 === ret, 'Exports returns overwrite function');
+			});
 
-					test('Test exports overwrite', function AppFxExportsOverwrite() {
-						var fx = function (key, data) {};
-						var fx2 = function (key, data) {};
-						var ret = App.fx.exports('fx.test2', fx);
-						ok(fx === ret, 'Exports returns function');
-						ret = App.fx.exports('fx.test2', fx2);
-						ok(fx === ret, 'Exports returns function even if overwrite is denied');
-						ret = App.fx.exports('fx.test2', fx2, true);
-						ok(fx2 === ret, 'Exports returns overwrite function');
-					});
+			test('Test notify null', function AppFxNotifyNull() {
+				var cb = function (key, data) {
+					ok(false, 'callback was called when it should not');
+				};
+				var ret = App.fx.notify('fx.test3');
+				ok(!!ret, 'Notify returns something');
+				App.fx.notify('fx.test3', cb);
+				App.fx.notify('fx.test3', {}, cb);
+				App.fx.notify('fx.test3', null, cb);
+			});
 
-					test('Test notify null', function AppFxNotifyNull() {
-						var cb = function (key, data) {
-							ok(false, 'callback was called when it should not');
-						};
-						var ret = App.fx.notify('fx.test3');
-						ok(!!ret, 'Notify returns something');
-						App.fx.notify('fx.test3', cb);
-						App.fx.notify('fx.test3', {}, cb);
-						App.fx.notify('fx.test3', null, cb);
-					});
-
-					test('Test notify test4', function AppFxNotify4() {
-						var counter = 0;
-						var fx = function (key, data) {
-							ok(true, 'fx was called');
-							ok(key === 'fx.test4', 'key is test4');
-							ok(!data, 'data is false-y');
-							return true;
-						};
-						var cb = function (key, data) {
-							ok(key === 0, 'key is 0');
-							ok(data, 'ok is true-y');
-							counter++;
-						};
-						App.fx.exports('fx.test4', fx);
-						App.fx.notify('fx.test4');
-						App.fx.notify('fx.test4', cb);
-						ok(counter === 1, 'cb was called exactly once');
-					});
-
+			test('Test notify test4', function AppFxNotify4() {
+				var counter = 0;
+				var fx = function (key, data) {
+					ok(true, 'fx was called');
+					ok(key === 'fx.test4', 'key is test4');
+					ok(!data, 'data is false-y');
+					return true;
+				};
+				var cb = function (key, data) {
+					ok(key === 0, 'key is 0');
+					ok(data, 'ok is true-y');
+					counter++;
+				};
+				App.fx.exports('fx.test4', fx);
+				App.fx.notify('fx.test4');
+				App.fx.notify('fx.test4', cb);
+				ok(counter === 1, 'cb was called exactly once');
+			});
 		})(jQuery, window);
 	</script>
 </body>

@@ -48,10 +48,8 @@
 	<script src="../src/app-debug.js"></script>
 	
 	<script>
-	(function ($, w) {
-		
-		"use strict";
-			
+		(function ($, w) {
+			'use strict';
 			module('App.debug');
 			
 			test('Test debug() get/set', function AppDebug() {
@@ -66,9 +64,8 @@
 				
 				//Make sure we got verbose for other test
 				App.debug(true); // adds verbose
-			});
-		
-	})(jQuery, window);
+			});	
+		})(jQuery, window);
 	</script>
 </body>
 </html>

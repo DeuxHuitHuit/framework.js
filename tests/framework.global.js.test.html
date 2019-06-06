@@ -48,9 +48,8 @@
 	<script src="../src/globals.js"></script>
 	
 	<script>
-	(function ($, w) {
-		
-		"use strict";
+		(function ($, w) {
+			'use strict';
 			
 			test('pd(e)', function pdTest() {
 				var e = $.Event('pd-test');
@@ -68,7 +67,6 @@
 				equal(e.isDefaultPrevented(), true, 'r is default prevented');
 				equal(e.isPropagationStopped(), false, 'r is not propagation stopped');
 			});
-		
 	})(jQuery, window);
 	</script>
 </body>

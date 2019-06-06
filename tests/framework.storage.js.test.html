@@ -50,13 +50,12 @@
 	<script src="../src/app-storage.js"></script>
 
 	<script>
-	(function ($, w) {
+		(function ($, w) {
+			'use strict';
 
-		'use strict';
-
-		// clean up
-		window.localStorage.clear();
-		window.sessionStorage.clear();
+			// clean up
+			window.localStorage.clear();
+			window.sessionStorage.clear();
 
 			module('App.storage');
 			App.debug(true);
@@ -132,7 +131,7 @@
 
 			test('session clear', clearTest(App.storage.session, 'session'));
 
-	})(jQuery, window);
+		})(jQuery, window);
 	</script>
 </body>
 </html>
