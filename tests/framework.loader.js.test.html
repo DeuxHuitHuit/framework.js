@@ -52,15 +52,15 @@
 	<script src="../src/app-loader.js"></script>
 	
 	<script>
-	(function ($, w) {
+		(function ($, w) {
 		
-		'use strict';
+			'use strict';
 			module('App.loader');
 			App.debug(true);
 			
-			test('load', function loaderLoadTest () {
+			test('load 1', function firstTest () {
 				
-				var firstTest = function () {
+				//var firstTest = function () {
 					var successCount = 0;
 					var errorCount = 0;
 					var completeCount = 0;
@@ -97,14 +97,12 @@
 									equal(giveup, 0, '1.html giveup count is 0');
 									equal(successCount, 0, '1.html successCount is 0');
 									equal(errorCount, 1, '1.html errorCount is 1');
-
-									secondTest();
 								}
 							}
 						});
-				};
-
-				var secondTest = function () {
+			});
+			test('load 2', function secondTest() {
+				//var secondTest = function () {
 					var progressCount = 0;
 					var progressE = null;
 
@@ -139,13 +137,13 @@
 								ok(progressE, '2.html progressE is true');
 								equal(progressCount, 1, '2.html progressCount is 1');
 								
-								thirdTest();
+								//thirdTest();
 							}
 						}
 					});
-				};
-				
-				var thirdTest = function () {
+			});
+			test('load 3', function thirdTest() {
+				//var thirdTest = function () {
 					var cacheCount = 0;
 
 					var successCount = 0;
@@ -201,14 +199,14 @@
 									
 									delete window.App.storage;
 									
-									fourthTest();
+									//fourthTest();
 								}
 							});
 						}
 					});
-				};
-				
-				var fourthTest = function () {
+			});
+			test('load 4', function fourthTest() {
+				//var fourthTest = function () {
 					App.loader.load({
 						url: '2.html',
 						complete: function () {
@@ -227,12 +225,8 @@
 					equal(App.loader.inQueue('2.html'), 0, '2.html is not in queue');
 					
 					stop();
-				};
-				
-				firstTest();
 			});
-		
-	})(jQuery, window);
+		})(jQuery, window);
 	</script>
 </body>
 </html>
