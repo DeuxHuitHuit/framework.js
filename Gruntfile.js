@@ -59,6 +59,7 @@ module.exports = function fxGruntConfig (grunt) {
 			TEST_URIS_CI.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + 'local');
 		}
 	};
+	var VERBOSE = !!~grunt.option.flags().indexOf('--verbose');
 	
 	var config = {
 		pkg: grunt.file.readJSON('package.json'),
@@ -106,7 +107,12 @@ module.exports = function fxGruntConfig (grunt) {
 		qunit: {
 			options: {
 				noGlobals: true,
-				timeout: 6000
+				timeout: 6000,
+				console: !!VERBOSE,
+				puppeteer: {
+					headless: !VERBOSE,
+					args: ['--media-cache-size=1', '--disk-cache-size=1']
+				}
 			},
 			all: {
 				options: {
