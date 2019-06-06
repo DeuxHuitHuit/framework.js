@@ -22,40 +22,41 @@ module.exports = function fxGruntConfig (grunt) {
 	var SERVER_PORT = 8080;
 	var SERVER_URI = 'http://localhost:' + SERVER_PORT;
 	var TEST_PATHS = [
-		'/tests/framework.global.js.test.html?noglobals=true',
-		'/tests/framework.debug.js.test.html?noglobals=true',
-		'/tests/framework.callback.js.test.html?noglobals=true',
-		'/tests/framework.actions.js.test.html?noglobals=true',
-		'/tests/framework.fx.js.test.html?noglobals=true',
-		'/tests/framework.app.js.test.html?noglobals=true',
-		'/tests/framework.loader.js.test.html?noglobals=true',
-		'/tests/framework.storage.js.test.html?noglobals=true'
+		'/tests/framework.global.js.test.html',
+		'/tests/framework.debug.js.test.html',
+		'/tests/framework.callback.js.test.html',
+		'/tests/framework.actions.js.test.html',
+		'/tests/framework.fx.js.test.html',
+		'/tests/framework.app.js.test.html',
+		'/tests/framework.loader.js.test.html',
+		'/tests/framework.storage.js.test.html'
 	];
 	
 	var TEST_URIS = [];
 	var TEST_URIS_LT = [];
 	var TEST_URIS_CI = [];
+	var TEST_QS = '?noglobals=true&jquery=';
 	
 	// for qunit
 	var createTestUris = function () {
 		for (var c = 0; c < TEST_PATHS.length; c++) {
-			TEST_URIS.push(SERVER_URI + TEST_PATHS[c]);
-			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=2.1.4');
-			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=2.0.3');
-			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.12.2');
-			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.11.1');
-			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.10.2');
-			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + '&jquery=1.9.1');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS);
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '2.1.4');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '2.0.3');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '1.12.2');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '1.11.1');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '1.10.2');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '1.9.1');
 		}
 	};
 	var createTestUrisLt = function () {
 		for (var c = 0; c < TEST_PATHS.length; c++) {
-			TEST_URIS_LT.push(SERVER_URI + TEST_PATHS[c]);
+			TEST_URIS_LT.push(SERVER_URI + TEST_PATHS[c] + TEST_QS);
 		}
 	};
 	var createTestUrisCi = function () {
 		for (var c = 0; c < TEST_PATHS.length; c++) {
-			TEST_URIS_CI.push(SERVER_URI + TEST_PATHS[c] + '&jquery=local');
+			TEST_URIS_CI.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + 'local');
 		}
 	};
 	
