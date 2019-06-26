@@ -59,8 +59,10 @@
 			App.debug(true);
 
 			QUnit.test('Test resolve', function AppActionsResolve(assert) {
+				var fxTest = function () {};
+
 				var actions = {
-					test: $.noop,
+					test: fxTest,
 					site: {
 						test: {
 							test: {
@@ -69,10 +71,34 @@
 						}
 					}
 				};
+
+				var actionsFx = function () {
+					return actions;
+				}
+
+				//UT-01a
+				//key 'x' should not resolve : Result = false;
 				assert.ok(!App.actions.resolve(actions, 'x'), 'x does not resolve');
-				assert.ok($.noop === App.actions.resolve(actions, 'test'), 'test resolves');
+
+				//UT-01b
+				//key 'test' should result : result = fxTest function.
+				assert.ok(fxTest === App.actions.resolve(actions, 'test'), 'test resolves');
+
+				//UT-01c
+				//key 'site' should not resolve. : result = false.
 				assert.ok(!App.actions.resolve(actions, 'site'), 'site does not resolve');
+
+				//UT-01d
+				//key 'site.test.test.test' shoud resolve : result = $.noop
 				assert.ok($.noop === App.actions.resolve(actions, 'site.test.test.test'), 'site.test.test.test resolves');
+
+				//UT-01e
+				//key 'x' should not resolve : result = false, Fx function must be called.
+				assert.ok(!App.actions.resolve(actionsFx, 'x'), 'x does not resolve');
+
+				//UT-01f
+				//key 'test' should result : result = fxTest function.
+				assert.ok(fxTest === App.actions.resolve(actionsFx, 'test'), 'test resolves');
 			});
 
 			QUnit.test('Test execute', function AppActionsExecute(assert) {
