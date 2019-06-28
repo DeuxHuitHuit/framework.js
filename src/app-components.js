@@ -61,7 +61,7 @@
 		} else if (!!components[key] && !override) {
 			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
 		} else {
-			components[key] = component;
+			components[key] = Object.freeze(component);
 			return component;
 		}
 		return false;
@@ -80,17 +80,17 @@
 	var createComponent = function (key, options) {
 		if (!components[key]) {
 			App.log({args: ['Component %s is not found', key], fx: 'error'});
-			return extendComponent({});
+			return Object.freeze(extendComponent({}));
 		}
 		
 		var c = components[key];
 		
 		if (!$.isFunction(c)) {
 			App.log({args: ['Component %s is not a function', key], fx: 'error'});
-			return extendComponent({});
+			return Object.freeze(extendComponent({}));
 		}
 		
-		return extendComponent(c.call(c, options));
+		return Object.freeze(extendComponent(c.call(c, options)));
 	};
 	
 	/** Public Interfaces **/

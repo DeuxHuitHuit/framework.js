@@ -41,7 +41,7 @@
 	 * @private
 	 */
 	var createModule = function (module) {
-		return $.extend(createAbstractModule(), module);
+		return Object.freeze($.extend(createAbstractModule(), module));
 	};
 	
 	/**

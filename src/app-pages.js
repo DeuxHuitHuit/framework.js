@@ -113,16 +113,16 @@
 				return pageData;
 			};
 			
-			// insure this can't be overriden
-			var overwrites = {
+			// insure this can't be overridden
+			var overwrites = Object.freeze({
 				key: getKey, // css selector
 				loaded: loaded,
 				routes: routes,
 				data: data
-			};
+			});
 			
-			// New deep copy object
-			return $.extend(true, {}, base, modelRef, overwrites);
+			// New deep copy frozen object
+			return Object.freeze($.extend(true, {}, base, modelRef, overwrites));
 		};
 		
 		return factory;
@@ -192,7 +192,7 @@
 			});
 		} else {
 			// Store page to the list
-			pageModels[key] = pageModel;
+			pageModels[key] = Object.freeze(pageModel);
 			return pageModel;
 		}
 		return false;
