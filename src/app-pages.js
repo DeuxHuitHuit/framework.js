@@ -245,6 +245,7 @@
 			if (testRoute.test(route)) {
 				return cb();
 			}
+			return true;
 		},
 		string: function (testRoute, route, cb) {
 			var regex;
@@ -288,6 +289,7 @@
 			if (!!regex && regex.test(route)) {
 				return cb();
 			}
+			return true;
 		}
 	};
 	
@@ -307,7 +309,7 @@
 		var index = -1;
 		var found = function (i) {
 			index = i;
-			return false; // exit each
+			return false; // exit every
 		};
 		
 		if ($.type(route) !== 'string') {
@@ -320,7 +322,10 @@
 		}
 		
 		if (!!route && !!routes) {
-			$.each(routes, function matchOneRoute (i, testRoute) {
+			if (!Array.isArray(routes)) {
+				routes = Object.values(routes);
+			}
+			routes.every(function matchOneRoute (testRoute, i) {
 				var routeType = $.type(testRoute);
 				var routeStrategy = routeMatchStrategies[routeType];
 				var cb = function () {
@@ -330,7 +335,7 @@
 				if ($.isFunction(routeStrategy)) {
 					return routeStrategy(testRoute, route, cb);
 				} else if (testRoute === route) {
-					return found(i);
+					return cb();
 				}
 				return true;
 			});
@@ -350,18 +355,17 @@
 	 * @private
 	 */
 	var getPageForRoute = function (route) {
-		var page = null;
 		if (validateRoute(route)) {
-			$.each(pageInstances, function walkPage () {
-				var routes = this.routes();
+			var p = Object.values(pageInstances).find(function walkPage (page) {
+				var routes = page.routes();
 				// route found ?
-				if (!!~matchRoute(route, routes)) {
-					page = this;
-					return false; // exit
-				}
+				return !!~matchRoute(route, routes);
 			});
+			if (!!p) {
+				return p;
+			}
 		}
-		return page;
+		return null;
 	};
 
 	/** Public Interfaces **/

@@ -44,7 +44,7 @@
 		global.console = {};
 	}
 
-	$.each(consoleFx, function (i, key) {
+	consoleFx.forEach(function (key) {
 		global.console[key] = global.console[key] || $.noop;
 	});
 

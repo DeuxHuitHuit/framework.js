@@ -34,16 +34,16 @@
 		}
 		
 		// init each Modules
-		$.each(App.modules.models(), function initModule () {
-			this.init();
+		Object.values(App.modules.models()).forEach(function initModule (m) {
+			m.init();
 		});
 		
 		// init each Page already loaded
-		$.each(App.pages.instances(), function initPage () {
-			if (!!this.loaded()) {
+		Object.values(App.pages.instances()).forEach(function initPage (page) {
+			if (!!page.loaded()) {
 				// init page
-				this.init({firstTime: true});
-				this.isInited = true;
+				page.init({firstTime: true});
+				page.isInited = true;
 				// set mediator state
 				App.mediator.init(this);
 			}

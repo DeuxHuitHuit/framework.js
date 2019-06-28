@@ -70,7 +70,7 @@
 			if (!!window.console[a.fx].apply) {
 				window.console[a.fx].apply(window.console, a.args);
 			} else {
-				$.each(a.args, function logArgs (index, arg) {
+				a.args.forEach(function logArgs (arg) {
 					window.console[a.fx](arg);
 				});
 			}
