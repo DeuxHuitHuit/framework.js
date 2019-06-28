@@ -40,7 +40,12 @@ module.exports = function fxGruntConfig (grunt) {
 	// for qunit
 	var createTestUris = function () {
 		for (var c = 0; c < TEST_PATHS.length; c++) {
-			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS);
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '3.4.1');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '3.3.1');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '3.2.1');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '3.1.1');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '3.0.0');
+			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '2.2.4');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '2.1.4');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '2.0.3');
 			TEST_URIS.push(SERVER_URI + TEST_PATHS[c] + TEST_QS + '1.12.2');
