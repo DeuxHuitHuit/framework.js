@@ -101,23 +101,105 @@
 				assert.ok(fxTest === App.actions.resolve(actionsFx, 'test'), 'test resolves');
 			});
 
+			//UT-02
 			QUnit.test('Test execute', function AppActionsExecute(assert) {
+				
 				var counter = 0;
-				var fx = function (key, data) {
-					assert.ok(true, 'fx was called');
-					assert.ok(key === 'test4', 'key is test4');
-					assert.ok(!data, 'data is false-y');
-					return true;
+
+				var validateCounterAndReset = function (expected, key) {
+					assert.ok(counter == expected, 'cb was called exactly ' + expected + ' time (' + key + ')');
+					counter = 0; //Reset Counter
 				};
-				var cb = function (key, data) {
-					assert.ok(key === 0, 'key is 0');
-					assert.ok(data, 'ok is true-y');
+
+				var fx = function (key, data, validKey, returnValue) {
+					assert.ok(true, 'fx was called');
+					assert.ok(key === validKey, 'key is ' + key);
+					assert.ok(!data, 'data is false-y');
+					return returnValue;
+				};
+
+				var fx2 = function (validKey, returnValue) {
+					return function (key, data) {
+						return fx(key, data, validKey, returnValue);
+					};
+				};
+
+				var cb = function (key, data, validData) {
+					assert.ok(key === counter, 'key is ' + key + ' but must be ' + counter);
+
+					if (validData === true) {
+						assert.ok(data, 'ok is true-y (' + key + ')');
+					} else {
+						assert.ok(!data, 'ok is false-y (' + key + ')');
+					}
+					
 					counter++;
 				};
-				App.actions.execute(fx, 'test4', null, cb);
-				assert.ok(counter === 1, 'cb was called exactly once');
+
+				var cb2 = function (validData) {
+					return function (key, data) {
+						return cb(key, data, validData);
+					};
+				};
+
+				//UT-02a
+				//Test normal execute : fx return true
+				// : data     = undefined
+				// : callback = undefined
+				App.actions.execute(fx2('test-a', true), 'test-a');
+				validateCounterAndReset(0, 'a');
+
+				//UT-02b
+				//Test normal execute : fx return true
+				// : data     = null
+				// : callback = undefined
+				App.actions.execute(fx2('test-b', true), 'test-b', null);
+				validateCounterAndReset(0, 'b');
+
+				//UT-02c
+				//Test normal execute : fx return true
+				// : data     = null
+				// : callback = valid
+				App.actions.execute(fx2('test-c', true), 'test-c', null, cb2(true));
+				validateCounterAndReset(1, 'c');
+				
+				//UT-02c
+				//Test normal execute : fx return true
+				// : data     = null
+				// : callback = valid
+				App.actions.execute(fx2('test-d', false), 'test-d', null, cb2(false));
+				validateCounterAndReset(1, 'd');
+
+				//UT-02e
+				//Test normal execute : fx return undefined
+				// : data     = null
+				// : callback = valid
+				App.actions.execute(fx2('test-e', undefined), 'test-e', null, cb2(false));
+				validateCounterAndReset(0, 'e');
+
+				//UT-02f
+				//Test with array of function (two): fx return true
+				// : data     = undefined
+				// : callback = undefined
+				App.actions.execute([fx2('test-f', true), fx2('test-f', true)], 'test-f');
+				validateCounterAndReset(0, 'f');
+
+				//UT-02g
+				//Test normal execute (two): fx return true
+				// : data     = null
+				// : callback = valid
+				App.actions.execute([fx2('test-g', true), fx2('test-g', true)], 'test-g', null, cb2(true));
+				validateCounterAndReset(2, 'g');
+
+				//UT-02h
+				//Test normal execute : fx return true
+				// : data     = skipped
+				// : callback = valid
+				App.actions.execute(fx2('test-h', true), 'test-h', cb2(true));
+				validateCounterAndReset(1, 'h');
 			});
 
+			//UT-03
 			QUnit.test('Test execute with stack', function AppActionsExecute(assert) {
 				var counter = 0;
 				var fx = function (key, data) {
@@ -148,6 +230,7 @@
 				assert.ok(counter === 2, 'read and write was called exactly once');
 			});
 			
+			//UT-04
 			QUnit.test('Test execute with dynamic stack', function AppActionsExecute(assert) {
 				var counter = 0, innerCounter = 0;
 				var inner = function (key, data) {
