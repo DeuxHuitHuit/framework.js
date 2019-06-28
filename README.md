@@ -14,6 +14,7 @@ The framework use jQuery and Underscore.js and extends some functionality.
 ## Documentation
 
 * [Current Version](https://deuxhuithuit.github.io/framework.js/framework/2.0.0/)
+* [2.0.0](https://deuxhuithuit.github.io/framework.js/framework/2.0.0/)
 * [1.8.0](https://deuxhuithuit.github.io/framework.js/framework/1.8.0/)
 
 ## Dependencies
@@ -30,6 +31,9 @@ The framework use jQuery and Underscore.js and extends some functionality.
 	* File structure modifications
 	* Removed old deprecated globals and jQuery overrides
 	* Removed globals-keyboard.js
+	* Added App.fx
+	* Added App.actions (refactored common code)
+	* Added support for batch read and writes in notifies
 * **1.8.x**
 	* Documented the source code
 	* Added jsdoc
