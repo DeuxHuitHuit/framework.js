@@ -40,7 +40,9 @@
   },
   "scripts": {
     "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "prepare": "npm run snyk-protect",
+    "test": "grunt dev test-latest",
+    "ci": "grunt ci"
   },
   "snyk": true
 }
