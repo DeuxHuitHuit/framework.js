@@ -107,7 +107,7 @@
 				var counter = 0;
 
 				var validateCounterAndReset = function (expected, key) {
-					assert.ok(counter == expected, 'cb was called exactly ' + expected + ' time (' + key + ')');
+					assert.ok(counter === expected, 'cb was called exactly ' + expected + ' time (' + key + ')');
 					counter = 0; //Reset Counter
 				};
 
@@ -202,60 +202,98 @@
 			//UT-03
 			QUnit.test('Test execute with stack', function AppActionsExecute(assert) {
 				//UT-03a
-				//
+				//Test original implementation.
 				var counterWrite = 0;
 				var counterRead = 0;
-				var fxA = function (key, data) {
+				var key = 'test3a';
+				var fx = function (key, data) {
 					//Validate Fx is called
 					assert.ok(true, 'fx was called');
-					assert.ok(key === 'test3a', 'key is test3a');
+					assert.ok(key === key, 'key is ' + key);
 					assert.ok(!data, 'data is false-y');
 					counterWrite++;
 				};
-
-				App.actions.execute(fxA, 'test3a');
+				App.actions.execute(fx, key);
 				assert.ok(counterWrite === 1, 'write was called exactly once');
 
 				//UT-03b
-				//
+				//Test with simple a simple write function returned
 				counterWrite = 0;
 				counterRead = 0;
-				var fxB = function (key, data) {
+				key = 'test3b';
+				fx = function (key, data) {
 					//Validate Fx is called
 					assert.ok(true, 'fx read was called');
 
 					return function () {
 						assert.ok(true, 'fx write was called');
-						assert.ok(key === 'test3b', 'key is test3b');
+						assert.ok(key === key, 'key is ' + key);
 						assert.ok(!data, 'data is false-y');
 						counterWrite++;
 					};
 				};
-
-				App.actions.execute(fxB, 'test3b');
+				App.actions.execute(fx, key);
 				assert.ok(counterWrite === 1, 'write was called exactly once');
 
-
 				//UT-03c
+				//Test with simple a simple write function returned
+				counterWrite = 0;
+				counterRead = 0;
+				key = 'test3c';
+				var cbCount = 0;
+				fx = function (key, data) {
+					//Validate Fx is called
+					assert.ok(true, 'fx read was called');
+
+					return function () {
+						assert.ok(true, 'fx write was called');
+						assert.ok(key === key, 'key is ' + key);
+						assert.ok(!data, 'data is false-y');
+						counterWrite++;
+					};
+				};
+				var cb = function (key1, data2) {
+					assert.ok(key1 === cbCount, 'callback key is ' + cbCount);
+					assert.ok(data2, 'data is not false-y');
+					//Data is the write function returned by the fx
+					assert.ok($.isFunction(data2), 'data is function');
+					cbCount++;
+				};
+				App.actions.execute(fx, key, cb);
+				assert.ok(counterWrite === 1, 'write was called exactly once');
+				assert.ok(cbCount === 1, 'callback was called exactly once');
+
+				//UT-03d
 				//
 				counterRead = 0;
 				counterWrite = 0;
-				var fxC = function (key, data) {
+				key = 'test3d';
+				cbCount = 0;
+				fx = function (key, data) {
 					return {
 						read: function () {
 							assert.ok(true, 'fx read was called');
-							assert.ok(key === 'test3c', 'key is test3c');
+							assert.ok(key === key, 'key is ' + key);
 							counterRead++;
 						},
 						write: function () {
 							assert.ok(true, 'fx write was called');
+							assert.ok(key === key, 'key is ' + key);
 							counterWrite++;
 						}
 					}
 				};
-				App.actions.execute(fxC, 'test3c');
+				cb = function (key1, data2) {
+					assert.ok(key1 === cbCount, 'callback key is ' + cbCount);
+					assert.ok(data2, 'data is not false-y');
+					//Data is the write function returned by the fx
+					assert.ok($.isPlainObject(data2), 'data is plain object');
+					cbCount++;
+				};
+				App.actions.execute(fx, key, cb);
 				assert.ok(counterRead === 1, 'read was called exactly once');
 				assert.ok(counterWrite === 1, 'write was called exactly once');
+				assert.ok(cbCount === 1, 'callback was called exactly two time');
 			});
 			
 			//UT-04
