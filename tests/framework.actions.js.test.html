@@ -293,14 +293,16 @@
 				App.actions.execute(fx, key, cb);
 				assert.ok(counterRead === 1, 'read was called exactly once');
 				assert.ok(counterWrite === 1, 'write was called exactly once');
-				assert.ok(cbCount === 1, 'callback was called exactly two time');
+				assert.ok(cbCount === 1, 'callback was called exactly once');
 			});
 			
 			//UT-04
 			QUnit.test('Test execute with dynamic stack', function AppActionsExecute(assert) {
+				
+
+				//UT-04b
 				var counter = 0;
 				var innerCounter = 0;
-
 				var inner = function (key, data) {
 					return {
 						read: function () {
