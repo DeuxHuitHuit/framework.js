@@ -142,7 +142,6 @@
 			 * @param {Function|Object} actions Object of methods that can be matches
 			 *   with the key's value
 			 * @param {String} key Action key
-			 * @param {Object} data Bag of data
 			 * @returns {Function} The function corresponding to the key, if it exists
 			 * @public
 			 */
