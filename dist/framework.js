@@ -1,4 +1,4 @@
-/*! framework.js - v2.0.1 - f1e35aa537 - build 166 - 2019-07-31
+/*! framework.js - v2.1.0 - 677ce6aac8 - build 167 - 2019-07-31
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2019 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -43,8 +43,8 @@
 				}
 				keys[key] = paths;
 				tempFx = actions;
-				$.each(paths, function eachPath () {
-					tempFx = tempFx[this];
+				paths.every(function eachPath (p) {
+					tempFx = tempFx[p];
 					if (!$.isPlainObject(tempFx)) {
 						return false; // exit
 					}
@@ -331,7 +331,7 @@
 		} else if (!!components[key] && !override) {
 			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
 		} else {
-			components[key] = component;
+			components[key] = Object.freeze(component);
 			return component;
 		}
 		return false;
@@ -350,17 +350,17 @@
 	var createComponent = function (key, options) {
 		if (!components[key]) {
 			App.log({args: ['Component %s is not found', key], fx: 'error'});
-			return extendComponent({});
+			return Object.freeze(extendComponent({}));
 		}
 		
 		var c = components[key];
 		
 		if (!$.isFunction(c)) {
 			App.log({args: ['Component %s is not a function', key], fx: 'error'});
-			return extendComponent({});
+			return Object.freeze(extendComponent({}));
 		}
 		
-		return extendComponent(c.call(c, options));
+		return Object.freeze(extendComponent(c.call(c, options)));
 	};
 	
 	/** Public Interfaces **/
@@ -967,7 +967,7 @@
 		} else {
 			// Try to set the name of the function
 			setFxName(fx);
-			bindings[key] = fx;
+			bindings[key] = Object.freeze(fx);
 		}
 		return bindings[key];
 	};
@@ -1154,15 +1154,9 @@
 	 * @private
 	 */
 	var inQueue = function (url) {
-		var foundIndex = -1;
-		$.each(assets, function eachAsset (index, asset) {
-			if (asset.url === url) {
-				foundIndex = index;
-				return false; // early exit
-			}
-			return true;
+		return assets.findIndex(function eachAsset (asset) {
+			return asset.url === url;
 		});
-		return foundIndex;
 	};
 	
 	/**
@@ -1571,7 +1565,7 @@
 			if (!!window.console[a.fx].apply) {
 				window.console[a.fx].apply(window.console, a.args);
 			} else {
-				$.each(a.args, function logArgs (index, arg) {
+				a.args.forEach(function logArgs (arg) {
 					window.console[a.fx](arg);
 				});
 			}
@@ -2556,7 +2550,7 @@
 	 * @private
 	 */
 	var createModule = function (module) {
-		return $.extend(createAbstractModule(), module);
+		return Object.freeze($.extend(createAbstractModule(), module));
 	};
 	
 	/**
@@ -2796,16 +2790,16 @@
 				return pageData;
 			};
 			
-			// insure this can't be overriden
-			var overwrites = {
+			// insure this can't be overridden
+			var overwrites = Object.freeze({
 				key: getKey, // css selector
 				loaded: loaded,
 				routes: routes,
 				data: data
-			};
+			});
 			
-			// New deep copy object
-			return $.extend(true, {}, base, modelRef, overwrites);
+			// New deep copy frozen object
+			return Object.freeze($.extend(true, {}, base, modelRef, overwrites));
 		};
 		
 		return factory;
@@ -2875,7 +2869,7 @@
 			});
 		} else {
 			// Store page to the list
-			pageModels[key] = pageModel;
+			pageModels[key] = Object.freeze(pageModel);
 			return pageModel;
 		}
 		return false;
@@ -2928,6 +2922,7 @@
 			if (testRoute.test(route)) {
 				return cb();
 			}
+			return true;
 		},
 		string: function (testRoute, route, cb) {
 			var regex;
@@ -2971,6 +2966,7 @@
 			if (!!regex && regex.test(route)) {
 				return cb();
 			}
+			return true;
 		}
 	};
 	
@@ -2990,7 +2986,7 @@
 		var index = -1;
 		var found = function (i) {
 			index = i;
-			return false; // exit each
+			return false; // exit every
 		};
 		
 		if ($.type(route) !== 'string') {
@@ -3003,7 +2999,10 @@
 		}
 		
 		if (!!route && !!routes) {
-			$.each(routes, function matchOneRoute (i, testRoute) {
+			if (!Array.isArray(routes)) {
+				routes = Object.values(routes);
+			}
+			routes.every(function matchOneRoute (testRoute, i) {
 				var routeType = $.type(testRoute);
 				var routeStrategy = routeMatchStrategies[routeType];
 				var cb = function () {
@@ -3013,7 +3012,7 @@
 				if ($.isFunction(routeStrategy)) {
 					return routeStrategy(testRoute, route, cb);
 				} else if (testRoute === route) {
-					return found(i);
+					return cb();
 				}
 				return true;
 			});
@@ -3033,18 +3032,17 @@
 	 * @private
 	 */
 	var getPageForRoute = function (route) {
-		var page = null;
 		if (validateRoute(route)) {
-			$.each(pageInstances, function walkPage () {
-				var routes = this.routes();
+			var p = Object.values(pageInstances).find(function walkPage (page) {
+				var routes = page.routes();
 				// route found ?
-				if (!!~matchRoute(route, routes)) {
-					page = this;
-					return false; // exit
-				}
+				return !!~matchRoute(route, routes);
 			});
+			if (!!p) {
+				return p;
+			}
 		}
-		return page;
+		return null;
 	};
 
 	/** Public Interfaces **/
@@ -3228,11 +3226,10 @@
 		 * @public
 		 */
 		var stringify = function (qs) {
-			var aqs = [];
-			$.each(qs, function (k, v) {
-				if (!!v) {
-					aqs.push(k + '=' + global.encodeURIComponent(v));
-				}
+			var aqs = Object.entries(qs).filter(function (e) {
+				return !!e[1];
+			}).map(function (e) {
+				return e[0] + '=' + global.encodeURIComponent(e[1]);
 			});
 			if (!aqs.length) {
 				return '';
@@ -3472,16 +3469,16 @@
 		}
 		
 		// init each Modules
-		$.each(App.modules.models(), function initModule () {
-			this.init();
+		Object.values(App.modules.models()).forEach(function initModule (m) {
+			m.init();
 		});
 		
 		// init each Page already loaded
-		$.each(App.pages.instances(), function initPage () {
-			if (!!this.loaded()) {
+		Object.values(App.pages.instances()).forEach(function initPage (page) {
+			if (!!page.loaded()) {
 				// init page
-				this.init({firstTime: true});
-				this.isInited = true;
+				page.init({firstTime: true});
+				page.isInited = true;
 				// set mediator state
 				App.mediator.init(this);
 			}
@@ -3583,7 +3580,7 @@
 		global.console = {};
 	}
 
-	$.each(consoleFx, function (i, key) {
+	consoleFx.forEach(function (key) {
 		global.console[key] = global.console[key] || $.noop;
 	});
 
