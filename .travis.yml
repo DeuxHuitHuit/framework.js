@@ -3,7 +3,6 @@ os:
   - windows
 language: node_js
 node_js:
-  - 6
   - 8
   - 10
   - 12
@@ -11,7 +10,6 @@ matrix:
   fast_finish: true
   allow_failures:
     - node_js: 6
-    - node_js: 12
 notifications:
   email: false
 script:
