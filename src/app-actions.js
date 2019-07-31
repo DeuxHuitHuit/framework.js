@@ -40,8 +40,8 @@
 				}
 				keys[key] = paths;
 				tempFx = actions;
-				$.each(paths, function eachPath () {
-					tempFx = tempFx[this];
+				paths.every(function eachPath (p) {
+					tempFx = tempFx[p];
 					if (!$.isPlainObject(tempFx)) {
 						return false; // exit
 					}

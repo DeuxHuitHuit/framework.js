@@ -151,7 +151,7 @@
 				assert.ok(page1 != page2, 'functions creates new scopes');
 			});
 			
-			QUnit.test('matchRoute', function appPagesmatchRouteTest (assert) {
+			QUnit.test('matchRoute', function appPagesMatchRouteTest (assert) {
 				var routes = { // can also use array
 					root: '/',
 					contactFR: '/fr/contact/',
@@ -159,52 +159,61 @@
 					wildcard: '/test/*/view',
 					questionWildcard: '/test/*',
 					routeWithQueryString: '/query-string',
-					regex: /[ab]/
+					regex: /^\/[ab]$/
 				},
 				route = '';
 			
 				route = routes.root;
-				assert.ok(!!~App.pages.matchRoute(route, routes), route);
+				assert.equal(App.pages.matchRoute(route, routes), 0, 'root: ' + route);
 				
 				route = routes.contactFR;
-				assert.ok(!!~App.pages.matchRoute(route, routes), route);
+				assert.equal(App.pages.matchRoute(route, routes), 1, 'contactFR: ' + route);
 				
 				route = routes.contactEN;
-				assert.ok(!!~App.pages.matchRoute(route, routes), route);
-				assert.equal(App.pages.matchRoute(route, routes), 'contactEN', route + ' index');
+				assert.equal(App.pages.matchRoute(route, routes), 2, 'contactEN: ' + route);
 				
 				route = '///kldkslds';
-				assert.ok(!~App.pages.matchRoute(route, routes), '! ' + route);
+				assert.equal(App.pages.matchRoute(route, routes), -1, '!: ' + route);
 				
-				route = '/fr/test/super-cheap/view';
-				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' widlcard');
+				route = '/test/super-cheap/view';
+				assert.equal(App.pages.matchRoute(route, routes), 3, 'wildcard: ' + route);
 				
 				route = '/a';
-				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.equal(App.pages.matchRoute(route, routes), 6, 'regexp: ' + route);
 				
 				route = '/b';
-				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.equal(App.pages.matchRoute(route, routes), 6, 'regexp: ' + route);
 				
 				route = '/c';
-				assert.ok(!~App.pages.matchRoute(route, routes), '! ' + route + ' regexp');
+				assert.equal(App.pages.matchRoute(route, routes), -1, '!regexp: ' + route);
 				
 				route = '/test/?test=test';
-				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.equal(App.pages.matchRoute(route, routes), 4, 'test/*: ' + route);
 				
 				route = '/test/article/test-test/';
-				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.equal(App.pages.matchRoute(route, routes), 4, 'test/*: ' + route);
 				
 				route = '/test/article/test-test/#sasasas';
-				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.equal(App.pages.matchRoute(route, routes), 4, 'test/*: ' + route);
 				
 				route = '/test/?test[super/\]=test#43434';
-				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' regexp');
+				assert.equal(App.pages.matchRoute(route, routes), 4, 'test/*: ' + route);
 				
 				route = '/query-string?with-a-query-string';
-				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' with a query string');
+				assert.equal(App.pages.matchRoute(route, routes), 5, 'qs: ' + route);
 				
 				route = '/query-string?with-a-query-string?and=another';
-				assert.ok(!!~App.pages.matchRoute(route, routes), route + ' with 2 query strings');
+				assert.equal(App.pages.matchRoute(route, routes), 5, 'qs2: ' + route);
+
+				routes = ['/fr/', '/'];
+				route = '';
+				assert.equal(App.pages.matchRoute(route, routes), -1, 'empty: ' + route);
+
+				route = '/fr/';
+				assert.equal(App.pages.matchRoute(route, routes), 0, 'fr: ' + route);
+
+				route = '/';
+				assert.equal(App.pages.matchRoute(route, routes), 1, '/: ' + route);
 			});
 			
 			QUnit.test('getPageForRoute', function appPages_getPageForRouteTest (assert) {

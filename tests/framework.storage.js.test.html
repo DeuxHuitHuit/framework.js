@@ -67,7 +67,7 @@
 					var key3 = 'foo2';
 					var value = 'VALUE';
 
-					$.each([key1, key2, key3], function (i, k) {
+					[key1, key2, key3].forEach(function (k) {
 						assert.ok(store.set(k, value), prefix + ' ' + k + ' was set to ' + value);
 						assert.ok(store.get(k) === value, prefix + ' ' + k + ' was ' + value);
 					});
@@ -77,7 +77,7 @@
 					assert.ok(store.get(key2) === undefined, prefix + ' ' + key2 + ' was undefined');
 					assert.ok(store.get(key3) === undefined, prefix + ' ' + key3 + ' was undefined');
 
-					$.each([key1, key2, key3], function (i, k) {
+					[key1, key2, key3].forEach(function (k) {
 						assert.ok(store.set(k, value), prefix + ' ' + k + ' was set to ' + value);
 					});
 

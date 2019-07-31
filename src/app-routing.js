@@ -62,11 +62,10 @@
 		 * @public
 		 */
 		var stringify = function (qs) {
-			var aqs = [];
-			$.each(qs, function (k, v) {
-				if (!!v) {
-					aqs.push(k + '=' + global.encodeURIComponent(v));
-				}
+			var aqs = Object.entries(qs).filter(function (e) {
+				return !!e[1];
+			}).map(function (e) {
+				return e[0] + '=' + global.encodeURIComponent(e[1]);
 			});
 			if (!aqs.length) {
 				return '';
