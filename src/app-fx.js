@@ -74,7 +74,7 @@
 		} else {
 			// Try to set the name of the function
 			setFxName(fx);
-			bindings[key] = fx;
+			bindings[key] = Object.freeze(fx);
 		}
 		return bindings[key];
 	};
