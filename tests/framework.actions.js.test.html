@@ -75,7 +75,7 @@
 				var counter = 0;
 
 				var validateCounterAndReset = function (expected, key) {
-					assert.ok(counter == expected, 'cb was called exactly ' + expected + ' time (' + key + ')');
+					assert.ok(counter === expected, 'cb was called exactly ' + expected + ' time (' + key + ')');
 					counter = 0; //Reset Counter
 				};
 
@@ -169,38 +169,108 @@
 
 			//UT-03
 			QUnit.test('Test execute with stack', function AppActionsExecute(assert) {
-				var counter = 0;
+				//UT-03a
+				//Test original implementation.
+				var counterWrite = 0;
+				var counterRead = 0;
+				var key = 'test3a';
 				var fx = function (key, data) {
+					//Validate Fx is called
+					assert.ok(true, 'fx was called');
+					assert.ok(key === key, 'key is ' + key);
+					assert.ok(!data, 'data is false-y');
+					counterWrite++;
+				};
+				App.actions.execute(fx, key);
+				assert.ok(counterWrite === 1, 'write was called exactly once');
+
+				//UT-03b
+				//Test with simple a simple write function returned
+				counterWrite = 0;
+				counterRead = 0;
+				key = 'test3b';
+				fx = function (key, data) {
+					//Validate Fx is called
 					assert.ok(true, 'fx read was called');
+
 					return function () {
 						assert.ok(true, 'fx write was called');
-						assert.ok(key === 'test4', 'key is test4');
+						assert.ok(key === key, 'key is ' + key);
 						assert.ok(!data, 'data is false-y');
-						counter++;
+						counterWrite++;
 					};
 				};
-				App.actions.execute(fx, 'test4');
-				assert.ok(counter === 1, 'write was called exactly once');
-				counter = 0;
+				App.actions.execute(fx, key);
+				assert.ok(counterWrite === 1, 'write was called exactly once');
+
+				//UT-03c
+				//Test with simple a simple write function returned
+				counterWrite = 0;
+				counterRead = 0;
+				key = 'test3c';
+				var cbCount = 0;
+				fx = function (key, data) {
+					//Validate Fx is called
+					assert.ok(true, 'fx read was called');
+
+					return function () {
+						assert.ok(true, 'fx write was called');
+						assert.ok(key === key, 'key is ' + key);
+						assert.ok(!data, 'data is false-y');
+						counterWrite++;
+					};
+				};
+				var cb = function (key1, data2) {
+					assert.ok(key1 === cbCount, 'callback key is ' + cbCount);
+					assert.ok(data2, 'data is not false-y');
+					//Data is the write function returned by the fx
+					assert.ok($.isFunction(data2), 'data is function');
+					cbCount++;
+				};
+				App.actions.execute(fx, key, cb);
+				assert.ok(counterWrite === 1, 'write was called exactly once');
+				assert.ok(cbCount === 1, 'callback was called exactly once');
+
+				//UT-03d
+				//
+				counterRead = 0;
+				counterWrite = 0;
+				key = 'test3d';
+				cbCount = 0;
 				fx = function (key, data) {
 					return {
 						read: function () {
 							assert.ok(true, 'fx read was called');
-							counter++;
+							assert.ok(key === key, 'key is ' + key);
+							counterRead++;
 						},
 						write: function () {
 							assert.ok(true, 'fx write was called');
-							counter++;
+							assert.ok(key === key, 'key is ' + key);
+							counterWrite++;
 						}
 					}
 				};
-				App.actions.execute(fx, 'test');
-				assert.ok(counter === 2, 'read and write was called exactly once');
+				cb = function (key1, data2) {
+					assert.ok(key1 === cbCount, 'callback key is ' + cbCount);
+					assert.ok(data2, 'data is not false-y');
+					//Data is the write function returned by the fx
+					assert.ok($.isPlainObject(data2), 'data is plain object');
+					cbCount++;
+				};
+				App.actions.execute(fx, key, cb);
+				assert.ok(counterRead === 1, 'read was called exactly once');
+				assert.ok(counterWrite === 1, 'write was called exactly once');
+				assert.ok(cbCount === 1, 'callback was called exactly once');
 			});
 			
 			//UT-04
 			QUnit.test('Test execute with dynamic stack', function AppActionsExecute(assert) {
-				var counter = 0, innerCounter = 0;
+				
+
+				//UT-04b
+				var counter = 0;
+				var innerCounter = 0;
 				var inner = function (key, data) {
 					return {
 						read: function () {
@@ -221,6 +291,7 @@
 					};
 				};
 				App.actions.execute([fx, fx, fx], 'test');
+				assert.ok(App.actions.stack().length === 0, 'stack is empty');
 				assert.ok(counter === 6, 'read and write was called exactly three times each');
 				assert.ok(innerCounter === 6, 'inner read and write was called exactly three times each');
 			});
