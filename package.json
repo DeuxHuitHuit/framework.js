@@ -44,5 +44,10 @@
     "test": "grunt dev test-latest",
     "ci": "grunt ci"
   },
-  "snyk": true
+  "snyk": true,
+  "greenkeeper": {
+    "ignore": [
+      "snyk"
+    ]
+  }
 }
