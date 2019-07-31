@@ -1,4 +1,4 @@
-/*! framework.js - v2.0.0 - a82fa7cd51 - build 165 - 2019-05-30
+/*! framework.js - v2.0.1 - f1e35aa537 - build 166 - 2019-07-31
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2019 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -25,11 +25,10 @@
 	 * @method
 	 * @param {Function|Object} actions Object of methods that can be matches with the key's value
 	 * @param {String} key Action key
-	 * @param {Object} data Bag of data
 	 * @returns {Function} The function corresponding to the key, if it exists in actions object
 	 * @private
 	 */
-	var resolve = function (actions, key, data) {
+	var resolve = function (actions, key) {
 		if ($.isFunction(actions)) {
 			actions = actions();
 		}
@@ -146,7 +145,6 @@
 			 * @param {Function|Object} actions Object of methods that can be matches
 			 *   with the key's value
 			 * @param {String} key Action key
-			 * @param {Object} data Bag of data
 			 * @returns {Function} The function corresponding to the key, if it exists
 			 * @public
 			 */
@@ -415,9 +413,9 @@
 })(jQuery, window);
 
 /**
- * App Debug and Log
+ * App Debug
  *
- * @fileoverview Defines and exports log and debug
+ * @fileoverview Defines and exports debug
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
@@ -430,7 +428,7 @@
 	'use strict';
 	
 	/** Debug **/
-	var isDebuging = false;
+	var isDebugging = false;
 	
 	/**
 	 * Set or get the debug flag for the App
@@ -442,78 +440,11 @@
 	 */
 	var debug = function (value) {
 		if (value === true || value === false) {
-			isDebuging = value;
+			isDebugging = value;
 		} else if (value === '!') {
-			isDebuging = !isDebuging;
+			isDebugging = !isDebugging;
 		}
-		return isDebuging;
-	};
-	
-	/**
-	 * Format the passed arguments and the displayed message
-	 * @name argsToObject
-	 * @method
-	 * @memberof debug
-	 * @param {Object} arg
-	 * @returns {Object} Formated object
-	 * @private
-	 */
-	var argsToObject = function (arg) {
-		// ensure that args is an array
-		if (!!arg.args && !$.isArray(arg.args)) {
-			arg.args = [arg.args];
-		}
-		
-		// our copy
-		var a = {
-			args: arg.args || arguments,
-			fx: arg.fx || 'warn',
-			me: arg.me || 'App'
-		},
-		t1 = $.type(a.args[0]);
-		
-		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
-			// append me before a.args[0]
-			a.args[0] = '[' + a.me + '] ' + a.args[0];
-		}
-		return a;
-	};
-	
-	var logs = [];
-
-	/**
-	 * Log the recived data with the appropriate effect (log, error, info...)
-	 * @name log
-	 * @method
-	 * @memberof debug
-	 * @param {Array} arg
-	 * @private
-	 */
-	var log = function (arg) {
-		// no args, exit
-		if (!arg) {
-			return this;
-		}
-		
-		var a = argsToObject(arg);
-		
-		if (isDebuging) {
-			// make sure fx exists
-			if (!$.isFunction(console[a.fx])) {
-				a.fx = 'log';
-			}
-			// call it
-			if (!!window.console[a.fx].apply) {
-				window.console[a.fx].apply(window.console, a.args);
-			} else {
-				$.each(a.args, function logArgs (index, arg) {
-					window.console[a.fx](arg);
-				});
-			}
-		}
-		logs.push(a);
-		
-		return this;
+		return isDebugging;
 	};
 	
 	/** Public Interfaces **/
@@ -1588,7 +1519,7 @@
 	 * @name argsToObject
 	 * @method
 	 * @memberof debug
-	 * @param {Object} arg
+	 * @param {String|Object|Array} arg The value or values to log
 	 * @returns {Object} Formated object
 	 * @private
 	 */
@@ -1616,11 +1547,11 @@
 	var logs = [];
 
 	/**
-	 * Log the recived data with the appropriate effect (log, error, info...)
+	 * Log the received data with the appropriate effect (log, error, info...)
 	 * @name log
 	 * @method
 	 * @memberof debug
-	 * @param {Array} arg
+	 * @param {String|Object|Array} arg The value or values to log
 	 * @private
 	 */
 	var log = function (arg) {
@@ -1654,11 +1585,11 @@
 	global.App = $.extend(true, global.App, {
 
 		/**
-		 * Log the recived data with the appropriate effect (log, error, info...)
+		 * Log the received data with the appropriate effect (log, error, info...)
 		 * @name this
 		 * @method
 		 * @memberof log
-		 * @param {Array} arg
+		 * @param {String|Object|Array} arg The value or values to log
 		 * @public
 		 */
 		log: log,
@@ -2899,7 +2830,7 @@
 		if (!pageModel) {
 			App.log({args: ['Model `%s` not found', keyModel], fx: 'error'});
 		} else {
-			//Check to not overide an existing page
+			//Check to not override an existing page
 			if (!!pageInstances[pageData.key] && !override) {
 				App.log({
 					args: ['Overwriting page key `%s` is not allowed', pageData.key],
@@ -2992,7 +2923,7 @@
 		return result;
 	};
 	
-	var routeMatchStagegies = {
+	var routeMatchStrategies = {
 		regexp: function (testRoute, route, cb) {
 			if (testRoute.test(route)) {
 				return cb();
@@ -3074,7 +3005,7 @@
 		if (!!route && !!routes) {
 			$.each(routes, function matchOneRoute (i, testRoute) {
 				var routeType = $.type(testRoute);
-				var routeStrategy = routeMatchStagegies[routeType];
+				var routeStrategy = routeMatchStrategies[routeType];
 				var cb = function () {
 					return found(i);
 				};
@@ -3260,8 +3191,8 @@
 		};
 
 		/**
-		 * Format the querystring into an object
-		 * @name prase
+		 * Parses the querystring into an object
+		 * @name parse
 		 * @memberof querystring
 		 * @method
 		 * @param {String} qs
@@ -3562,7 +3493,7 @@
 		
 		if (!App.mediator.getCurrentPage()) {
 			App.modules.notify('app.pageNotFound');
-			App.log({ args: 'No current page set, pages will not work.', fx: 'error' });
+			App.log({ fx: 'error', args: 'No current page set, pages will not work.' });
 		}
 	};
 	
