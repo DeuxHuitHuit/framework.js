@@ -13,9 +13,9 @@ The framework use jQuery and Underscore.js and extends some functionality.
 
 ## Documentation
 
-* [Current Version](https://deuxhuithuit.github.io/framework.js/framework/2.0.0/)
-* [2.0.0](https://deuxhuithuit.github.io/framework.js/framework/2.0.0/)
-* [1.8.0](https://deuxhuithuit.github.io/framework.js/framework/1.8.0/)
+* [Current Version](https://deuxhuithuit.github.io/framework.js/framework/2.1.0/)
+* [2.0.x](https://deuxhuithuit.github.io/framework.js/framework/2.0.1/)
+* [1.8.x](https://deuxhuithuit.github.io/framework.js/framework/1.8.0/)
 
 ## Dependencies
 
@@ -26,6 +26,9 @@ The framework use jQuery and Underscore.js and extends some functionality.
 
 ## History
 
+* **2.1.x**
+	* Remove all $.each calls (#70)
+	* Freeze public objects (#77)
 * **2.0.x**
 	* Integrated AppStorage to App.storage
 	* File structure modifications
@@ -34,6 +37,9 @@ The framework use jQuery and Underscore.js and extends some functionality.
 	* Added App.fx
 	* Added App.actions (refactored common code)
 	* Added support for batch read and writes in notifies
+	* Removed support for node 6
+	* Added more tests
+	* Updated QUnit to 2.9.2
 * **1.8.x**
 	* Documented the source code
 	* Added jsdoc
