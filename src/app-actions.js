@@ -22,11 +22,10 @@
 	 * @method
 	 * @param {Function|Object} actions Object of methods that can be matches with the key's value
 	 * @param {String} key Action key
-	 * @param {Object} data Bag of data
 	 * @returns {Function} The function corresponding to the key, if it exists in actions object
 	 * @private
 	 */
-	var resolve = function (actions, key, data) {
+	var resolve = function (actions, key) {
 		if ($.isFunction(actions)) {
 			actions = actions();
 		}
@@ -143,7 +142,6 @@
 			 * @param {Function|Object} actions Object of methods that can be matches
 			 *   with the key's value
 			 * @param {String} key Action key
-			 * @param {Object} data Bag of data
 			 * @returns {Function} The function corresponding to the key, if it exists
 			 * @public
 			 */
