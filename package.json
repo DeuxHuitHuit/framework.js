@@ -23,7 +23,7 @@
     "grunt-complexity": "~1.1",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-concat": "~1.0.1",
-    "grunt-contrib-connect": "~2.0.0",
+    "grunt-contrib-connect": "~2.1.0",
     "grunt-contrib-jshint": "~2.1.0",
     "grunt-contrib-qunit": "^3.1.0",
     "grunt-contrib-uglify": "^4.0.1",
@@ -36,7 +36,7 @@
     "minami": "^1.2.3",
     "optimist": "0.6.1",
     "phantomjs": "~2.1.7",
-    "snyk": "^1.207.2"
+    "snyk": "^1.228.2"
   },
   "scripts": {
     "snyk-protect": "snyk protect",
