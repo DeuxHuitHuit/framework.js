@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.12.0
+version: v1.13.5
 ignore: {}
 # patches apply the minimum changes required to fix a vulnerability
 patch:
@@ -15,4 +15,10 @@ patch:
         patched: '2018-07-03T07:38:28.040Z'
     - grunt-jscs > jscs > xmlbuilder > lodash:
         patched: '2018-07-03T07:38:28.040Z'
-
+  SNYK-JS-HTTPSPROXYAGENT-469131:
+    - grunt-contrib-qunit > puppeteer > https-proxy-agent:
+        patched: '2019-10-04T00:19:51.529Z'
+    - snyk > proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T00:19:51.529Z'
+    - snyk > proxy-agent > pac-proxy-agent > https-proxy-agent:
+        patched: '2019-10-04T00:19:51.529Z'

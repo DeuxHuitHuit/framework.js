@@ -35,8 +35,7 @@
     "matchdep": "~2.0.0",
     "minami": "^1.2.3",
     "optimist": "0.6.1",
-    "phantomjs": "~2.1.7",
-    "snyk": "^1.228.2"
+    "phantomjs": "~2.1.7"
   },
   "scripts": {
     "snyk-protect": "snyk protect",
@@ -49,5 +48,8 @@
     "ignore": [
       "snyk"
     ]
+  },
+  "dependencies": {
+    "snyk": "^1.230.5"
   }
 }
