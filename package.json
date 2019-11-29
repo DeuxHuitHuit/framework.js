@@ -36,7 +36,7 @@
     "minami": "^1.2.3",
     "optimist": "0.6.1",
     "phantomjs": "~2.1.7",
-    "snyk": "^1.228.2"
+    "snyk": "^1.252.0"
   },
   "scripts": {
     "snyk-protect": "snyk protect",
