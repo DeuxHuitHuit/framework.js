@@ -1,4 +1,4 @@
-/*! framework.js - v2.1.0 - 677ce6aac8 - build 167 - 2019-07-31
+/*! framework.js - v2.2.0 - 1571432736 - build 168 - 2019-12-10
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2019 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -734,6 +734,45 @@
 			 */
 			isChrome: function (userAgent) {
 				return testUserAgent(/Chrome/i, userAgent) && !detector.isEdge();
+			},
+
+			/**
+			 * Check if the user agent contains the word 'Macintosh' and it's not on mobile
+			 * @name isMacOs
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
+			isMacOs: function (userAgent) {
+				return testUserAgent(/Macintosh/i, userAgent) && !detector.isMobile();
+			},
+
+			/**
+			 * Check if the user agent contains the word 'Windows'
+			 * @name isWindows
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
+			isWindows: function (userAgent) {
+				return testUserAgent(/Windows/i, userAgent);
+			},
+
+			/**
+			 * Check if the user agent contains the word 'Linux' and it's not on mobile
+			 * @name isLinux
+			 * @method
+			 * @memberof device
+			 * @param {String} userAgent The browser user agent
+			 * @returns {Boolean}
+			 * @private
+			 */
+			isLinux: function (userAgent) {
+				return testUserAgent(/Linux/i, userAgent) && !detector.isMobile();
 			}
 		};
 		
@@ -789,6 +828,33 @@
 			 * @memberof device
 			 */
 			android: browserDetector.isAndroid(),
+
+			/**
+			 * Check if the device run on Max Os
+			 * @name macos
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
+			macos: browserDetector.isMacOs(),
+
+			/**
+			 * Check if the device run on Windows
+			 * @name windows
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
+			windows: browserDetector.isWindows(),
+
+			/**
+			 * Check if the device run on Linux
+			 * @name linux
+			 * @constant
+			 * @public
+			 * @memberof device
+			 */
+			linux: browserDetector.isLinux(),
 
 			/**
 			 * Check if the device is a mobile

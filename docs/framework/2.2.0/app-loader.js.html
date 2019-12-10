@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>app-loader.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Events</li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:enter">page:enter</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:entering">page:entering</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:leave">page:leave</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:leaving">page:leaving</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:toggleNoPreviousUrl">page:toggleNoPreviousUrl</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:failedtoparse">pages:failedtoparse</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loaded">pages:loaded</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loaderror">pages:loaderror</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loadfatalerror">pages:loadfatalerror</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loading">pages:loading</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loadprogress">pages:loadprogress</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:navigateToCurrent">pages:navigateToCurrent</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:notfound">pages:notfound</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:redirected">pages:redirected</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:requestBeginPageTransition">pages:requestBeginPageTransition</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:requestCancelPageTransition">pages:requestCancelPageTransition</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:requestPageTransition">pages:requestPageTransition</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:routeNotFound">pages:routeNotFound</a></span></li><li class="nav-heading">Namespaces</li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.html">App</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.html#.notifyPage">notifyPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.html#.root">root</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.html#.run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.actions.html">App.actions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.actions.html#.execute">execute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.actions.html#.resolve">resolve</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.actions.html#.stack">stack</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.fx.html">App.fx</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.fx.html#.notify">notify</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.mediator.html">App.mediator</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getCurrentPage">getCurrentPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getCurrentUrl">getCurrentUrl</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getPreviousPage">getPreviousPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getPreviousUrl">getPreviousUrl</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.goto">goto</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.init">init</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.notify">notify</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.notifyCurrentPage">notifyCurrentPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.toggle">toggle</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.modules.html">modules</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="callback.html">callback</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="callback.html#.this">this</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="components.html">components</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="components.html#.create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="components.html#.exports">exports</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="components.html#.models">models</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="debug.html">debug</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="debug.html#.debug">debug</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="device.html">device</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="loaded.html">loaded</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loaded.html#.this">this</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="loader.html">loader</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.inQueue">inQueue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.isLoading">isLoading</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.load">load</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.working">working</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="log.html">log</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="log.html#.logs">logs</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="log.html#.this">this</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="modules.html">modules</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.exports">exports</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.models">models</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.notify">notify</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.resolve">resolve</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="pages.html">pages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.exports">exports</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.getPageForRoute">getPageForRoute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.models">models</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.page">page</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="routing.html">routing</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="storage.html">storage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.clear">clear</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.factory">factory</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.get">get</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.remove">remove</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.set">set</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#pd">pd</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">app-loader.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *  Assets loader: Basically a wrap around $.ajax in order
+ *  to priorize and serialize resource loading.
+ *
+ * @fileoverview Assets Loader, wrap around $.ajax
+ *
+ * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
+ * @license MIT &lt;https://deuxhuithuit.mit-license.org>
+ * @namespace loader
+ * @memberof App
+ * @requires App
+ */
+(function ($, global, undefined) {
+	'use strict';
+
+	// Forked: https://gist.github.com/nitriques/6583457
+	(function addXhrProgressEvent () {
+		var originalXhr = $.ajaxSettings.xhr;
+		$.ajaxSetup({
+			progress: $.noop,
+			upload: $.noop,
+			xhr: function () {
+				var self = this;
+				var req = originalXhr();
+				if (req) {
+					if ($.isFunction(req.addEventListener)) {
+						req.addEventListener('progress', function (e) {
+							self.progress($.Event(e)); // make sure it's jQuery-ize
+						}, false);
+					}
+					if (!!req.upload &amp;&amp; $.isFunction(req.upload.addEventListener)) {
+						req.upload.addEventListener('progress', function (e) {
+							self.upload($.Event(e)); // make sure it's jQuery-ize
+						}, false);
+					}
+				}
+				return req;
+			}
+		});
+	})();
+	
+	var assets = []; // FIFO
+	
+	var loaderIsWorking = false;
+	
+	var currentUrl = null;
+	
+	/**
+	 * Check if a given url is loading (Only GET request)
+	 * @name isLoading
+	 * @method
+	 * @memberof loader
+	 * @param {Object} url Url object to check
+	 * @returns {Boolean}
+	 * @private
+	 */
+	var isLoading = function (url) {
+		if (!$.isPlainObject(url)) {
+			url = {url: url};
+		}
+		if (!!url.method &amp;&amp; url.method !== 'GET') {
+			return false;
+		}
+		return !!currentUrl &amp;&amp; currentUrl === url.url;
+	};
+	
+	/**
+	 * Check if a given url is in the queue
+	 * @name inQueue
+	 * @method
+	 * @memberof loader
+	 * @param {Object} url Url object to check
+	 * @returns {Boolean}
+	 * @private
+	 */
+	var inQueue = function (url) {
+		return assets.findIndex(function eachAsset (asset) {
+			return asset.url === url;
+		});
+	};
+	
+	/**
+	 * Return the appropriate storage engine for the given url
+	 * @name getStorageEngine
+	 * @method
+	 * @memberof loader
+	 * @param {Object} url Url object to check
+	 * @private
+	 */
+	var getStorageEngine = function (url) {
+		if (url.cache === true) {
+			url.cache = 'session';
+		}
+		return global.App.storage &amp;&amp; global.App.storage[url.cache];
+	};
+	
+	// This breaks the call dependency cycle
+	var recursiveLoad = $.noop;
+	var loadAsset = $.noop;
+	
+	var defaultParameters = function (asset) {
+		return {
+			progress: function (e) {
+				// callback
+				App.callback(asset.progress, [e]);
+			},
+			success: function (data, textStatus, jqXHR) {
+				// clear pointer
+				currentUrl = null;
+				
+				// register next
+				recursiveLoad();
+				
+				// callback
+				App.callback(asset.success, [data, textStatus, jqXHR]);
+				
+				// store in cache
+				if (!!asset.cache) {
+					var storage = getStorageEngine(asset);
+					if (!!storage) {
+						storage.set(asset.url, data);
+					}
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				var maxRetriesFactor = !!asset.vip ? 2 : 1;
+				
+				// clear pointer
+				currentUrl = null;
+				
+				App.log({
+					fx: 'error',
+					args: ['Error loading url %s: %s', asset.url, textStatus + ' ' + errorThrown],
+					me: 'Loader'
+				});
+				
+				// if no vip access is granted
+				//if (!asset.vip) {
+				// decrease priority
+				// this avoids looping for a unload-able asset
+				asset.priority += ++asset.retries; // out of bounds checking is done later
+				//}
+				
+				// Check the error code:
+				// No need to replay client errors (4xx)
+				var clientError = jqXHR.status >= 400 &amp;&amp; jqXHR.status &lt; 500;
+				if (!!clientError) {
+					// Early exit
+					App.callback(asset.clienterror, [jqXHR.status, jqXHR, textStatus, errorThrown]);
+
+				// if we already re-tried  less than x times
+				} else if (asset.retries &lt;= (asset.maxRetries * maxRetriesFactor)) {
+					// push it back into the queue and retry
+					loadAsset(asset);
+				} else {
+					// we give up!
+					App.callback(asset.giveup, [jqXHR, textStatus, errorThrown]);
+				}
+				
+				// next
+				recursiveLoad();
+				
+				// callback
+				App.callback(asset.error, [jqXHR, textStatus, errorThrown]);
+			}
+		};
+	};
+	
+	/**
+	 * Load the first item in the queue
+	 * @name loadOneAsset
+	 * @method
+	 * @private
+	 * @memberof loader
+	 */
+	var loadOneAsset = function () {
+		// grab first item
+		var asset = assets.shift();
+		// extend it
+		var param = $.extend({}, asset, defaultParameters(asset));
+		// actual loading
+		$.ajax(param);
+		// set the pointer
+		currentUrl = param.url;
+	};
+	
+	/**
+	 * Trigger loadOneAsset as long as there's entries in the queue
+	 * @name recursiveLoad
+	 * @method
+	 * @memberof loader
+	 * @private
+	 */
+	recursiveLoad = function () {
+		if (!!assets.length) {
+			// start next one
+			setTimeout(loadOneAsset, 0);
+		} else {
+			// work is done
+			loaderIsWorking = false;
+		}
+	};
+	
+	/**
+	 * Validate and format url's data
+	 * @name valideUrlArags
+	 * @method
+	 * @memberof loader
+	 * @private
+	 * @param {Object} url Url object
+	 * @param {Integer} priority Priority of the url
+	 * @returns {Object} Url object
+	 */
+	var validateUrlArgs = function (url, priority) {
+		// ensure we are dealing with an object
+		if (!$.isPlainObject(url)) {
+			url = {url: url};
+		}
+		
+		// pass the priority param into the object
+		if ($.isNumeric(priority) &amp;&amp; Math.abs(priority) &lt; assets.length) {
+			url.priority = priority;
+		}
+		
+		// ensure that the priority is valid
+		if (!$.isNumeric(url.priority) || Math.abs(url.priority) > assets.length) {
+			url.priority = assets.length;
+		}
+		
+		// ensure we have a value for the retries
+		if (!$.isNumeric(url.retries)) {
+			url.retries = 0;
+		}
+		if (!$.isNumeric(url.maxRetries)) {
+			url.maxRetries = 2;
+		}
+		
+		return url;
+	};
+	
+	/**
+	 * Trigger the loading if nothing is happening
+	 * @name launchLoad
+	 * @method
+	 * @private
+	 * @memberof loader
+	 */
+	var launchLoad = function () {
+		// start now if nothing is loading
+		if (!loaderIsWorking) {
+			loaderIsWorking = true;
+			loadOneAsset();
+			App.log({fx: 'info', args: 'Load worker has been started', me: 'Loader'});
+		}
+	};
+	
+	/**
+	 * Get the value from the cache if it's available
+	 * @name getValueFromCache
+	 * @method
+	 * @memberof loader
+	 * @param {Object} url Url object
+	 * @returns {Boolean}
+	 * @private
+	 */
+	var getValueFromCache = function (url) {
+		var storage = getStorageEngine(url);
+		if (!!storage) {
+			var item = storage.get(url.url);
+			if (!!item) {
+				// if the cache-hit is valid
+				if (App.callback(url.cachehit, [item]) !== false) {
+					// return the cache
+					App.callback(url.success, [item]);
+					return true;
+				}
+			}
+		}
+		return false;
+	};
+	
+	/**
+	 * Update a request priority in the queue
+	 * @name updatePriority
+	 * @method
+	 * @memberof loader
+	 * @private
+	 * @param {Object} url Url object
+	 * @param {Integer} index
+	 */
+	var updatePriority = function (url, index) {
+		// promote if new priority is different
+		var oldAsset = assets[index];
+		if (oldAsset.priority != url.priority) {
+			// remove
+			assets.splice(index, 1);
+			// add
+			assets.splice(url.priority, 1, url);
+		}
+		App.log({
+			args: [
+				'Url %s was shifted from %s to %s',
+				url.url,
+				oldAsset.priority, url.priority
+			],
+			me: 'Loader'
+		});
+	};
+	
+	/**
+	 * Put the request in the queue and trigger the load
+	 * @name loadAsset
+	 * @method
+	 * @memberof loader
+	 * @private
+	 * @param {Object} url Url Object
+	 * @param {Integer} priority
+	 * @this App
+	 * @returns this
+	 */
+	loadAsset = function (url, priority) {
+		if (!url) {
+			App.log({fx: 'error', args: 'No url given', me: 'Loader'});
+			return this;
+		}
+		
+		url = validateUrlArgs(url, priority);
+		
+		// ensure that asset is not current
+		if (isLoading(url)) {
+			App.log({fx: 'error', args: ['Url %s is already loading', url.url], me: 'Loader'});
+			return this;
+		}
+		
+		// check cache
+		if (!!url.cache) {
+			if (getValueFromCache(url)) {
+				return this;
+			}
+		}
+		
+		var index = inQueue(url.url);
+		
+		// ensure that asset is not in the queue
+		if (!~index) {
+			// insert in array
+			assets.splice(url.priority, 1, url);
+			App.log({
+				fx: 'info',
+				args: ['Url %s has been insert at %s', url.url, url.priority],
+				me: 'Loader'
+			});
+			
+		} else {
+			updatePriority(url, index);
+		}
+		
+		launchLoad();
+		
+		return this;
+	};
+	
+	global.App = $.extend(true, global.App, {
+		loader: {
+			/**
+			 * Put the request in the queue and trigger the load
+			 * @name load
+			 * @method
+			 * @memberof loader
+			 * @public
+			 * @param {Object} url Url Object
+			 * @param {Integer} priority
+			 * @this App
+			 * @returns this
+			 */
+			load: loadAsset,
+
+			/**
+			 * Check if a given url is loading (Only GET request)
+			 * @name isLoading
+			 * @method
+			 * @memberof loader
+			 * @param {Object} url Url object to check
+			 * @returns {Boolean}
+			 * @public
+			 */
+			isLoading: isLoading,
+
+			/**
+			 * Check if a given url is in the queue
+			 * @name inQueue
+			 * @method
+			 * @memberof loader
+			 * @param {Object} url Url object to check
+			 * @returns {Boolean}
+			 * @public
+			 */
+			inQueue: inQueue,
+
+			/**
+			 * Get the flag if the loader is working or not
+			 * @name working
+			 * @method
+			 * @memberof loader
+			 * @public
+			 * @returns {Boolean}
+			 */
+			working: function () {
+				return loaderIsWorking;
+			}
+		}
+	});
+	
+})(jQuery, window);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> on Tue Dec 10 2019 17:18:51 GMT-0500 (Est) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
