@@ -19,7 +19,7 @@ module.exports = function fxGruntConfig (grunt) {
 	var JSCS_FILE = '.jscsrc';
 	
 	// TESTS
-	var SERVER_PORT = 8080;
+	var SERVER_PORT = 8081;
 	var SERVER_URI = 'http://localhost:' + SERVER_PORT;
 	var TEST_PATHS = [
 		'/tests/framework.global.js.test.html',
