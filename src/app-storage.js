@@ -1,5 +1,7 @@
 /**
- * Facade to access the browser's localstorage and session storage
+ * Facade to access the browser's localStorage and sessionStorage
+ *
+ * The facade wraps unsafe calls to catch errors and return empty but valid values.
  *
  * @fileoverview Storage facade compatible with localStorage and sessionStorage
  *
@@ -131,6 +133,31 @@
 		};
 	};
 
+	var safeLocalStorage = function () {
+		try {
+			return storage(window.localStorage);
+		} catch (e) {
+			App.log({
+				args: e.message,
+				me: 'Storage',
+				fx: 'error'
+			});
+		}
+		return storage({});
+	};
+
+	var safeSessionStorage = function () {
+		try {
+			return storage(window.sessionStorage);
+		} catch (e) {
+			App.log({
+				args: e.message,
+				me: 'Storage',
+				fx: 'error'
+			});
+		}
+		return storage({});
+	};
 
 	global.App = $.extend(true, global.App, {
 		storage: {
@@ -152,7 +179,7 @@
 			 * @public
 			 * @memberof storage
 			 */
-			local: storage(window.localStorage),
+			local: safeLocalStorage(),
 
 			/**
 			 * Storage methods in sessionStorage mode
@@ -161,7 +188,7 @@
 			 * @public
 			 * @memberof storage
 			 */
-			session: storage(window.sessionStorage)
+			session: safeSessionStorage()
 		}
 	});
 	
