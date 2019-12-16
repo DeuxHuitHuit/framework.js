@@ -1,4 +1,4 @@
-/*! framework.js - v2.2.0 - 1571432736 - build 168 - 2019-12-10
+/*! framework.js - v2.2.1 - 50bf73e9d6 - build 170 - 2019-12-16
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2019 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -3331,7 +3331,9 @@
 })(jQuery, window);
 
 /**
- * Facade to access the browser's localstorage and session storage
+ * Facade to access the browser's localStorage and sessionStorage
+ *
+ * The facade wraps unsafe calls to catch errors and return empty but valid values.
  *
  * @fileoverview Storage facade compatible with localStorage and sessionStorage
  *
@@ -3463,6 +3465,31 @@
 		};
 	};
 
+	var safeLocalStorage = function () {
+		try {
+			return storage(window.localStorage);
+		} catch (e) {
+			App.log({
+				args: e.message,
+				me: 'Storage',
+				fx: 'error'
+			});
+		}
+		return storage({});
+	};
+
+	var safeSessionStorage = function () {
+		try {
+			return storage(window.sessionStorage);
+		} catch (e) {
+			App.log({
+				args: e.message,
+				me: 'Storage',
+				fx: 'error'
+			});
+		}
+		return storage({});
+	};
 
 	global.App = $.extend(true, global.App, {
 		storage: {
@@ -3484,7 +3511,7 @@
 			 * @public
 			 * @memberof storage
 			 */
-			local: storage(window.localStorage),
+			local: safeLocalStorage(),
 
 			/**
 			 * Storage methods in sessionStorage mode
@@ -3493,7 +3520,7 @@
 			 * @public
 			 * @memberof storage
 			 */
-			session: storage(window.sessionStorage)
+			session: safeSessionStorage()
 		}
 	});
 	

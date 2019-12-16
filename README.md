@@ -13,8 +13,8 @@ The framework use jQuery and Underscore.js and extends some functionality.
 
 ## Documentation
 
-* [Current Version](https://deuxhuithuit.github.io/framework.js/framework/2.2.0/)
-* [2.1.x](https://deuxhuithuit.github.io/framework.js/framework/2.1.x/)
+* [Current Version](https://deuxhuithuit.github.io/framework.js/framework/2.2.1/)
+* [2.1.x](https://deuxhuithuit.github.io/framework.js/framework/2.1.0/)
 * [2.0.x](https://deuxhuithuit.github.io/framework.js/framework/2.0.1/)
 * [1.8.x](https://deuxhuithuit.github.io/framework.js/framework/1.8.0/)
 
