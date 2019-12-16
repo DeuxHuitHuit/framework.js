@@ -1,5 +1,7 @@
 /**
- * Facade to access the browser's localstorage and session storage
+ * Facade to access the browser's localStorage and sessionStorage
+ *
+ * The facade wraps unsafe calls to catch errors and return empty but valid values.
  *
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
@@ -124,11 +126,37 @@
 		};
 	};
 
+	var safeLocalStorage = function () {
+		try {
+			return storage(window.localStorage);
+		} catch (e) {
+			App.log({
+				args: e.message,
+				me: 'Storage',
+				fx: 'error'
+			});
+		}
+		return storage({});
+	};
+
+	var safeSessionStorage = function () {
+		try {
+			return storage(window.sessionStorage);
+		} catch (e) {
+			App.log({
+				args: e.message,
+				me: 'Storage',
+				fx: 'error'
+			});
+		}
+		return storage({});
+	};
+
 	/** @deprecated */
 	global.AppStorage = $.extend(global.AppStorage, {
 		factory: storage,
-		local: storage(window.localStorage),
-		session: storage(window.sessionStorage)
+		local: safeLocalStorage(),
+		session: safeSessionStorage()
 	});
 	
 	/** @deprecated */
