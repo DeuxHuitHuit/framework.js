@@ -255,7 +255,7 @@
 			 * @private
 			 */
 			isEdge: function (userAgent) {
-				return testUserAgent(/Edge/i, userAgent);
+				return testUserAgent(/Edge/i, userAgent) || testUserAgent(/Edg/i, userAgent);
 			},
 
 			/**
