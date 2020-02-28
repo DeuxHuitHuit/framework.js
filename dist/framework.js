@@ -1974,9 +1974,9 @@
 			 */
 			App.modules.notify('pages.requestPageTransition', pageTransitionData);
 
-			if (!nextPage.isInited) {
+			if (!nextPage.isInited()) {
 				nextPage.init();
-				nextPage.isInited = true;
+				nextPage.setInited(true);
 			}
 
 			//if not, return to classic code
@@ -2145,7 +2145,7 @@
 
 				// init page
 				nextPage.init();
-				nextPage.isInited = true;
+				nextPage.setInited(true);
 
 				node.hide();
 
@@ -3571,7 +3571,7 @@
 			if (!!page.loaded()) {
 				// init page
 				page.init({firstTime: true});
-				page.isInited = true;
+				page.setInited(true);
 				// set mediator state
 				App.mediator.init(this);
 			}
