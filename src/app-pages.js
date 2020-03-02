@@ -70,6 +70,7 @@
 		 */
 		var factory = function (pageData) {
 			var modelRef;
+			var isInited = false;
 			
 			if ($.isPlainObject(model)) {
 				modelRef = model;
@@ -118,7 +119,13 @@
 				key: getKey, // css selector
 				loaded: loaded,
 				routes: routes,
-				data: data
+				data: data,
+				isInited: function () {
+					return isInited;
+				},
+				setInited: function () {
+					isInited = true;
+				}
 			});
 			
 			// New deep copy frozen object
