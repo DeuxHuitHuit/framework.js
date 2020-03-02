@@ -1,6 +1,6 @@
-/*! framework.js - v2.2.1 - 50bf73e9d6 - build 170 - 2019-12-16
+/*! framework.js - v2.2.2 - e60ba52a19 - build 171 - 2020-03-02
  * https://github.com/DeuxHuitHuit/framework.js
- * Copyright (c) 2019 Deux Huit Huit (https://deuxhuithuit.com/);
+ * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
  * Actions
  *
@@ -720,7 +720,7 @@
 			 * @private
 			 */
 			isEdge: function (userAgent) {
-				return testUserAgent(/Edge/i, userAgent);
+				return testUserAgent(/Edge/i, userAgent) || testUserAgent(/Edg/i, userAgent);
 			},
 
 			/**
@@ -1974,9 +1974,9 @@
 			 */
 			App.modules.notify('pages.requestPageTransition', pageTransitionData);
 
-			if (!nextPage.isInited()) {
+			if (!nextPage.isInited) {
 				nextPage.init();
-				nextPage.setInited();
+				nextPage.isInited = true;
 			}
 
 			//if not, return to classic code
@@ -2145,7 +2145,7 @@
 
 				// init page
 				nextPage.init();
-				nextPage.setInited();
+				nextPage.isInited = true;
 
 				node.hide();
 
@@ -2813,6 +2813,7 @@
 		 */
 		var factory = function (pageData) {
 			var modelRef;
+			var isInited = false;
 			
 			if ($.isPlainObject(model)) {
 				modelRef = model;
@@ -2861,7 +2862,13 @@
 				key: getKey, // css selector
 				loaded: loaded,
 				routes: routes,
-				data: data
+				data: data,
+				isInited: function () {
+					return isInited;
+				},
+				setInited: function () {
+					isInited = true;
+				}
 			});
 			
 			// New deep copy frozen object
@@ -3571,7 +3578,7 @@
 			if (!!page.loaded()) {
 				// init page
 				page.init({firstTime: true});
-				page.setInited();
+				page.isInited = true;
 				// set mediator state
 				App.mediator.init(this);
 			}
