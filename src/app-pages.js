@@ -123,8 +123,8 @@
 				isInited: function () {
 					return isInited;
 				},
-				setInited: function (value) {
-					isInited = value;
+				setInited: function () {
+					isInited = true;
 				}
 			});
 			

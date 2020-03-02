@@ -1976,7 +1976,7 @@
 
 			if (!nextPage.isInited()) {
 				nextPage.init();
-				nextPage.setInited(true);
+				nextPage.setInited();
 			}
 
 			//if not, return to classic code
@@ -2145,7 +2145,7 @@
 
 				// init page
 				nextPage.init();
-				nextPage.setInited(true);
+				nextPage.setInited();
 
 				node.hide();
 
@@ -3571,7 +3571,7 @@
 			if (!!page.loaded()) {
 				// init page
 				page.init({firstTime: true});
-				page.setInited(true);
+				page.setInited();
 				// set mediator state
 				App.mediator.init(this);
 			}
