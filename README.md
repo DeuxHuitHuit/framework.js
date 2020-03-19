@@ -4,7 +4,6 @@
 [![Build Status](https://travis-ci.org/DeuxHuitHuit/framework.js.svg)](https://travis-ci.org/DeuxHuitHuit/framework.js)
 ![Build Status](https://ci.appveyor.com/api/projects/status/t8sadjjdpbyl48dj?svg=true)
 ![Build Status](https://github.com/DeuxHuitHuit/framework.js/workflows/CI/badge.svg)    
-
 [![David DM](https://david-dm.org/DeuxHuitHuit/framework.js/dev-status.svg?style=flat)](https://david-dm.org/DeuxHuitHuit/framework.js#info=devDependencies)
 [![Maintainability](https://api.codeclimate.com/v1/badges/afad7fc6575f77e1f43d/maintainability)](https://codeclimate.com/github/DeuxHuitHuit/framework.js/maintainability)
 
