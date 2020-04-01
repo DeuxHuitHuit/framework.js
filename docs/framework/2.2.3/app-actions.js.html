@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>app-actions.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Events</li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:enter">page:enter</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:entering">page:entering</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:leave">page:leave</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:leaving">page:leaving</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:toggleNoPreviousUrl">page:toggleNoPreviousUrl</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:failedtoparse">pages:failedtoparse</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loaded">pages:loaded</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loaderror">pages:loaderror</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loadfatalerror">pages:loadfatalerror</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loading">pages:loading</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loadprogress">pages:loadprogress</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:navigateToCurrent">pages:navigateToCurrent</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:notfound">pages:notfound</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:redirected">pages:redirected</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:requestBeginPageTransition">pages:requestBeginPageTransition</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:requestCancelPageTransition">pages:requestCancelPageTransition</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:requestPageTransition">pages:requestPageTransition</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:routeNotFound">pages:routeNotFound</a></span></li><li class="nav-heading">Namespaces</li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.html">App</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.html#.notifyPage">notifyPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.html#.root">root</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.html#.run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.actions.html">App.actions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.actions.html#.execute">execute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.actions.html#.resolve">resolve</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.actions.html#.stack">stack</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.fx.html">App.fx</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.fx.html#.notify">notify</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.mediator.html">App.mediator</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getCurrentPage">getCurrentPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getCurrentUrl">getCurrentUrl</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getPreviousPage">getPreviousPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getPreviousUrl">getPreviousUrl</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.goto">goto</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.init">init</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.notify">notify</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.notifyCurrentPage">notifyCurrentPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.toggle">toggle</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.modules.html">modules</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="callback.html">callback</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="callback.html#.this">this</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="components.html">components</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="components.html#.create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="components.html#.exports">exports</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="components.html#.models">models</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="debug.html">debug</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="debug.html#.debug">debug</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="device.html">device</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="loaded.html">loaded</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loaded.html#.this">this</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="loader.html">loader</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.inQueue">inQueue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.isLoading">isLoading</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.load">load</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.working">working</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="log.html">log</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="log.html#.logs">logs</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="log.html#.this">this</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="modules.html">modules</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.exports">exports</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.models">models</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.notify">notify</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.resolve">resolve</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="pages.html">pages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.exports">exports</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.getPageForRoute">getPageForRoute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.models">models</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.page">page</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="routing.html">routing</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="storage.html">storage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.clear">clear</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.factory">factory</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.get">get</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.remove">remove</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.set">set</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#pd">pd</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">app-actions.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Actions
+ *
+ * @fileoverview Defines the App Actions
+ *
+ * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
+ * @license MIT &lt;https://deuxhuithuit.mit-license.org>
+ *
+ * @requires jQuery
+ * @namespace App.actions
+ */
+(function ($, global, undefined) {
+	'use strict';
+	var keys = {};
+	var innerCall = false;
+	var stack = [];
+
+	/**
+	 * Find the methods that matches with the notify key
+	 * @name resolve
+	 * @memberof App.actions
+	 * @method
+	 * @param {Function|Object} actions Object of methods that can be matches with the key's value
+	 * @param {String} key Action key
+	 * @returns {Function} The function corresponding to the key, if it exists in actions object
+	 * @private
+	 */
+	var resolve = function (actions, key) {
+		if ($.isFunction(actions)) {
+			actions = actions();
+		}
+		if (!!actions) {
+			// Try the whole key
+			var tempFx = actions[key];
+			// If not, try JSONPath style...
+			if (!$.isFunction(tempFx)) {
+				var paths = keys[key] || key.split('.');
+				if (paths.length &lt; 2) {
+					return;
+				}
+				keys[key] = paths;
+				tempFx = actions;
+				paths.every(function eachPath (p) {
+					tempFx = tempFx[p];
+					if (!$.isPlainObject(tempFx)) {
+						return false; // exit
+					}
+					return true;
+				});
+			}
+			if ($.isFunction(tempFx)) {
+				return tempFx;
+			}
+		}
+	};
+
+	/**
+	 * Executes all read and write operations present in the actions array.
+	 * @name execute
+	 * @memberof App.actions
+	 * @method
+	 * @param {Array} actions Array of read/write objects
+	 * @param {String} key Action key
+	 * @param {Object} data Bag of data
+	 * @returns {undefined}
+	 * @private
+	 */
+	var execute = function (actions, key, data, cb) {
+		var sp = 0;
+		var outerCall = false;
+		var read = function (f) {
+			if ($.isFunction(f.read)) {
+				f.read(key, data);
+			}
+		};
+		var write = function (f) {
+			f.write(key, data);
+		};
+		if (!innerCall) {
+			innerCall = true;
+			outerCall = true;
+		}
+		if (!$.isArray(actions)) {
+			actions = [actions];
+		}
+		if ($.isFunction(data) &amp;&amp; !cb) {
+			cb = data;
+			data = undefined;
+		}
+		// Push all resolved actions to the stack
+		actions.forEach(function eachAction (a, index) {
+			var retValue = App.callback(a, [key, data]);
+			if (!!cb &amp;&amp; retValue !== undefined) {
+				App.callback(cb, [index, retValue]);
+			}
+			if ($.isFunction(retValue)) {
+				retValue = {
+					read: null,
+					write: retValue
+				};
+			}
+			if ($.isPlainObject(retValue) &amp;&amp; $.isFunction(retValue.write)) {
+				if (App.debug() &amp;&amp; !retValue.key) {
+					retValue.key = key;
+				}
+				stack.push(retValue);
+			}
+		});
+		// If outerCall, empty the stack
+		while (outerCall &amp;&amp; stack.length > sp) {
+			// Capture current end
+			var sLen = stack.length;
+			// Process current range only
+			for (var x = sp; x &lt; sLen; x++) {
+				read(stack[x]);
+			}
+			for (x = sp; x &lt; sLen; x++) {
+				write(stack[x]);
+			}
+			// Advance the stack pointer
+			sp = sLen;
+		}
+		if (outerCall) {
+			// clean up
+			innerCall = false;
+			stack = [];
+		}
+	};
+
+	/** Public Interfaces **/
+	global.App = $.extend(true, global.App, {
+		/**
+		 * @namespace actions
+		 * @memberof App
+		 */
+		actions: {
+			/**
+			 * Find the methods that matches with the notify key
+			 * @name resolve
+			 * @memberof App.actions
+			 * @method
+			 * @param {Function|Object} actions Object of methods that can be matches
+			 *   with the key's value
+			 * @param {String} key Action key
+			 * @returns {Function} The function corresponding to the key, if it exists
+			 * @public
+			 */
+			resolve: resolve,
+
+			/**
+			 * Executes all read and write operations present in the actions array.
+			 * @name execute
+			 * @memberof App.actions
+			 * @method
+			 * @param {Array} actions Array of read/write objects
+			 * @param {String} key Action key
+			 * @param {Object} data Bag of data
+			 * @returns {undefined}
+			 * @public
+			 */
+			execute: execute,
+
+			/**
+			 * @name stack
+			 * @memberof App.actions
+			 * @method
+			 * @returns {Array} All the operations currently in the stack.
+			 *   Stack operations can already be executed but still in the stack.
+			 * @public
+			 */
+			stack: function () {
+				return stack;
+			}
+		}
+	});
+})(jQuery, window);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> on Wed Apr 01 2020 16:08:49 GMT-0400 (EDT) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

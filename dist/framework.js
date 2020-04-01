@@ -1,4 +1,4 @@
-/*! framework.js - v2.2.2 - e60ba52a19 - build 171 - 2020-03-02
+/*! framework.js - v2.2.3 - 6d0553d441 - build 172 - 2020-04-01
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -1976,7 +1976,7 @@
 
 			if (!nextPage.isInited) {
 				nextPage.init();
-				nextPage.isInited = true;
+				nextPage.setInited();
 			}
 
 			//if not, return to classic code
@@ -2145,7 +2145,7 @@
 
 				// init page
 				nextPage.init();
-				nextPage.isInited = true;
+				nextPage.setInited();
 
 				node.hide();
 
@@ -3578,7 +3578,7 @@
 			if (!!page.loaded()) {
 				// init page
 				page.init({firstTime: true});
-				page.isInited = true;
+				page.setInited();
 				// set mediator state
 				App.mediator.init(this);
 			}
