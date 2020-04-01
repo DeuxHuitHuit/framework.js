@@ -1,4 +1,4 @@
-/*! framework.js - v2.2.3 - 6d0553d441 - build 172 - 2020-04-01
+/*! framework.js - v2.2.4 - 978c748f29 - build 173 - 2020-04-01
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -3580,7 +3580,7 @@
 				page.init({firstTime: true});
 				page.setInited();
 				// set mediator state
-				App.mediator.init(this);
+				App.mediator.init(page);
 			}
 		});
 		
