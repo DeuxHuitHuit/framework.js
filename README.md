@@ -1,7 +1,7 @@
 # Deux Huit Huit's framework.js
 
 [![Built with Grunt](https://gruntjs.com/cdn/builtwith.png)](http://gruntjs.com/)
-[![Build Status](https://travis-ci.org/DeuxHuitHuit/framework.js.svg)](https://travis-ci.org/DeuxHuitHuit/framework.js)
+[![Build Status](https://travis-ci.com/DeuxHuitHuit/framework.js.svg)](https://travis-ci.com/DeuxHuitHuit/framework.js)
 ![Build Status](https://ci.appveyor.com/api/projects/status/t8sadjjdpbyl48dj?svg=true)
 ![Build Status](https://github.com/DeuxHuitHuit/framework.js/workflows/CI/badge.svg)    
 [![David DM](https://david-dm.org/DeuxHuitHuit/framework.js/dev-status.svg?style=flat)](https://david-dm.org/DeuxHuitHuit/framework.js#info=devDependencies)
