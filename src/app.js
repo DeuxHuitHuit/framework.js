@@ -43,7 +43,7 @@
 			if (!!page.loaded()) {
 				// init page
 				page.init({firstTime: true});
-				page.isInited = true;
+				page.setInited();
 				// set mediator state
 				App.mediator.init(this);
 			}

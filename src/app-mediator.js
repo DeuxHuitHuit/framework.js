@@ -305,7 +305,7 @@
 
 			if (!nextPage.isInited) {
 				nextPage.init();
-				nextPage.isInited = true;
+				nextPage.setInited();
 			}
 
 			//if not, return to classic code
@@ -474,7 +474,7 @@
 
 				// init page
 				nextPage.init();
-				nextPage.isInited = true;
+				nextPage.setInited();
 
 				node.hide();
 
