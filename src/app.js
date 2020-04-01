@@ -45,7 +45,7 @@
 				page.init({firstTime: true});
 				page.setInited();
 				// set mediator state
-				App.mediator.init(this);
+				App.mediator.init(page);
 			}
 		});
 		
