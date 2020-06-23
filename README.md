@@ -28,6 +28,12 @@ The framework use jQuery and Underscore.js and extends some functionality.
 
 ## History
 
+* **2.2.x**
+	* (fix) Remove this from forEach loop (978c748f29343dbddf39dcd6180e31df816aa9f4)
+	* (fix) Declare setters since the objects are now frozen (#152 +58326f816cd3a96723d19bde8508b79393e25724)
+	* (feat) Added new edge to user agents (#144)
+	* (fix) Properly handle errors in storage (50bf73e9d65fb3e48692da0e84d6a2d02b30a272)
+
 * **2.1.x**
 	* Remove all $.each calls (#70)
 	* Freeze public objects (#77)
