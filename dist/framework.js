@@ -1,4 +1,4 @@
-/*! framework.js - v2.2.4 - 978c748f29 - build 173 - 2020-04-01
+/*! framework.js - v2.2.4 - b565eaa - build 175 - 2020-07-04
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -1804,8 +1804,6 @@
 	var resolvePageAction = function (key, data) {
 		if (!!currentPage) {
 			return App.actions.resolve(currentPage.actions, key, data);
-		} else {
-			App.log({ args: 'Can not notify page: No current page set.', fx: 'error' });
 		}
 	};
 
@@ -3590,7 +3588,7 @@
 		
 		if (!App.mediator.getCurrentPage()) {
 			App.modules.notify('app.pageNotFound');
-			App.log({ fx: 'error', args: 'No current page set, pages will not work.' });
+			App.log({ fx: 'info', args: 'No current page set, pages disabled.' });
 		}
 	};
 	

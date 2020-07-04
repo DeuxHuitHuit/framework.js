@@ -133,8 +133,6 @@
 	var resolvePageAction = function (key, data) {
 		if (!!currentPage) {
 			return App.actions.resolve(currentPage.actions, key, data);
-		} else {
-			App.log({ args: 'Can not notify page: No current page set.', fx: 'error' });
 		}
 	};
 
