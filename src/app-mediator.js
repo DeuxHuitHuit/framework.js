@@ -339,199 +339,170 @@
 		 * @param {String} textStatus Current request status
 		 * @param {Object} jqXHR request instance
 		 */
-		const loadSuccess = function (data, textStatus, jqXHR) {
-			const htmldata = safeParseData(data);
+		const loadSuccess = function (response) {
+			return response.text().then((data) => {
+				const htmldata = safeParseData(data);
 
-			// get the node
-			let node = htmldata.querySelector(nextPage.key());
+				// get the node
+				let node = htmldata.querySelector(nextPage.key());
 
-			// get the root node
-			const elem = document.querySelector(App.root());
+				// get the root node
+				const elem = document.querySelector(App.root());
 
-			// Check for redirects
-			const responseUrl = htmldata.querySelector(App.root() + ' > [data-response-url]')
-				.getAttribute('data-response-url');
+				// Check for redirects
+				const responseUrl = htmldata.querySelector(App.root() + ' > [data-response-url]')
+					.getAttribute('data-response-url');
 
-			if (!!responseUrl && responseUrl !== obj.split('#')[0]) {
+				if (!!responseUrl && responseUrl !== obj.split('#')[0]) {
 
-				const redirectedPage = nextPage;
+					const redirectedPage = nextPage;
 
-				// Find the right page
-				nextPage = App.pages.getPageForRoute(responseUrl);
+					// Find the right page
+					nextPage = App.pages.getPageForRoute(responseUrl);
 
-				/**
-				 * Offer a bail out door
-				 * @event App#pages:redirected
-				 * @type {Object}
-				 * @property {String} route Url
-				 * @property {String} requestedRoute Url
-				 * @property {Object} nextPage PageObject
-				 * @property {Object} currentPage PageObject
-				 * @property {Object} redirectedPage PageObject
-				 */
-				App.modules.notify('pages.redirected', {
-					currentPage: currentPage,
-					nextPage: nextPage,
-					redirectedPage: redirectedPage,
-					requestedRoute: route,
-					responseRoute: responseUrl
-				});
-
-				/**
-				 * Cancel current transition
-				 * @event App#pages:requestCancelPageTransition
-				 * @type {Object}
-				 * @property {String} route Url
-				 * @property {Object} nextPage PageObject
-				 * @property {Object} currentPage PageObject
-				 */
-				App.modules.notify('pages.requestCancelPageTransition', {
-					currentPage: currentPage,
-					nextPage: nextPage,
-					route: route
-				});
-
-				if (!validateNextPage(nextPage)) {
 					/**
-					 * @event App#pages:routeNotFound
-					 * @type {object}
-					 * @property {String} url Url
-					 * @property {Boolean} isRedirect PageObject
-					 * @property {Object} page PageObject
+					 * Offer a bail out door
+					 * @event App#pages:redirected
+					 * @type {Object}
+					 * @property {String} route Url
+					 * @property {String} requestedRoute Url
+					 * @property {Object} nextPage PageObject
+					 * @property {Object} currentPage PageObject
+					 * @property {Object} redirectedPage PageObject
 					 */
-					App.modules.notify('pages.routeNotFound', {
-						page: currentPage,
-						url: obj,
-						isRedirect: true
+					App.modules.notify('pages.redirected', {
+						currentPage: currentPage,
+						nextPage: nextPage,
+						redirectedPage: redirectedPage,
+						requestedRoute: route,
+						responseRoute: responseUrl
 					});
-					App.log({ args: ['Redirected route "%s" was not found.', obj], fx: 'error' });
-					return;
-				} else {
-					node = htmldata.querySelector(nextPage.key());
-					if (nextPage === currentPage) {
+
+					/**
+					 * Cancel current transition
+					 * @event App#pages:requestCancelPageTransition
+					 * @type {Object}
+					 * @property {String} route Url
+					 * @property {Object} nextPage PageObject
+					 * @property {Object} currentPage PageObject
+					 */
+					App.modules.notify('pages.requestCancelPageTransition', {
+						currentPage: currentPage,
+						nextPage: nextPage,
+						route: route
+					});
+
+					if (!validateNextPage(nextPage)) {
 						/**
-						 * @event App#pages:navigateToCurrent
+						 * @event App#pages:routeNotFound
 						 * @type {object}
 						 * @property {String} url Url
 						 * @property {Boolean} isRedirect PageObject
 						 * @property {Object} page PageObject
 						 */
-						App.modules.notify('pages.navigateToCurrent', {
-							page: nextPage,
-							route: route,
+						App.modules.notify('pages.routeNotFound', {
+							page: currentPage,
+							url: obj,
 							isRedirect: true
 						});
-						App.log('Redirected next page is the current one');
+						App.log({ args: ['Redirected route "%s" was not found.', obj], fx: 'error' });
+						return;
 					} else {
-						/**
-						 * Start new transition
-						 * @event App#pages:requestBeginPageTransition
-						 * @type {object}
-						 * @property {String} route Url
-						 * @property {Boolean} isRedirect PageObject
-						 * @property {Object} nextPage PageObject
-						 * @property {Object} currentPage PageObject
-						 */
-						App.modules.notify('pages.requestBeginPageTransition', {
-							currentPage: currentPage,
-							nextPage: nextPage,
-							route: responseUrl,
-							isRedirect: true
-						});
+						node = htmldata.querySelector(nextPage.key());
+						if (nextPage === currentPage) {
+							/**
+							 * @event App#pages:navigateToCurrent
+							 * @type {object}
+							 * @property {String} url Url
+							 * @property {Boolean} isRedirect PageObject
+							 * @property {Object} page PageObject
+							 */
+							App.modules.notify('pages.navigateToCurrent', {
+								page: nextPage,
+								route: route,
+								isRedirect: true
+							});
+							App.log('Redirected next page is the current one');
+						} else {
+							/**
+							 * Start new transition
+							 * @event App#pages:requestBeginPageTransition
+							 * @type {object}
+							 * @property {String} route Url
+							 * @property {Boolean} isRedirect PageObject
+							 * @property {Object} nextPage PageObject
+							 * @property {Object} currentPage PageObject
+							 */
+							App.modules.notify('pages.requestBeginPageTransition', {
+								currentPage: currentPage,
+								nextPage: nextPage,
+								route: responseUrl,
+								isRedirect: true
+							});
 
+						}
 					}
 				}
-			}
 
-			if (!node) {
-				App.log({
-					args: ['Could not find "%s" in xhr data.', nextPage.key()],
-					fx: 'error'
-				});
+				if (!node) {
+					App.log({
+						args: ['Could not find "%s" in xhr data.', nextPage.key()],
+						fx: 'error'
+					});
 
-				// free the mediator
-				mediatorIsLoadingPage = false;
+					// free the mediator
+					mediatorIsLoadingPage = false;
 
-				/**
-				 * @event App#pages:notfound
-				 * @type {Object}
-				 * @property {String} data Loaded raw content
-				 * @property {String} url request url
-				 * @property {Object} xhr Request object instence
-				 * @property {String} status Status of the request
-				 */
-				App.modules.notify('pages.notfound', {
-					data: data,
-					url: obj,
-					xhr: jqXHR,
-					status: textStatus
-				});
+					/**
+					 * @event App#pages:notfound
+					 * @type {Object}
+					 * @property {String} data Loaded raw content
+					 * @property {String} url request url
+					 * @property {Object} response Response object instence
+					 * @property {Int} status HTTP code for the response
+					 */
+					App.modules.notify('pages.notfound', {
+						data: data,
+						url: obj,
+						response: response,
+						status: response.status,
+					});
 
-			} else {
-				// append it to the doc, hidden
-				node.style.opacity = 0;
-				elem.appendChild(node);
+				} else {
+					// append it to the doc, hidden
+					node.style.opacity = 0;
+					elem.appendChild(node);
 
-				// init page
-				nextPage.init();
-				nextPage.setInited();
-				
-				node.style.display = 'none';
+					// init page
+					nextPage.init();
+					nextPage.setInited();
+					
+					node.style.display = 'none';
 
-				/**
-				 * @event App#pages:loaded
-				 * @type {Object}
-				 * @property {element} elem Loaded content
-				 * @property {String} data Loaded raw content
-				 * @property {String} url request url
-				 * @property {Object} page PageObject
-				 * @property {element} node Page element
-				 * @property {Object} xhr Request object instence
-				 * @property {String} status Status of the request
-				 */
-				App.modules.notify('pages.loaded', {
-					elem: elem,
-					data: data,
-					url: obj,
-					page: nextPage,
-					node: node,
-					xhr: jqXHR,
-					status: textStatus
-				});
+					/**
+					 * @event App#pages:loaded
+					 * @type {Object}
+					 * @property {element} elem Loaded content
+					 * @property {String} data Loaded raw content
+					 * @property {String} url request url
+					 * @property {Object} page PageObject
+					 * @property {element} node Page element
+					 * @property {Object} response Response object instence
+					 * @property {Int} status HTTP code for the response
+					 */
+					App.modules.notify('pages.loaded', {
+						elem: elem,
+						data: data,
+						url: obj,
+						page: nextPage,
+						node: node,
+						response: response,
+						status: response.status
+					});
 
-				// actual goto
-				enterLeave();
-			}
-		};
-
-		/**
-		 * Dispatch a notify for the progress event
-		 * @name progress
-		 * @method
-		 * @memberof App
-		 * @private
-		 * @param {Event} e Request progress event
-		 */
-		const progress = function (e) {
-			const total = e.originalEvent.total;
-			const loaded = e.originalEvent.loaded;
-			const percent = total > 0 ? loaded / total : 0;
-
-			/**
-			 * @event App#pages:loadprogress
-			 * @type {Object}
-			 * @property {Object} event Request progress event
-			 * @property {String} url Request url
-			 * @property {Integer} total Total bytes
-			 * @property {Integer} loaded Total bytes loaded
-			 * @property {Integer} percent
-			 */
-			App.mediator.notify('pages.loadprogress', {
-				event: e,
-				url: obj,
-				total: total,
-				loaded: loaded,
-				percent: percent
+					// actual goto
+					enterLeave();
+				}
 			});
 		};
 
@@ -600,41 +571,17 @@
 							// of loading a new page
 							mediatorIsLoadingPage = true;
 
-							App.loader.load({
-								url: obj, // the *actual* route
-								priority: 0, // now
-								vip: true, // don't queue on fail
-								success: loadSuccess,
-								progress: progress,
-								error: function (e) {
-									/**
-									 * @event App#pages:loaderror
-									 * @type {Object}
-									 * @property {Object} event Request event
-									 * @property {String} url Request url
-									 */
-									App.modules.notify('pages.loaderror', {
-										event: e,
-										url: obj
-									});
-								},
-								giveup: function (e) {
-									// Free the mediator
-									mediatorIsLoadingPage = false;
-
-									App.log({ args: 'Giving up!', me: 'Loader', fx: 'error' });
-
-									/**
-									 * @event App#pages:loadfatalerror
-									 * @type {Object}
-									 * @property {Object} event Request event
-									 * @property {String} url Request url
-									 */
-									App.modules.notify('pages.loadfatalerror', {
-										event: e,
-										url: obj
-									});
-								}
+							App.loader.load(obj).then(loadSuccess).catch((event) => {
+								/**
+								 * @event App#pages:loaderror
+								 * @type {Object}
+								 * @property {Object} event Request event
+								 * @property {String} url Request url
+								 */
+								App.modules.notify('pages.loaderror', {
+									event: event,
+									url: obj
+								});
 							});
 						} else {
 							enterLeave();

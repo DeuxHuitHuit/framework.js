@@ -83,6 +83,28 @@ module.exports = function fxGruntConfig (grunt) {
 				file: BUILD_FILE
 			}
 		},
+		babel: {
+			options: {
+				sourceMap: false,
+				presets: [[
+					'@babel/preset-env',
+					{
+						modules: false,
+						targets: {
+							ie: 11
+						}
+					}
+				]],
+				minified: true,
+				comments: false,
+				plugins: []
+			},
+			dist: {
+				files: {
+					'dist/<%= pkg.name %>.min.js': 'dist/<%= pkg.name %>.js'
+				}
+			}
+		},
 		meta: {
 			banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %>' +
 			' - <%= meta.revision %> - build <%= buildnum.num %> - ' +
@@ -308,7 +330,7 @@ module.exports = function fxGruntConfig (grunt) {
 			'buildnum',
 			'revision',
 			'concat',
-			'uglify',
+			'babel',
 			'fix-source-map'
 		]);
 		grunt.registerTask('doc', ['clean:doc','jsdoc']);
