@@ -104,11 +104,7 @@
 			const routes = function () {
 				return pageData.routes;
 			};
-			
-			const loaded = function () {
-				return !!document.querySelector(getKey());
-			};
-			
+
 			// recuperate extra params...
 			const data = function () {
 				return pageData;
@@ -117,7 +113,6 @@
 			// insure this can't be overridden
 			const overwrites = Object.freeze({
 				key: getKey, // css selector
-				loaded: loaded,
 				routes: routes,
 				data: data,
 				isInited: function () {
@@ -372,8 +367,17 @@
 				return p;
 			}
 		}
-		return null;
+		return pageInstances.default || null;
 	};
+
+	const loaded = (url) => {
+		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
+	};
+
+	(() => {
+		registerPageModel('default', createPageModel('default', {}, true), {});
+		createPage({routes: ['*']}, 'default', true);
+	})();
 
 	/** Public Interfaces **/
 	global.App = Object.assign({}, global.App, {
@@ -486,7 +490,19 @@
 			 * @return {pageModel}
 			 * @public
 			 */
-			exports: exportPage
+			exports: exportPage,
+
+			/**
+			 * Check if the page is loaded from a given url
+			 * @name exports
+			 * @memberof pages
+			 * @method
+			 * @param {String} url the url to check
+			 * @return {Boolean}
+			 * @public
+			 * @since 3.0.0
+			 */
+			loaded: loaded
 		}
 	});
 	

@@ -566,7 +566,7 @@
 						});
 
 						// Load from xhr or use cache copy
-						if (!nextPage.loaded()) {
+						if (!App.pages.loaded(obj)) {
 							// Raise the flag to mark we are in the process
 							// of loading a new page
 							mediatorIsLoadingPage = true;

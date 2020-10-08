@@ -39,7 +39,7 @@
 		
 		// init each Page already loaded
 		Object.values(App.pages.instances()).forEach(function initPage (page) {
-			if (!!page.loaded()) {
+			if (!!App.pages.loaded(window.location.href)) {
 				// init page
 				page.init({firstTime: true});
 				page.setInited();

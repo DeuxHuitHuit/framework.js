@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.0 - 3d28f95 - build 177 - 2020-10-08
+/*! framework.js - v3.0.0 - a81f331 - build 183 - 2020-10-08
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -1894,7 +1894,7 @@
 						});
 
 						// Load from xhr or use cache copy
-						if (!nextPage.loaded()) {
+						if (!App.pages.loaded(obj)) {
 							// Raise the flag to mark we are in the process
 							// of loading a new page
 							mediatorIsLoadingPage = true;
@@ -2451,11 +2451,7 @@
 			const routes = function () {
 				return pageData.routes;
 			};
-			
-			const loaded = function () {
-				return !!document.querySelector(getKey());
-			};
-			
+
 			// recuperate extra params...
 			const data = function () {
 				return pageData;
@@ -2464,7 +2460,6 @@
 			// insure this can't be overridden
 			const overwrites = Object.freeze({
 				key: getKey, // css selector
-				loaded: loaded,
 				routes: routes,
 				data: data,
 				isInited: function () {
@@ -2719,8 +2714,17 @@
 				return p;
 			}
 		}
-		return null;
+		return pageInstances.default || null;
 	};
+
+	const loaded = (url) => {
+		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
+	};
+
+	(() => {
+		registerPageModel('default', createPageModel('default', {}, true), {});
+		createPage({key: 'default', routes: ['*']}, 'default', true);
+	})();
 
 	/** Public Interfaces **/
 	global.App = Object.assign({}, global.App, {
@@ -2833,7 +2837,19 @@
 			 * @return {pageModel}
 			 * @public
 			 */
-			exports: exportPage
+			exports: exportPage,
+
+			/**
+			 * Check if the page is loaded from a given url
+			 * @name exports
+			 * @memberof pages
+			 * @method
+			 * @param {String} url the url to check
+			 * @return {Boolean}
+			 * @public
+			 * @since 3.0.0
+			 */
+			loaded: loaded
 		}
 	});
 	
@@ -3178,7 +3194,7 @@
 		
 		// init each Page already loaded
 		Object.values(App.pages.instances()).forEach(function initPage (page) {
-			if (!!page.loaded()) {
+			if (!!App.pages.loaded(window.location.href)) {
 				// init page
 				page.init({firstTime: true});
 				page.setInited();
