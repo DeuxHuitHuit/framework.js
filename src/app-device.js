@@ -21,7 +21,7 @@
 	 * @returns {Object} accessible functions
 	 * @private
 	 */
-	var browserDetector = (function () {
+	const browserDetector = (function () {
 
 		/**
 		 * Get the user agent
@@ -32,7 +32,7 @@
 		 * @returns {String} user agent
 		 * @private
 		 */
-		var getUserAgent = function (userAgent) {
+		const getUserAgent = function (userAgent) {
 			if (!userAgent) {
 				return window.navigator.userAgent;
 			}
@@ -49,12 +49,12 @@
 		 * @returns {Boolean} if the test passed or not
 		 * @private
 		 */
-		var testUserAgent = function (regexp, userAgent) {
+		const testUserAgent = function (regexp, userAgent) {
 			userAgent = getUserAgent(userAgent);
 			return regexp.test(userAgent);
 		};
 		
-		var detector = {
+		const detector = {
 		
 			/**
 			 * Check if the device is a mobile one and not an iPhone

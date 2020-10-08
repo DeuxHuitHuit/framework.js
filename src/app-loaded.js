@@ -25,12 +25,12 @@
 	 * @param {Integer} counter Memo for the recursive function
 	 * @private
 	 */
-	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
+	const loaded = function (v, fx, delay, maxRetriesCount, counter) {
 		delay = Math.max(delay || 0, 100);
 		maxRetriesCount = maxRetriesCount || 10;
 		counter = counter || 1;
 		// get the value
-		var value = App.callback(v, [counter]);
+		const value = App.callback(v, [counter]);
 		// if the value exists
 		if (!!value) {
 			// call the function, with the value, but always async

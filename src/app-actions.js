@@ -10,9 +10,9 @@
  */
 (function (global, undefined) {
 	'use strict';
-	var keys = {};
-	var innerCall = false;
-	var stack = [];
+	const keys = {};
+	let innerCall = false;
+	let stack = [];
 
 	/**
 	 * Find the methods that matches with the notify key
@@ -24,16 +24,16 @@
 	 * @returns {Function} The function corresponding to the key, if it exists in actions object
 	 * @private
 	 */
-	var resolve = function (actions, key) {
+	const resolve = function (actions, key) {
 		if (typeof actions === 'function') {
 			actions = actions();
 		}
 		if (!!actions) {
 			// Try the whole key
-			var tempFx = actions[key];
+			let tempFx = actions[key];
 			// If not, try JSONPath style...
 			if (typeof tempFx !== 'function') {
-				var paths = keys[key] || key.split('.');
+				const paths = keys[key] || key.split('.');
 				if (paths.length < 2) {
 					return;
 				}
@@ -64,15 +64,15 @@
 	 * @returns {undefined}
 	 * @private
 	 */
-	var execute = function (actions, key, data, cb) {
-		var sp = 0;
-		var outerCall = false;
-		var read = function (f) {
+	const execute = function (actions, key, data, cb) {
+		let sp = 0;
+		let outerCall = false;
+		const read = function (f) {
 			if (typeof f.read === 'function') {
 				f.read(key, data);
 			}
 		};
-		var write = function (f) {
+		const write = function (f) {
 			f.write(key, data);
 		};
 		if (!innerCall) {
@@ -88,7 +88,7 @@
 		}
 		// Push all resolved actions to the stack
 		actions.forEach(function eachAction (a, index) {
-			var retValue = App.callback(a, [key, data]);
+			let retValue = App.callback(a, [key, data]);
 			if (!!cb && retValue !== undefined) {
 				App.callback(cb, [index, retValue]);
 			}
@@ -108,12 +108,12 @@
 		// If outerCall, empty the stack
 		while (outerCall && stack.length > sp) {
 			// Capture current end
-			var sLen = stack.length;
+			const sLen = stack.length;
 			// Process current range only
-			for (var x = sp; x < sLen; x++) {
+			for (let x = sp; x < sLen; x++) {
 				read(stack[x]);
 			}
-			for (x = sp; x < sLen; x++) {
+			for (let x = sp; x < sLen; x++) {
 				write(stack[x]);
 			}
 			// Advance the stack pointer

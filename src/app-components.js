@@ -14,7 +14,7 @@
 	'use strict';
 	
 	/** Components **/
-	var components = {};
+	const components = {};
 
 	/**
 	 * Create a default model of a component with an init function
@@ -24,7 +24,7 @@
 	 * @private
 	 * @return {Object}
 	 */
-	var createAbstractComponent = function () {
+	const createAbstractComponent = function () {
 		return {
 			init: () => {}
 		};
@@ -40,7 +40,7 @@
 	 * @return {Object} component
 	 * @private
 	 */
-	var extendComponent = function (component) {
+	const extendComponent = function (component) {
 		return Object.assign({}, createAbstractComponent(), component);
 	};
 
@@ -55,7 +55,7 @@
 	 * @param {Boolean} override fake news
 	 * @private
 	 */
-	var exportComponent = function (key, component, override) {
+	const exportComponent = function (key, component, override) {
 		if (typeof key !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		} else if (!!components[key] && !override) {
@@ -77,13 +77,13 @@
 	 * @return {Object} Merged component with the default model and the actual component code
 	 * @private
 	 */
-	var createComponent = function (key, options) {
+	const createComponent = function (key, options) {
 		if (!components[key]) {
 			App.log({args: ['Component %s is not found', key], fx: 'error'});
 			return Object.freeze(extendComponent({}));
 		}
 		
-		var c = components[key];
+		const c = components[key];
 		
 		if (typeof c !== 'function') {
 			App.log({args: ['Component %s is not a function', key], fx: 'error'});

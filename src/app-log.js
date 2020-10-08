@@ -22,14 +22,14 @@
 	 * @returns {Object} Formated object
 	 * @private
 	 */
-	var argsToObject = function (arg) {
+	const argsToObject = function (arg) {
 		// ensure that args is an array
 		if (!!arg.args && !Array.isArray(arg.args)) {
 			arg.args = [arg.args];
 		}
 
 		// our copy
-		var a = {
+		const a = {
 			args: arg.args || arguments,
 			fx: arg.fx || 'warn',
 			me: arg.me || 'App'
@@ -43,7 +43,7 @@
 		return a;
 	};
 
-	var logs = [];
+	const logs = [];
 
 	/**
 	 * Log the received data with the appropriate effect (log, error, info...)
@@ -53,13 +53,13 @@
 	 * @param {String|Object|Array} arg The value or values to log
 	 * @private
 	 */
-	var log = function (arg) {
+	const log = function (arg) {
 		// no args, exit
 		if (!arg) {
 			return this;
 		}
 
-		var a = argsToObject(arg);
+		const a = argsToObject(arg);
 
 		if (App.debug()) {
 			// make sure fx exists

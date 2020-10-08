@@ -14,7 +14,7 @@
 	'use strict';
 	
 	/** Debug **/
-	var isDebugging = false;
+	let isDebugging = false;
 	
 	/**
 	 * Set or get the debug flag for the App
@@ -24,7 +24,7 @@
 	 * @param {Boolean=} value
 	 * @private
 	 */
-	var debug = function (value) {
+	const debug = function (value) {
 		if (value === true || value === false) {
 			isDebugging = value;
 		} else if (value === '!') {

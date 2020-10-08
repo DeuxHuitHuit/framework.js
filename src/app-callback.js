@@ -22,12 +22,12 @@
 	 * @return {Array}
 	 * @private
 	 */
-	var argsToArray = function (args) {
-		var isNull = (args === null);
-		var isNotUndefined = (args !== undefined);
-		var isNotAnArray = !Array.isArray(args);
-		var noLength = !!args && !isNaN(args.length);
-		var isString = typeof args === 'string';
+	const argsToArray = function (args) {
+		const isNull = (args === null);
+		const isNotUndefined = (args !== undefined);
+		const isNotAnArray = !Array.isArray(args);
+		const noLength = !!args && !isNaN(args.length);
+		const isString = typeof args === 'string';
 
 		if (isNull || (isNotUndefined && isNotAnArray && (noLength || isString))) {
 			// put single parameter inside an array
@@ -48,7 +48,7 @@
 	 * @return {*}
 	 * @private
 	 */
-	var callback = function (fx, args) {
+	const callback = function (fx, args) {
 		try {
 			args = argsToArray(args);
 			
@@ -60,8 +60,8 @@
 				return fx;
 			}
 		} catch (err) {
-			var stack = err.stack;
-			var msg = (err.message || err) + '\n' + (stack || '');
+			const stack = err.stack;
+			const msg = (err.message || err) + '\n' + (stack || '');
 			
 			App.log({args: [msg, err], fx: 'error'});
 		}
