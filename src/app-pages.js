@@ -10,11 +10,11 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
-	var pageModels = {};
-	var pageInstances = {};
+	const pageModels = {};
+	const pageInstances = {};
 
 	/**
 	 * Creates and a new factory function based on the
@@ -30,12 +30,12 @@
 	 * @returns {pageModel} The newly built factory function
 	 * @private
 	 */
-	var createPageModel = function (key, model, override) {
-		var ftrue = function () {
+	const createPageModel = function (key, model, override) {
+		const ftrue = function () {
 			return true;
 		};
 		
-		var enterLeave = function (next) {
+		const enterLeave = function (next) {
 			App.callback(next);
 		};
 
@@ -50,9 +50,9 @@
 		 * @param {Function} canEnter @returns {boolean}
 		 * @param {Function} canLeave @returns {boolean}
 		 */
-		var base = {
-			actions: $.noop,
-			init: $.noop,
+		const base = {
+			actions: () => {},
+			init: () => {},
 			enter: enterLeave,
 			leave: enterLeave,
 			canEnter: ftrue,
@@ -68,19 +68,19 @@
 		 * @returns page
 		 * @private
 		 */
-		var factory = function (pageData) {
-			var modelRef;
-			var isInited = false;
+		const factory = function (pageData) {
+			let modelRef;
+			let isInited = false;
 			
-			if ($.isPlainObject(model)) {
+			if (typeof model === 'object') {
 				modelRef = model;
-			} else if ($.isFunction(model)) {
+			} else if (typeof model === 'function') {
 				modelRef = model.call(this, key, pageData, override);
-				if (!$.isPlainObject(modelRef)) {
+				if (typeof modelRef !== 'object') {
 					App.log({
 						args: [
 							'The exported page model function must return an object, ' +
-							'`%s` given (%s)', $.type(modelRef), modelRef
+							'`%s` given (%s)', typeof modelRef, modelRef
 						],
 						fx: 'error'
 					});
@@ -90,32 +90,32 @@
 				App.log({
 					args: [
 						'The exported page model must be an object or a function, ' +
-						'`%s` given (%s)', $.type(model), model
+						'`%s` given (%s)', typeof model, model
 					],
 					fx: 'error'
 				});
 				return null;
 			}
 			
-			var getKey = function () {
+			const getKey = function () {
 				return pageData.key;
 			};
 			
-			var routes = function () {
+			const routes = function () {
 				return pageData.routes;
 			};
 			
-			var loaded = function () {
-				return !!$(getKey()).length;
+			const loaded = function () {
+				return !!document.querySelector(getKey());
 			};
 			
 			// recuperate extra params...
-			var data = function () {
+			const data = function () {
 				return pageData;
 			};
 			
 			// insure this can't be overridden
-			var overwrites = Object.freeze({
+			const overwrites = Object.freeze({
 				key: getKey, // css selector
 				loaded: loaded,
 				routes: routes,
@@ -129,7 +129,7 @@
 			});
 			
 			// New deep copy frozen object
-			return Object.freeze($.extend(true, {}, base, modelRef, overwrites));
+			return Object.freeze(Object.assign({}, base, modelRef, overwrites));
 		};
 		
 		return factory;
@@ -146,10 +146,10 @@
 	 * @returns {?page} Null if something goes wrong
 	 * @private
 	 */
-	var createPage = function (pageData, keyModel, override) {
+	const createPage = function (pageData, keyModel, override) {
 		//Find the page model associated
-		var pageModel = pageModels[keyModel];
-		var pageInst;
+		const pageModel = pageModels[keyModel];
+		let pageInst;
 		
 		if (!pageModel) {
 			App.log({args: ['Model `%s` not found', keyModel], fx: 'error'});
@@ -183,8 +183,8 @@
 	 * @returns {pageModel}
 	 * @private
 	 */
-	var registerPageModel = function (key, pageModel, override) {
-		var keyType = $.type(key);
+	const registerPageModel = function (key, pageModel, override) {
+		const keyType = typeof key;
 		if (keyType !== 'string') {
 			App.log({
 				args: ['`key` must be a string, `%s` given (%s).', keyType, key],
@@ -220,9 +220,9 @@
 	 * @return {pageModel}
 	 * @private
 	 */
-	var exportPage = function (key, model, override) {
+	const exportPage = function (key, model, override) {
 		// Pass all args to the factory
-		var pageModel = createPageModel(key, model, override);
+		const pageModel = createPageModel(key, model, override);
 		// Only work with pageModel afterwards
 		return registerPageModel(key, pageModel, override);
 	};
@@ -235,8 +235,8 @@
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var validateRoute = function (route) {
-		var result = false;
+	const validateRoute = function (route) {
+		let result = false;
 		
 		if (!route) {
 			App.log({args: 'No route set.', fx: 'error'});
@@ -247,7 +247,7 @@
 		return result;
 	};
 	
-	var routeMatchStrategies = {
+	const routeMatchStrategies = {
 		regexp: function (testRoute, route, cb) {
 			if (testRoute.test(route)) {
 				return cb();
@@ -255,7 +255,7 @@
 			return true;
 		},
 		string: function (testRoute, route, cb) {
-			var regex;
+			let regex;
 			// be sure to escape uri
 			route = decodeURIComponent(route);
 			
@@ -312,14 +312,14 @@
 	 * @returns {Integer} The index of the matched route or -1 if no match
 	 * @private
 	 */
-	var matchRoute = function (route, routes) {
-		var index = -1;
-		var found = function (i) {
+	const matchRoute = function (route, routes) {
+		let index = -1;
+		const found = function (i) {
 			index = i;
 			return false; // exit every
 		};
 		
-		if ($.type(route) !== 'string') {
+		if (typeof route !== 'string') {
 			App.log({args: '`route` must be a string', fx: 'error'});
 			return index;
 		}
@@ -333,13 +333,13 @@
 				routes = Object.values(routes);
 			}
 			routes.every(function matchOneRoute (testRoute, i) {
-				var routeType = $.type(testRoute);
-				var routeStrategy = routeMatchStrategies[routeType];
-				var cb = function () {
+				const routeType = typeof testRoute;
+				const routeStrategy = routeMatchStrategies[routeType];
+				const cb = function () {
 					return found(i);
 				};
 				
-				if ($.isFunction(routeStrategy)) {
+				if (typeof routeStrategy === 'function') {
 					return routeStrategy(testRoute, route, cb);
 				} else if (testRoute === route) {
 					return cb();
@@ -361,10 +361,10 @@
 	 * @returns {?page} The page object or null if not found
 	 * @private
 	 */
-	var getPageForRoute = function (route) {
+	const getPageForRoute = function (route) {
 		if (validateRoute(route)) {
-			var p = Object.values(pageInstances).find(function walkPage (page) {
-				var routes = page.routes();
+			const p = Object.values(pageInstances).find(function walkPage (page) {
+				const routes = page.routes();
 				// route found ?
 				return !!~matchRoute(route, routes);
 			});
@@ -376,7 +376,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		pages: {
 			/**
 			 * @name matchRoute
@@ -446,7 +446,7 @@
 			 */
 			page: function (keyOrRoute) {
 				//Try to get the page by the key
-				var result = pageInstances[keyOrRoute];
+				let result = pageInstances[keyOrRoute];
 				
 				//if no result found try with the route
 				if (!!!result) {
@@ -490,4 +490,4 @@
 		}
 	});
 	
-})(jQuery, window);
+})(window);

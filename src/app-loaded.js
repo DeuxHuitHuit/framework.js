@@ -10,7 +10,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
 	/**
@@ -49,7 +49,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * Check if a ressource is loaded and callback when it is.
 		 * @name this
@@ -65,4 +65,4 @@
 		loaded: loaded
 	});
 
-})(jQuery, window);
+})(window);

@@ -6,10 +6,9 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App.mediator
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
 	/**
@@ -20,22 +19,22 @@
 	 * @returns {String} The url
 	 * @private
 	 */
-	var getCurrentUrl = function () {
+	const getCurrentUrl = function () {
 		return document.location.href.substring(
 			document.location.protocol.length + 2 + document.location.host.length
 		);
 	};
 
 	/** Mediator **/
-	var mediatorIsLoadingPage = false;
-	var currentRouteUrl = getCurrentUrl();
+	let mediatorIsLoadingPage = false;
+	const currentRouteUrl = getCurrentUrl();
 
 	//Store ref to the current page object
-	var currentPage = null;
+	let currentPage = null;
 
 	//Store ref to the previous page object
-	var previousPage = null;
-	var previousUrl = '';
+	let previousPage = null;
+	let previousUrl = '';
 
 	/**
 	 * Check if the mediator is loading a page
@@ -45,7 +44,7 @@
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var validateMediatorState = function () {
+	const validateMediatorState = function () {
 		if (mediatorIsLoadingPage) {
 			App.log({
 				args: 'Mediator is busy waiting for a page load.',
@@ -65,8 +64,8 @@
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var validateNextPage = function (nextPage) {
-		var result = true;
+	const validateNextPage = function (nextPage) {
+		let result = true;
 
 		if (!nextPage) {
 			result = false;
@@ -84,8 +83,8 @@
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var canEnterNextPage = function (nextPage) {
-		var result = true;
+	const canEnterNextPage = function (nextPage) {
+		let result = true;
 
 		if (!nextPage.canEnter()) {
 			App.log({ fx: 'error', args: ['Cannot enter page %s.', nextPage.key()] });
@@ -103,8 +102,8 @@
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var canLeaveCurrentPage = function () {
-		var result = false;
+	const canLeaveCurrentPage = function () {
+		let result = false;
 
 		if (!currentPage) {
 			App.log({ args: 'No current page set.', fx: 'error' });
@@ -130,7 +129,7 @@
 	 * @returns {Object} A read/write object, if it exists
 	 * @private
 	 */
-	var resolvePageAction = function (key, data) {
+	const resolvePageAction = function (key, data) {
 		if (!!currentPage) {
 			return App.actions.resolve(currentPage.actions, key, data);
 		} else {
@@ -151,10 +150,10 @@
 	 * @see AER in http://addyosmani.com/largescalejavascript/
 	 * @private
 	 */
-	var notifyAll = function (key, data, cb) {
-		var actions = [];
+	const notifyAll = function (key, data, cb) {
+		let actions = [];
 		// resolve action from current page only
-		var pa = resolvePageAction(key, data);
+		const pa = resolvePageAction(key, data);
 		if (!!pa) {
 			actions.push(pa);
 		}
@@ -176,8 +175,8 @@
 	 * @this Mediator
 	 * @returns this
 	 */
-	var notifyPage = function (key, data, cb) {
-		var pa = resolvePageAction(key, data);
+	const notifyPage = function (key, data, cb) {
+		const pa = resolvePageAction(key, data);
 		if (!!pa) {
 			App.actions.execute([pa], key, data, cb);
 		}
@@ -209,18 +208,18 @@
 	 * @this App
 	 * @private
 	 */
-	var gotoPage = function (obj, previousPoppedUrl) {
-		var nextPage;
-		var route = '';
+	const gotoPage = function (obj, previousPoppedUrl) {
+		let nextPage;
+		let route = '';
 
 		/**
-		 * Try to parse the data in jQuery to be sure it's valid
+		 * Try to parse the data in a virtual element to be sure it's valid
 		 * @param {String} data response data
-		 * @returns {jQuery}
+		 * @returns {element}
 		 */
-		var safeParseData = function (data) {
+		const safeParseData = function (data) {
 			try {
-				return $(data);
+				return document.createElement(data);
 			}
 			catch (ex) {
 				App.log({ args: [ex.message], fx: 'error' });
@@ -239,21 +238,21 @@
 					currentPage: currentPage
 				});
 			}
-			return $();
+			return null;
 		};
 
 		/**
 		 * Initiate the transition and leave/enter page logic
 		 */
-		var enterLeave = function () {
+		const enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable
 			//The currentPage pointer will be cleared after the next call
-			var leavingPage = currentPage;
+			let leavingPage = currentPage;
 
 			/**
 			 * Block all interaction with the framework and notify the page leave
 			 */
-			var leaveCurrent = function () {
+			const leaveCurrent = function () {
 				currentPage = null; // clean currentPage pointer,this will block all interactions
 
 				//set leaving page to be previous one
@@ -273,7 +272,7 @@
 			/**
 			 * Set the current page to the new one
 			 */
-			var enterNext = function () {
+			const enterNext = function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
 
@@ -287,7 +286,7 @@
 				mediatorIsLoadingPage = false;
 			};
 
-			var pageTransitionData = {
+			const pageTransitionData = {
 				currentPage: currentPage,
 				nextPage: nextPage,
 				leaveCurrent: leaveCurrent,
@@ -340,22 +339,22 @@
 		 * @param {String} textStatus Current request status
 		 * @param {Object} jqXHR request instance
 		 */
-		var loadSuccess = function (data, textStatus, jqXHR) {
-			var htmldata = safeParseData(data);
+		const loadSuccess = function (data, textStatus, jqXHR) {
+			const htmldata = safeParseData(data);
 
 			// get the node
-			var node = htmldata.find(nextPage.key());
+			let node = htmldata.querySelector(nextPage.key());
 
 			// get the root node
-			var elem = $(App.root());
+			const elem = document.querySelector(App.root());
 
 			// Check for redirects
-			var responseUrl = htmldata.find(App.root() + ' > [data-response-url]')
-				.attr('data-response-url');
+			const responseUrl = htmldata.querySelector(App.root() + ' > [data-response-url]')
+				.getAttribute('data-response-url');
 
-			if (!!responseUrl && responseUrl != obj.split('#')[0]) {
+			if (!!responseUrl && responseUrl !== obj.split('#')[0]) {
 
-				var redirectedPage = nextPage;
+				const redirectedPage = nextPage;
 
 				// Find the right page
 				nextPage = App.pages.getPageForRoute(responseUrl);
@@ -408,7 +407,7 @@
 					App.log({ args: ['Redirected route "%s" was not found.', obj], fx: 'error' });
 					return;
 				} else {
-					node = htmldata.find(nextPage.key());
+					node = htmldata.querySelector(nextPage.key());
 					if (nextPage === currentPage) {
 						/**
 						 * @event App#pages:navigateToCurrent
@@ -444,7 +443,7 @@
 				}
 			}
 
-			if (!node.length) {
+			if (!node) {
 				App.log({
 					args: ['Could not find "%s" in xhr data.', nextPage.key()],
 					fx: 'error'
@@ -470,13 +469,14 @@
 
 			} else {
 				// append it to the doc, hidden
-				elem.append(node.css({ opacity: 0 }));
+				node.style.opacity = 0;
+				elem.appendChild(node);
 
 				// init page
 				nextPage.init();
 				nextPage.setInited();
-
-				node.hide();
+				
+				node.style.display = 'none';
 
 				/**
 				 * @event App#pages:loaded
@@ -512,10 +512,10 @@
 		 * @private
 		 * @param {Event} e Request progress event
 		 */
-		var progress = function (e) {
-			var total = e.originalEvent.total;
-			var loaded = e.originalEvent.loaded;
-			var percent = total > 0 ? loaded / total : 0;
+		const progress = function (e) {
+			const total = e.originalEvent.total;
+			const loaded = e.originalEvent.loaded;
+			const percent = total > 0 ? loaded / total : 0;
 
 			/**
 			 * @event App#pages:loadprogress
@@ -536,7 +536,7 @@
 		};
 
 		if (validateMediatorState() && canLeaveCurrentPage()) {
-			if ($.type(obj) === 'string') {
+			if (typeof obj === 'string') {
 				nextPage = App.pages.getPageForRoute(obj);
 				route = obj;
 			} else {
@@ -647,7 +647,7 @@
 							 * @property {String} url Request url
 							 */
 							App.modules.notify('pages.loaded', {
-								elem: $(App.root()),
+								elem: document.querySelector(App.root()),
 								url: obj,
 								page: nextPage
 							});
@@ -673,10 +673,10 @@
 	 * @param {String} fallback Url used for as a fallback
 	 * @private
 	 */
-	var togglePage = function (route, fallback) {
+	const togglePage = function (route, fallback) {
 		if (!!currentPage && validateMediatorState()) {
-			var
-				nextPage = App.pages.getPageForRoute(route);
+
+			const nextPage = App.pages.getPageForRoute(route);
 
 			if (validateNextPage(nextPage) && canEnterNextPage(nextPage)) {
 				if (nextPage !== currentPage) {
@@ -708,7 +708,7 @@
 	 * @fires App#page:enter
 	 * @private
 	 */
-	var initPage = function (page) {
+	const initPage = function (page) {
 		// find if this is our current page
 		// current route found ?
 		if (!!~App.pages.matchRoute(currentRouteUrl, page.routes())) {
@@ -753,7 +753,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * @namespace mediator
 		 * @memberof App
@@ -900,4 +900,4 @@
 		}
 	});
 
-})(jQuery, window);
+})(window);

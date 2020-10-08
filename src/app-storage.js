@@ -12,10 +12,10 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
-	var storage = function (storage) {
+	const storage = function (storage) {
 		return {
 
 			/**
@@ -46,7 +46,7 @@
 			 * @public
 			 */
 			set: function (key, value) {
-				var result = false;
+				let result = false;
 				if (!!key) {
 					key += ''; // make it a string
 					try {
@@ -74,7 +74,7 @@
 			 * @public
 			 */
 			remove: function (key) {
-				var result = false;
+				let result = false;
 				if (!!key) {
 					key += ''; // make it a string
 					try {
@@ -103,19 +103,19 @@
 			 * @public
 			 */
 			clear: function (regexp) {
-				var result = false;
+				let result = false;
 				try {
 					if (!regexp) {
 						storage.clear();
 					} else {
-						var remove = [];
-						for (var i = 0; i < storage.length; i++) {
-							var key = storage.key(i);
+						const remove = [];
+						for (let i = 0; i < storage.length; i++) {
+							const key = storage.key(i);
 							if (regexp.test(key)) {
 								remove.push(key);
 							}
 						}
-						for (i = 0; i < remove.length; i++) {
+						for (let i = 0; i < remove.length; i++) {
 							storage.removeItem(remove[i]);
 						}
 					}
@@ -133,7 +133,7 @@
 		};
 	};
 
-	var safeLocalStorage = function () {
+	const safeLocalStorage = function () {
 		try {
 			return storage(window.localStorage);
 		} catch (e) {
@@ -146,7 +146,7 @@
 		return storage({});
 	};
 
-	var safeSessionStorage = function () {
+	const safeSessionStorage = function () {
 		try {
 			return storage(window.sessionStorage);
 		} catch (e) {
@@ -159,7 +159,7 @@
 		return storage({});
 	};
 
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		storage: {
 
 			/**
@@ -192,4 +192,4 @@
 		}
 	});
 	
-})(jQuery, window);
+})(window);

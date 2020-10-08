@@ -10,7 +10,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/** Debug **/
@@ -34,7 +34,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		
 		/**
 		 * Set or get the debug flag for the App
@@ -47,4 +47,4 @@
 		debug: debug
 	});
 	
-})(jQuery, window);
+})(window);

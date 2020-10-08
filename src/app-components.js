@@ -10,7 +10,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/** Components **/
@@ -26,7 +26,7 @@
 	 */
 	var createAbstractComponent = function () {
 		return {
-			init: $.noop
+			init: () => {}
 		};
 	};
 
@@ -41,7 +41,7 @@
 	 * @private
 	 */
 	var extendComponent = function (component) {
-		return $.extend(createAbstractComponent(), component);
+		return Object.assign({}, createAbstractComponent(), component);
 	};
 
 	/**
@@ -56,7 +56,7 @@
 	 * @private
 	 */
 	var exportComponent = function (key, component, override) {
-		if ($.type(key) !== 'string') {
+		if (typeof key !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		} else if (!!components[key] && !override) {
 			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
@@ -85,7 +85,7 @@
 		
 		var c = components[key];
 		
-		if (!$.isFunction(c)) {
+		if (typeof c !== 'function') {
 			App.log({args: ['Component %s is not a function', key], fx: 'error'});
 			return Object.freeze(extendComponent({}));
 		}
@@ -94,7 +94,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		
 		// Components
 		components: {
@@ -140,4 +140,4 @@
 	
 	});
 	
-})(jQuery, window);
+})(window);

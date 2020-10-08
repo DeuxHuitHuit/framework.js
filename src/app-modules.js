@@ -10,11 +10,11 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/** Modules **/
-	var modules = {};
+	const modules = {};
 	
 	/**
 	 * Create a basic module with the minimum required methods
@@ -24,10 +24,10 @@
 	 * @returns {Object}
 	 * @private
 	 */
-	var createAbstractModule = function () {
+	const createAbstractModule = function () {
 		return {
-			actions: $.noop,
-			init: $.noop
+			actions: () => {},
+			init: () => {}
 		};
 	};
 	
@@ -40,8 +40,8 @@
 	 * @param {Object} module ModuleObject
 	 * @private
 	 */
-	var createModule = function (module) {
-		return Object.freeze($.extend(createAbstractModule(), module));
+	const createModule = function (module) {
+		return Object.freeze(Object.assign({}, createAbstractModule(), module));
 	};
 	
 	/**
@@ -55,8 +55,8 @@
 	 * @returns {Object} The newly created module
 	 * @private
 	 */
-	var exportModule = function (key, module, override) {
-		if ($.type(key) !== 'string') {
+	const exportModule = function (key, module, override) {
+		if (typeof key !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		} else if (!!modules[key] && !override) {
 			App.log({args: ['Overwriting module key %s is not allowed', key], fx: 'error'});
@@ -76,7 +76,7 @@
 	 * @returns {Array} Array of read/write objects for all modules
 	 * @private
 	 */
-	var resolveActions = function (key, data) {
+	const resolveActions = function (key, data) {
 		return Object.keys(modules).map(function resolveAction (k) {
 			return App.actions.resolve(modules[k].actions, key, data);
 		}).filter(function (a) {
@@ -96,14 +96,14 @@
 	 * @returns this
 	 * @private
 	 */
-	var notifyModules = function (key, data, cb) {
-		var actions = resolveActions(key, data);
+	const notifyModules = function (key, data, cb) {
+		const actions = resolveActions(key, data);
 		App.actions.execute(actions, key, data, cb);
 		return this;
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * @namespace modules
 		 * @memberof App
@@ -164,4 +164,4 @@
 	
 	});
 	
-})(jQuery, window);
+})(window);

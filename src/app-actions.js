@@ -6,10 +6,9 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App.actions
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	var keys = {};
 	var innerCall = false;
@@ -26,14 +25,14 @@
 	 * @private
 	 */
 	var resolve = function (actions, key) {
-		if ($.isFunction(actions)) {
+		if (typeof actions === 'function') {
 			actions = actions();
 		}
 		if (!!actions) {
 			// Try the whole key
 			var tempFx = actions[key];
 			// If not, try JSONPath style...
-			if (!$.isFunction(tempFx)) {
+			if (typeof tempFx !== 'function') {
 				var paths = keys[key] || key.split('.');
 				if (paths.length < 2) {
 					return;
@@ -42,13 +41,13 @@
 				tempFx = actions;
 				paths.every(function eachPath (p) {
 					tempFx = tempFx[p];
-					if (!$.isPlainObject(tempFx)) {
+					if (typeof tempFx !== 'object') {
 						return false; // exit
 					}
 					return true;
 				});
 			}
-			if ($.isFunction(tempFx)) {
+			if (typeof tempFx === 'function') {
 				return tempFx;
 			}
 		}
@@ -69,7 +68,7 @@
 		var sp = 0;
 		var outerCall = false;
 		var read = function (f) {
-			if ($.isFunction(f.read)) {
+			if (typeof f.read === 'function') {
 				f.read(key, data);
 			}
 		};
@@ -80,10 +79,10 @@
 			innerCall = true;
 			outerCall = true;
 		}
-		if (!$.isArray(actions)) {
+		if (!Array.isArray(actions)) {
 			actions = [actions];
 		}
-		if ($.isFunction(data) && !cb) {
+		if (typeof data === 'function' && !cb) {
 			cb = data;
 			data = undefined;
 		}
@@ -93,13 +92,13 @@
 			if (!!cb && retValue !== undefined) {
 				App.callback(cb, [index, retValue]);
 			}
-			if ($.isFunction(retValue)) {
+			if (typeof retValue === 'function') {
 				retValue = {
 					read: null,
 					write: retValue
 				};
 			}
-			if ($.isPlainObject(retValue) && $.isFunction(retValue.write)) {
+			if (typeof retValue === 'object' && typeof retValue.write === 'function') {
 				if (App.debug() && !retValue.key) {
 					retValue.key = key;
 				}
@@ -128,7 +127,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * @namespace actions
 		 * @memberof App
@@ -173,4 +172,4 @@
 			}
 		}
 	});
-})(jQuery, window);
+})(window);

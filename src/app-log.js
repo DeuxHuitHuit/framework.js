@@ -10,7 +10,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
 	/**
@@ -24,7 +24,7 @@
 	 */
 	var argsToObject = function (arg) {
 		// ensure that args is an array
-		if (!!arg.args && !$.isArray(arg.args)) {
+		if (!!arg.args && !Array.isArray(arg.args)) {
 			arg.args = [arg.args];
 		}
 
@@ -34,7 +34,7 @@
 			fx: arg.fx || 'warn',
 			me: arg.me || 'App'
 		},
-			t1 = $.type(a.args[0]);
+			t1 = typeof a.args[0];
 
 		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
 			// append me before a.args[0]
@@ -63,7 +63,7 @@
 
 		if (App.debug()) {
 			// make sure fx exists
-			if (!$.isFunction(console[a.fx])) {
+			if (typeof console[a.fx] !== 'function') {
 				a.fx = 'log';
 			}
 			// call it
@@ -81,7 +81,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 
 		/**
 		 * Log the received data with the appropriate effect (log, error, info...)
@@ -106,4 +106,4 @@
 		}
 	});
 
-})(jQuery, window);
+})(window);

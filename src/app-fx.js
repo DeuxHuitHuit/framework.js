@@ -6,10 +6,9 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App.fx
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	var bindings = {};
 
@@ -24,7 +23,7 @@
 	 * @private
 	 */
 	var setFxName = function (key, fx) {
-		if (App.debug() && Object.defineProperty) {
+		if (!!App.debug() && Object.defineProperty) {
 			try {
 				Object.defineProperty(fx, 'name', { value: key });
 			} catch (ex) { }
@@ -65,11 +64,11 @@
 	 * @private
 	 */
 	var exportsFx = function (key, fx, override) {
-		if ($.type(key) !== 'string') {
+		if (typeof key !== 'string') {
 			App.log({ args: ['`key` must be a string', key], fx: 'error' });
 		} else if (!!bindings[key] && !override) {
 			App.log({ args: ['Overwriting function key %s is not allowed', key], fx: 'error' });
-		} else if (!$.isFunction(fx)) {
+		} else if (typeof fx !== 'function') {
 			App.log({ args: ['Function key %s is not a function', key], fx: 'error' });
 		} else {
 			// Try to set the name of the function
@@ -80,7 +79,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * @namespace fx
 		 * @memberof App
@@ -114,4 +113,4 @@
 			exports: exportsFx
 		}
 	});
-})(jQuery, window);
+})(window);

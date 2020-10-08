@@ -10,17 +10,17 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
 	/**
 	 * Factory for the query string parser
 	 * @return {Object} accessible methods
 	 */
-	var queryStringParser = (function () {
-		var a = /\+/g; // Regex for replacing addition symbol with a space
-		var r = /([^&=]+)=?([^&]*)/gi;
-		var d = function (s) {
+	const queryStringParser = (function () {
+		const a = /\+/g; // Regex for replacing addition symbol with a space
+		const r = /([^&=]+)=?([^&]*)/gi;
+		const d = function (s) {
 			return decodeURIComponent(s.replace(a, ' '));
 		};
 
@@ -33,9 +33,9 @@
 		 * @returns {Object}
 		 * @public
 		 */
-		var parse = function (qs) {
-			var u = {};
-			var e, q;
+		const parse = function (qs) {
+			const u = {};
+			let e, q;
 
 			//if we dont have the parameter qs, use the window location search value
 			if (qs !== '' && !qs) {
@@ -61,8 +61,8 @@
 		 * @returns {String} Result
 		 * @public
 		 */
-		var stringify = function (qs) {
-			var aqs = Object.entries(qs).filter(function (e) {
+		const stringify = function (qs) {
+			const aqs = Object.entries(qs).filter(function (e) {
 				return !!e[1];
 			}).map(function (e) {
 				return e[0] + '=' + global.encodeURIComponent(e[1]);
@@ -80,7 +80,7 @@
 	})();
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		routing: {
 
 			/**
@@ -98,4 +98,4 @@
 		}
 	});
 
-})(jQuery, window);
+})(window);

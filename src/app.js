@@ -6,14 +6,13 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	//Default value
-	var ROOT = 'body';
+	let ROOT = 'body';
 	
 	/**
 	 * Init All the applications
@@ -27,9 +26,9 @@
 	 * @param {String} root CSS selector
 	 * @private
 	 */
-	var initApplication = function (root) {
+	const initApplication = function (root) {
 		// assure root node
-		if (!!root && !!$(root).length) {
+		if (!!root && !!document.querySelector(root)) {
 			ROOT = root;
 		}
 		
@@ -67,13 +66,13 @@
 	 * @param {String} root CSS selector
 	 * @private
 	 */
-	var run = function (root) {
+	const run = function (root) {
 		initApplication(root);
 		return global.App;
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * Get the root css selector
 		 * @name root
@@ -97,4 +96,4 @@
 		run: run
 	});
 	
-})(jQuery, window);
+})(window);
