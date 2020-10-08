@@ -35,7 +35,7 @@ module.exports = function fxGruntConfig (grunt) {
 	var TEST_URIS = [];
 	var TEST_URIS_LT = [];
 	var TEST_URIS_CI = [];
-	var TEST_QS = '?noglobals=true&jquery=';
+	var TEST_QS = '?noglobals=true';
 	
 	// for qunit
 	var createTestUris = function () {
@@ -180,7 +180,6 @@ module.exports = function fxGruntConfig (grunt) {
 				browser: true,
 				
 				globals: {
-					jQuery: true,
 					console: true,
 					App: true,
 					Loader: true
@@ -210,7 +209,7 @@ module.exports = function fxGruntConfig (grunt) {
 			}
 		},
 		curl: {
-			'tests/jquery.js': 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.js'
+			
 		},
 		connect: {
 			server: {

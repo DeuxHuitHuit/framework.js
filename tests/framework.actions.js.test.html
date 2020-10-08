@@ -20,7 +20,7 @@
 	<script src="../src/app-debug.js"></script>
 
 	<script>
-		(function ($, w) {
+		(function (w) {
 			'use strict';
 
 			QUnit.module('App.actions');
@@ -34,7 +34,7 @@
 					site: {
 						test: {
 							test: {
-								test: $.noop
+								test: () => {}
 							}
 						}
 					}
@@ -57,8 +57,8 @@
 				assert.ok(!App.actions.resolve(actions, 'site'), 'site does not resolve');
 
 				//UT-01d
-				//key 'site.test.test.test' shoud resolve : result = $.noop
-				assert.ok($.noop === App.actions.resolve(actions, 'site.test.test.test'), 'site.test.test.test resolves');
+				//key 'site.test.test.test' shoud resolve : result = noop
+				assert.ok((() => {}) === App.actions.resolve(actions, 'site.test.test.test'), 'site.test.test.test resolves');
 
 				//UT-01e
 				//key 'x' should not resolve : result = false, Fx function must be called.
@@ -224,7 +224,7 @@
 					assert.ok(key1 === cbCount, 'callback key is ' + cbCount);
 					assert.ok(data2, 'data is not false-y');
 					//Data is the write function returned by the fx
-					assert.ok($.isFunction(data2), 'data is function');
+					assert.ok(typeof data2 === 'function', 'data is function');
 					cbCount++;
 				};
 				App.actions.execute(fx, key, cb);
@@ -255,7 +255,7 @@
 					assert.ok(key1 === cbCount, 'callback key is ' + cbCount);
 					assert.ok(data2, 'data is not false-y');
 					//Data is the write function returned by the fx
-					assert.ok($.isPlainObject(data2), 'data is plain object');
+					assert.ok(typeof data2 === 'object', 'data is plain object');
 					cbCount++;
 				};
 				App.actions.execute(fx, key, cb);
@@ -295,7 +295,7 @@
 				assert.ok(counter === 6, 'read and write was called exactly three times each');
 				assert.ok(innerCounter === 6, 'inner read and write was called exactly three times each');
 			});
-		})(jQuery, window);
+		})(window);
 	</script>
 </body>
 

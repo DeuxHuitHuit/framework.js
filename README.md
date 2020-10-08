@@ -10,8 +10,6 @@
 
 > Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
-The framework use jQuery and Underscore.js and extends some functionality.
-
 ## Documentation
 
 * [Current Version](https://deuxhuithuit.github.io/framework.js/framework/2.2.4/)
@@ -21,10 +19,7 @@ The framework use jQuery and Underscore.js and extends some functionality.
 
 ## Dependencies
 
-* https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
-* https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js (optional)
-* https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js (optional)
-* https://code.jquery.com/pep/0.4.1/pep.min.js (optional)
+None since 3.0 !
 
 ## History
 

@@ -481,11 +481,11 @@
 				/**
 				 * @event App#pages:loaded
 				 * @type {Object}
-				 * @property {jQuery} elem Loaded content
+				 * @property {element} elem Loaded content
 				 * @property {String} data Loaded raw content
 				 * @property {String} url request url
 				 * @property {Object} page PageObject
-				 * @property {jQuery} node Page element
+				 * @property {element} node Page element
 				 * @property {Object} xhr Request object instence
 				 * @property {String} status Status of the request
 				 */
@@ -642,7 +642,7 @@
 							/**
 							 * @event App#pages:loaded
 							 * @type {Object}
-							 * @property {jQuery} elem Root element
+							 * @property {element} elem Root element
 							 * @property {Object} event Request event
 							 * @property {String} url Request url
 							 */
