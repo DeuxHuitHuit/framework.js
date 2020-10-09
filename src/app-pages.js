@@ -31,10 +31,7 @@
 	 * @private
 	 */
 	const createPageModel = function (key, model, override) {
-		const ftrue = function () {
-			return true;
-		};
-		
+
 		const enterLeave = function (next) {
 			App.callback(next);
 		};
@@ -55,8 +52,8 @@
 			init: () => {},
 			enter: enterLeave,
 			leave: enterLeave,
-			canEnter: ftrue,
-			canLeave: ftrue
+			canEnter: () => true,
+			canLeave: () => true
 		};
 		
 		/**
