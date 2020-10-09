@@ -20,9 +20,7 @@
 	 * @private
 	 */
 	const getCurrentUrl = function () {
-		return document.location.href.substring(
-			document.location.protocol.length + 2 + document.location.host.length
-		);
+		return document.location.pathname;
 	};
 
 	/** Mediator **/
@@ -45,7 +43,7 @@
 	 * @private
 	 */
 	const validateMediatorState = function () {
-		if (mediatorIsLoadingPage) {
+		if (!!mediatorIsLoadingPage) {
 			App.log({
 				args: 'Mediator is busy waiting for a page load.',
 				fx: 'error'
@@ -511,7 +509,8 @@
 				nextPage = App.pages.getPageForRoute(obj);
 				route = obj;
 			} else {
-				nextPage = obj;
+				App.log({fx: 'error', args: 'Url parameter must be of type string got ' + typeof obj}); // jshint ignore:line
+				return;
 			}
 
 			if (!validateNextPage(nextPage)) {

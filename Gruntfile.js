@@ -202,9 +202,10 @@ module.exports = function fxGruntConfig (grunt) {
 				browser: true,
 				
 				globals: {
+					document: true,
 					console: true,
 					App: true,
-					Loader: true
+					window: true
 				}
 			}
 		},
