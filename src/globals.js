@@ -65,5 +65,19 @@
 		}
 		return false;
 	};
-	
+
+	const _wr = (type) => {
+		var orig = window.history[type];
+		return function() {
+			var rv = orig.apply(this, arguments);
+			var e = new window.Event(type);
+			e.arguments = arguments;
+			window.dispatchEvent(e);
+			return rv;
+		};
+	};
+
+	global.history.pushState = _wr('pushState');
+	global.history.replaceState = _wr('replaceState');
+
 })(window);
