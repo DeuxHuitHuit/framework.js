@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.0 - a81f331 - build 183 - 2020-10-08
+/*! framework.js - v3.0.0 - f3efae5 - build 207 - 2020-10-13
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -1162,11 +1162,6 @@
 		return {
 			method: 'GET',
 			mode: 'cors',
-			cache: 'only-if-cached',
-			credentials: 'same-origin',
-			headers: {
-				'Content-Type': 'application/json'
-			},
 			redirect: 'follow'
 		};
 	};
@@ -1348,9 +1343,7 @@
 	 * @private
 	 */
 	const getCurrentUrl = function () {
-		return document.location.href.substring(
-			document.location.protocol.length + 2 + document.location.host.length
-		);
+		return document.location.pathname;
 	};
 
 	/** Mediator **/
@@ -1373,7 +1366,7 @@
 	 * @private
 	 */
 	const validateMediatorState = function () {
-		if (mediatorIsLoadingPage) {
+		if (!!mediatorIsLoadingPage) {
 			App.log({
 				args: 'Mediator is busy waiting for a page load.',
 				fx: 'error'
@@ -1547,7 +1540,10 @@
 		 */
 		const safeParseData = function (data) {
 			try {
-				return document.createElement(data);
+				const parser = new window.DOMParser();
+				const doc = parser.parseFromString(data, 'text/html');
+
+				return doc;
 			}
 			catch (ex) {
 				App.log({ args: [ex.message], fx: 'error' });
@@ -1577,10 +1573,20 @@
 			//The currentPage pointer will be cleared after the next call
 			let leavingPage = currentPage;
 
+			if (!nextPage.isInited) {
+				nextPage.init();
+				nextPage.setInited();
+			}
+
 			/**
-			 * Block all interaction with the framework and notify the page leave
+			 * @event App#page:leaving
+			 * @type {object}
+			 * @property {object} page PageObject
 			 */
-			const leaveCurrent = function () {
+			App.modules.notify('page.leaving', { page: leavingPage });
+
+			//Leave the current page
+			leavingPage.leave(function () {
 				currentPage = null; // clean currentPage pointer,this will block all interactions
 
 				//set leaving page to be previous one
@@ -1595,12 +1601,17 @@
 				 * @property {object} page PageObject
 				 */
 				App.modules.notify('page.leave', { page: previousPage });
-			};
+			});
 
 			/**
-			 * Set the current page to the new one
+			 * @event App#page:entering
+			 * @type {object}
+			 * @property {object} page PageObject
+			 * @property {string} route url
 			 */
-			const enterNext = function () {
+			App.modules.notify('page.entering', { page: nextPage, route: route });
+
+			nextPage.enter(function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
 
@@ -1612,53 +1623,7 @@
 				App.modules.notify('page.enter', { page: nextPage, route: route });
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			};
-
-			const pageTransitionData = {
-				currentPage: currentPage,
-				nextPage: nextPage,
-				leaveCurrent: leaveCurrent,
-				enterNext: enterNext,
-				route: route,
-				isHandled: false
-			};
-
-			/**
-			 * @event App#pages:requestPageTransition
-			 * @type {object}
-			 * @property {object} pageTransitionData
-			 */
-			App.modules.notify('pages.requestPageTransition', pageTransitionData);
-
-			if (!nextPage.isInited) {
-				nextPage.init();
-				nextPage.setInited();
-			}
-
-			//if not, return to classic code
-			if (!pageTransitionData.isHandled) {
-				//Leave to page the transition job
-
-				/**
-				 * @event App#page:leaving
-				 * @type {object}
-				 * @property {object} page PageObject
-				 */
-				App.modules.notify('page.leaving', { page: leavingPage });
-
-				//Leave the current page
-				leavingPage.leave(leaveCurrent);
-
-				/**
-				 * @event App#page:entering
-				 * @type {object}
-				 * @property {object} page PageObject
-				 * @property {string} route url
-				 */
-				App.modules.notify('page.entering', { page: nextPage, route: route });
-
-				nextPage.enter(enterNext);
-			}
+			});
 		};
 
 		/**
@@ -1672,109 +1637,14 @@
 				const htmldata = safeParseData(data);
 
 				// get the node
-				let node = htmldata.querySelector(nextPage.key());
+				let node = htmldata.querySelector(nextPage.key(true));
 
 				// get the root node
 				const elem = document.querySelector(App.root());
 
-				// Check for redirects
-				const responseUrl = htmldata.querySelector(App.root() + ' > [data-response-url]')
-					.getAttribute('data-response-url');
-
-				if (!!responseUrl && responseUrl !== obj.split('#')[0]) {
-
-					const redirectedPage = nextPage;
-
-					// Find the right page
-					nextPage = App.pages.getPageForRoute(responseUrl);
-
-					/**
-					 * Offer a bail out door
-					 * @event App#pages:redirected
-					 * @type {Object}
-					 * @property {String} route Url
-					 * @property {String} requestedRoute Url
-					 * @property {Object} nextPage PageObject
-					 * @property {Object} currentPage PageObject
-					 * @property {Object} redirectedPage PageObject
-					 */
-					App.modules.notify('pages.redirected', {
-						currentPage: currentPage,
-						nextPage: nextPage,
-						redirectedPage: redirectedPage,
-						requestedRoute: route,
-						responseRoute: responseUrl
-					});
-
-					/**
-					 * Cancel current transition
-					 * @event App#pages:requestCancelPageTransition
-					 * @type {Object}
-					 * @property {String} route Url
-					 * @property {Object} nextPage PageObject
-					 * @property {Object} currentPage PageObject
-					 */
-					App.modules.notify('pages.requestCancelPageTransition', {
-						currentPage: currentPage,
-						nextPage: nextPage,
-						route: route
-					});
-
-					if (!validateNextPage(nextPage)) {
-						/**
-						 * @event App#pages:routeNotFound
-						 * @type {object}
-						 * @property {String} url Url
-						 * @property {Boolean} isRedirect PageObject
-						 * @property {Object} page PageObject
-						 */
-						App.modules.notify('pages.routeNotFound', {
-							page: currentPage,
-							url: obj,
-							isRedirect: true
-						});
-						App.log({ args: ['Redirected route "%s" was not found.', obj], fx: 'error' });
-						return;
-					} else {
-						node = htmldata.querySelector(nextPage.key());
-						if (nextPage === currentPage) {
-							/**
-							 * @event App#pages:navigateToCurrent
-							 * @type {object}
-							 * @property {String} url Url
-							 * @property {Boolean} isRedirect PageObject
-							 * @property {Object} page PageObject
-							 */
-							App.modules.notify('pages.navigateToCurrent', {
-								page: nextPage,
-								route: route,
-								isRedirect: true
-							});
-							App.log('Redirected next page is the current one');
-						} else {
-							/**
-							 * Start new transition
-							 * @event App#pages:requestBeginPageTransition
-							 * @type {object}
-							 * @property {String} route Url
-							 * @property {Boolean} isRedirect PageObject
-							 * @property {Object} nextPage PageObject
-							 * @property {Object} currentPage PageObject
-							 */
-							App.modules.notify('pages.requestBeginPageTransition', {
-								currentPage: currentPage,
-								nextPage: nextPage,
-								route: responseUrl,
-								isRedirect: true
-							});
-
-						}
-					}
-				}
-
 				if (!node) {
 					App.log({
-						args: ['Could not find "%s" in xhr data.', nextPage.key()],
+						args: ['Could not find "%s" in xhr data.', nextPage.key(true)],
 						fx: 'error'
 					});
 
@@ -1799,13 +1669,13 @@
 				} else {
 					// append it to the doc, hidden
 					node.style.opacity = 0;
+					node.style.display = 'none';
+
 					elem.appendChild(node);
 
 					// init page
 					nextPage.init();
 					nextPage.setInited();
-					
-					node.style.display = 'none';
 
 					/**
 					 * @event App#pages:loaded
@@ -1836,10 +1706,11 @@
 
 		if (validateMediatorState() && canLeaveCurrentPage()) {
 			if (typeof obj === 'string') {
-				nextPage = App.pages.getPageForRoute(obj);
+				nextPage = App.pages.getPageForHref(obj);
 				route = obj;
 			} else {
-				nextPage = obj;
+				App.log({fx: 'error', args: 'Url parameter must be of type string got ' + typeof obj}); // jshint ignore:line
+				return;
 			}
 
 			if (!validateNextPage(nextPage)) {
@@ -1856,7 +1727,7 @@
 				App.log({ args: ['Route "%s" was not found.', obj], fx: 'error' });
 			} else {
 				if (canEnterNextPage(nextPage)) {
-					if (nextPage === currentPage) {
+					if (nextPage.key() === currentPage.key()) {
 						/**
 						 * @event App#pages:navigateToCurrent
 						 * @type {Object}
@@ -1867,8 +1738,8 @@
 							page: nextPage,
 							route: route
 						});
-						App.log('Next page is the current one');
 
+						App.log('Next page is the current one');
 					} else {
 
 						/**
@@ -1984,47 +1855,45 @@
 	 * @private
 	 */
 	const initPage = function (page) {
-		// find if this is our current page
-		// current route found ?
-		if (!!~App.pages.matchRoute(currentRouteUrl, page.routes())) {
-			if (!!currentPage) {
-				App.log({
-					args: ['Previous current page will be changed', {
-						currentPage: currentPage,
-						previousPage: previousPage,
-						newCurrentPage: page
-					}],
-					fx: 'warning'
-				});
-			}
-			// initialize page variable
-			currentPage = page;
-			previousPage = previousPage || page;
+		if (!!currentPage) {
+			App.log({
+				args: ['Previous current page will be changed', {
+					currentPage: currentPage,
+					previousPage: previousPage,
+					newCurrentPage: page
+				}],
+				fx: 'warning'
+			});
+		}
 
+		// initialize page variable
+		currentPage = page;
+		previousPage = previousPage || page;
+
+		/**
+		 * @event App#page:entering
+		 * @type {object}
+		 * @property {Object} page PageObject
+		 * @property {String} route Url
+		 */
+		App.modules.notify('page.entering', {
+			page: currentPage,
+			route: currentRouteUrl
+		});
+
+		// enter the page right now
+		currentPage.enter(function currentPageEnterCallback () {
 			/**
-			 * @event App#page:entering
+			 * @event App#page:enter
 			 * @type {object}
 			 * @property {Object} page PageObject
 			 * @property {String} route Url
 			 */
-			App.modules.notify('page.entering', {
+			App.modules.notify('page.enter', {
 				page: currentPage,
 				route: currentRouteUrl
 			});
-			// enter the page right now
-			currentPage.enter(function currentPageEnterCallback () {
-				/**
-				 * @event App#page:enter
-				 * @type {object}
-				 * @property {Object} page PageObject
-				 * @property {String} route Url
-				 */
-				App.modules.notify('page.enter', {
-					page: currentPage,
-					route: currentRouteUrl
-				});
-			});
-		}
+		});
 	};
 
 	/** Public Interfaces **/
@@ -2378,13 +2247,6 @@
 	 * @private
 	 */
 	const createPageModel = function (key, model, override) {
-		const ftrue = function () {
-			return true;
-		};
-		
-		const enterLeave = function (next) {
-			App.callback(next);
-		};
 
 		/**
 		 * Page Param
@@ -2396,14 +2258,16 @@
 		 * @param {Function} leave
 		 * @param {Function} canEnter @returns {boolean}
 		 * @param {Function} canLeave @returns {boolean}
+		 * @param {Function} model @returns {string}
+		 * @param {Function} routes @return {Array}
 		 */
 		const base = {
 			actions: () => {},
 			init: () => {},
-			enter: enterLeave,
-			leave: enterLeave,
-			canEnter: ftrue,
-			canLeave: ftrue
+			canEnter: () => true,
+			canLeave: () => true,
+			model: () => key,
+			routes: () => []
 		};
 		
 		/**
@@ -2443,33 +2307,38 @@
 				});
 				return null;
 			}
-			
-			const getKey = function () {
+
+			const getKey = (querySelector = false) => {
+				if (!!querySelector) {
+					return '[data-page-url="' + pageData.key + '"]';
+				}
 				return pageData.key;
 			};
-			
-			const routes = function () {
-				return pageData.routes;
-			};
 
-			// recuperate extra params...
-			const data = function () {
-				return pageData;
-			};
-			
 			// insure this can't be overridden
 			const overwrites = Object.freeze({
-				key: getKey, // css selector
-				routes: routes,
-				data: data,
-				isInited: function () {
+				key: getKey,
+				enter: (next) => {
+					const p = document.querySelector(getKey(true));
+					p.style.opacity = 1;
+					p.style.display = 'block';
+					App.callback(next);
+				},
+				leave: (next) => {
+					const p = document.querySelector(getKey(true));
+					p.style.opacity = 0;
+					p.style.display = 'none';
+					App.callback(next);
+				},
+				data: () => pageData,
+				isInited: () => {
 					return isInited;
 				},
-				setInited: function () {
+				setInited: () => {
 					isInited = true;
 				}
 			});
-			
+
 			// New deep copy frozen object
 			return Object.freeze(Object.assign({}, base, modelRef, overwrites));
 		};
@@ -2569,26 +2438,6 @@
 		return registerPageModel(key, pageModel, override);
 	};
 	
-	/**
-	 * Validate a route object
-	 * @name validateRoute
-	 * @memberof pages
-	 * @method
-	 * @returns {Boolean}
-	 * @private
-	 */
-	const validateRoute = function (route) {
-		let result = false;
-		
-		if (!route) {
-			App.log({args: 'No route set.', fx: 'error'});
-		} else {
-			result = true;
-		}
-		
-		return result;
-	};
-	
 	const routeMatchStrategies = {
 		regexp: function (testRoute, route, cb) {
 			if (testRoute.test(route)) {
@@ -2605,7 +2454,7 @@
 			route = route.split('#')[0];
 			
 			// avoid RegExp if possible
-			if (testRoute == route) {
+			if (testRoute === route) {
 				return cb();
 			}
 			
@@ -2695,36 +2544,41 @@
 
 	/**
 	 * Returns the first page object that matches the route param
-	 * @name getPageForRoute
+	 * @name getPageForHref
 	 * @memberof pages
 	 * @method
-	 * @param {String} route The route to search match for
+	 * @param {String} href The href to search match for
 	 *
-	 * @returns {?page} The page object or null if not found
+	 * @returns {page} The page object or a new page with associated model
 	 * @private
 	 */
-	const getPageForRoute = function (route) {
-		if (validateRoute(route)) {
-			const p = Object.values(pageInstances).find(function walkPage (page) {
-				const routes = page.routes();
-				// route found ?
-				return !!~matchRoute(route, routes);
-			});
-			if (!!p) {
-				return p;
-			}
+	const getPageForHref = function (href) {
+
+		// check if the instance already exists
+		if (!!pageInstances[href]) {
+			return pageInstances[href];
 		}
-		return pageInstances.default || null;
+
+		// match with potential model
+		let model = Object.values(pageInstances).find((page) => {
+			const routes = page.routes();
+			// route found ?
+			return !!~matchRoute(href, routes);
+		});
+
+		if (!model) {
+			model = 'default';
+		}
+
+		// create instance with matched model
+		return createPage({key: href}, model, true);
 	};
 
 	const loaded = (url) => {
 		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
 	};
 
-	(() => {
-		registerPageModel('default', createPageModel('default', {}, true), {});
-		createPage({key: 'default', routes: ['*']}, 'default', true);
-	})();
+	registerPageModel('default', createPageModel('default', {}, true), {});
 
 	/** Public Interfaces **/
 	global.App = Object.assign({}, global.App, {
@@ -2737,15 +2591,6 @@
 			 * @private
 			 */
 			matchRoute: matchRoute,
-
-			/**
-			 * @name validateRoute
-			 * @method
-			 * @memberof pages
-			 * {@link App.pages~validateRoute}
-			 * @private
-			 */
-			validateRoute: validateRoute,
 
 			/**
 			 * Getter for all instances of a particular one
@@ -2775,7 +2620,7 @@
 
 			/**
 			 * Returns the first page object that matches the route param
-			 * @name getPageForRoute
+			 * @name getPageForHref
 			 * @memberof pages
 			 * @method
 			 * @param {String} route The route to search match for
@@ -2783,11 +2628,11 @@
 			 * @returns {?page} The page object or null if not found
 			 * @public
 			 */
-			getPageForRoute: getPageForRoute,
+			getPageForHref: getPageForHref,
 
 			/**
 			 * Returns the page based the key and fallbacks to
-			 * the [route]{@link getPageForRoute} if noting is found.
+			 * the [route]{@link getPageForHref} if noting is found.
 			 * @name page
 			 * @method
 			 * @memberof pages
@@ -2798,10 +2643,10 @@
 			page: function (keyOrRoute) {
 				//Try to get the page by the key
 				let result = pageInstances[keyOrRoute];
-				
+
 				//if no result found try with the route
 				if (!!!result) {
-					result = getPageForRoute(keyOrRoute);
+					result = getPageForHref(keyOrRoute);
 				}
 				
 				return result;
@@ -3186,15 +3031,23 @@
 		if (!!root && !!document.querySelector(root)) {
 			ROOT = root;
 		}
-		
+
 		// init each Modules
 		Object.values(App.modules.models()).forEach(function initModule (m) {
 			m.init();
 		});
-		
-		// init each Page already loaded
+
+		const firstPage = App.pages.getPageForHref(window.location.href);
+
+		if (!!firstPage && !!App.pages.loaded(firstPage.key())) {
+			firstPage.init({firstTime: true});
+			firstPage.setInited();
+			App.mediator.init(firstPage);
+		}
+
+		// init each Page already loaded and with body set page instance
 		Object.values(App.pages.instances()).forEach(function initPage (page) {
-			if (!!App.pages.loaded(window.location.href)) {
+			if (!!App.pages.loaded(page.key()) && page.key() !== firstPage.key()) {
 				// init page
 				page.init({firstTime: true});
 				page.setInited();
@@ -3202,11 +3055,11 @@
 				App.mediator.init(page);
 			}
 		});
-		
+
 		App.mediator.notify('app.init', {
 			page: App.mediator.getCurrentPage()
 		});
-		
+
 		if (!App.mediator.getCurrentPage()) {
 			App.modules.notify('app.pageNotFound');
 			App.log({ fx: 'error', args: 'No current page set, pages will not work.' });

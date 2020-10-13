@@ -19,11 +19,6 @@
 		return {
 			method: 'GET',
 			mode: 'cors',
-			cache: 'only-if-cached',
-			credentials: 'same-origin',
-			headers: {
-				'Content-Type': 'application/json'
-			},
 			redirect: 'follow'
 		};
 	};

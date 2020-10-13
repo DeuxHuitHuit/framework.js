@@ -217,7 +217,10 @@
 		 */
 		const safeParseData = function (data) {
 			try {
-				return document.createElement(data);
+				const parser = new window.DOMParser();
+				const doc = parser.parseFromString(data, 'text/html');
+
+				return doc;
 			}
 			catch (ex) {
 				App.log({ args: [ex.message], fx: 'error' });
@@ -247,10 +250,20 @@
 			//The currentPage pointer will be cleared after the next call
 			let leavingPage = currentPage;
 
+			if (!nextPage.isInited) {
+				nextPage.init();
+				nextPage.setInited();
+			}
+
 			/**
-			 * Block all interaction with the framework and notify the page leave
+			 * @event App#page:leaving
+			 * @type {object}
+			 * @property {object} page PageObject
 			 */
-			const leaveCurrent = function () {
+			App.modules.notify('page.leaving', { page: leavingPage });
+
+			//Leave the current page
+			leavingPage.leave(function () {
 				currentPage = null; // clean currentPage pointer,this will block all interactions
 
 				//set leaving page to be previous one
@@ -265,12 +278,17 @@
 				 * @property {object} page PageObject
 				 */
 				App.modules.notify('page.leave', { page: previousPage });
-			};
+			});
 
 			/**
-			 * Set the current page to the new one
+			 * @event App#page:entering
+			 * @type {object}
+			 * @property {object} page PageObject
+			 * @property {string} route url
 			 */
-			const enterNext = function () {
+			App.modules.notify('page.entering', { page: nextPage, route: route });
+
+			nextPage.enter(function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
 
@@ -282,53 +300,7 @@
 				App.modules.notify('page.enter', { page: nextPage, route: route });
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			};
-
-			const pageTransitionData = {
-				currentPage: currentPage,
-				nextPage: nextPage,
-				leaveCurrent: leaveCurrent,
-				enterNext: enterNext,
-				route: route,
-				isHandled: false
-			};
-
-			/**
-			 * @event App#pages:requestPageTransition
-			 * @type {object}
-			 * @property {object} pageTransitionData
-			 */
-			App.modules.notify('pages.requestPageTransition', pageTransitionData);
-
-			if (!nextPage.isInited) {
-				nextPage.init();
-				nextPage.setInited();
-			}
-
-			//if not, return to classic code
-			if (!pageTransitionData.isHandled) {
-				//Leave to page the transition job
-
-				/**
-				 * @event App#page:leaving
-				 * @type {object}
-				 * @property {object} page PageObject
-				 */
-				App.modules.notify('page.leaving', { page: leavingPage });
-
-				//Leave the current page
-				leavingPage.leave(leaveCurrent);
-
-				/**
-				 * @event App#page:entering
-				 * @type {object}
-				 * @property {object} page PageObject
-				 * @property {string} route url
-				 */
-				App.modules.notify('page.entering', { page: nextPage, route: route });
-
-				nextPage.enter(enterNext);
-			}
+			});
 		};
 
 		/**
@@ -342,109 +314,14 @@
 				const htmldata = safeParseData(data);
 
 				// get the node
-				let node = htmldata.querySelector(nextPage.key());
+				let node = htmldata.querySelector(nextPage.key(true));
 
 				// get the root node
 				const elem = document.querySelector(App.root());
 
-				// Check for redirects
-				const responseUrl = htmldata.querySelector(App.root() + ' > [data-response-url]')
-					.getAttribute('data-response-url');
-
-				if (!!responseUrl && responseUrl !== obj.split('#')[0]) {
-
-					const redirectedPage = nextPage;
-
-					// Find the right page
-					nextPage = App.pages.getPageForRoute(responseUrl);
-
-					/**
-					 * Offer a bail out door
-					 * @event App#pages:redirected
-					 * @type {Object}
-					 * @property {String} route Url
-					 * @property {String} requestedRoute Url
-					 * @property {Object} nextPage PageObject
-					 * @property {Object} currentPage PageObject
-					 * @property {Object} redirectedPage PageObject
-					 */
-					App.modules.notify('pages.redirected', {
-						currentPage: currentPage,
-						nextPage: nextPage,
-						redirectedPage: redirectedPage,
-						requestedRoute: route,
-						responseRoute: responseUrl
-					});
-
-					/**
-					 * Cancel current transition
-					 * @event App#pages:requestCancelPageTransition
-					 * @type {Object}
-					 * @property {String} route Url
-					 * @property {Object} nextPage PageObject
-					 * @property {Object} currentPage PageObject
-					 */
-					App.modules.notify('pages.requestCancelPageTransition', {
-						currentPage: currentPage,
-						nextPage: nextPage,
-						route: route
-					});
-
-					if (!validateNextPage(nextPage)) {
-						/**
-						 * @event App#pages:routeNotFound
-						 * @type {object}
-						 * @property {String} url Url
-						 * @property {Boolean} isRedirect PageObject
-						 * @property {Object} page PageObject
-						 */
-						App.modules.notify('pages.routeNotFound', {
-							page: currentPage,
-							url: obj,
-							isRedirect: true
-						});
-						App.log({ args: ['Redirected route "%s" was not found.', obj], fx: 'error' });
-						return;
-					} else {
-						node = htmldata.querySelector(nextPage.key());
-						if (nextPage === currentPage) {
-							/**
-							 * @event App#pages:navigateToCurrent
-							 * @type {object}
-							 * @property {String} url Url
-							 * @property {Boolean} isRedirect PageObject
-							 * @property {Object} page PageObject
-							 */
-							App.modules.notify('pages.navigateToCurrent', {
-								page: nextPage,
-								route: route,
-								isRedirect: true
-							});
-							App.log('Redirected next page is the current one');
-						} else {
-							/**
-							 * Start new transition
-							 * @event App#pages:requestBeginPageTransition
-							 * @type {object}
-							 * @property {String} route Url
-							 * @property {Boolean} isRedirect PageObject
-							 * @property {Object} nextPage PageObject
-							 * @property {Object} currentPage PageObject
-							 */
-							App.modules.notify('pages.requestBeginPageTransition', {
-								currentPage: currentPage,
-								nextPage: nextPage,
-								route: responseUrl,
-								isRedirect: true
-							});
-
-						}
-					}
-				}
-
 				if (!node) {
 					App.log({
-						args: ['Could not find "%s" in xhr data.', nextPage.key()],
+						args: ['Could not find "%s" in xhr data.', nextPage.key(true)],
 						fx: 'error'
 					});
 
@@ -469,13 +346,13 @@
 				} else {
 					// append it to the doc, hidden
 					node.style.opacity = 0;
+					node.style.display = 'none';
+
 					elem.appendChild(node);
 
 					// init page
 					nextPage.init();
 					nextPage.setInited();
-					
-					node.style.display = 'none';
 
 					/**
 					 * @event App#pages:loaded
@@ -506,7 +383,7 @@
 
 		if (validateMediatorState() && canLeaveCurrentPage()) {
 			if (typeof obj === 'string') {
-				nextPage = App.pages.getPageForRoute(obj);
+				nextPage = App.pages.getPageForHref(obj);
 				route = obj;
 			} else {
 				App.log({fx: 'error', args: 'Url parameter must be of type string got ' + typeof obj}); // jshint ignore:line
@@ -527,7 +404,7 @@
 				App.log({ args: ['Route "%s" was not found.', obj], fx: 'error' });
 			} else {
 				if (canEnterNextPage(nextPage)) {
-					if (nextPage === currentPage) {
+					if (nextPage.key() === currentPage.key()) {
 						/**
 						 * @event App#pages:navigateToCurrent
 						 * @type {Object}
@@ -538,8 +415,8 @@
 							page: nextPage,
 							route: route
 						});
-						App.log('Next page is the current one');
 
+						App.log('Next page is the current one');
 					} else {
 
 						/**
@@ -655,47 +532,45 @@
 	 * @private
 	 */
 	const initPage = function (page) {
-		// find if this is our current page
-		// current route found ?
-		if (!!~App.pages.matchRoute(currentRouteUrl, page.routes())) {
-			if (!!currentPage) {
-				App.log({
-					args: ['Previous current page will be changed', {
-						currentPage: currentPage,
-						previousPage: previousPage,
-						newCurrentPage: page
-					}],
-					fx: 'warning'
-				});
-			}
-			// initialize page variable
-			currentPage = page;
-			previousPage = previousPage || page;
+		if (!!currentPage) {
+			App.log({
+				args: ['Previous current page will be changed', {
+					currentPage: currentPage,
+					previousPage: previousPage,
+					newCurrentPage: page
+				}],
+				fx: 'warning'
+			});
+		}
 
+		// initialize page variable
+		currentPage = page;
+		previousPage = previousPage || page;
+
+		/**
+		 * @event App#page:entering
+		 * @type {object}
+		 * @property {Object} page PageObject
+		 * @property {String} route Url
+		 */
+		App.modules.notify('page.entering', {
+			page: currentPage,
+			route: currentRouteUrl
+		});
+
+		// enter the page right now
+		currentPage.enter(function currentPageEnterCallback () {
 			/**
-			 * @event App#page:entering
+			 * @event App#page:enter
 			 * @type {object}
 			 * @property {Object} page PageObject
 			 * @property {String} route Url
 			 */
-			App.modules.notify('page.entering', {
+			App.modules.notify('page.enter', {
 				page: currentPage,
 				route: currentRouteUrl
 			});
-			// enter the page right now
-			currentPage.enter(function currentPageEnterCallback () {
-				/**
-				 * @event App#page:enter
-				 * @type {object}
-				 * @property {Object} page PageObject
-				 * @property {String} route Url
-				 */
-				App.modules.notify('page.enter', {
-					page: currentPage,
-					route: currentRouteUrl
-				});
-			});
-		}
+		});
 	};
 
 	/** Public Interfaces **/

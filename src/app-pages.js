@@ -32,10 +32,6 @@
 	 */
 	const createPageModel = function (key, model, override) {
 
-		const enterLeave = function (next) {
-			App.callback(next);
-		};
-
 		/**
 		 * Page Param
 		 * @memberof pages
@@ -46,14 +42,16 @@
 		 * @param {Function} leave
 		 * @param {Function} canEnter @returns {boolean}
 		 * @param {Function} canLeave @returns {boolean}
+		 * @param {Function} model @returns {string}
+		 * @param {Function} routes @return {Array}
 		 */
 		const base = {
 			actions: () => {},
 			init: () => {},
-			enter: enterLeave,
-			leave: enterLeave,
 			canEnter: () => true,
-			canLeave: () => true
+			canLeave: () => true,
+			model: () => key,
+			routes: () => []
 		};
 		
 		/**
@@ -93,33 +91,38 @@
 				});
 				return null;
 			}
-			
-			const getKey = function () {
+
+			const getKey = (querySelector = false) => {
+				if (!!querySelector) {
+					return '[data-page-url="' + pageData.key + '"]';
+				}
 				return pageData.key;
 			};
-			
-			const routes = function () {
-				return pageData.routes;
-			};
 
-			// recuperate extra params...
-			const data = function () {
-				return pageData;
-			};
-			
 			// insure this can't be overridden
 			const overwrites = Object.freeze({
-				key: getKey, // css selector
-				routes: routes,
-				data: data,
-				isInited: function () {
+				key: getKey,
+				enter: (next) => {
+					const p = document.querySelector(getKey(true));
+					p.style.opacity = 1;
+					p.style.display = 'block';
+					App.callback(next);
+				},
+				leave: (next) => {
+					const p = document.querySelector(getKey(true));
+					p.style.opacity = 0;
+					p.style.display = 'none';
+					App.callback(next);
+				},
+				data: () => pageData,
+				isInited: () => {
 					return isInited;
 				},
-				setInited: function () {
+				setInited: () => {
 					isInited = true;
 				}
 			});
-			
+
 			// New deep copy frozen object
 			return Object.freeze(Object.assign({}, base, modelRef, overwrites));
 		};
@@ -219,26 +222,6 @@
 		return registerPageModel(key, pageModel, override);
 	};
 	
-	/**
-	 * Validate a route object
-	 * @name validateRoute
-	 * @memberof pages
-	 * @method
-	 * @returns {Boolean}
-	 * @private
-	 */
-	const validateRoute = function (route) {
-		let result = false;
-		
-		if (!route) {
-			App.log({args: 'No route set.', fx: 'error'});
-		} else {
-			result = true;
-		}
-		
-		return result;
-	};
-	
 	const routeMatchStrategies = {
 		regexp: function (testRoute, route, cb) {
 			if (testRoute.test(route)) {
@@ -255,7 +238,7 @@
 			route = route.split('#')[0];
 			
 			// avoid RegExp if possible
-			if (testRoute == route) {
+			if (testRoute === route) {
 				return cb();
 			}
 			
@@ -345,36 +328,41 @@
 
 	/**
 	 * Returns the first page object that matches the route param
-	 * @name getPageForRoute
+	 * @name getPageForHref
 	 * @memberof pages
 	 * @method
-	 * @param {String} route The route to search match for
+	 * @param {String} href The href to search match for
 	 *
-	 * @returns {?page} The page object or null if not found
+	 * @returns {page} The page object or a new page with associated model
 	 * @private
 	 */
-	const getPageForRoute = function (route) {
-		if (validateRoute(route)) {
-			const p = Object.values(pageInstances).find(function walkPage (page) {
-				const routes = page.routes();
-				// route found ?
-				return !!~matchRoute(route, routes);
-			});
-			if (!!p) {
-				return p;
-			}
+	const getPageForHref = function (href) {
+
+		// check if the instance already exists
+		if (!!pageInstances[href]) {
+			return pageInstances[href];
 		}
-		return pageInstances.default || null;
+
+		// match with potential model
+		let model = Object.values(pageInstances).find((page) => {
+			const routes = page.routes();
+			// route found ?
+			return !!~matchRoute(href, routes);
+		});
+
+		if (!model) {
+			model = 'default';
+		}
+
+		// create instance with matched model
+		return createPage({key: href}, model, true);
 	};
 
 	const loaded = (url) => {
 		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
 	};
 
-	(() => {
-		registerPageModel('default', createPageModel('default', {}, true), {});
-		createPage({routes: ['*']}, 'default', true);
-	})();
+	registerPageModel('default', createPageModel('default', {}, true), {});
 
 	/** Public Interfaces **/
 	global.App = Object.assign({}, global.App, {
@@ -387,15 +375,6 @@
 			 * @private
 			 */
 			matchRoute: matchRoute,
-
-			/**
-			 * @name validateRoute
-			 * @method
-			 * @memberof pages
-			 * {@link App.pages~validateRoute}
-			 * @private
-			 */
-			validateRoute: validateRoute,
 
 			/**
 			 * Getter for all instances of a particular one
@@ -425,7 +404,7 @@
 
 			/**
 			 * Returns the first page object that matches the route param
-			 * @name getPageForRoute
+			 * @name getPageForHref
 			 * @memberof pages
 			 * @method
 			 * @param {String} route The route to search match for
@@ -433,11 +412,11 @@
 			 * @returns {?page} The page object or null if not found
 			 * @public
 			 */
-			getPageForRoute: getPageForRoute,
+			getPageForHref: getPageForHref,
 
 			/**
 			 * Returns the page based the key and fallbacks to
-			 * the [route]{@link getPageForRoute} if noting is found.
+			 * the [route]{@link getPageForHref} if noting is found.
 			 * @name page
 			 * @method
 			 * @memberof pages
@@ -448,10 +427,10 @@
 			page: function (keyOrRoute) {
 				//Try to get the page by the key
 				let result = pageInstances[keyOrRoute];
-				
+
 				//if no result found try with the route
 				if (!!!result) {
-					result = getPageForRoute(keyOrRoute);
+					result = getPageForHref(keyOrRoute);
 				}
 				
 				return result;

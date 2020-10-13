@@ -31,15 +31,23 @@
 		if (!!root && !!document.querySelector(root)) {
 			ROOT = root;
 		}
-		
+
 		// init each Modules
 		Object.values(App.modules.models()).forEach(function initModule (m) {
 			m.init();
 		});
-		
-		// init each Page already loaded
+
+		const firstPage = App.pages.getPageForHref(window.location.href);
+
+		if (!!firstPage && !!App.pages.loaded(firstPage.key())) {
+			firstPage.init({firstTime: true});
+			firstPage.setInited();
+			App.mediator.init(firstPage);
+		}
+
+		// init each Page already loaded and with body set page instance
 		Object.values(App.pages.instances()).forEach(function initPage (page) {
-			if (!!App.pages.loaded(window.location.href)) {
+			if (!!App.pages.loaded(page.key()) && page.key() !== firstPage.key()) {
 				// init page
 				page.init({firstTime: true});
 				page.setInited();
@@ -47,11 +55,11 @@
 				App.mediator.init(page);
 			}
 		});
-		
+
 		App.mediator.notify('app.init', {
 			page: App.mediator.getCurrentPage()
 		});
-		
+
 		if (!App.mediator.getCurrentPage()) {
 			App.modules.notify('app.pageNotFound');
 			App.log({ fx: 'error', args: 'No current page set, pages will not work.' });
