@@ -429,15 +429,6 @@
 	global.App = Object.assign({}, global.App, {
 		pages: {
 
-			matchRoute: () => {
-				App.log({
-					fx: 'warning',
-					args: 'App.pages.matchRoute() is deprecated please use App.pages.routes.match()'
-				});
-
-				return matchRoute.apply(this, arguments);
-			},
-
 			/**
 			 * Getter for all instances of a particular one
 			 * @param [key] - the optinal key to search for.
