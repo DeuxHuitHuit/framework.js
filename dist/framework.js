@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.0 - 4fcdb58 - build 208 - 2020-10-13
+/*! framework.js - v3.0.0 - 9c80448 - build 210 - 2020-10-14
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -2266,8 +2266,7 @@
 			init: () => {},
 			canEnter: () => true,
 			canLeave: () => true,
-			model: () => key,
-			routes: () => []
+			model: () => key
 		};
 		
 		/**
@@ -2282,6 +2281,7 @@
 		const factory = function (pageData) {
 			let modelRef;
 			let isInited = false;
+			let routes = [];
 			
 			if (typeof model === 'object') {
 				modelRef = model;
@@ -2336,6 +2336,13 @@
 				},
 				setInited: () => {
 					isInited = true;
+				},
+				routes: (newRoutes) => {
+					if (!newRoutes) {
+						return routes;
+					}
+					routes = newRoutes;
+					return routes;
 				}
 			});
 
@@ -2574,6 +2581,53 @@
 		return createPage({key: href}, model, true);
 	};
 
+	/**
+	 * Add routes to a model
+	 * @name addRoutes
+	 * @memberof pages
+	 * @method
+	 * @param {String} keyModel model to add routes to
+	 * @param {Array} routes to add to the model
+	 * @returns {Array} all the active routes
+	 * @private
+	 */
+	const addRoutes = (keyModel, routes) => {
+		if (!pageModels[keyModel]) {
+			App.log({fx: 'error', args: 'Model "' + keyModel + '" not found.'});
+			return false;
+		}
+
+		if (keyModel === 'default') {
+			App.log({fx: 'error', args: 'You can\'t add routes to the default model'});
+			return false;
+		}
+
+		// new set to remove duplicates in array
+		pageModels[keyModel].routes([...new Set((pageModels[keyModel].routes()).concat(routes))]);
+
+		// todo 3.1.0 add verification if route is already used
+
+		return pageModels[keyModel].routes();
+	};
+
+	/**
+	 * Remove routes to a model
+	 * @name removeRoutes
+	 * @memberof pages
+	 * @method
+	 * @param {String} keyModel model to remove routes to
+	 * @param {Array} routes to remove to the model
+	 * @returns {Array} all the active routes
+	 * @private
+	 */
+	const removeRoutes = (keyModel, routes) => {
+		if (!pageModels[keyModel]) {
+			App.log({fx: 'error', args: 'Model "' + keyModel + '" not found.'});
+			return false;
+		}
+		return false;
+	};
+
 	const loaded = (url) => {
 		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
 	};
@@ -2694,7 +2748,41 @@
 			 * @public
 			 * @since 3.0.0
 			 */
-			loaded: loaded
+			loaded: loaded,
+
+			/**
+			 * App pages routes
+			 *
+			 * @namespace routes
+			 * @memberof pages
+			 * @since 3.0.0
+			 */
+			routes: {
+
+				/**
+				 * Add routes to a model
+				 * @name addRoutes
+				 * @memberof routes
+				 * @method
+				 * @param {String} keyModel model to add routes to
+				 * @param {Array} routes to add to the model
+				 * @returns {Array} all the active routes
+				 * @public
+				 */
+				add: addRoutes,
+
+				/**
+				 * Remove routes to a model
+				 * @name removeRoutes
+				 * @memberof routes
+				 * @method
+				 * @param {String} keyModel model to remove routes to
+				 * @param {Array} routes to remove to the model
+				 * @returns {Array} all the active routes
+				 * @public
+				 */
+				remove: removeRoutes
+			}
 		}
 	});
 	

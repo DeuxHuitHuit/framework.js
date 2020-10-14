@@ -50,8 +50,7 @@
 			init: () => {},
 			canEnter: () => true,
 			canLeave: () => true,
-			model: () => key,
-			routes: () => []
+			model: () => key
 		};
 		
 		/**
@@ -66,6 +65,7 @@
 		const factory = function (pageData) {
 			let modelRef;
 			let isInited = false;
+			let routes = [];
 			
 			if (typeof model === 'object') {
 				modelRef = model;
@@ -120,6 +120,13 @@
 				},
 				setInited: () => {
 					isInited = true;
+				},
+				routes: (newRoutes) => {
+					if (!newRoutes) {
+						return routes;
+					}
+					routes = newRoutes;
+					return routes;
 				}
 			});
 
@@ -363,13 +370,28 @@
 	 * @name addRoutes
 	 * @memberof pages
 	 * @method
-	 * @param {String} modelKey model to add routes to
+	 * @param {String} keyModel model to add routes to
 	 * @param {Array} routes to add to the model
-	 * @returns {Boolean} if the addition was successful
+	 * @returns {Array} all the active routes
 	 * @private
 	 */
-	const addRoutes = (modelKey, routes) => {
-		return false;
+	const addRoutes = (keyModel, routes) => {
+		if (!pageModels[keyModel]) {
+			App.log({fx: 'error', args: 'Model "' + keyModel + '" not found.'});
+			return false;
+		}
+
+		if (keyModel === 'default') {
+			App.log({fx: 'error', args: 'You can\'t add routes to the default model'});
+			return false;
+		}
+
+		// new set to remove duplicates in array
+		pageModels[keyModel].routes([...new Set((pageModels[keyModel].routes()).concat(routes))]);
+
+		// todo 3.1.0 add verification if route is already used
+
+		return pageModels[keyModel].routes();
 	};
 
 	/**
@@ -377,12 +399,16 @@
 	 * @name removeRoutes
 	 * @memberof pages
 	 * @method
-	 * @param {String} modelKey model to remove routes to
+	 * @param {String} keyModel model to remove routes to
 	 * @param {Array} routes to remove to the model
-	 * @returns {Boolean} if the deletion was successful
+	 * @returns {Array} all the active routes
 	 * @private
 	 */
-	const removeRoutes = (modelKey, routes) => {
+	const removeRoutes = (keyModel, routes) => {
+		if (!pageModels[keyModel]) {
+			App.log({fx: 'error', args: 'Model "' + keyModel + '" not found.'});
+			return false;
+		}
 		return false;
 	};
 
@@ -522,9 +548,9 @@
 				 * @name addRoutes
 				 * @memberof routes
 				 * @method
-				 * @param {String} modelKey model to add routes to
+				 * @param {String} keyModel model to add routes to
 				 * @param {Array} routes to add to the model
-				 * @returns {Boolean} if the addition was successful
+				 * @returns {Array} all the active routes
 				 * @public
 				 */
 				add: addRoutes,
@@ -534,9 +560,9 @@
 				 * @name removeRoutes
 				 * @memberof routes
 				 * @method
-				 * @param {String} modelKey model to remove routes to
+				 * @param {String} keyModel model to remove routes to
 				 * @param {Array} routes to remove to the model
-				 * @returns {Boolean} if the deletion was successful
+				 * @returns {Array} all the active routes
 				 * @public
 				 */
 				remove: removeRoutes
