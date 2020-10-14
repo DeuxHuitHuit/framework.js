@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.0 - 9c80448 - build 210 - 2020-10-14
+/*! framework.js - v3.0.0 - ab4b377 - build 213 - 2020-10-14
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -2231,6 +2231,7 @@
 	
 	const pageModels = {};
 	const pageInstances = {};
+	const activeRoutes = {};
 
 	/**
 	 * Creates and a new factory function based on the
@@ -2249,27 +2250,6 @@
 	const createPageModel = function (key, model, override) {
 
 		/**
-		 * Page Param
-		 * @memberof pages
-		 * @typedef {Object} pageParam
-		 * @param {Function} actions @returns {object}
-		 * @param {Function} init
-		 * @param {Function} enter
-		 * @param {Function} leave
-		 * @param {Function} canEnter @returns {boolean}
-		 * @param {Function} canLeave @returns {boolean}
-		 * @param {Function} model @returns {string}
-		 * @param {Function} routes @return {Array}
-		 */
-		const base = {
-			actions: () => {},
-			init: () => {},
-			canEnter: () => true,
-			canLeave: () => true,
-			model: () => key
-		};
-		
-		/**
 		 * Page Model is a Factory function for page instances.
 		 * @name factory
 		 * @memberof pages
@@ -2281,7 +2261,6 @@
 		const factory = function (pageData) {
 			let modelRef;
 			let isInited = false;
-			let routes = [];
 			
 			if (typeof model === 'object') {
 				modelRef = model;
@@ -2315,9 +2294,25 @@
 				return pageData.key;
 			};
 
-			// insure this can't be overridden
-			const overwrites = Object.freeze({
-				key: getKey,
+			/**
+			 * Page Param
+			 * @memberof pages
+			 * @typedef {Object} pageParam
+			 * @param {Function} actions @returns {object}
+			 * @param {Function} init
+			 * @param {Function} enter
+			 * @param {Function} leave
+			 * @param {Function} canEnter @returns {boolean}
+			 * @param {Function} canLeave @returns {boolean}
+			 * @param {Function} model @returns {string}
+			 * @param {Function} routes @return {Array}
+			 */
+			const base = {
+				actions: () => {},
+				init: () => {},
+				canEnter: () => true,
+				canLeave: () => true,
+				model: () => key,
 				enter: (next) => {
 					const p = document.querySelector(getKey(true));
 					p.style.opacity = 1;
@@ -2329,27 +2324,28 @@
 					p.style.opacity = 0;
 					p.style.display = 'none';
 					App.callback(next);
-				},
+				}
+			};
+
+			// insure this can't be overridden
+			const overwrites = Object.freeze({
+				key: getKey,
 				data: () => pageData,
 				isInited: () => {
 					return isInited;
 				},
 				setInited: () => {
 					isInited = true;
-				},
-				routes: (newRoutes) => {
-					if (!newRoutes) {
-						return routes;
-					}
-					routes = newRoutes;
-					return routes;
 				}
 			});
 
 			// New deep copy frozen object
 			return Object.freeze(Object.assign({}, base, modelRef, overwrites));
 		};
-		
+
+		// create the empty array for the model in the routes references
+		activeRoutes[key] = [];
+
 		return factory;
 	};
 	
@@ -2550,38 +2546,6 @@
 	};
 
 	/**
-	 * Returns the first page object that matches the route param
-	 * @name getPageForHref
-	 * @memberof pages
-	 * @method
-	 * @param {String} href The href to search match for
-	 *
-	 * @returns {page} The page object or a new page with associated model
-	 * @private
-	 */
-	const getPageForHref = function (href) {
-
-		// check if the instance already exists
-		if (!!pageInstances[href]) {
-			return pageInstances[href];
-		}
-
-		// match with potential model
-		let model = Object.values(pageInstances).find((page) => {
-			const routes = page.routes();
-			// route found ?
-			return !!~matchRoute(href, routes);
-		});
-
-		if (!model) {
-			model = 'default';
-		}
-
-		// create instance with matched model
-		return createPage({key: href}, model, true);
-	};
-
-	/**
 	 * Add routes to a model
 	 * @name addRoutes
 	 * @memberof pages
@@ -2597,17 +2561,21 @@
 			return false;
 		}
 
+		if (!activeRoutes[keyModel]) {
+			activeRoutes[keyModel] = [];
+		}
+
 		if (keyModel === 'default') {
 			App.log({fx: 'error', args: 'You can\'t add routes to the default model'});
 			return false;
 		}
 
 		// new set to remove duplicates in array
-		pageModels[keyModel].routes([...new Set((pageModels[keyModel].routes()).concat(routes))]);
+		activeRoutes[keyModel] = ([...new Set((activeRoutes[keyModel]).concat(routes))]);
 
 		// todo 3.1.0 add verification if route is already used
 
-		return pageModels[keyModel].routes();
+		return activeRoutes[keyModel];
 	};
 
 	/**
@@ -2628,6 +2596,45 @@
 		return false;
 	};
 
+	/**
+	 * Returns the first page object that matches the href param
+	 * @name getPageForHref
+	 * @memberof pages
+	 * @method
+	 * @param {String} href The href to search match for
+	 *
+	 * @returns {page} The page object or a new page with associated model
+	 * @private
+	 */
+	const getPageForHref = function (href) {
+
+		// check if the instance already exists
+		if (!!pageInstances[href]) {
+			return pageInstances[href];
+		}
+
+		// match with potential model
+		let model = null;
+
+		for (const m in activeRoutes) {
+			if (activeRoutes.hasOwnProperty(m)) {
+				const modelRoutes = activeRoutes[m];
+				const match = !!~matchRoute(href, modelRoutes);
+				if (!!match) {
+					model = m;
+					break;
+				}
+			}
+		}
+
+		if (!model) {
+			model = 'default';
+		}
+
+		// create instance with matched model
+		return createPage({key: href}, model, true);
+	};
+
 	const loaded = (url) => {
 		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
 	};
@@ -2637,14 +2644,15 @@
 	/** Public Interfaces **/
 	global.App = Object.assign({}, global.App, {
 		pages: {
-			/**
-			 * @name matchRoute
-			 * @method
-			 * @memberof pages
-			 * {@link App.pages~matchRoute}
-			 * @private
-			 */
-			matchRoute: matchRoute,
+
+			matchRoute: () => {
+				App.log({
+					fx: 'warning',
+					args: 'App.pages.matchRoute() is deprecated please use App.pages.routes.match()'
+				});
+
+				return matchRoute.apply(this, arguments);
+			},
 
 			/**
 			 * Getter for all instances of a particular one
@@ -2760,6 +2768,25 @@
 			routes: {
 
 				/**
+				 * Get all the active routes
+				 * @name active
+				 * @memberof routes
+				 * @method
+				 * @returns {Object} all the active routes for all models
+				 * @public
+				 */
+				active: () => activeRoutes,
+
+				/**
+				 * @name match
+				 * @method
+				 * @memberof routes
+				 * {@link App.pages~matchRoute}
+				 * @public
+				 */
+				match: matchRoute,
+
+				/**
 				 * Add routes to a model
 				 * @name addRoutes
 				 * @memberof routes
@@ -2786,108 +2813,6 @@
 		}
 	});
 	
-})(window);
-
-/**
- * App routing
- *
- * @fileoverview Utility
- *
- * @author Deux Huit Huit <https://deuxhuithuit.com>
- * @license MIT <https://deuxhuithuit.mit-license.org>
- *
- * @namespace routing
- * @memberof App
- * @requires App
- */
-(function (global, undefined) {
-	'use strict';
-
-	/**
-	 * Factory for the query string parser
-	 * @return {Object} accessible methods
-	 */
-	const queryStringParser = (function () {
-		const a = /\+/g; // Regex for replacing addition symbol with a space
-		const r = /([^&=]+)=?([^&]*)/gi;
-		const d = function (s) {
-			return decodeURIComponent(s.replace(a, ' '));
-		};
-
-		/**
-		 * Parses the querystring into an object
-		 * @name parse
-		 * @memberof querystring
-		 * @method
-		 * @param {String} qs
-		 * @returns {Object}
-		 * @public
-		 */
-		const parse = function (qs) {
-			const u = {};
-			let e, q;
-
-			//if we dont have the parameter qs, use the window location search value
-			if (qs !== '' && !qs) {
-				qs = window.location.search;
-			}
-
-			//remove the first caracter (?)
-			q = qs.substring(1);
-
-			while ((e = r.exec(q))) {
-				u[d(e[1])] = d(e[2]);
-			}
-
-			return u;
-		};
-
-		/**
-		 * Format the object into a valid query string
-		 * @name stringify
-		 * @memberof querystring
-		 * @method
-		 * @param {Object} qs Object needed to be transformed into a string
-		 * @returns {String} Result
-		 * @public
-		 */
-		const stringify = function (qs) {
-			const aqs = Object.entries(qs).filter(function (e) {
-				return !!e[1];
-			}).map(function (e) {
-				return e[0] + '=' + global.encodeURIComponent(e[1]);
-			});
-			if (!aqs.length) {
-				return '';
-			}
-			return '?' + aqs.join('&');
-		};
-
-		return {
-			parse: parse,
-			stringify: stringify
-		};
-	})();
-
-	/** Public Interfaces **/
-	global.App = Object.assign({}, global.App, {
-		routing: {
-
-			/**
-			 * Facade to parse and stringify a query string
-			 * @namespace querystring
-			 * @constant
-			 * @property {Function} parse Parse the current queryString or the
-			 *   provided one returns an object
-			 * @property {Function} stringify Stringify the provided queryString
-			 *   and returns a String
-			 * @memberof routing
-			 * @public
-			 */
-			querystring: queryStringParser
-		}
-	});
-
 })(window);
 
 /**

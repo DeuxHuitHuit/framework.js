@@ -15,6 +15,7 @@
 	
 	const pageModels = {};
 	const pageInstances = {};
+	const activeRoutes = {};
 
 	/**
 	 * Creates and a new factory function based on the
@@ -33,27 +34,6 @@
 	const createPageModel = function (key, model, override) {
 
 		/**
-		 * Page Param
-		 * @memberof pages
-		 * @typedef {Object} pageParam
-		 * @param {Function} actions @returns {object}
-		 * @param {Function} init
-		 * @param {Function} enter
-		 * @param {Function} leave
-		 * @param {Function} canEnter @returns {boolean}
-		 * @param {Function} canLeave @returns {boolean}
-		 * @param {Function} model @returns {string}
-		 * @param {Function} routes @return {Array}
-		 */
-		const base = {
-			actions: () => {},
-			init: () => {},
-			canEnter: () => true,
-			canLeave: () => true,
-			model: () => key
-		};
-		
-		/**
 		 * Page Model is a Factory function for page instances.
 		 * @name factory
 		 * @memberof pages
@@ -65,7 +45,6 @@
 		const factory = function (pageData) {
 			let modelRef;
 			let isInited = false;
-			let routes = [];
 			
 			if (typeof model === 'object') {
 				modelRef = model;
@@ -99,9 +78,25 @@
 				return pageData.key;
 			};
 
-			// insure this can't be overridden
-			const overwrites = Object.freeze({
-				key: getKey,
+			/**
+			 * Page Param
+			 * @memberof pages
+			 * @typedef {Object} pageParam
+			 * @param {Function} actions @returns {object}
+			 * @param {Function} init
+			 * @param {Function} enter
+			 * @param {Function} leave
+			 * @param {Function} canEnter @returns {boolean}
+			 * @param {Function} canLeave @returns {boolean}
+			 * @param {Function} model @returns {string}
+			 * @param {Function} routes @return {Array}
+			 */
+			const base = {
+				actions: () => {},
+				init: () => {},
+				canEnter: () => true,
+				canLeave: () => true,
+				model: () => key,
 				enter: (next) => {
 					const p = document.querySelector(getKey(true));
 					p.style.opacity = 1;
@@ -113,27 +108,28 @@
 					p.style.opacity = 0;
 					p.style.display = 'none';
 					App.callback(next);
-				},
+				}
+			};
+
+			// insure this can't be overridden
+			const overwrites = Object.freeze({
+				key: getKey,
 				data: () => pageData,
 				isInited: () => {
 					return isInited;
 				},
 				setInited: () => {
 					isInited = true;
-				},
-				routes: (newRoutes) => {
-					if (!newRoutes) {
-						return routes;
-					}
-					routes = newRoutes;
-					return routes;
 				}
 			});
 
 			// New deep copy frozen object
 			return Object.freeze(Object.assign({}, base, modelRef, overwrites));
 		};
-		
+
+		// create the empty array for the model in the routes references
+		activeRoutes[key] = [];
+
 		return factory;
 	};
 	
@@ -334,38 +330,6 @@
 	};
 
 	/**
-	 * Returns the first page object that matches the route param
-	 * @name getPageForHref
-	 * @memberof pages
-	 * @method
-	 * @param {String} href The href to search match for
-	 *
-	 * @returns {page} The page object or a new page with associated model
-	 * @private
-	 */
-	const getPageForHref = function (href) {
-
-		// check if the instance already exists
-		if (!!pageInstances[href]) {
-			return pageInstances[href];
-		}
-
-		// match with potential model
-		let model = Object.values(pageInstances).find((page) => {
-			const routes = page.routes();
-			// route found ?
-			return !!~matchRoute(href, routes);
-		});
-
-		if (!model) {
-			model = 'default';
-		}
-
-		// create instance with matched model
-		return createPage({key: href}, model, true);
-	};
-
-	/**
 	 * Add routes to a model
 	 * @name addRoutes
 	 * @memberof pages
@@ -381,17 +345,21 @@
 			return false;
 		}
 
+		if (!activeRoutes[keyModel]) {
+			activeRoutes[keyModel] = [];
+		}
+
 		if (keyModel === 'default') {
 			App.log({fx: 'error', args: 'You can\'t add routes to the default model'});
 			return false;
 		}
 
 		// new set to remove duplicates in array
-		pageModels[keyModel].routes([...new Set((pageModels[keyModel].routes()).concat(routes))]);
+		activeRoutes[keyModel] = ([...new Set((activeRoutes[keyModel]).concat(routes))]);
 
 		// todo 3.1.0 add verification if route is already used
 
-		return pageModels[keyModel].routes();
+		return activeRoutes[keyModel];
 	};
 
 	/**
@@ -412,6 +380,45 @@
 		return false;
 	};
 
+	/**
+	 * Returns the first page object that matches the href param
+	 * @name getPageForHref
+	 * @memberof pages
+	 * @method
+	 * @param {String} href The href to search match for
+	 *
+	 * @returns {page} The page object or a new page with associated model
+	 * @private
+	 */
+	const getPageForHref = function (href) {
+
+		// check if the instance already exists
+		if (!!pageInstances[href]) {
+			return pageInstances[href];
+		}
+
+		// match with potential model
+		let model = null;
+
+		for (const m in activeRoutes) {
+			if (activeRoutes.hasOwnProperty(m)) {
+				const modelRoutes = activeRoutes[m];
+				const match = !!~matchRoute(href, modelRoutes);
+				if (!!match) {
+					model = m;
+					break;
+				}
+			}
+		}
+
+		if (!model) {
+			model = 'default';
+		}
+
+		// create instance with matched model
+		return createPage({key: href}, model, true);
+	};
+
 	const loaded = (url) => {
 		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
 	};
@@ -421,14 +428,15 @@
 	/** Public Interfaces **/
 	global.App = Object.assign({}, global.App, {
 		pages: {
-			/**
-			 * @name matchRoute
-			 * @method
-			 * @memberof pages
-			 * {@link App.pages~matchRoute}
-			 * @private
-			 */
-			matchRoute: matchRoute,
+
+			matchRoute: () => {
+				App.log({
+					fx: 'warning',
+					args: 'App.pages.matchRoute() is deprecated please use App.pages.routes.match()'
+				});
+
+				return matchRoute.apply(this, arguments);
+			},
 
 			/**
 			 * Getter for all instances of a particular one
@@ -542,6 +550,25 @@
 			 * @since 3.0.0
 			 */
 			routes: {
+
+				/**
+				 * Get all the active routes
+				 * @name active
+				 * @memberof routes
+				 * @method
+				 * @returns {Object} all the active routes for all models
+				 * @public
+				 */
+				active: () => activeRoutes,
+
+				/**
+				 * @name match
+				 * @method
+				 * @memberof routes
+				 * {@link App.pages~matchRoute}
+				 * @public
+				 */
+				match: matchRoute,
 
 				/**
 				 * Add routes to a model
