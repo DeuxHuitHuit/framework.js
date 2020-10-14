@@ -358,6 +358,34 @@
 		return createPage({key: href}, model, true);
 	};
 
+	/**
+	 * Add routes to a model
+	 * @name addRoutes
+	 * @memberof pages
+	 * @method
+	 * @param {String} modelKey model to add routes to
+	 * @param {Array} routes to add to the model
+	 * @returns {Boolean} if the addition was successful
+	 * @private
+	 */
+	const addRoutes = (modelKey, routes) => {
+		return false;
+	};
+
+	/**
+	 * Remove routes to a model
+	 * @name removeRoutes
+	 * @memberof pages
+	 * @method
+	 * @param {String} modelKey model to remove routes to
+	 * @param {Array} routes to remove to the model
+	 * @returns {Boolean} if the deletion was successful
+	 * @private
+	 */
+	const removeRoutes = (modelKey, routes) => {
+		return false;
+	};
+
 	const loaded = (url) => {
 		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
 	};
@@ -478,7 +506,41 @@
 			 * @public
 			 * @since 3.0.0
 			 */
-			loaded: loaded
+			loaded: loaded,
+
+			/**
+			 * App pages routes
+			 *
+			 * @namespace routes
+			 * @memberof pages
+			 * @since 3.0.0
+			 */
+			routes: {
+
+				/**
+				 * Add routes to a model
+				 * @name addRoutes
+				 * @memberof routes
+				 * @method
+				 * @param {String} modelKey model to add routes to
+				 * @param {Array} routes to add to the model
+				 * @returns {Boolean} if the addition was successful
+				 * @public
+				 */
+				add: addRoutes,
+
+				/**
+				 * Remove routes to a model
+				 * @name removeRoutes
+				 * @memberof routes
+				 * @method
+				 * @param {String} modelKey model to remove routes to
+				 * @param {Array} routes to remove to the model
+				 * @returns {Boolean} if the deletion was successful
+				 * @public
+				 */
+				remove: removeRoutes
+			}
 		}
 	});
 	
