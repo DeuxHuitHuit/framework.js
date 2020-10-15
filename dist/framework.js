@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.0 - ab4b377 - build 213 - 2020-10-14
+/*! framework.js - v3.0.0 - 45e8053 - build 220 - 2020-10-15
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -1572,10 +1572,12 @@
 			//Keep currentPage pointer for the callback in a new variable
 			//The currentPage pointer will be cleared after the next call
 			let leavingPage = currentPage;
+			let firstTime = false;
 
-			if (!nextPage.isInited) {
+			if (!nextPage.isInited()) {
 				nextPage.init();
 				nextPage.setInited();
+				firstTime = true;
 			}
 
 			/**
@@ -1623,7 +1625,7 @@
 				App.modules.notify('page.enter', { page: nextPage, route: route });
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			});
+			}, firstTime);
 		};
 
 		/**
@@ -1672,10 +1674,6 @@
 					node.style.display = 'none';
 
 					elem.appendChild(node);
-
-					// init page
-					nextPage.init();
-					nextPage.setInited();
 
 					/**
 					 * @event App#pages:loaded
@@ -1893,7 +1891,7 @@
 				page: currentPage,
 				route: currentRouteUrl
 			});
-		});
+		}, true);
 	};
 
 	/** Public Interfaces **/
@@ -2313,10 +2311,17 @@
 				canEnter: () => true,
 				canLeave: () => true,
 				model: () => key,
-				enter: (next) => {
+				enter: (next, firstTime = false) => {
 					const p = document.querySelector(getKey(true));
 					p.style.opacity = 1;
 					p.style.display = 'block';
+					if (!!firstTime) {
+						window.scrollTo({
+							top: 0,
+							left: 0,
+							behavior: 'auto'
+						});
+					}
 					App.callback(next);
 				},
 				leave: (next) => {
@@ -2644,15 +2649,6 @@
 	/** Public Interfaces **/
 	global.App = Object.assign({}, global.App, {
 		pages: {
-
-			matchRoute: () => {
-				App.log({
-					fx: 'warning',
-					args: 'App.pages.matchRoute() is deprecated please use App.pages.routes.match()'
-				});
-
-				return matchRoute.apply(this, arguments);
-			},
 
 			/**
 			 * Getter for all instances of a particular one

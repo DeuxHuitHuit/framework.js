@@ -97,10 +97,17 @@
 				canEnter: () => true,
 				canLeave: () => true,
 				model: () => key,
-				enter: (next) => {
+				enter: (next, firstTime = false) => {
 					const p = document.querySelector(getKey(true));
 					p.style.opacity = 1;
 					p.style.display = 'block';
+					if (!!firstTime) {
+						window.scrollTo({
+							top: 0,
+							left: 0,
+							behavior: 'auto'
+						});
+					}
 					App.callback(next);
 				},
 				leave: (next) => {

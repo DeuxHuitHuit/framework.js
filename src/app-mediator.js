@@ -249,10 +249,12 @@
 			//Keep currentPage pointer for the callback in a new variable
 			//The currentPage pointer will be cleared after the next call
 			let leavingPage = currentPage;
+			let firstTime = false;
 
-			if (!nextPage.isInited) {
+			if (!nextPage.isInited()) {
 				nextPage.init();
 				nextPage.setInited();
+				firstTime = true;
 			}
 
 			/**
@@ -300,7 +302,7 @@
 				App.modules.notify('page.enter', { page: nextPage, route: route });
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			});
+			}, firstTime);
 		};
 
 		/**
@@ -349,10 +351,6 @@
 					node.style.display = 'none';
 
 					elem.appendChild(node);
-
-					// init page
-					nextPage.init();
-					nextPage.setInited();
 
 					/**
 					 * @event App#pages:loaded
@@ -570,7 +568,7 @@
 				page: currentPage,
 				route: currentRouteUrl
 			});
-		});
+		}, true);
 	};
 
 	/** Public Interfaces **/
