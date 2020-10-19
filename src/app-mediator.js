@@ -54,25 +54,6 @@
 	};
 
 	/**
-	 * Check if the page is valid or not
-	 * @name validateNextPage
-	 * @memberof App
-	 * @method
-	 * @param {Object} nextPage PageObject
-	 * @returns {Boolean}
-	 * @private
-	 */
-	const validateNextPage = function (nextPage) {
-		let result = true;
-
-		if (!nextPage) {
-			result = false;
-		}
-
-		return result;
-	};
-
-	/**
 	 * Check if we can enter the next page
 	 * @name canEnterNextPage
 	 * @memberof App
@@ -366,6 +347,7 @@
 					App.modules.notify('pages.loaded', {
 						elem: elem,
 						data: data,
+						html: htmldata,
 						url: obj,
 						page: nextPage,
 						node: node,
@@ -388,7 +370,7 @@
 				return;
 			}
 
-			if (!validateNextPage(nextPage)) {
+			if (!nextPage) {
 				/**
 				 * @event App#pages:routeNotFound
 				 * @type {Object}
@@ -499,7 +481,7 @@
 
 			const nextPage = App.pages.getPageForRoute(route);
 
-			if (validateNextPage(nextPage) && canEnterNextPage(nextPage)) {
+			if (!!nextPage && canEnterNextPage(nextPage)) {
 				if (nextPage !== currentPage) {
 					gotoPage(route);
 				} else if (!!previousUrl && previousUrl !== getCurrentUrl()) {

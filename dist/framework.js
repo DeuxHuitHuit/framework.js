@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.0 - 45e8053 - build 220 - 2020-10-15
+/*! framework.js - v3.0.0 - ef0148c - build 223 - 2020-10-19
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -1377,25 +1377,6 @@
 	};
 
 	/**
-	 * Check if the page is valid or not
-	 * @name validateNextPage
-	 * @memberof App
-	 * @method
-	 * @param {Object} nextPage PageObject
-	 * @returns {Boolean}
-	 * @private
-	 */
-	const validateNextPage = function (nextPage) {
-		let result = true;
-
-		if (!nextPage) {
-			result = false;
-		}
-
-		return result;
-	};
-
-	/**
 	 * Check if we can enter the next page
 	 * @name canEnterNextPage
 	 * @memberof App
@@ -1689,6 +1670,7 @@
 					App.modules.notify('pages.loaded', {
 						elem: elem,
 						data: data,
+						html: htmldata,
 						url: obj,
 						page: nextPage,
 						node: node,
@@ -1711,7 +1693,7 @@
 				return;
 			}
 
-			if (!validateNextPage(nextPage)) {
+			if (!nextPage) {
 				/**
 				 * @event App#pages:routeNotFound
 				 * @type {Object}
@@ -1822,7 +1804,7 @@
 
 			const nextPage = App.pages.getPageForRoute(route);
 
-			if (validateNextPage(nextPage) && canEnterNextPage(nextPage)) {
+			if (!!nextPage && canEnterNextPage(nextPage)) {
 				if (nextPage !== currentPage) {
 					gotoPage(route);
 				} else if (!!previousUrl && previousUrl !== getCurrentUrl()) {
@@ -2287,6 +2269,11 @@
 
 			const getKey = (querySelector = false) => {
 				if (!!querySelector) {
+					App.log({
+						me: 'App.pages',
+						fx: 'warning',
+						args: 'page.key(true) is deprecated. please use page.selector() instead'
+					});
 					return '[data-page-url="' + pageData.key + '"]';
 				}
 				return pageData.key;
@@ -2335,6 +2322,7 @@
 			// insure this can't be overridden
 			const overwrites = Object.freeze({
 				key: getKey,
+				selector: () => pageData.key,
 				data: () => pageData,
 				isInited: () => {
 					return isInited;
