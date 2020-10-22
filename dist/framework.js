@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.0 - ac0f690 - build 225 - 2020-10-22
+/*! framework.js - v3.0.0 - f87811c - build 228 - 2020-10-22
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -1493,6 +1493,7 @@
 	 * @method
 	 * @param {String} obj Page requested
 	 * @param {String} previousPoppedUrl Url
+	 * @param {Boolean} changeUrl if goto need to change the url or not
 	 * @fires App#page:leave
 	 * @fires App#page:enter
 	 * @fires App#pages:failedtoparse
@@ -1510,7 +1511,7 @@
 	 * @this App
 	 * @private
 	 */
-	const gotoPage = function (obj, previousPoppedUrl) {
+	const gotoPage = function (obj, previousPoppedUrl, changeUrl = true) {
 		let nextPage;
 		let route = '';
 
@@ -1721,6 +1722,10 @@
 
 						App.log('Next page is the current one');
 					} else {
+
+						if (!!changeUrl) {
+							window.history.pushState({mediator: true}, '', obj);
+						}
 
 						/**
 						 * @event App#pages:loading
@@ -2267,6 +2272,8 @@
 				return null;
 			}
 
+			const getSelector = () => '[data-page-url="' + pageData.key + '"]';
+
 			/**
 			 * Page Param
 			 * @memberof pages
@@ -2287,7 +2294,7 @@
 				canLeave: () => true,
 				model: () => key,
 				enter: (next, firstTime = false) => {
-					const p = document.querySelector(getKey(true));
+					const p = document.querySelector(getSelector());
 					p.style.opacity = 1;
 					p.style.display = 'block';
 					if (!!firstTime) {
@@ -2300,7 +2307,7 @@
 					App.callback(next);
 				},
 				leave: (next) => {
-					const p = document.querySelector(getKey(true));
+					const p = document.querySelector(getSelector());
 					p.style.opacity = 0;
 					p.style.display = 'none';
 					App.callback(next);
@@ -2310,7 +2317,7 @@
 			// insure this can't be overridden
 			const overwrites = Object.freeze({
 				key: () => pageData.key,
-				selector: () => '[data-page-url="' + pageData.key + '"]',
+				selector: () => getSelector(),
 				data: () => pageData,
 				isInited: () => {
 					return isInited;
@@ -3165,6 +3172,7 @@
 			var rv = orig.apply(this, arguments);
 			var e = new window.Event(type);
 			e.arguments = arguments;
+			e.state = arguments[0] || undefined;
 			window.dispatchEvent(e);
 			return rv;
 		};

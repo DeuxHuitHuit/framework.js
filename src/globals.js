@@ -72,6 +72,7 @@
 			var rv = orig.apply(this, arguments);
 			var e = new window.Event(type);
 			e.arguments = arguments;
+			e.state = arguments[0] || undefined;
 			window.dispatchEvent(e);
 			return rv;
 		};

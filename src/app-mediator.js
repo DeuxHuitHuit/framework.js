@@ -170,6 +170,7 @@
 	 * @method
 	 * @param {String} obj Page requested
 	 * @param {String} previousPoppedUrl Url
+	 * @param {Boolean} changeUrl if goto need to change the url or not
 	 * @fires App#page:leave
 	 * @fires App#page:enter
 	 * @fires App#pages:failedtoparse
@@ -187,7 +188,7 @@
 	 * @this App
 	 * @private
 	 */
-	const gotoPage = function (obj, previousPoppedUrl) {
+	const gotoPage = function (obj, previousPoppedUrl, changeUrl = true) {
 		let nextPage;
 		let route = '';
 
@@ -398,6 +399,10 @@
 
 						App.log('Next page is the current one');
 					} else {
+
+						if (!!changeUrl) {
+							window.history.pushState({mediator: true}, '', obj);
+						}
 
 						/**
 						 * @event App#pages:loading
