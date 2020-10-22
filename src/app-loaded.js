@@ -34,12 +34,12 @@
 		// if the value exists
 		if (!!value) {
 			// call the function, with the value, but always async
-			setTimeout(function () {
+			window.setTimeout(function () {
 				App.callback(fx, [value, counter]);
 			}, 0);
 		} else if (counter < maxRetriesCount) {
 			// recurse
-			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
+			window.setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
 		} else if (!!App.log) {
 			App.log({
 				fx: 'error',

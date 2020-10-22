@@ -71,17 +71,7 @@
 				return null;
 			}
 
-			const getKey = (querySelector = false) => {
-				if (!!querySelector) {
-					App.log({
-						me: 'App.pages',
-						fx: 'warning',
-						args: 'page.key(true) is deprecated. please use page.selector() instead'
-					});
-					return '[data-page-url="' + pageData.key + '"]';
-				}
-				return pageData.key;
-			};
+			const getSelector = () => '[data-page-url="' + pageData.key + '"]';
 
 			/**
 			 * Page Param
@@ -103,7 +93,7 @@
 				canLeave: () => true,
 				model: () => key,
 				enter: (next, firstTime = false) => {
-					const p = document.querySelector(getKey(true));
+					const p = document.querySelector(getSelector());
 					p.style.opacity = 1;
 					p.style.display = 'block';
 					if (!!firstTime) {
@@ -116,7 +106,7 @@
 					App.callback(next);
 				},
 				leave: (next) => {
-					const p = document.querySelector(getKey(true));
+					const p = document.querySelector(getSelector());
 					p.style.opacity = 0;
 					p.style.display = 'none';
 					App.callback(next);
@@ -125,8 +115,8 @@
 
 			// insure this can't be overridden
 			const overwrites = Object.freeze({
-				key: getKey,
-				selector: () => '[data-page-url="' + pageData.key + '"]',
+				key: () => pageData.key,
+				selector: () => getSelector(),
 				data: () => pageData,
 				isInited: () => {
 					return isInited;

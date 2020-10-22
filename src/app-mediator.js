@@ -297,14 +297,14 @@
 				const htmldata = safeParseData(data);
 
 				// get the node
-				let node = htmldata.querySelector(nextPage.key(true));
+				let node = htmldata.querySelector(nextPage.selector());
 
 				// get the root node
 				const elem = document.querySelector(App.root());
 
 				if (!node) {
 					App.log({
-						args: ['Could not find "%s" in xhr data.', nextPage.key(true)],
+						args: ['Could not find "%s" in xhr data.', nextPage.selector()],
 						fx: 'error'
 					});
 

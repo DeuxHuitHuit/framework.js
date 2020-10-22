@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.0 - ef0148c - build 223 - 2020-10-19
+/*! framework.js - v3.0.0 - ac0f690 - build 225 - 2020-10-22
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -1108,12 +1108,12 @@
 		// if the value exists
 		if (!!value) {
 			// call the function, with the value, but always async
-			setTimeout(function () {
+			window.setTimeout(function () {
 				App.callback(fx, [value, counter]);
 			}, 0);
 		} else if (counter < maxRetriesCount) {
 			// recurse
-			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
+			window.setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
 		} else if (!!App.log) {
 			App.log({
 				fx: 'error',
@@ -1620,14 +1620,14 @@
 				const htmldata = safeParseData(data);
 
 				// get the node
-				let node = htmldata.querySelector(nextPage.key(true));
+				let node = htmldata.querySelector(nextPage.selector());
 
 				// get the root node
 				const elem = document.querySelector(App.root());
 
 				if (!node) {
 					App.log({
-						args: ['Could not find "%s" in xhr data.', nextPage.key(true)],
+						args: ['Could not find "%s" in xhr data.', nextPage.selector()],
 						fx: 'error'
 					});
 
@@ -2267,18 +2267,6 @@
 				return null;
 			}
 
-			const getKey = (querySelector = false) => {
-				if (!!querySelector) {
-					App.log({
-						me: 'App.pages',
-						fx: 'warning',
-						args: 'page.key(true) is deprecated. please use page.selector() instead'
-					});
-					return '[data-page-url="' + pageData.key + '"]';
-				}
-				return pageData.key;
-			};
-
 			/**
 			 * Page Param
 			 * @memberof pages
@@ -2321,8 +2309,8 @@
 
 			// insure this can't be overridden
 			const overwrites = Object.freeze({
-				key: getKey,
-				selector: () => pageData.key,
+				key: () => pageData.key,
+				selector: () => '[data-page-url="' + pageData.key + '"]',
 				data: () => pageData,
 				isInited: () => {
 					return isInited;
