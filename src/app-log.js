@@ -36,7 +36,7 @@
 		},
 			t1 = typeof a.args[0];
 
-		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
+		if (t1 === 'string' || t1 === 'number' || t1 === 'boolean') {
 			// append me before a.args[0]
 			a.args[0] = '[' + a.me + '] ' + a.args[0];
 		}
