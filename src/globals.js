@@ -67,13 +67,23 @@
 	};
 
 	const _wr = (type) => {
-		var orig = window.history[type];
+		const orig = window.history[type];
 		return function() {
-			var rv = orig.apply(this, arguments);
-			var e = new window.Event(type);
+			let isMediator = false;
+
+			if (!!arguments.length && typeof arguments[0] === 'object') {
+				isMediator = arguments[0].appFrameworkMediator || false;
+				delete(arguments[0].appFrameworkMediator);
+			}
+
+			const rv = orig.apply(this, arguments);
+			const e = new window.Event(type);
+
 			e.arguments = arguments;
 			e.state = arguments[0] || undefined;
+			e.mediator = isMediator;
 			window.dispatchEvent(e);
+
 			return rv;
 		};
 	};

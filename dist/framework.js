@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.0 - f87811c - build 228 - 2020-10-22
+/*! framework.js - v3.0.0 - 2c28ef3 - build 229 - 2020-11-09
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -1724,7 +1724,7 @@
 					} else {
 
 						if (!!changeUrl) {
-							window.history.pushState({mediator: true}, '', obj);
+							window.history.pushState({appFrameworkMediator: true}, '', obj);
 						}
 
 						/**
@@ -3167,13 +3167,23 @@
 	};
 
 	const _wr = (type) => {
-		var orig = window.history[type];
+		const orig = window.history[type];
 		return function() {
-			var rv = orig.apply(this, arguments);
-			var e = new window.Event(type);
+			let isMediator = false;
+
+			if (!!arguments.length && typeof arguments[0] === 'object') {
+				isMediator = arguments[0].appFrameworkMediator || false;
+				delete(arguments[0].appFrameworkMediator);
+			}
+
+			const rv = orig.apply(this, arguments);
+			const e = new window.Event(type);
+
 			e.arguments = arguments;
 			e.state = arguments[0] || undefined;
+			e.mediator = isMediator;
 			window.dispatchEvent(e);
+
 			return rv;
 		};
 	};
