@@ -401,7 +401,11 @@
 					} else {
 
 						if (!!changeUrl) {
-							window.history.pushState({appFrameworkMediator: true}, '', obj);
+							window.history.pushState({
+								data: {
+									mediator: true
+								}
+							}, '', obj);
 						}
 
 						/**

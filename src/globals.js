@@ -66,14 +66,14 @@
 		return false;
 	};
 
-	const _wr = (type) => {
+	const sorry = (type) => {
 		const orig = window.history[type];
-		return function() {
-			let isMediator = false;
+		return function () {
+			let data = {};
 
 			if (!!arguments.length && typeof arguments[0] === 'object') {
-				isMediator = arguments[0].appFrameworkMediator || false;
-				delete(arguments[0].appFrameworkMediator);
+				data = arguments[0].data || {};
+				delete(arguments[0].data);
 			}
 
 			const rv = orig.apply(this, arguments);
@@ -81,14 +81,14 @@
 
 			e.arguments = arguments;
 			e.state = arguments[0] || undefined;
-			e.mediator = isMediator;
+			e.data = data;
 			window.dispatchEvent(e);
 
 			return rv;
 		};
 	};
 
-	global.history.pushState = _wr('pushState');
-	global.history.replaceState = _wr('replaceState');
+	global.history.pushState = sorry('pushState');
+	global.history.replaceState = sorry('replaceState');
 
 })(window);
