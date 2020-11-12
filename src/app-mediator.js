@@ -188,7 +188,7 @@
 	 * @this App
 	 * @private
 	 */
-	const gotoPage = function (obj, previousPoppedUrl, changeUrl = true) {
+	const gotoPage = function (obj, previousPoppedUrl, pageData = {}, changeUrl = true) {
 		let nextPage;
 		let route = '';
 
@@ -231,12 +231,12 @@
 			//Keep currentPage pointer for the callback in a new variable
 			//The currentPage pointer will be cleared after the next call
 			let leavingPage = currentPage;
-			let firstTime = false;
+			pageData.firstTime = false;
 
 			if (!nextPage.isInited()) {
 				nextPage.init();
 				nextPage.setInited();
-				firstTime = true;
+				pageData.firstTime = true;
 			}
 
 			/**
@@ -284,7 +284,7 @@
 				App.modules.notify('page.enter', { page: nextPage, route: route });
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			}, firstTime);
+			}, pageData);
 		};
 
 		/**

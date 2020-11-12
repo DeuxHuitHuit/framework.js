@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.0 - 2c28ef3 - build 229 - 2020-11-09
+/*! framework.js - v3.0.0 - a9aec77 - build 231 - 2020-11-12
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -1249,7 +1249,7 @@
 		},
 			t1 = typeof a.args[0];
 
-		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
+		if (t1 === 'string' || t1 === 'number' || t1 === 'boolean') {
 			// append me before a.args[0]
 			a.args[0] = '[' + a.me + '] ' + a.args[0];
 		}
@@ -1511,7 +1511,7 @@
 	 * @this App
 	 * @private
 	 */
-	const gotoPage = function (obj, previousPoppedUrl, changeUrl = true) {
+	const gotoPage = function (obj, previousPoppedUrl, pageData = {}, changeUrl = true) {
 		let nextPage;
 		let route = '';
 
@@ -1554,12 +1554,12 @@
 			//Keep currentPage pointer for the callback in a new variable
 			//The currentPage pointer will be cleared after the next call
 			let leavingPage = currentPage;
-			let firstTime = false;
+			pageData.firstTime = false;
 
 			if (!nextPage.isInited()) {
 				nextPage.init();
 				nextPage.setInited();
-				firstTime = true;
+				pageData.firstTime = true;
 			}
 
 			/**
@@ -1607,7 +1607,7 @@
 				App.modules.notify('page.enter', { page: nextPage, route: route });
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			}, firstTime);
+			}, pageData);
 		};
 
 		/**
@@ -1724,7 +1724,11 @@
 					} else {
 
 						if (!!changeUrl) {
-							window.history.pushState({appFrameworkMediator: true}, '', obj);
+							window.history.pushState({
+								data: {
+									mediator: true
+								}
+							}, '', obj);
 						}
 
 						/**
@@ -2293,11 +2297,11 @@
 				canEnter: () => true,
 				canLeave: () => true,
 				model: () => key,
-				enter: (next, firstTime = false) => {
+				enter: (next, data) => {
 					const p = document.querySelector(getSelector());
 					p.style.opacity = 1;
 					p.style.display = 'block';
-					if (!!firstTime) {
+					if (!!data.firstTime || data.type === 'pushState') {
 						window.scrollTo({
 							top: 0,
 							left: 0,
@@ -3166,14 +3170,14 @@
 		return false;
 	};
 
-	const _wr = (type) => {
+	const sorry = (type) => {
 		const orig = window.history[type];
-		return function() {
-			let isMediator = false;
+		return function () {
+			let data = {};
 
 			if (!!arguments.length && typeof arguments[0] === 'object') {
-				isMediator = arguments[0].appFrameworkMediator || false;
-				delete(arguments[0].appFrameworkMediator);
+				data = arguments[0].data || {};
+				delete(arguments[0].data);
 			}
 
 			const rv = orig.apply(this, arguments);
@@ -3181,14 +3185,14 @@
 
 			e.arguments = arguments;
 			e.state = arguments[0] || undefined;
-			e.mediator = isMediator;
+			e.data = data;
 			window.dispatchEvent(e);
 
 			return rv;
 		};
 	};
 
-	global.history.pushState = _wr('pushState');
-	global.history.replaceState = _wr('replaceState');
+	global.history.pushState = sorry('pushState');
+	global.history.replaceState = sorry('replaceState');
 
 })(window);

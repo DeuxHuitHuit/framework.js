@@ -92,11 +92,11 @@
 				canEnter: () => true,
 				canLeave: () => true,
 				model: () => key,
-				enter: (next, firstTime = false) => {
+				enter: (next, data) => {
 					const p = document.querySelector(getSelector());
 					p.style.opacity = 1;
 					p.style.display = 'block';
-					if (!!firstTime) {
+					if (!!data.firstTime || data.type === 'pushState') {
 						window.scrollTo({
 							top: 0,
 							left: 0,
