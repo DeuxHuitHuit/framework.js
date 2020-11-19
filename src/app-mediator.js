@@ -403,7 +403,8 @@
 						if (!!changeUrl) {
 							window.history.pushState({
 								data: {
-									mediator: true
+									mediator: true,
+									type: 'pushState'
 								}
 							}, '', obj);
 						}
