@@ -406,6 +406,7 @@
 									mediator: true
 								}
 							}, '', obj);
+							pageData.type = 'pushState';
 						}
 
 						/**
