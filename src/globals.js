@@ -69,10 +69,14 @@
 	const sorry = (type) => {
 		const orig = window.history[type];
 		return function () {
-			let data = {};
+			let data = {
+				type: type
+			};
 
 			if (!!arguments.length && typeof arguments[0] === 'object') {
-				data = arguments[0].data || {};
+				data = arguments[0].data || {
+					type: type
+				};
 				delete(arguments[0].data);
 			}
 
