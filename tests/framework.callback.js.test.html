@@ -20,7 +20,7 @@
 	<script src="../src/app-callback.js"></script>
 	
 	<script>
-		(function ($, w) {
+		(function (w) {
 			'use strict';
 			QUnit.module('App.callback');
 			
@@ -55,7 +55,7 @@
 				assert.ok(App.callback(testCallbackWithException) === undefined, "okay with no logger");
 				
 				/* Create a fake logger to test */ 
-				window.App = $.extend(window.App, {
+				window.App = Object.assign(window.App, {
 					
 					// callback utility
 					log: function (arg) {
@@ -88,19 +88,9 @@
 					return one === 1;
 				};
 				
-				assert.ok(App.callback(test, 1), 'is working without');
 				assert.ok(App.callback(test, [1]), 'is working with');
 			});
-			
-			QUnit.test('Callback work with jQuery object', function NoArray(assert) {
-				var test = function (jquery) {
-					return !!jquery.jquery && !!jquery.show;
-				};
-				
-				assert.ok(App.callback(test, $()), 'is working without');
-				assert.ok(App.callback(test, [$()]), 'is working with');
-			});
-			
+
 			QUnit.test('Do now wrap nulls and undefineds and other falsy values', function NoFalsyWraps(assert) {
 				var test = function (one, two, three) {
 					return !one;
@@ -118,12 +108,7 @@
 					return one === 1;
 				};
 				
-				var tester = function () {
-					assert.ok(App.callback(test, arguments), 'is working with arguments');
-				};
-				
 				assert.ok(App.callback(test, [1, 2, 3]), 'is working with array');
-				tester(1, 2, 3);
 			});
 			
 			QUnit.module('App.loaded');
@@ -152,7 +137,7 @@
 				
 				App.loaded(value, callback);
 			});
-		})(jQuery, window);
+		})(window);
 	</script>
 </body>
 </html>

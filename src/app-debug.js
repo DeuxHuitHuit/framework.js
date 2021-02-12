@@ -10,11 +10,11 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/** Debug **/
-	var isDebugging = false;
+	let isDebugging = false;
 	
 	/**
 	 * Set or get the debug flag for the App
@@ -24,7 +24,7 @@
 	 * @param {Boolean=} value
 	 * @private
 	 */
-	var debug = function (value) {
+	const debug = function (value) {
 		if (value === true || value === false) {
 			isDebugging = value;
 		} else if (value === '!') {
@@ -34,7 +34,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		
 		/**
 		 * Set or get the debug flag for the App
@@ -47,4 +47,4 @@
 		debug: debug
 	});
 	
-})(jQuery, window);
+})(window);

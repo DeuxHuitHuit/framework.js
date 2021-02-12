@@ -6,14 +6,13 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App.actions
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
-	var keys = {};
-	var innerCall = false;
-	var stack = [];
+	const keys = {};
+	let innerCall = false;
+	let stack = [];
 
 	/**
 	 * Find the methods that matches with the notify key
@@ -25,16 +24,16 @@
 	 * @returns {Function} The function corresponding to the key, if it exists in actions object
 	 * @private
 	 */
-	var resolve = function (actions, key) {
-		if ($.isFunction(actions)) {
+	const resolve = function (actions, key) {
+		if (typeof actions === 'function') {
 			actions = actions();
 		}
 		if (!!actions) {
 			// Try the whole key
-			var tempFx = actions[key];
+			let tempFx = actions[key];
 			// If not, try JSONPath style...
-			if (!$.isFunction(tempFx)) {
-				var paths = keys[key] || key.split('.');
+			if (typeof tempFx !== 'function') {
+				const paths = keys[key] || key.split('.');
 				if (paths.length < 2) {
 					return;
 				}
@@ -42,13 +41,13 @@
 				tempFx = actions;
 				paths.every(function eachPath (p) {
 					tempFx = tempFx[p];
-					if (!$.isPlainObject(tempFx)) {
+					if (typeof tempFx !== 'object') {
 						return false; // exit
 					}
 					return true;
 				});
 			}
-			if ($.isFunction(tempFx)) {
+			if (typeof tempFx === 'function') {
 				return tempFx;
 			}
 		}
@@ -65,41 +64,41 @@
 	 * @returns {undefined}
 	 * @private
 	 */
-	var execute = function (actions, key, data, cb) {
-		var sp = 0;
-		var outerCall = false;
-		var read = function (f) {
-			if ($.isFunction(f.read)) {
+	const execute = function (actions, key, data, cb) {
+		let sp = 0;
+		let outerCall = false;
+		const read = function (f) {
+			if (typeof f.read === 'function') {
 				f.read(key, data);
 			}
 		};
-		var write = function (f) {
+		const write = function (f) {
 			f.write(key, data);
 		};
 		if (!innerCall) {
 			innerCall = true;
 			outerCall = true;
 		}
-		if (!$.isArray(actions)) {
+		if (!Array.isArray(actions)) {
 			actions = [actions];
 		}
-		if ($.isFunction(data) && !cb) {
+		if (typeof data === 'function' && !cb) {
 			cb = data;
 			data = undefined;
 		}
 		// Push all resolved actions to the stack
 		actions.forEach(function eachAction (a, index) {
-			var retValue = App.callback(a, [key, data]);
+			let retValue = App.callback(a, [key, data]);
 			if (!!cb && retValue !== undefined) {
 				App.callback(cb, [index, retValue]);
 			}
-			if ($.isFunction(retValue)) {
+			if (typeof retValue === 'function') {
 				retValue = {
 					read: null,
 					write: retValue
 				};
 			}
-			if ($.isPlainObject(retValue) && $.isFunction(retValue.write)) {
+			if (typeof retValue === 'object' && typeof retValue.write === 'function') {
 				if (App.debug() && !retValue.key) {
 					retValue.key = key;
 				}
@@ -109,12 +108,12 @@
 		// If outerCall, empty the stack
 		while (outerCall && stack.length > sp) {
 			// Capture current end
-			var sLen = stack.length;
+			const sLen = stack.length;
 			// Process current range only
-			for (var x = sp; x < sLen; x++) {
+			for (let x = sp; x < sLen; x++) {
 				read(stack[x]);
 			}
-			for (x = sp; x < sLen; x++) {
+			for (let x = sp; x < sLen; x++) {
 				write(stack[x]);
 			}
 			// Advance the stack pointer
@@ -128,7 +127,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * @namespace actions
 		 * @memberof App
@@ -173,4 +172,4 @@
 			}
 		}
 	});
-})(jQuery, window);
+})(window);

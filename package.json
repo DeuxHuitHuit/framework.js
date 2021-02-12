@@ -2,7 +2,7 @@
   "name": "framework",
   "title": "framework.js",
   "description": "Deux Huit Huit javascript framework",
-  "version": "2.2.4",
+  "version": "3.0.0",
   "homepage": "https://github.com/DeuxHuitHuit/framework.js",
   "author": {
     "name": "Deux Huit Huit",
@@ -18,29 +18,27 @@
   "license": "MIT",
   "keywords": [],
   "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
     "express": "4.17.1",
     "grunt": "~1.1.0",
+    "grunt-babel": "^8.0.0",
     "grunt-complexity": "~1.1",
     "grunt-contrib-clean": "^2.0.0",
     "grunt-contrib-concat": "~1.0.1",
     "grunt-contrib-connect": "~2.1.0",
     "grunt-contrib-jshint": "~2.1.0",
     "grunt-contrib-qunit": "^3.1.0",
-    "grunt-contrib-uglify": "^4.0.1",
     "grunt-contrib-watch": "^1.1.0",
-    "grunt-curl": "^2.5.1",
     "grunt-git-revision": "0.0.1",
     "grunt-jscs": "^3.0.1",
     "grunt-jsdoc": "^2.4.1",
     "matchdep": "~2.0.0",
     "minami": "^1.2.3",
     "optimist": "0.6.1",
-    "phantomjs": "~2.1.7",
-    "snyk": "1.*"
+    "phantomjs": "~2.1.7"
   },
   "scripts": {
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect",
     "test": "grunt dev test-latest",
     "ci": "grunt ci"
   },

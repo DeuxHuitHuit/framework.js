@@ -10,7 +10,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
 	/**
@@ -25,21 +25,21 @@
 	 * @param {Integer} counter Memo for the recursive function
 	 * @private
 	 */
-	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
+	const loaded = function (v, fx, delay, maxRetriesCount, counter) {
 		delay = Math.max(delay || 0, 100);
 		maxRetriesCount = maxRetriesCount || 10;
 		counter = counter || 1;
 		// get the value
-		var value = App.callback(v, [counter]);
+		const value = App.callback(v, [counter]);
 		// if the value exists
 		if (!!value) {
 			// call the function, with the value, but always async
-			setTimeout(function () {
+			window.setTimeout(function () {
 				App.callback(fx, [value, counter]);
 			}, 0);
 		} else if (counter < maxRetriesCount) {
 			// recurse
-			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
+			window.setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
 		} else if (!!App.log) {
 			App.log({
 				fx: 'error',
@@ -49,7 +49,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * Check if a ressource is loaded and callback when it is.
 		 * @name this
@@ -65,4 +65,4 @@
 		loaded: loaded
 	});
 
-})(jQuery, window);
+})(window);

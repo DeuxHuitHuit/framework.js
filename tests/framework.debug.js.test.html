@@ -21,7 +21,7 @@
 	<script src="../src/app-debug.js"></script>
 	
 	<script>
-		(function ($, w) {
+		(function (w) {
 			'use strict';
 			QUnit.module('App.debug');
 			
@@ -37,8 +37,8 @@
 				
 				//Make sure we got verbose for other test
 				App.debug(true); // adds verbose
-			});	
-		})(jQuery, window);
+			});
+		})(window);
 	</script>
 </body>
 </html>

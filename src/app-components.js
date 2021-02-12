@@ -10,11 +10,11 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/** Components **/
-	var components = {};
+	const components = {};
 
 	/**
 	 * Create a default model of a component with an init function
@@ -24,9 +24,9 @@
 	 * @private
 	 * @return {Object}
 	 */
-	var createAbstractComponent = function () {
+	const createAbstractComponent = function () {
 		return {
-			init: $.noop
+			init: () => {}
 		};
 	};
 
@@ -40,8 +40,8 @@
 	 * @return {Object} component
 	 * @private
 	 */
-	var extendComponent = function (component) {
-		return $.extend(createAbstractComponent(), component);
+	const extendComponent = function (component) {
+		return Object.assign({}, createAbstractComponent(), component);
 	};
 
 	/**
@@ -55,8 +55,8 @@
 	 * @param {Boolean} override fake news
 	 * @private
 	 */
-	var exportComponent = function (key, component, override) {
-		if ($.type(key) !== 'string') {
+	const exportComponent = function (key, component, override) {
+		if (typeof key !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		} else if (!!components[key] && !override) {
 			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
@@ -77,15 +77,15 @@
 	 * @return {Object} Merged component with the default model and the actual component code
 	 * @private
 	 */
-	var createComponent = function (key, options) {
+	const createComponent = function (key, options) {
 		if (!components[key]) {
 			App.log({args: ['Component %s is not found', key], fx: 'error'});
 			return Object.freeze(extendComponent({}));
 		}
 		
-		var c = components[key];
+		const c = components[key];
 		
-		if (!$.isFunction(c)) {
+		if (typeof c !== 'function') {
 			App.log({args: ['Component %s is not a function', key], fx: 'error'});
 			return Object.freeze(extendComponent({}));
 		}
@@ -94,7 +94,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		
 		// Components
 		components: {
@@ -140,4 +140,4 @@
 	
 	});
 	
-})(jQuery, window);
+})(window);

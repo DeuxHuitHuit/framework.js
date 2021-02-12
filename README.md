@@ -1,32 +1,13 @@
 # Deux Huit Huit's framework.js
 
-[![Built with Grunt](https://gruntjs.com/cdn/builtwith.png)](http://gruntjs.com/)
-[![Build Status](https://travis-ci.com/DeuxHuitHuit/framework.js.svg)](https://travis-ci.com/DeuxHuitHuit/framework.js)
-![Build Status](https://ci.appveyor.com/api/projects/status/t8sadjjdpbyl48dj?svg=true)
-[![Build Status](https://github.com/DeuxHuitHuit/framework.js/workflows/CI/badge.svg)](https://github.com/DeuxHuitHuit/framework.js/actions?query=workflow%3ACI)
-[![Build Status DEV](https://github.com/DeuxHuitHuit/framework.js/workflows/CI/badge.svg?branch=dev)](https://github.com/DeuxHuitHuit/framework.js/actions?query=workflow%3ACI+branch%3Adev)    
-[![David DM](https://david-dm.org/DeuxHuitHuit/framework.js/dev-status.svg?style=flat)](https://david-dm.org/DeuxHuitHuit/framework.js#info=devDependencies)
-[![Maintainability](https://api.codeclimate.com/v1/badges/afad7fc6575f77e1f43d/maintainability)](https://codeclimate.com/github/DeuxHuitHuit/framework.js/maintainability)
-
 > Deux Huit Huit javascript framework allowing to load and change page with ajax request with simplicity.
 
-The framework use jQuery and Underscore.js and extends some functionality.
-
-## Documentation
-
-* [Current Version](https://deuxhuithuit.github.io/framework.js/framework/2.2.4/)
-* [2.1.x](https://deuxhuithuit.github.io/framework.js/framework/2.1.0/)
-* [2.0.x](https://deuxhuithuit.github.io/framework.js/framework/2.0.1/)
-* [1.8.x](https://deuxhuithuit.github.io/framework.js/framework/1.8.0/)
-
-## Dependencies
-
-* https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
-* https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js (optional)
-* https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js (optional)
-* https://code.jquery.com/pep/0.4.1/pep.min.js (optional)
-
 ## History
+
+* **3.0.x**
+	* Removed the necessity to initiate a page at startup
+	* Page models have an instance per URL
+	* Removed all dependencies
 
 * **2.2.x**
 	* (fix) Remove this from forEach loop (978c748f29343dbddf39dcd6180e31df816aa9f4)
@@ -70,9 +51,3 @@ The framework use jQuery and Underscore.js and extends some functionality.
 * **1.2**: Added support for components
 * **1.1**: Patch update
 * **1.0**: Initial release
-
-### LICENSE
-
-[MIT](http://deuxhuithuit.mit-license.org)    
-Made with love in Montréal by [Deux Huit Huit](https://deuxhuithuit.com)    
-Copyrights (c) 2013-2020

@@ -23,7 +23,7 @@
 	<script src="../src/app-fx.js"></script>
 
 	<script>
-		(function ($, w) {
+		(function (w) {
 			'use strict';
 			QUnit.module('App.fx');
 			App.debug(true);
@@ -74,7 +74,7 @@
 				App.fx.notify('fx.test4', cb);
 				assert.ok(counter === 1, 'cb was called exactly once');
 			});
-		})(jQuery, window);
+		})(window);
 	</script>
 </body>
 

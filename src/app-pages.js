@@ -10,11 +10,12 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
-	var pageModels = {};
-	var pageInstances = {};
+	const pageModels = {};
+	const pageInstances = {};
+	const activeRoutes = {};
 
 	/**
 	 * Creates and a new factory function based on the
@@ -30,35 +31,8 @@
 	 * @returns {pageModel} The newly built factory function
 	 * @private
 	 */
-	var createPageModel = function (key, model, override) {
-		var ftrue = function () {
-			return true;
-		};
-		
-		var enterLeave = function (next) {
-			App.callback(next);
-		};
+	const createPageModel = function (key, model, override) {
 
-		/**
-		 * Page Param
-		 * @memberof pages
-		 * @typedef {Object} pageParam
-		 * @param {Function} actions @returns {object}
-		 * @param {Function} init
-		 * @param {Function} enter
-		 * @param {Function} leave
-		 * @param {Function} canEnter @returns {boolean}
-		 * @param {Function} canLeave @returns {boolean}
-		 */
-		var base = {
-			actions: $.noop,
-			init: $.noop,
-			enter: enterLeave,
-			leave: enterLeave,
-			canEnter: ftrue,
-			canLeave: ftrue
-		};
-		
 		/**
 		 * Page Model is a Factory function for page instances.
 		 * @name factory
@@ -68,19 +42,19 @@
 		 * @returns page
 		 * @private
 		 */
-		var factory = function (pageData) {
-			var modelRef;
-			var isInited = false;
+		const factory = function (pageData) {
+			let modelRef;
+			let isInited = false;
 			
-			if ($.isPlainObject(model)) {
+			if (typeof model === 'object') {
 				modelRef = model;
-			} else if ($.isFunction(model)) {
+			} else if (typeof model === 'function') {
 				modelRef = model.call(this, key, pageData, override);
-				if (!$.isPlainObject(modelRef)) {
+				if (typeof modelRef !== 'object') {
 					App.log({
 						args: [
 							'The exported page model function must return an object, ' +
-							'`%s` given (%s)', $.type(modelRef), modelRef
+							'`%s` given (%s)', typeof modelRef, modelRef
 						],
 						fx: 'error'
 					});
@@ -90,48 +64,75 @@
 				App.log({
 					args: [
 						'The exported page model must be an object or a function, ' +
-						'`%s` given (%s)', $.type(model), model
+						'`%s` given (%s)', typeof model, model
 					],
 					fx: 'error'
 				});
 				return null;
 			}
-			
-			var getKey = function () {
-				return pageData.key;
+
+			const getSelector = () => '[data-page-url="' + pageData.key + '"]';
+
+			/**
+			 * Page Param
+			 * @memberof pages
+			 * @typedef {Object} pageParam
+			 * @param {Function} actions @returns {object}
+			 * @param {Function} init
+			 * @param {Function} enter
+			 * @param {Function} leave
+			 * @param {Function} canEnter @returns {boolean}
+			 * @param {Function} canLeave @returns {boolean}
+			 * @param {Function} model @returns {string}
+			 * @param {Function} routes @return {Array}
+			 */
+			const base = {
+				actions: () => {},
+				init: () => {},
+				canEnter: () => true,
+				canLeave: () => true,
+				model: () => key,
+				enter: (next, data) => {
+					const p = document.querySelector(getSelector());
+					p.style.opacity = 1;
+					p.style.display = 'block';
+					if (!!data.firstTime || data.type === 'pushState') {
+						window.scrollTo({
+							top: 0,
+							left: 0,
+							behavior: 'auto'
+						});
+					}
+					App.callback(next);
+				},
+				leave: (next) => {
+					const p = document.querySelector(getSelector());
+					p.style.opacity = 0;
+					p.style.display = 'none';
+					App.callback(next);
+				}
 			};
-			
-			var routes = function () {
-				return pageData.routes;
-			};
-			
-			var loaded = function () {
-				return !!$(getKey()).length;
-			};
-			
-			// recuperate extra params...
-			var data = function () {
-				return pageData;
-			};
-			
+
 			// insure this can't be overridden
-			var overwrites = Object.freeze({
-				key: getKey, // css selector
-				loaded: loaded,
-				routes: routes,
-				data: data,
-				isInited: function () {
+			const overwrites = Object.freeze({
+				key: () => pageData.key,
+				selector: () => getSelector(),
+				data: () => pageData,
+				isInited: () => {
 					return isInited;
 				},
-				setInited: function () {
+				setInited: () => {
 					isInited = true;
 				}
 			});
-			
+
 			// New deep copy frozen object
-			return Object.freeze($.extend(true, {}, base, modelRef, overwrites));
+			return Object.freeze(Object.assign({}, base, modelRef, overwrites));
 		};
-		
+
+		// create the empty array for the model in the routes references
+		activeRoutes[key] = [];
+
 		return factory;
 	};
 	
@@ -146,10 +147,10 @@
 	 * @returns {?page} Null if something goes wrong
 	 * @private
 	 */
-	var createPage = function (pageData, keyModel, override) {
+	const createPage = function (pageData, keyModel, override) {
 		//Find the page model associated
-		var pageModel = pageModels[keyModel];
-		var pageInst;
+		const pageModel = pageModels[keyModel];
+		let pageInst;
 		
 		if (!pageModel) {
 			App.log({args: ['Model `%s` not found', keyModel], fx: 'error'});
@@ -183,8 +184,8 @@
 	 * @returns {pageModel}
 	 * @private
 	 */
-	var registerPageModel = function (key, pageModel, override) {
-		var keyType = $.type(key);
+	const registerPageModel = function (key, pageModel, override) {
+		const keyType = typeof key;
 		if (keyType !== 'string') {
 			App.log({
 				args: ['`key` must be a string, `%s` given (%s).', keyType, key],
@@ -220,34 +221,14 @@
 	 * @return {pageModel}
 	 * @private
 	 */
-	var exportPage = function (key, model, override) {
+	const exportPage = function (key, model, override) {
 		// Pass all args to the factory
-		var pageModel = createPageModel(key, model, override);
+		const pageModel = createPageModel(key, model, override);
 		// Only work with pageModel afterwards
 		return registerPageModel(key, pageModel, override);
 	};
 	
-	/**
-	 * Validate a route object
-	 * @name validateRoute
-	 * @memberof pages
-	 * @method
-	 * @returns {Boolean}
-	 * @private
-	 */
-	var validateRoute = function (route) {
-		var result = false;
-		
-		if (!route) {
-			App.log({args: 'No route set.', fx: 'error'});
-		} else {
-			result = true;
-		}
-		
-		return result;
-	};
-	
-	var routeMatchStrategies = {
+	const routeMatchStrategies = {
 		regexp: function (testRoute, route, cb) {
 			if (testRoute.test(route)) {
 				return cb();
@@ -255,7 +236,7 @@
 			return true;
 		},
 		string: function (testRoute, route, cb) {
-			var regex;
+			let regex;
 			// be sure to escape uri
 			route = decodeURIComponent(route);
 			
@@ -263,7 +244,7 @@
 			route = route.split('#')[0];
 			
 			// avoid RegExp if possible
-			if (testRoute == route) {
+			if (testRoute === route) {
 				return cb();
 			}
 			
@@ -312,14 +293,14 @@
 	 * @returns {Integer} The index of the matched route or -1 if no match
 	 * @private
 	 */
-	var matchRoute = function (route, routes) {
-		var index = -1;
-		var found = function (i) {
+	const matchRoute = function (route, routes) {
+		let index = -1;
+		const found = function (i) {
 			index = i;
 			return false; // exit every
 		};
 		
-		if ($.type(route) !== 'string') {
+		if (typeof route !== 'string') {
 			App.log({args: '`route` must be a string', fx: 'error'});
 			return index;
 		}
@@ -333,13 +314,13 @@
 				routes = Object.values(routes);
 			}
 			routes.every(function matchOneRoute (testRoute, i) {
-				var routeType = $.type(testRoute);
-				var routeStrategy = routeMatchStrategies[routeType];
-				var cb = function () {
+				const routeType = typeof testRoute;
+				const routeStrategy = routeMatchStrategies[routeType];
+				const cb = function () {
 					return found(i);
 				};
 				
-				if ($.isFunction(routeStrategy)) {
+				if (typeof routeStrategy === 'function') {
 					return routeStrategy(testRoute, route, cb);
 				} else if (testRoute === route) {
 					return cb();
@@ -352,49 +333,104 @@
 	};
 
 	/**
-	 * Returns the first page object that matches the route param
-	 * @name getPageForRoute
+	 * Add routes to a model
+	 * @name addRoutes
 	 * @memberof pages
 	 * @method
-	 * @param {String} route The route to search match for
-	 *
-	 * @returns {?page} The page object or null if not found
+	 * @param {String} keyModel model to add routes to
+	 * @param {Array} routes to add to the model
+	 * @returns {Array} all the active routes
 	 * @private
 	 */
-	var getPageForRoute = function (route) {
-		if (validateRoute(route)) {
-			var p = Object.values(pageInstances).find(function walkPage (page) {
-				var routes = page.routes();
-				// route found ?
-				return !!~matchRoute(route, routes);
-			});
-			if (!!p) {
-				return p;
-			}
+	const addRoutes = (keyModel, routes) => {
+		if (!pageModels[keyModel]) {
+			App.log({fx: 'error', args: 'Model "' + keyModel + '" not found.'});
+			return false;
 		}
-		return null;
+
+		if (!activeRoutes[keyModel]) {
+			activeRoutes[keyModel] = [];
+		}
+
+		if (keyModel === 'default') {
+			App.log({fx: 'error', args: 'You can\'t add routes to the default model'});
+			return false;
+		}
+
+		// new set to remove duplicates in array
+		activeRoutes[keyModel] = ([...new Set((activeRoutes[keyModel]).concat(routes))]);
+
+		// todo 3.1.0 add verification if route is already used
+
+		return activeRoutes[keyModel];
 	};
 
-	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
-		pages: {
-			/**
-			 * @name matchRoute
-			 * @method
-			 * @memberof pages
-			 * {@link App.pages~matchRoute}
-			 * @private
-			 */
-			matchRoute: matchRoute,
+	/**
+	 * Remove routes to a model
+	 * @name removeRoutes
+	 * @memberof pages
+	 * @method
+	 * @param {String} keyModel model to remove routes to
+	 * @param {Array} routes to remove to the model
+	 * @returns {Array} all the active routes
+	 * @private
+	 */
+	const removeRoutes = (keyModel, routes) => {
+		if (!pageModels[keyModel]) {
+			App.log({fx: 'error', args: 'Model "' + keyModel + '" not found.'});
+			return false;
+		}
+		return false;
+	};
 
-			/**
-			 * @name validateRoute
-			 * @method
-			 * @memberof pages
-			 * {@link App.pages~validateRoute}
-			 * @private
-			 */
-			validateRoute: validateRoute,
+	/**
+	 * Returns the first page object that matches the href param
+	 * @name getPageForHref
+	 * @memberof pages
+	 * @method
+	 * @param {String} href The href to search match for
+	 *
+	 * @returns {page} The page object or a new page with associated model
+	 * @private
+	 */
+	const getPageForHref = function (href) {
+
+		// check if the instance already exists
+		if (!!pageInstances[href]) {
+			return pageInstances[href];
+		}
+
+		// match with potential model
+		let model = null;
+
+		for (const m in activeRoutes) {
+			if (activeRoutes.hasOwnProperty(m)) {
+				const modelRoutes = activeRoutes[m];
+				const match = !!~matchRoute(href, modelRoutes);
+				if (!!match) {
+					model = m;
+					break;
+				}
+			}
+		}
+
+		if (!model) {
+			model = 'default';
+		}
+
+		// create instance with matched model
+		return createPage({key: href}, model, true);
+	};
+
+	const loaded = (url) => {
+		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
+	};
+
+	registerPageModel('default', createPageModel('default', {}, true), {});
+
+	/** Public Interfaces **/
+	global.App = Object.assign({}, global.App, {
+		pages: {
 
 			/**
 			 * Getter for all instances of a particular one
@@ -424,7 +460,7 @@
 
 			/**
 			 * Returns the first page object that matches the route param
-			 * @name getPageForRoute
+			 * @name getPageForHref
 			 * @memberof pages
 			 * @method
 			 * @param {String} route The route to search match for
@@ -432,11 +468,11 @@
 			 * @returns {?page} The page object or null if not found
 			 * @public
 			 */
-			getPageForRoute: getPageForRoute,
+			getPageForHref: getPageForHref,
 
 			/**
 			 * Returns the page based the key and fallbacks to
-			 * the [route]{@link getPageForRoute} if noting is found.
+			 * the [route]{@link getPageForHref} if noting is found.
 			 * @name page
 			 * @method
 			 * @memberof pages
@@ -446,11 +482,11 @@
 			 */
 			page: function (keyOrRoute) {
 				//Try to get the page by the key
-				var result = pageInstances[keyOrRoute];
-				
+				let result = pageInstances[keyOrRoute];
+
 				//if no result found try with the route
 				if (!!!result) {
-					result = getPageForRoute(keyOrRoute);
+					result = getPageForHref(keyOrRoute);
 				}
 				
 				return result;
@@ -486,8 +522,73 @@
 			 * @return {pageModel}
 			 * @public
 			 */
-			exports: exportPage
+			exports: exportPage,
+
+			/**
+			 * Check if the page is loaded from a given url
+			 * @name exports
+			 * @memberof pages
+			 * @method
+			 * @param {String} url the url to check
+			 * @return {Boolean}
+			 * @public
+			 * @since 3.0.0
+			 */
+			loaded: loaded,
+
+			/**
+			 * App pages routes
+			 *
+			 * @namespace routes
+			 * @memberof pages
+			 * @since 3.0.0
+			 */
+			routes: {
+
+				/**
+				 * Get all the active routes
+				 * @name active
+				 * @memberof routes
+				 * @method
+				 * @returns {Object} all the active routes for all models
+				 * @public
+				 */
+				active: () => activeRoutes,
+
+				/**
+				 * @name match
+				 * @method
+				 * @memberof routes
+				 * {@link App.pages~matchRoute}
+				 * @public
+				 */
+				match: matchRoute,
+
+				/**
+				 * Add routes to a model
+				 * @name addRoutes
+				 * @memberof routes
+				 * @method
+				 * @param {String} keyModel model to add routes to
+				 * @param {Array} routes to add to the model
+				 * @returns {Array} all the active routes
+				 * @public
+				 */
+				add: addRoutes,
+
+				/**
+				 * Remove routes to a model
+				 * @name removeRoutes
+				 * @memberof routes
+				 * @method
+				 * @param {String} keyModel model to remove routes to
+				 * @param {Array} routes to remove to the model
+				 * @returns {Array} all the active routes
+				 * @public
+				 */
+				remove: removeRoutes
+			}
 		}
 	});
 	
-})(jQuery, window);
+})(window);

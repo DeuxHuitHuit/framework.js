@@ -28,14 +28,13 @@ module.exports = function fxGruntConfig (grunt) {
 		'/tests/framework.actions.js.test.html',
 		'/tests/framework.fx.js.test.html',
 		'/tests/framework.app.js.test.html',
-		'/tests/framework.loader.js.test.html',
 		'/tests/framework.storage.js.test.html'
 	];
 	
 	var TEST_URIS = [];
 	var TEST_URIS_LT = [];
 	var TEST_URIS_CI = [];
-	var TEST_QS = '?noglobals=true&jquery=';
+	var TEST_QS = '?noglobals=true';
 	
 	// for qunit
 	var createTestUris = function () {
@@ -81,6 +80,28 @@ module.exports = function fxGruntConfig (grunt) {
 		buildnum: {
 			options: {
 				file: BUILD_FILE
+			}
+		},
+		babel: {
+			options: {
+				sourceMap: false,
+				presets: [[
+					'@babel/preset-env',
+					{
+						modules: false,
+						targets: {
+							ie: 11
+						}
+					}
+				]],
+				minified: true,
+				comments: false,
+				plugins: []
+			},
+			dist: {
+				files: {
+					'dist/<%= pkg.name %>.min.js': 'dist/<%= pkg.name %>.js'
+				}
 			}
 		},
 		meta: {
@@ -180,10 +201,10 @@ module.exports = function fxGruntConfig (grunt) {
 				browser: true,
 				
 				globals: {
-					jQuery: true,
+					document: true,
 					console: true,
 					App: true,
-					Loader: true
+					window: true
 				}
 			}
 		},
@@ -208,9 +229,6 @@ module.exports = function fxGruntConfig (grunt) {
 				},
 				preserveComments: false
 			}
-		},
-		curl: {
-			'tests/jquery.js': 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.js'
 		},
 		connect: {
 			server: {
@@ -303,13 +321,13 @@ module.exports = function fxGruntConfig (grunt) {
 		// Default task.
 		grunt.registerTask('test', ['connect', 'qunit:all']);
 		grunt.registerTask('test-latest', ['connect', 'qunit:latest']);
-		grunt.registerTask('test-ci', ['curl', 'connect', 'qunit:ci']);
+		grunt.registerTask('test-ci', ['connect', 'qunit:ci']);
 		grunt.registerTask('dev', ['jshint', 'jscs', 'complexity']);
 		grunt.registerTask('build', [
 			'buildnum',
 			'revision',
 			'concat',
-			'uglify',
+			'babel',
 			'fix-source-map'
 		]);
 		grunt.registerTask('doc', ['clean:doc','jsdoc']);

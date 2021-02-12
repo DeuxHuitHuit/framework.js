@@ -6,12 +6,11 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App.fx
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
-	var bindings = {};
+	const bindings = {};
 
 	/**
 	 * Defines a custom name property on the fx object, if debugging is enabled.
@@ -23,8 +22,8 @@
 	 * @param {Function} fx The function
 	 * @private
 	 */
-	var setFxName = function (key, fx) {
-		if (App.debug() && Object.defineProperty) {
+	const setFxName = function (key, fx) {
+		if (!!App.debug() && Object.defineProperty) {
 			try {
 				Object.defineProperty(fx, 'name', { value: key });
 			} catch (ex) { }
@@ -43,8 +42,8 @@
 	 * @returns this
 	 * @private
 	 */
-	var notify = function (key, data, cb) {
-		var fx = bindings[key];
+	const notify = function (key, data, cb) {
+		const fx = bindings[key];
 		if (!fx) {
 			App.log({ args: ['Function key %s did not resolve to anything', key], fx: 'warn' });
 		} else {
@@ -64,12 +63,12 @@
 	 * @returns {Object} The newly created function
 	 * @private
 	 */
-	var exportsFx = function (key, fx, override) {
-		if ($.type(key) !== 'string') {
+	const exportsFx = function (key, fx, override) {
+		if (typeof key !== 'string') {
 			App.log({ args: ['`key` must be a string', key], fx: 'error' });
 		} else if (!!bindings[key] && !override) {
 			App.log({ args: ['Overwriting function key %s is not allowed', key], fx: 'error' });
-		} else if (!$.isFunction(fx)) {
+		} else if (typeof fx !== 'function') {
 			App.log({ args: ['Function key %s is not a function', key], fx: 'error' });
 		} else {
 			// Try to set the name of the function
@@ -80,7 +79,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * @namespace fx
 		 * @memberof App
@@ -114,4 +113,4 @@
 			exports: exportsFx
 		}
 	});
-})(jQuery, window);
+})(window);

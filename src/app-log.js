@@ -10,7 +10,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
 	/**
@@ -22,28 +22,28 @@
 	 * @returns {Object} Formated object
 	 * @private
 	 */
-	var argsToObject = function (arg) {
+	const argsToObject = function (arg) {
 		// ensure that args is an array
-		if (!!arg.args && !$.isArray(arg.args)) {
+		if (!!arg.args && !Array.isArray(arg.args)) {
 			arg.args = [arg.args];
 		}
 
 		// our copy
-		var a = {
+		const a = {
 			args: arg.args || arguments,
 			fx: arg.fx || 'warn',
 			me: arg.me || 'App'
 		},
-			t1 = $.type(a.args[0]);
+			t1 = typeof a.args[0];
 
-		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
+		if (t1 === 'string' || t1 === 'number' || t1 === 'boolean') {
 			// append me before a.args[0]
 			a.args[0] = '[' + a.me + '] ' + a.args[0];
 		}
 		return a;
 	};
 
-	var logs = [];
+	const logs = [];
 
 	/**
 	 * Log the received data with the appropriate effect (log, error, info...)
@@ -53,17 +53,17 @@
 	 * @param {String|Object|Array} arg The value or values to log
 	 * @private
 	 */
-	var log = function (arg) {
+	const log = function (arg) {
 		// no args, exit
 		if (!arg) {
 			return this;
 		}
 
-		var a = argsToObject(arg);
+		const a = argsToObject(arg);
 
 		if (App.debug()) {
 			// make sure fx exists
-			if (!$.isFunction(console[a.fx])) {
+			if (typeof console[a.fx] !== 'function') {
 				a.fx = 'log';
 			}
 			// call it
@@ -81,7 +81,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 
 		/**
 		 * Log the received data with the appropriate effect (log, error, info...)
@@ -106,4 +106,4 @@
 		}
 	});
 
-})(jQuery, window);
+})(window);

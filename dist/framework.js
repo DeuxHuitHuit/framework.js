@@ -1,4 +1,4 @@
-/*! framework.js - v2.2.4 - 978c748f29 - build 173 - 2020-04-01
+/*! framework.js - v3.0.0 - f7fa30e - build 232 - 2020-11-19
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -9,14 +9,13 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App.actions
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
-	var keys = {};
-	var innerCall = false;
-	var stack = [];
+	const keys = {};
+	let innerCall = false;
+	let stack = [];
 
 	/**
 	 * Find the methods that matches with the notify key
@@ -28,16 +27,16 @@
 	 * @returns {Function} The function corresponding to the key, if it exists in actions object
 	 * @private
 	 */
-	var resolve = function (actions, key) {
-		if ($.isFunction(actions)) {
+	const resolve = function (actions, key) {
+		if (typeof actions === 'function') {
 			actions = actions();
 		}
 		if (!!actions) {
 			// Try the whole key
-			var tempFx = actions[key];
+			let tempFx = actions[key];
 			// If not, try JSONPath style...
-			if (!$.isFunction(tempFx)) {
-				var paths = keys[key] || key.split('.');
+			if (typeof tempFx !== 'function') {
+				const paths = keys[key] || key.split('.');
 				if (paths.length < 2) {
 					return;
 				}
@@ -45,13 +44,13 @@
 				tempFx = actions;
 				paths.every(function eachPath (p) {
 					tempFx = tempFx[p];
-					if (!$.isPlainObject(tempFx)) {
+					if (typeof tempFx !== 'object') {
 						return false; // exit
 					}
 					return true;
 				});
 			}
-			if ($.isFunction(tempFx)) {
+			if (typeof tempFx === 'function') {
 				return tempFx;
 			}
 		}
@@ -68,41 +67,41 @@
 	 * @returns {undefined}
 	 * @private
 	 */
-	var execute = function (actions, key, data, cb) {
-		var sp = 0;
-		var outerCall = false;
-		var read = function (f) {
-			if ($.isFunction(f.read)) {
+	const execute = function (actions, key, data, cb) {
+		let sp = 0;
+		let outerCall = false;
+		const read = function (f) {
+			if (typeof f.read === 'function') {
 				f.read(key, data);
 			}
 		};
-		var write = function (f) {
+		const write = function (f) {
 			f.write(key, data);
 		};
 		if (!innerCall) {
 			innerCall = true;
 			outerCall = true;
 		}
-		if (!$.isArray(actions)) {
+		if (!Array.isArray(actions)) {
 			actions = [actions];
 		}
-		if ($.isFunction(data) && !cb) {
+		if (typeof data === 'function' && !cb) {
 			cb = data;
 			data = undefined;
 		}
 		// Push all resolved actions to the stack
 		actions.forEach(function eachAction (a, index) {
-			var retValue = App.callback(a, [key, data]);
+			let retValue = App.callback(a, [key, data]);
 			if (!!cb && retValue !== undefined) {
 				App.callback(cb, [index, retValue]);
 			}
-			if ($.isFunction(retValue)) {
+			if (typeof retValue === 'function') {
 				retValue = {
 					read: null,
 					write: retValue
 				};
 			}
-			if ($.isPlainObject(retValue) && $.isFunction(retValue.write)) {
+			if (typeof retValue === 'object' && typeof retValue.write === 'function') {
 				if (App.debug() && !retValue.key) {
 					retValue.key = key;
 				}
@@ -112,12 +111,12 @@
 		// If outerCall, empty the stack
 		while (outerCall && stack.length > sp) {
 			// Capture current end
-			var sLen = stack.length;
+			const sLen = stack.length;
 			// Process current range only
-			for (var x = sp; x < sLen; x++) {
+			for (let x = sp; x < sLen; x++) {
 				read(stack[x]);
 			}
-			for (x = sp; x < sLen; x++) {
+			for (let x = sp; x < sLen; x++) {
 				write(stack[x]);
 			}
 			// Advance the stack pointer
@@ -131,7 +130,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * @namespace actions
 		 * @memberof App
@@ -176,7 +175,7 @@
 			}
 		}
 	});
-})(jQuery, window);
+})(window);
 
 /**
  * App Callback functionnality
@@ -190,7 +189,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/**
@@ -202,15 +201,14 @@
 	 * @return {Array}
 	 * @private
 	 */
-	var argsToArray = function (args) {
-		var isNull = (args === null);
-		var isNotUndefined = (args !== undefined);
-		var isNotAnArray = !$.isArray(args);
-		var noLength = !!args && !$.isNumeric(args.length);
-		var isString = $.type(args) === 'string';
-		var isjQuery = !!args && !!args.jquery;
-		
-		if (isNull || (isNotUndefined && isNotAnArray && (noLength || isString || isjQuery))) {
+	const argsToArray = function (args) {
+		const isNull = (args === null);
+		const isNotUndefined = (args !== undefined);
+		const isNotAnArray = !Array.isArray(args);
+		const noLength = !!args && !isNaN(args.length);
+		const isString = typeof args === 'string';
+
+		if (isNull || (isNotUndefined && isNotAnArray && (noLength || isString))) {
 			// put single parameter inside an array
 			args = [args];
 		}
@@ -229,20 +227,20 @@
 	 * @return {*}
 	 * @private
 	 */
-	var callback = function (fx, args) {
+	const callback = function (fx, args) {
 		try {
 			args = argsToArray(args);
 			
-			if ($.isFunction(fx)) {
+			if (typeof fx === 'function') {
 				// IE8 does not allow null/undefined args
 				return fx.apply(this, args || []);
 				
-			} else if ($.isPlainObject(fx)) {
+			} else if (typeof fx === 'object') {
 				return fx;
 			}
 		} catch (err) {
-			var stack = err.stack;
-			var msg = (err.message || err) + '\n' + (stack || '');
+			const stack = err.stack;
+			const msg = (err.message || err) + '\n' + (stack || '');
 			
 			App.log({args: [msg, err], fx: 'error'});
 		}
@@ -250,7 +248,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		
 		/**
 		 * Execute the method received with the arguments received
@@ -266,7 +264,7 @@
 		callback: callback
 	});
 	
-})(jQuery, window);
+})(window);
 
 /**
  * Components are factory method that will generate a instance of a component.
@@ -280,11 +278,11 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/** Components **/
-	var components = {};
+	const components = {};
 
 	/**
 	 * Create a default model of a component with an init function
@@ -294,9 +292,9 @@
 	 * @private
 	 * @return {Object}
 	 */
-	var createAbstractComponent = function () {
+	const createAbstractComponent = function () {
 		return {
-			init: $.noop
+			init: () => {}
 		};
 	};
 
@@ -310,8 +308,8 @@
 	 * @return {Object} component
 	 * @private
 	 */
-	var extendComponent = function (component) {
-		return $.extend(createAbstractComponent(), component);
+	const extendComponent = function (component) {
+		return Object.assign({}, createAbstractComponent(), component);
 	};
 
 	/**
@@ -325,8 +323,8 @@
 	 * @param {Boolean} override fake news
 	 * @private
 	 */
-	var exportComponent = function (key, component, override) {
-		if ($.type(key) !== 'string') {
+	const exportComponent = function (key, component, override) {
+		if (typeof key !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		} else if (!!components[key] && !override) {
 			App.log({args: ['Overwriting component key %s is not allowed', key], fx: 'error'});
@@ -347,15 +345,15 @@
 	 * @return {Object} Merged component with the default model and the actual component code
 	 * @private
 	 */
-	var createComponent = function (key, options) {
+	const createComponent = function (key, options) {
 		if (!components[key]) {
 			App.log({args: ['Component %s is not found', key], fx: 'error'});
 			return Object.freeze(extendComponent({}));
 		}
 		
-		var c = components[key];
+		const c = components[key];
 		
-		if (!$.isFunction(c)) {
+		if (typeof c !== 'function') {
 			App.log({args: ['Component %s is not a function', key], fx: 'error'});
 			return Object.freeze(extendComponent({}));
 		}
@@ -364,7 +362,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		
 		// Components
 		components: {
@@ -410,7 +408,7 @@
 	
 	});
 	
-})(jQuery, window);
+})(window);
 
 /**
  * App Debug
@@ -424,11 +422,11 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/** Debug **/
-	var isDebugging = false;
+	let isDebugging = false;
 	
 	/**
 	 * Set or get the debug flag for the App
@@ -438,7 +436,7 @@
 	 * @param {Boolean=} value
 	 * @private
 	 */
-	var debug = function (value) {
+	const debug = function (value) {
 		if (value === true || value === false) {
 			isDebugging = value;
 		} else if (value === '!') {
@@ -448,7 +446,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		
 		/**
 		 * Set or get the debug flag for the App
@@ -461,7 +459,7 @@
 		debug: debug
 	});
 	
-})(jQuery, window);
+})(window);
 
 /**
  * App device detector
@@ -475,7 +473,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/**
@@ -486,7 +484,7 @@
 	 * @returns {Object} accessible functions
 	 * @private
 	 */
-	var browserDetector = (function () {
+	const browserDetector = (function () {
 
 		/**
 		 * Get the user agent
@@ -497,7 +495,7 @@
 		 * @returns {String} user agent
 		 * @private
 		 */
-		var getUserAgent = function (userAgent) {
+		const getUserAgent = function (userAgent) {
 			if (!userAgent) {
 				return window.navigator.userAgent;
 			}
@@ -514,12 +512,12 @@
 		 * @returns {Boolean} if the test passed or not
 		 * @private
 		 */
-		var testUserAgent = function (regexp, userAgent) {
+		const testUserAgent = function (regexp, userAgent) {
 			userAgent = getUserAgent(userAgent);
 			return regexp.test(userAgent);
 		};
 		
-		var detector = {
+		const detector = {
 		
 			/**
 			 * Check if the device is a mobile one and not an iPhone
@@ -781,7 +779,7 @@
 	})();
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		device: {
 
 			/**
@@ -955,7 +953,7 @@
 		}
 	});
 	
-})(jQuery, window);
+})(window);
 
 /**
  * Functions
@@ -965,12 +963,11 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App.fx
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
-	var bindings = {};
+	const bindings = {};
 
 	/**
 	 * Defines a custom name property on the fx object, if debugging is enabled.
@@ -982,8 +979,8 @@
 	 * @param {Function} fx The function
 	 * @private
 	 */
-	var setFxName = function (key, fx) {
-		if (App.debug() && Object.defineProperty) {
+	const setFxName = function (key, fx) {
+		if (!!App.debug() && Object.defineProperty) {
 			try {
 				Object.defineProperty(fx, 'name', { value: key });
 			} catch (ex) { }
@@ -1002,8 +999,8 @@
 	 * @returns this
 	 * @private
 	 */
-	var notify = function (key, data, cb) {
-		var fx = bindings[key];
+	const notify = function (key, data, cb) {
+		const fx = bindings[key];
 		if (!fx) {
 			App.log({ args: ['Function key %s did not resolve to anything', key], fx: 'warn' });
 		} else {
@@ -1023,12 +1020,12 @@
 	 * @returns {Object} The newly created function
 	 * @private
 	 */
-	var exportsFx = function (key, fx, override) {
-		if ($.type(key) !== 'string') {
+	const exportsFx = function (key, fx, override) {
+		if (typeof key !== 'string') {
 			App.log({ args: ['`key` must be a string', key], fx: 'error' });
 		} else if (!!bindings[key] && !override) {
 			App.log({ args: ['Overwriting function key %s is not allowed', key], fx: 'error' });
-		} else if (!$.isFunction(fx)) {
+		} else if (typeof fx !== 'function') {
 			App.log({ args: ['Function key %s is not a function', key], fx: 'error' });
 		} else {
 			// Try to set the name of the function
@@ -1039,7 +1036,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * @namespace fx
 		 * @memberof App
@@ -1073,7 +1070,7 @@
 			exports: exportsFx
 		}
 	});
-})(jQuery, window);
+})(window);
 
 /**
  * App Loaded functionality
@@ -1087,7 +1084,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
 	/**
@@ -1102,21 +1099,21 @@
 	 * @param {Integer} counter Memo for the recursive function
 	 * @private
 	 */
-	var loaded = function (v, fx, delay, maxRetriesCount, counter) {
+	const loaded = function (v, fx, delay, maxRetriesCount, counter) {
 		delay = Math.max(delay || 0, 100);
 		maxRetriesCount = maxRetriesCount || 10;
 		counter = counter || 1;
 		// get the value
-		var value = App.callback(v, [counter]);
+		const value = App.callback(v, [counter]);
 		// if the value exists
 		if (!!value) {
 			// call the function, with the value, but always async
-			setTimeout(function () {
+			window.setTimeout(function () {
 				App.callback(fx, [value, counter]);
 			}, 0);
 		} else if (counter < maxRetriesCount) {
 			// recurse
-			setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
+			window.setTimeout(loaded, delay, v, fx, delay, maxRetriesCount, counter + 1);
 		} else if (!!App.log) {
 			App.log({
 				fx: 'error',
@@ -1126,7 +1123,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * Check if a ressource is loaded and callback when it is.
 		 * @name this
@@ -1142,7 +1139,7 @@
 		loaded: loaded
 	});
 
-})(jQuery, window);
+})(window);
 
 /**
  *  Assets loader: Basically a wrap around $.ajax in order
@@ -1156,357 +1153,35 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+((global, undefined) => {
 	'use strict';
 
-	// Forked: https://gist.github.com/nitriques/6583457
-	(function addXhrProgressEvent () {
-		var originalXhr = $.ajaxSettings.xhr;
-		$.ajaxSetup({
-			progress: $.noop,
-			upload: $.noop,
-			xhr: function () {
-				var self = this;
-				var req = originalXhr();
-				if (req) {
-					if ($.isFunction(req.addEventListener)) {
-						req.addEventListener('progress', function (e) {
-							self.progress($.Event(e)); // make sure it's jQuery-ize
-						}, false);
-					}
-					if (!!req.upload && $.isFunction(req.upload.addEventListener)) {
-						req.upload.addEventListener('progress', function (e) {
-							self.upload($.Event(e)); // make sure it's jQuery-ize
-						}, false);
-					}
-				}
-				return req;
-			}
-		});
-	})();
-	
-	var assets = []; // FIFO
-	
-	var loaderIsWorking = false;
-	
-	var currentUrl = null;
-	
-	/**
-	 * Check if a given url is loading (Only GET request)
-	 * @name isLoading
-	 * @method
-	 * @memberof loader
-	 * @param {Object} url Url object to check
-	 * @returns {Boolean}
-	 * @private
-	 */
-	var isLoading = function (url) {
-		if (!$.isPlainObject(url)) {
-			url = {url: url};
-		}
-		if (!!url.method && url.method !== 'GET') {
-			return false;
-		}
-		return !!currentUrl && currentUrl === url.url;
-	};
-	
-	/**
-	 * Check if a given url is in the queue
-	 * @name inQueue
-	 * @method
-	 * @memberof loader
-	 * @param {Object} url Url object to check
-	 * @returns {Boolean}
-	 * @private
-	 */
-	var inQueue = function (url) {
-		return assets.findIndex(function eachAsset (asset) {
-			return asset.url === url;
-		});
-	};
-	
-	/**
-	 * Return the appropriate storage engine for the given url
-	 * @name getStorageEngine
-	 * @method
-	 * @memberof loader
-	 * @param {Object} url Url object to check
-	 * @private
-	 */
-	var getStorageEngine = function (url) {
-		if (url.cache === true) {
-			url.cache = 'session';
-		}
-		return global.App.storage && global.App.storage[url.cache];
-	};
-	
-	// This breaks the call dependency cycle
-	var recursiveLoad = $.noop;
-	var loadAsset = $.noop;
-	
-	var defaultParameters = function (asset) {
-		return {
-			progress: function (e) {
-				// callback
-				App.callback(asset.progress, [e]);
-			},
-			success: function (data, textStatus, jqXHR) {
-				// clear pointer
-				currentUrl = null;
-				
-				// register next
-				recursiveLoad();
-				
-				// callback
-				App.callback(asset.success, [data, textStatus, jqXHR]);
-				
-				// store in cache
-				if (!!asset.cache) {
-					var storage = getStorageEngine(asset);
-					if (!!storage) {
-						storage.set(asset.url, data);
-					}
-				}
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				var maxRetriesFactor = !!asset.vip ? 2 : 1;
-				
-				// clear pointer
-				currentUrl = null;
-				
-				App.log({
-					fx: 'error',
-					args: ['Error loading url %s: %s', asset.url, textStatus + ' ' + errorThrown],
-					me: 'Loader'
-				});
-				
-				// if no vip access is granted
-				//if (!asset.vip) {
-				// decrease priority
-				// this avoids looping for a unload-able asset
-				asset.priority += ++asset.retries; // out of bounds checking is done later
-				//}
-				
-				// Check the error code:
-				// No need to replay client errors (4xx)
-				var clientError = jqXHR.status >= 400 && jqXHR.status < 500;
-				if (!!clientError) {
-					// Early exit
-					App.callback(asset.clienterror, [jqXHR.status, jqXHR, textStatus, errorThrown]);
+	let isLoading = false;
 
-				// if we already re-tried  less than x times
-				} else if (asset.retries <= (asset.maxRetries * maxRetriesFactor)) {
-					// push it back into the queue and retry
-					loadAsset(asset);
-				} else {
-					// we give up!
-					App.callback(asset.giveup, [jqXHR, textStatus, errorThrown]);
-				}
-				
-				// next
-				recursiveLoad();
-				
-				// callback
-				App.callback(asset.error, [jqXHR, textStatus, errorThrown]);
-			}
+	const defaultFetchOptions = () => {
+		return {
+			method: 'GET',
+			mode: 'cors',
+			redirect: 'follow'
 		};
 	};
-	
+
 	/**
-	 * Load the first item in the queue
-	 * @name loadOneAsset
-	 * @method
-	 * @private
-	 * @memberof loader
+	 * Simple wrapper around the fetch api for ajax requests
+	 * @param {Object} options all the parameters to config the fetch request
+	 * @returns {Promise}
 	 */
-	var loadOneAsset = function () {
-		// grab first item
-		var asset = assets.shift();
-		// extend it
-		var param = $.extend({}, asset, defaultParameters(asset));
-		// actual loading
-		$.ajax(param);
-		// set the pointer
-		currentUrl = param.url;
-	};
-	
-	/**
-	 * Trigger loadOneAsset as long as there's entries in the queue
-	 * @name recursiveLoad
-	 * @method
-	 * @memberof loader
-	 * @private
-	 */
-	recursiveLoad = function () {
-		if (!!assets.length) {
-			// start next one
-			setTimeout(loadOneAsset, 0);
-		} else {
-			// work is done
-			loaderIsWorking = false;
-		}
-	};
-	
-	/**
-	 * Validate and format url's data
-	 * @name valideUrlArags
-	 * @method
-	 * @memberof loader
-	 * @private
-	 * @param {Object} url Url object
-	 * @param {Integer} priority Priority of the url
-	 * @returns {Object} Url object
-	 */
-	var validateUrlArgs = function (url, priority) {
-		// ensure we are dealing with an object
-		if (!$.isPlainObject(url)) {
-			url = {url: url};
-		}
-		
-		// pass the priority param into the object
-		if ($.isNumeric(priority) && Math.abs(priority) < assets.length) {
-			url.priority = priority;
-		}
-		
-		// ensure that the priority is valid
-		if (!$.isNumeric(url.priority) || Math.abs(url.priority) > assets.length) {
-			url.priority = assets.length;
-		}
-		
-		// ensure we have a value for the retries
-		if (!$.isNumeric(url.retries)) {
-			url.retries = 0;
-		}
-		if (!$.isNumeric(url.maxRetries)) {
-			url.maxRetries = 2;
-		}
-		
-		return url;
-	};
-	
-	/**
-	 * Trigger the loading if nothing is happening
-	 * @name launchLoad
-	 * @method
-	 * @private
-	 * @memberof loader
-	 */
-	var launchLoad = function () {
-		// start now if nothing is loading
-		if (!loaderIsWorking) {
-			loaderIsWorking = true;
-			loadOneAsset();
-			App.log({fx: 'info', args: 'Load worker has been started', me: 'Loader'});
-		}
-	};
-	
-	/**
-	 * Get the value from the cache if it's available
-	 * @name getValueFromCache
-	 * @method
-	 * @memberof loader
-	 * @param {Object} url Url object
-	 * @returns {Boolean}
-	 * @private
-	 */
-	var getValueFromCache = function (url) {
-		var storage = getStorageEngine(url);
-		if (!!storage) {
-			var item = storage.get(url.url);
-			if (!!item) {
-				// if the cache-hit is valid
-				if (App.callback(url.cachehit, [item]) !== false) {
-					// return the cache
-					App.callback(url.success, [item]);
-					return true;
-				}
-			}
-		}
-		return false;
-	};
-	
-	/**
-	 * Update a request priority in the queue
-	 * @name updatePriority
-	 * @method
-	 * @memberof loader
-	 * @private
-	 * @param {Object} url Url object
-	 * @param {Integer} index
-	 */
-	var updatePriority = function (url, index) {
-		// promote if new priority is different
-		var oldAsset = assets[index];
-		if (oldAsset.priority != url.priority) {
-			// remove
-			assets.splice(index, 1);
-			// add
-			assets.splice(url.priority, 1, url);
-		}
-		App.log({
-			args: [
-				'Url %s was shifted from %s to %s',
-				url.url,
-				oldAsset.priority, url.priority
-			],
-			me: 'Loader'
-		});
-	};
-	
-	/**
-	 * Put the request in the queue and trigger the load
-	 * @name loadAsset
-	 * @method
-	 * @memberof loader
-	 * @private
-	 * @param {Object} url Url Object
-	 * @param {Integer} priority
-	 * @this App
-	 * @returns this
-	 */
-	loadAsset = function (url, priority) {
+	const load = (url, options = {}) => {
 		if (!url) {
-			App.log({fx: 'error', args: 'No url given', me: 'Loader'});
-			return this;
+			url = window.location.origin + '/';
 		}
-		
-		url = validateUrlArgs(url, priority);
-		
-		// ensure that asset is not current
-		if (isLoading(url)) {
-			App.log({fx: 'error', args: ['Url %s is already loading', url.url], me: 'Loader'});
-			return this;
-		}
-		
-		// check cache
-		if (!!url.cache) {
-			if (getValueFromCache(url)) {
-				return this;
-			}
-		}
-		
-		var index = inQueue(url.url);
-		
-		// ensure that asset is not in the queue
-		if (!~index) {
-			// insert in array
-			assets.splice(url.priority, 1, url);
-			App.log({
-				fx: 'info',
-				args: ['Url %s has been insert at %s', url.url, url.priority],
-				me: 'Loader'
-			});
-			
-		} else {
-			updatePriority(url, index);
-		}
-		
-		launchLoad();
-		
-		return this;
+
+		options = Object.assign({}, defaultFetchOptions(), options);
+
+		return window.fetch(url, options);
 	};
-	
-	global.App = $.extend(true, global.App, {
+
+	global.App = Object.assign({}, global.App, {
 		loader: {
 			/**
 			 * Put the request in the queue and trigger the load
@@ -1519,10 +1194,10 @@
 			 * @this App
 			 * @returns this
 			 */
-			load: loadAsset,
+			load: load,
 
 			/**
-			 * Check if a given url is loading (Only GET request)
+			 * Check if the loader is busy
 			 * @name isLoading
 			 * @method
 			 * @memberof loader
@@ -1530,34 +1205,11 @@
 			 * @returns {Boolean}
 			 * @public
 			 */
-			isLoading: isLoading,
-
-			/**
-			 * Check if a given url is in the queue
-			 * @name inQueue
-			 * @method
-			 * @memberof loader
-			 * @param {Object} url Url object to check
-			 * @returns {Boolean}
-			 * @public
-			 */
-			inQueue: inQueue,
-
-			/**
-			 * Get the flag if the loader is working or not
-			 * @name working
-			 * @method
-			 * @memberof loader
-			 * @public
-			 * @returns {Boolean}
-			 */
-			working: function () {
-				return loaderIsWorking;
-			}
+			isLoading: () => isLoading,
 		}
 	});
 	
-})(jQuery, window);
+})(window);
 
 /**
  * App  Log
@@ -1571,7 +1223,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
 	/**
@@ -1583,28 +1235,28 @@
 	 * @returns {Object} Formated object
 	 * @private
 	 */
-	var argsToObject = function (arg) {
+	const argsToObject = function (arg) {
 		// ensure that args is an array
-		if (!!arg.args && !$.isArray(arg.args)) {
+		if (!!arg.args && !Array.isArray(arg.args)) {
 			arg.args = [arg.args];
 		}
 
 		// our copy
-		var a = {
+		const a = {
 			args: arg.args || arguments,
 			fx: arg.fx || 'warn',
 			me: arg.me || 'App'
 		},
-			t1 = $.type(a.args[0]);
+			t1 = typeof a.args[0];
 
-		if (t1 === 'string' || t1 === 'number' || t1 == 'boolean') {
+		if (t1 === 'string' || t1 === 'number' || t1 === 'boolean') {
 			// append me before a.args[0]
 			a.args[0] = '[' + a.me + '] ' + a.args[0];
 		}
 		return a;
 	};
 
-	var logs = [];
+	const logs = [];
 
 	/**
 	 * Log the received data with the appropriate effect (log, error, info...)
@@ -1614,17 +1266,17 @@
 	 * @param {String|Object|Array} arg The value or values to log
 	 * @private
 	 */
-	var log = function (arg) {
+	const log = function (arg) {
 		// no args, exit
 		if (!arg) {
 			return this;
 		}
 
-		var a = argsToObject(arg);
+		const a = argsToObject(arg);
 
 		if (App.debug()) {
 			// make sure fx exists
-			if (!$.isFunction(console[a.fx])) {
+			if (typeof console[a.fx] !== 'function') {
 				a.fx = 'log';
 			}
 			// call it
@@ -1642,7 +1294,7 @@
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 
 		/**
 		 * Log the received data with the appropriate effect (log, error, info...)
@@ -1667,7 +1319,7 @@
 		}
 	});
 
-})(jQuery, window);
+})(window);
 
 /**
  * Mediator controls the current page and modules
@@ -1677,10 +1329,9 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App.mediator
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
 	/**
@@ -1691,22 +1342,20 @@
 	 * @returns {String} The url
 	 * @private
 	 */
-	var getCurrentUrl = function () {
-		return document.location.href.substring(
-			document.location.protocol.length + 2 + document.location.host.length
-		);
+	const getCurrentUrl = function () {
+		return document.location.pathname;
 	};
 
 	/** Mediator **/
-	var mediatorIsLoadingPage = false;
-	var currentRouteUrl = getCurrentUrl();
+	let mediatorIsLoadingPage = false;
+	const currentRouteUrl = getCurrentUrl();
 
 	//Store ref to the current page object
-	var currentPage = null;
+	let currentPage = null;
 
 	//Store ref to the previous page object
-	var previousPage = null;
-	var previousUrl = '';
+	let previousPage = null;
+	let previousUrl = '';
 
 	/**
 	 * Check if the mediator is loading a page
@@ -1716,8 +1365,8 @@
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var validateMediatorState = function () {
-		if (mediatorIsLoadingPage) {
+	const validateMediatorState = function () {
+		if (!!mediatorIsLoadingPage) {
 			App.log({
 				args: 'Mediator is busy waiting for a page load.',
 				fx: 'error'
@@ -1725,25 +1374,6 @@
 		}
 
 		return !mediatorIsLoadingPage;
-	};
-
-	/**
-	 * Check if the page is valid or not
-	 * @name validateNextPage
-	 * @memberof App
-	 * @method
-	 * @param {Object} nextPage PageObject
-	 * @returns {Boolean}
-	 * @private
-	 */
-	var validateNextPage = function (nextPage) {
-		var result = true;
-
-		if (!nextPage) {
-			result = false;
-		}
-
-		return result;
 	};
 
 	/**
@@ -1755,8 +1385,8 @@
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var canEnterNextPage = function (nextPage) {
-		var result = true;
+	const canEnterNextPage = function (nextPage) {
+		let result = true;
 
 		if (!nextPage.canEnter()) {
 			App.log({ fx: 'error', args: ['Cannot enter page %s.', nextPage.key()] });
@@ -1774,8 +1404,8 @@
 	 * @returns {Boolean}
 	 * @private
 	 */
-	var canLeaveCurrentPage = function () {
-		var result = false;
+	const canLeaveCurrentPage = function () {
+		let result = false;
 
 		if (!currentPage) {
 			App.log({ args: 'No current page set.', fx: 'error' });
@@ -1801,7 +1431,7 @@
 	 * @returns {Object} A read/write object, if it exists
 	 * @private
 	 */
-	var resolvePageAction = function (key, data) {
+	const resolvePageAction = function (key, data) {
 		if (!!currentPage) {
 			return App.actions.resolve(currentPage.actions, key, data);
 		} else {
@@ -1822,10 +1452,10 @@
 	 * @see AER in http://addyosmani.com/largescalejavascript/
 	 * @private
 	 */
-	var notifyAll = function (key, data, cb) {
-		var actions = [];
+	const notifyAll = function (key, data, cb) {
+		let actions = [];
 		// resolve action from current page only
-		var pa = resolvePageAction(key, data);
+		const pa = resolvePageAction(key, data);
 		if (!!pa) {
 			actions.push(pa);
 		}
@@ -1847,8 +1477,8 @@
 	 * @this Mediator
 	 * @returns this
 	 */
-	var notifyPage = function (key, data, cb) {
-		var pa = resolvePageAction(key, data);
+	const notifyPage = function (key, data, cb) {
+		const pa = resolvePageAction(key, data);
 		if (!!pa) {
 			App.actions.execute([pa], key, data, cb);
 		}
@@ -1863,6 +1493,7 @@
 	 * @method
 	 * @param {String} obj Page requested
 	 * @param {String} previousPoppedUrl Url
+	 * @param {Boolean} changeUrl if goto need to change the url or not
 	 * @fires App#page:leave
 	 * @fires App#page:enter
 	 * @fires App#pages:failedtoparse
@@ -1880,18 +1511,21 @@
 	 * @this App
 	 * @private
 	 */
-	var gotoPage = function (obj, previousPoppedUrl) {
-		var nextPage;
-		var route = '';
+	const gotoPage = function (obj, previousPoppedUrl, pageData = {}, changeUrl = true) {
+		let nextPage;
+		let route = '';
 
 		/**
-		 * Try to parse the data in jQuery to be sure it's valid
+		 * Try to parse the data in a virtual element to be sure it's valid
 		 * @param {String} data response data
-		 * @returns {jQuery}
+		 * @returns {element}
 		 */
-		var safeParseData = function (data) {
+		const safeParseData = function (data) {
 			try {
-				return $(data);
+				const parser = new window.DOMParser();
+				const doc = parser.parseFromString(data, 'text/html');
+
+				return doc;
 			}
 			catch (ex) {
 				App.log({ args: [ex.message], fx: 'error' });
@@ -1910,21 +1544,33 @@
 					currentPage: currentPage
 				});
 			}
-			return $();
+			return null;
 		};
 
 		/**
 		 * Initiate the transition and leave/enter page logic
 		 */
-		var enterLeave = function () {
+		const enterLeave = function () {
 			//Keep currentPage pointer for the callback in a new variable
 			//The currentPage pointer will be cleared after the next call
-			var leavingPage = currentPage;
+			let leavingPage = currentPage;
+			pageData.firstTime = false;
+
+			if (!nextPage.isInited()) {
+				nextPage.init();
+				nextPage.setInited();
+				pageData.firstTime = true;
+			}
 
 			/**
-			 * Block all interaction with the framework and notify the page leave
+			 * @event App#page:leaving
+			 * @type {object}
+			 * @property {object} page PageObject
 			 */
-			var leaveCurrent = function () {
+			App.modules.notify('page.leaving', { page: leavingPage });
+
+			//Leave the current page
+			leavingPage.leave(function () {
 				currentPage = null; // clean currentPage pointer,this will block all interactions
 
 				//set leaving page to be previous one
@@ -1939,12 +1585,17 @@
 				 * @property {object} page PageObject
 				 */
 				App.modules.notify('page.leave', { page: previousPage });
-			};
+			});
 
 			/**
-			 * Set the current page to the new one
+			 * @event App#page:entering
+			 * @type {object}
+			 * @property {object} page PageObject
+			 * @property {string} route url
 			 */
-			var enterNext = function () {
+			App.modules.notify('page.entering', { page: nextPage, route: route });
+
+			nextPage.enter(function () {
 				// set the new Page as the current one
 				currentPage = nextPage;
 
@@ -1956,53 +1607,7 @@
 				App.modules.notify('page.enter', { page: nextPage, route: route });
 				// Put down the flag since we are finished
 				mediatorIsLoadingPage = false;
-			};
-
-			var pageTransitionData = {
-				currentPage: currentPage,
-				nextPage: nextPage,
-				leaveCurrent: leaveCurrent,
-				enterNext: enterNext,
-				route: route,
-				isHandled: false
-			};
-
-			/**
-			 * @event App#pages:requestPageTransition
-			 * @type {object}
-			 * @property {object} pageTransitionData
-			 */
-			App.modules.notify('pages.requestPageTransition', pageTransitionData);
-
-			if (!nextPage.isInited) {
-				nextPage.init();
-				nextPage.setInited();
-			}
-
-			//if not, return to classic code
-			if (!pageTransitionData.isHandled) {
-				//Leave to page the transition job
-
-				/**
-				 * @event App#page:leaving
-				 * @type {object}
-				 * @property {object} page PageObject
-				 */
-				App.modules.notify('page.leaving', { page: leavingPage });
-
-				//Leave the current page
-				leavingPage.leave(leaveCurrent);
-
-				/**
-				 * @event App#page:entering
-				 * @type {object}
-				 * @property {object} page PageObject
-				 * @property {string} route url
-				 */
-				App.modules.notify('page.entering', { page: nextPage, route: route });
-
-				nextPage.enter(enterNext);
-			}
+			}, pageData);
 		};
 
 		/**
@@ -2011,210 +1616,85 @@
 		 * @param {String} textStatus Current request status
 		 * @param {Object} jqXHR request instance
 		 */
-		var loadSuccess = function (data, textStatus, jqXHR) {
-			var htmldata = safeParseData(data);
+		const loadSuccess = function (response) {
+			return response.text().then((data) => {
+				const htmldata = safeParseData(data);
 
-			// get the node
-			var node = htmldata.find(nextPage.key());
+				// get the node
+				let node = htmldata.querySelector(nextPage.selector());
 
-			// get the root node
-			var elem = $(App.root());
+				// get the root node
+				const elem = document.querySelector(App.root());
 
-			// Check for redirects
-			var responseUrl = htmldata.find(App.root() + ' > [data-response-url]')
-				.attr('data-response-url');
-
-			if (!!responseUrl && responseUrl != obj.split('#')[0]) {
-
-				var redirectedPage = nextPage;
-
-				// Find the right page
-				nextPage = App.pages.getPageForRoute(responseUrl);
-
-				/**
-				 * Offer a bail out door
-				 * @event App#pages:redirected
-				 * @type {Object}
-				 * @property {String} route Url
-				 * @property {String} requestedRoute Url
-				 * @property {Object} nextPage PageObject
-				 * @property {Object} currentPage PageObject
-				 * @property {Object} redirectedPage PageObject
-				 */
-				App.modules.notify('pages.redirected', {
-					currentPage: currentPage,
-					nextPage: nextPage,
-					redirectedPage: redirectedPage,
-					requestedRoute: route,
-					responseRoute: responseUrl
-				});
-
-				/**
-				 * Cancel current transition
-				 * @event App#pages:requestCancelPageTransition
-				 * @type {Object}
-				 * @property {String} route Url
-				 * @property {Object} nextPage PageObject
-				 * @property {Object} currentPage PageObject
-				 */
-				App.modules.notify('pages.requestCancelPageTransition', {
-					currentPage: currentPage,
-					nextPage: nextPage,
-					route: route
-				});
-
-				if (!validateNextPage(nextPage)) {
-					/**
-					 * @event App#pages:routeNotFound
-					 * @type {object}
-					 * @property {String} url Url
-					 * @property {Boolean} isRedirect PageObject
-					 * @property {Object} page PageObject
-					 */
-					App.modules.notify('pages.routeNotFound', {
-						page: currentPage,
-						url: obj,
-						isRedirect: true
+				if (!node) {
+					App.log({
+						args: ['Could not find "%s" in xhr data.', nextPage.selector()],
+						fx: 'error'
 					});
-					App.log({ args: ['Redirected route "%s" was not found.', obj], fx: 'error' });
-					return;
+
+					// free the mediator
+					mediatorIsLoadingPage = false;
+
+					/**
+					 * @event App#pages:notfound
+					 * @type {Object}
+					 * @property {String} data Loaded raw content
+					 * @property {String} url request url
+					 * @property {Object} response Response object instence
+					 * @property {Int} status HTTP code for the response
+					 */
+					App.modules.notify('pages.notfound', {
+						data: data,
+						url: obj,
+						response: response,
+						status: response.status,
+					});
+
 				} else {
-					node = htmldata.find(nextPage.key());
-					if (nextPage === currentPage) {
-						/**
-						 * @event App#pages:navigateToCurrent
-						 * @type {object}
-						 * @property {String} url Url
-						 * @property {Boolean} isRedirect PageObject
-						 * @property {Object} page PageObject
-						 */
-						App.modules.notify('pages.navigateToCurrent', {
-							page: nextPage,
-							route: route,
-							isRedirect: true
-						});
-						App.log('Redirected next page is the current one');
-					} else {
-						/**
-						 * Start new transition
-						 * @event App#pages:requestBeginPageTransition
-						 * @type {object}
-						 * @property {String} route Url
-						 * @property {Boolean} isRedirect PageObject
-						 * @property {Object} nextPage PageObject
-						 * @property {Object} currentPage PageObject
-						 */
-						App.modules.notify('pages.requestBeginPageTransition', {
-							currentPage: currentPage,
-							nextPage: nextPage,
-							route: responseUrl,
-							isRedirect: true
-						});
+					// append it to the doc, hidden
+					node.style.opacity = 0;
+					node.style.display = 'none';
 
-					}
+					elem.appendChild(node);
+
+					/**
+					 * @event App#pages:loaded
+					 * @type {Object}
+					 * @property {element} elem Loaded content
+					 * @property {String} data Loaded raw content
+					 * @property {String} url request url
+					 * @property {Object} page PageObject
+					 * @property {element} node Page element
+					 * @property {Object} response Response object instence
+					 * @property {Int} status HTTP code for the response
+					 */
+					App.modules.notify('pages.loaded', {
+						elem: elem,
+						data: data,
+						html: htmldata,
+						url: obj,
+						page: nextPage,
+						node: node,
+						response: response,
+						status: response.status
+					});
+
+					// actual goto
+					enterLeave();
 				}
-			}
-
-			if (!node.length) {
-				App.log({
-					args: ['Could not find "%s" in xhr data.', nextPage.key()],
-					fx: 'error'
-				});
-
-				// free the mediator
-				mediatorIsLoadingPage = false;
-
-				/**
-				 * @event App#pages:notfound
-				 * @type {Object}
-				 * @property {String} data Loaded raw content
-				 * @property {String} url request url
-				 * @property {Object} xhr Request object instence
-				 * @property {String} status Status of the request
-				 */
-				App.modules.notify('pages.notfound', {
-					data: data,
-					url: obj,
-					xhr: jqXHR,
-					status: textStatus
-				});
-
-			} else {
-				// append it to the doc, hidden
-				elem.append(node.css({ opacity: 0 }));
-
-				// init page
-				nextPage.init();
-				nextPage.setInited();
-
-				node.hide();
-
-				/**
-				 * @event App#pages:loaded
-				 * @type {Object}
-				 * @property {jQuery} elem Loaded content
-				 * @property {String} data Loaded raw content
-				 * @property {String} url request url
-				 * @property {Object} page PageObject
-				 * @property {jQuery} node Page element
-				 * @property {Object} xhr Request object instence
-				 * @property {String} status Status of the request
-				 */
-				App.modules.notify('pages.loaded', {
-					elem: elem,
-					data: data,
-					url: obj,
-					page: nextPage,
-					node: node,
-					xhr: jqXHR,
-					status: textStatus
-				});
-
-				// actual goto
-				enterLeave();
-			}
-		};
-
-		/**
-		 * Dispatch a notify for the progress event
-		 * @name progress
-		 * @method
-		 * @memberof App
-		 * @private
-		 * @param {Event} e Request progress event
-		 */
-		var progress = function (e) {
-			var total = e.originalEvent.total;
-			var loaded = e.originalEvent.loaded;
-			var percent = total > 0 ? loaded / total : 0;
-
-			/**
-			 * @event App#pages:loadprogress
-			 * @type {Object}
-			 * @property {Object} event Request progress event
-			 * @property {String} url Request url
-			 * @property {Integer} total Total bytes
-			 * @property {Integer} loaded Total bytes loaded
-			 * @property {Integer} percent
-			 */
-			App.mediator.notify('pages.loadprogress', {
-				event: e,
-				url: obj,
-				total: total,
-				loaded: loaded,
-				percent: percent
 			});
 		};
 
 		if (validateMediatorState() && canLeaveCurrentPage()) {
-			if ($.type(obj) === 'string') {
-				nextPage = App.pages.getPageForRoute(obj);
+			if (typeof obj === 'string') {
+				nextPage = App.pages.getPageForHref(obj);
 				route = obj;
 			} else {
-				nextPage = obj;
+				App.log({fx: 'error', args: 'Url parameter must be of type string got ' + typeof obj}); // jshint ignore:line
+				return;
 			}
 
-			if (!validateNextPage(nextPage)) {
+			if (!nextPage) {
 				/**
 				 * @event App#pages:routeNotFound
 				 * @type {Object}
@@ -2228,7 +1708,7 @@
 				App.log({ args: ['Route "%s" was not found.', obj], fx: 'error' });
 			} else {
 				if (canEnterNextPage(nextPage)) {
-					if (nextPage === currentPage) {
+					if (nextPage.key() === currentPage.key()) {
 						/**
 						 * @event App#pages:navigateToCurrent
 						 * @type {Object}
@@ -2239,9 +1719,18 @@
 							page: nextPage,
 							route: route
 						});
-						App.log('Next page is the current one');
 
+						App.log('Next page is the current one');
 					} else {
+
+						if (!!changeUrl) {
+							window.history.pushState({
+								data: {
+									mediator: true,
+									type: 'pushState'
+								}
+							}, '', obj);
+						}
 
 						/**
 						 * @event App#pages:loading
@@ -2266,46 +1755,22 @@
 						});
 
 						// Load from xhr or use cache copy
-						if (!nextPage.loaded()) {
+						if (!App.pages.loaded(obj)) {
 							// Raise the flag to mark we are in the process
 							// of loading a new page
 							mediatorIsLoadingPage = true;
 
-							App.loader.load({
-								url: obj, // the *actual* route
-								priority: 0, // now
-								vip: true, // don't queue on fail
-								success: loadSuccess,
-								progress: progress,
-								error: function (e) {
-									/**
-									 * @event App#pages:loaderror
-									 * @type {Object}
-									 * @property {Object} event Request event
-									 * @property {String} url Request url
-									 */
-									App.modules.notify('pages.loaderror', {
-										event: e,
-										url: obj
-									});
-								},
-								giveup: function (e) {
-									// Free the mediator
-									mediatorIsLoadingPage = false;
-
-									App.log({ args: 'Giving up!', me: 'Loader', fx: 'error' });
-
-									/**
-									 * @event App#pages:loadfatalerror
-									 * @type {Object}
-									 * @property {Object} event Request event
-									 * @property {String} url Request url
-									 */
-									App.modules.notify('pages.loadfatalerror', {
-										event: e,
-										url: obj
-									});
-								}
+							App.loader.load(obj).then(loadSuccess).catch((event) => {
+								/**
+								 * @event App#pages:loaderror
+								 * @type {Object}
+								 * @property {Object} event Request event
+								 * @property {String} url Request url
+								 */
+								App.modules.notify('pages.loaderror', {
+									event: event,
+									url: obj
+								});
 							});
 						} else {
 							enterLeave();
@@ -2313,12 +1778,12 @@
 							/**
 							 * @event App#pages:loaded
 							 * @type {Object}
-							 * @property {jQuery} elem Root element
+							 * @property {element} elem Root element
 							 * @property {Object} event Request event
 							 * @property {String} url Request url
 							 */
 							App.modules.notify('pages.loaded', {
-								elem: $(App.root()),
+								elem: document.querySelector(App.root()),
 								url: obj,
 								page: nextPage
 							});
@@ -2344,12 +1809,12 @@
 	 * @param {String} fallback Url used for as a fallback
 	 * @private
 	 */
-	var togglePage = function (route, fallback) {
+	const togglePage = function (route, fallback) {
 		if (!!currentPage && validateMediatorState()) {
-			var
-				nextPage = App.pages.getPageForRoute(route);
 
-			if (validateNextPage(nextPage) && canEnterNextPage(nextPage)) {
+			const nextPage = App.pages.getPageForRoute(route);
+
+			if (!!nextPage && canEnterNextPage(nextPage)) {
 				if (nextPage !== currentPage) {
 					gotoPage(route);
 				} else if (!!previousUrl && previousUrl !== getCurrentUrl()) {
@@ -2379,52 +1844,50 @@
 	 * @fires App#page:enter
 	 * @private
 	 */
-	var initPage = function (page) {
-		// find if this is our current page
-		// current route found ?
-		if (!!~App.pages.matchRoute(currentRouteUrl, page.routes())) {
-			if (!!currentPage) {
-				App.log({
-					args: ['Previous current page will be changed', {
-						currentPage: currentPage,
-						previousPage: previousPage,
-						newCurrentPage: page
-					}],
-					fx: 'warning'
-				});
-			}
-			// initialize page variable
-			currentPage = page;
-			previousPage = previousPage || page;
+	const initPage = function (page) {
+		if (!!currentPage) {
+			App.log({
+				args: ['Previous current page will be changed', {
+					currentPage: currentPage,
+					previousPage: previousPage,
+					newCurrentPage: page
+				}],
+				fx: 'warning'
+			});
+		}
 
+		// initialize page variable
+		currentPage = page;
+		previousPage = previousPage || page;
+
+		/**
+		 * @event App#page:entering
+		 * @type {object}
+		 * @property {Object} page PageObject
+		 * @property {String} route Url
+		 */
+		App.modules.notify('page.entering', {
+			page: currentPage,
+			route: currentRouteUrl
+		});
+
+		// enter the page right now
+		currentPage.enter(function currentPageEnterCallback () {
 			/**
-			 * @event App#page:entering
+			 * @event App#page:enter
 			 * @type {object}
 			 * @property {Object} page PageObject
 			 * @property {String} route Url
 			 */
-			App.modules.notify('page.entering', {
+			App.modules.notify('page.enter', {
 				page: currentPage,
 				route: currentRouteUrl
 			});
-			// enter the page right now
-			currentPage.enter(function currentPageEnterCallback () {
-				/**
-				 * @event App#page:enter
-				 * @type {object}
-				 * @property {Object} page PageObject
-				 * @property {String} route Url
-				 */
-				App.modules.notify('page.enter', {
-					page: currentPage,
-					route: currentRouteUrl
-				});
-			});
-		}
+		}, true);
 	};
 
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * @namespace mediator
 		 * @memberof App
@@ -2571,7 +2034,7 @@
 		}
 	});
 
-})(jQuery, window);
+})(window);
 
 /**
  * Module are singleton that lives across pages
@@ -2585,11 +2048,11 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/** Modules **/
-	var modules = {};
+	const modules = {};
 	
 	/**
 	 * Create a basic module with the minimum required methods
@@ -2599,10 +2062,10 @@
 	 * @returns {Object}
 	 * @private
 	 */
-	var createAbstractModule = function () {
+	const createAbstractModule = function () {
 		return {
-			actions: $.noop,
-			init: $.noop
+			actions: () => {},
+			init: () => {}
 		};
 	};
 	
@@ -2615,8 +2078,8 @@
 	 * @param {Object} module ModuleObject
 	 * @private
 	 */
-	var createModule = function (module) {
-		return Object.freeze($.extend(createAbstractModule(), module));
+	const createModule = function (module) {
+		return Object.freeze(Object.assign({}, createAbstractModule(), module));
 	};
 	
 	/**
@@ -2630,8 +2093,8 @@
 	 * @returns {Object} The newly created module
 	 * @private
 	 */
-	var exportModule = function (key, module, override) {
-		if ($.type(key) !== 'string') {
+	const exportModule = function (key, module, override) {
+		if (typeof key !== 'string') {
 			App.log({args: ['`key` must be a string', key], fx: 'error'});
 		} else if (!!modules[key] && !override) {
 			App.log({args: ['Overwriting module key %s is not allowed', key], fx: 'error'});
@@ -2651,7 +2114,7 @@
 	 * @returns {Array} Array of read/write objects for all modules
 	 * @private
 	 */
-	var resolveActions = function (key, data) {
+	const resolveActions = function (key, data) {
 		return Object.keys(modules).map(function resolveAction (k) {
 			return App.actions.resolve(modules[k].actions, key, data);
 		}).filter(function (a) {
@@ -2671,14 +2134,14 @@
 	 * @returns this
 	 * @private
 	 */
-	var notifyModules = function (key, data, cb) {
-		var actions = resolveActions(key, data);
+	const notifyModules = function (key, data, cb) {
+		const actions = resolveActions(key, data);
 		App.actions.execute(actions, key, data, cb);
 		return this;
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * @namespace modules
 		 * @memberof App
@@ -2739,7 +2202,7 @@
 	
 	});
 	
-})(jQuery, window);
+})(window);
 
 /**
  * Pages are controller that are activated on a url basis.
@@ -2753,11 +2216,12 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
-	var pageModels = {};
-	var pageInstances = {};
+	const pageModels = {};
+	const pageInstances = {};
+	const activeRoutes = {};
 
 	/**
 	 * Creates and a new factory function based on the
@@ -2773,35 +2237,8 @@
 	 * @returns {pageModel} The newly built factory function
 	 * @private
 	 */
-	var createPageModel = function (key, model, override) {
-		var ftrue = function () {
-			return true;
-		};
-		
-		var enterLeave = function (next) {
-			App.callback(next);
-		};
+	const createPageModel = function (key, model, override) {
 
-		/**
-		 * Page Param
-		 * @memberof pages
-		 * @typedef {Object} pageParam
-		 * @param {Function} actions @returns {object}
-		 * @param {Function} init
-		 * @param {Function} enter
-		 * @param {Function} leave
-		 * @param {Function} canEnter @returns {boolean}
-		 * @param {Function} canLeave @returns {boolean}
-		 */
-		var base = {
-			actions: $.noop,
-			init: $.noop,
-			enter: enterLeave,
-			leave: enterLeave,
-			canEnter: ftrue,
-			canLeave: ftrue
-		};
-		
 		/**
 		 * Page Model is a Factory function for page instances.
 		 * @name factory
@@ -2811,19 +2248,19 @@
 		 * @returns page
 		 * @private
 		 */
-		var factory = function (pageData) {
-			var modelRef;
-			var isInited = false;
+		const factory = function (pageData) {
+			let modelRef;
+			let isInited = false;
 			
-			if ($.isPlainObject(model)) {
+			if (typeof model === 'object') {
 				modelRef = model;
-			} else if ($.isFunction(model)) {
+			} else if (typeof model === 'function') {
 				modelRef = model.call(this, key, pageData, override);
-				if (!$.isPlainObject(modelRef)) {
+				if (typeof modelRef !== 'object') {
 					App.log({
 						args: [
 							'The exported page model function must return an object, ' +
-							'`%s` given (%s)', $.type(modelRef), modelRef
+							'`%s` given (%s)', typeof modelRef, modelRef
 						],
 						fx: 'error'
 					});
@@ -2833,48 +2270,75 @@
 				App.log({
 					args: [
 						'The exported page model must be an object or a function, ' +
-						'`%s` given (%s)', $.type(model), model
+						'`%s` given (%s)', typeof model, model
 					],
 					fx: 'error'
 				});
 				return null;
 			}
-			
-			var getKey = function () {
-				return pageData.key;
+
+			const getSelector = () => '[data-page-url="' + pageData.key + '"]';
+
+			/**
+			 * Page Param
+			 * @memberof pages
+			 * @typedef {Object} pageParam
+			 * @param {Function} actions @returns {object}
+			 * @param {Function} init
+			 * @param {Function} enter
+			 * @param {Function} leave
+			 * @param {Function} canEnter @returns {boolean}
+			 * @param {Function} canLeave @returns {boolean}
+			 * @param {Function} model @returns {string}
+			 * @param {Function} routes @return {Array}
+			 */
+			const base = {
+				actions: () => {},
+				init: () => {},
+				canEnter: () => true,
+				canLeave: () => true,
+				model: () => key,
+				enter: (next, data) => {
+					const p = document.querySelector(getSelector());
+					p.style.opacity = 1;
+					p.style.display = 'block';
+					if (!!data.firstTime || data.type === 'pushState') {
+						window.scrollTo({
+							top: 0,
+							left: 0,
+							behavior: 'auto'
+						});
+					}
+					App.callback(next);
+				},
+				leave: (next) => {
+					const p = document.querySelector(getSelector());
+					p.style.opacity = 0;
+					p.style.display = 'none';
+					App.callback(next);
+				}
 			};
-			
-			var routes = function () {
-				return pageData.routes;
-			};
-			
-			var loaded = function () {
-				return !!$(getKey()).length;
-			};
-			
-			// recuperate extra params...
-			var data = function () {
-				return pageData;
-			};
-			
+
 			// insure this can't be overridden
-			var overwrites = Object.freeze({
-				key: getKey, // css selector
-				loaded: loaded,
-				routes: routes,
-				data: data,
-				isInited: function () {
+			const overwrites = Object.freeze({
+				key: () => pageData.key,
+				selector: () => getSelector(),
+				data: () => pageData,
+				isInited: () => {
 					return isInited;
 				},
-				setInited: function () {
+				setInited: () => {
 					isInited = true;
 				}
 			});
-			
+
 			// New deep copy frozen object
-			return Object.freeze($.extend(true, {}, base, modelRef, overwrites));
+			return Object.freeze(Object.assign({}, base, modelRef, overwrites));
 		};
-		
+
+		// create the empty array for the model in the routes references
+		activeRoutes[key] = [];
+
 		return factory;
 	};
 	
@@ -2889,10 +2353,10 @@
 	 * @returns {?page} Null if something goes wrong
 	 * @private
 	 */
-	var createPage = function (pageData, keyModel, override) {
+	const createPage = function (pageData, keyModel, override) {
 		//Find the page model associated
-		var pageModel = pageModels[keyModel];
-		var pageInst;
+		const pageModel = pageModels[keyModel];
+		let pageInst;
 		
 		if (!pageModel) {
 			App.log({args: ['Model `%s` not found', keyModel], fx: 'error'});
@@ -2926,8 +2390,8 @@
 	 * @returns {pageModel}
 	 * @private
 	 */
-	var registerPageModel = function (key, pageModel, override) {
-		var keyType = $.type(key);
+	const registerPageModel = function (key, pageModel, override) {
+		const keyType = typeof key;
 		if (keyType !== 'string') {
 			App.log({
 				args: ['`key` must be a string, `%s` given (%s).', keyType, key],
@@ -2963,34 +2427,14 @@
 	 * @return {pageModel}
 	 * @private
 	 */
-	var exportPage = function (key, model, override) {
+	const exportPage = function (key, model, override) {
 		// Pass all args to the factory
-		var pageModel = createPageModel(key, model, override);
+		const pageModel = createPageModel(key, model, override);
 		// Only work with pageModel afterwards
 		return registerPageModel(key, pageModel, override);
 	};
 	
-	/**
-	 * Validate a route object
-	 * @name validateRoute
-	 * @memberof pages
-	 * @method
-	 * @returns {Boolean}
-	 * @private
-	 */
-	var validateRoute = function (route) {
-		var result = false;
-		
-		if (!route) {
-			App.log({args: 'No route set.', fx: 'error'});
-		} else {
-			result = true;
-		}
-		
-		return result;
-	};
-	
-	var routeMatchStrategies = {
+	const routeMatchStrategies = {
 		regexp: function (testRoute, route, cb) {
 			if (testRoute.test(route)) {
 				return cb();
@@ -2998,7 +2442,7 @@
 			return true;
 		},
 		string: function (testRoute, route, cb) {
-			var regex;
+			let regex;
 			// be sure to escape uri
 			route = decodeURIComponent(route);
 			
@@ -3006,7 +2450,7 @@
 			route = route.split('#')[0];
 			
 			// avoid RegExp if possible
-			if (testRoute == route) {
+			if (testRoute === route) {
 				return cb();
 			}
 			
@@ -3055,14 +2499,14 @@
 	 * @returns {Integer} The index of the matched route or -1 if no match
 	 * @private
 	 */
-	var matchRoute = function (route, routes) {
-		var index = -1;
-		var found = function (i) {
+	const matchRoute = function (route, routes) {
+		let index = -1;
+		const found = function (i) {
 			index = i;
 			return false; // exit every
 		};
 		
-		if ($.type(route) !== 'string') {
+		if (typeof route !== 'string') {
 			App.log({args: '`route` must be a string', fx: 'error'});
 			return index;
 		}
@@ -3076,13 +2520,13 @@
 				routes = Object.values(routes);
 			}
 			routes.every(function matchOneRoute (testRoute, i) {
-				var routeType = $.type(testRoute);
-				var routeStrategy = routeMatchStrategies[routeType];
-				var cb = function () {
+				const routeType = typeof testRoute;
+				const routeStrategy = routeMatchStrategies[routeType];
+				const cb = function () {
 					return found(i);
 				};
 				
-				if ($.isFunction(routeStrategy)) {
+				if (typeof routeStrategy === 'function') {
 					return routeStrategy(testRoute, route, cb);
 				} else if (testRoute === route) {
 					return cb();
@@ -3095,49 +2539,104 @@
 	};
 
 	/**
-	 * Returns the first page object that matches the route param
-	 * @name getPageForRoute
+	 * Add routes to a model
+	 * @name addRoutes
 	 * @memberof pages
 	 * @method
-	 * @param {String} route The route to search match for
-	 *
-	 * @returns {?page} The page object or null if not found
+	 * @param {String} keyModel model to add routes to
+	 * @param {Array} routes to add to the model
+	 * @returns {Array} all the active routes
 	 * @private
 	 */
-	var getPageForRoute = function (route) {
-		if (validateRoute(route)) {
-			var p = Object.values(pageInstances).find(function walkPage (page) {
-				var routes = page.routes();
-				// route found ?
-				return !!~matchRoute(route, routes);
-			});
-			if (!!p) {
-				return p;
-			}
+	const addRoutes = (keyModel, routes) => {
+		if (!pageModels[keyModel]) {
+			App.log({fx: 'error', args: 'Model "' + keyModel + '" not found.'});
+			return false;
 		}
-		return null;
+
+		if (!activeRoutes[keyModel]) {
+			activeRoutes[keyModel] = [];
+		}
+
+		if (keyModel === 'default') {
+			App.log({fx: 'error', args: 'You can\'t add routes to the default model'});
+			return false;
+		}
+
+		// new set to remove duplicates in array
+		activeRoutes[keyModel] = ([...new Set((activeRoutes[keyModel]).concat(routes))]);
+
+		// todo 3.1.0 add verification if route is already used
+
+		return activeRoutes[keyModel];
 	};
 
-	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
-		pages: {
-			/**
-			 * @name matchRoute
-			 * @method
-			 * @memberof pages
-			 * {@link App.pages~matchRoute}
-			 * @private
-			 */
-			matchRoute: matchRoute,
+	/**
+	 * Remove routes to a model
+	 * @name removeRoutes
+	 * @memberof pages
+	 * @method
+	 * @param {String} keyModel model to remove routes to
+	 * @param {Array} routes to remove to the model
+	 * @returns {Array} all the active routes
+	 * @private
+	 */
+	const removeRoutes = (keyModel, routes) => {
+		if (!pageModels[keyModel]) {
+			App.log({fx: 'error', args: 'Model "' + keyModel + '" not found.'});
+			return false;
+		}
+		return false;
+	};
 
-			/**
-			 * @name validateRoute
-			 * @method
-			 * @memberof pages
-			 * {@link App.pages~validateRoute}
-			 * @private
-			 */
-			validateRoute: validateRoute,
+	/**
+	 * Returns the first page object that matches the href param
+	 * @name getPageForHref
+	 * @memberof pages
+	 * @method
+	 * @param {String} href The href to search match for
+	 *
+	 * @returns {page} The page object or a new page with associated model
+	 * @private
+	 */
+	const getPageForHref = function (href) {
+
+		// check if the instance already exists
+		if (!!pageInstances[href]) {
+			return pageInstances[href];
+		}
+
+		// match with potential model
+		let model = null;
+
+		for (const m in activeRoutes) {
+			if (activeRoutes.hasOwnProperty(m)) {
+				const modelRoutes = activeRoutes[m];
+				const match = !!~matchRoute(href, modelRoutes);
+				if (!!match) {
+					model = m;
+					break;
+				}
+			}
+		}
+
+		if (!model) {
+			model = 'default';
+		}
+
+		// create instance with matched model
+		return createPage({key: href}, model, true);
+	};
+
+	const loaded = (url) => {
+		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
+	};
+
+	registerPageModel('default', createPageModel('default', {}, true), {});
+
+	/** Public Interfaces **/
+	global.App = Object.assign({}, global.App, {
+		pages: {
 
 			/**
 			 * Getter for all instances of a particular one
@@ -3167,7 +2666,7 @@
 
 			/**
 			 * Returns the first page object that matches the route param
-			 * @name getPageForRoute
+			 * @name getPageForHref
 			 * @memberof pages
 			 * @method
 			 * @param {String} route The route to search match for
@@ -3175,11 +2674,11 @@
 			 * @returns {?page} The page object or null if not found
 			 * @public
 			 */
-			getPageForRoute: getPageForRoute,
+			getPageForHref: getPageForHref,
 
 			/**
 			 * Returns the page based the key and fallbacks to
-			 * the [route]{@link getPageForRoute} if noting is found.
+			 * the [route]{@link getPageForHref} if noting is found.
 			 * @name page
 			 * @method
 			 * @memberof pages
@@ -3189,11 +2688,11 @@
 			 */
 			page: function (keyOrRoute) {
 				//Try to get the page by the key
-				var result = pageInstances[keyOrRoute];
-				
+				let result = pageInstances[keyOrRoute];
+
 				//if no result found try with the route
 				if (!!!result) {
-					result = getPageForRoute(keyOrRoute);
+					result = getPageForHref(keyOrRoute);
 				}
 				
 				return result;
@@ -3229,113 +2728,76 @@
 			 * @return {pageModel}
 			 * @public
 			 */
-			exports: exportPage
+			exports: exportPage,
+
+			/**
+			 * Check if the page is loaded from a given url
+			 * @name exports
+			 * @memberof pages
+			 * @method
+			 * @param {String} url the url to check
+			 * @return {Boolean}
+			 * @public
+			 * @since 3.0.0
+			 */
+			loaded: loaded,
+
+			/**
+			 * App pages routes
+			 *
+			 * @namespace routes
+			 * @memberof pages
+			 * @since 3.0.0
+			 */
+			routes: {
+
+				/**
+				 * Get all the active routes
+				 * @name active
+				 * @memberof routes
+				 * @method
+				 * @returns {Object} all the active routes for all models
+				 * @public
+				 */
+				active: () => activeRoutes,
+
+				/**
+				 * @name match
+				 * @method
+				 * @memberof routes
+				 * {@link App.pages~matchRoute}
+				 * @public
+				 */
+				match: matchRoute,
+
+				/**
+				 * Add routes to a model
+				 * @name addRoutes
+				 * @memberof routes
+				 * @method
+				 * @param {String} keyModel model to add routes to
+				 * @param {Array} routes to add to the model
+				 * @returns {Array} all the active routes
+				 * @public
+				 */
+				add: addRoutes,
+
+				/**
+				 * Remove routes to a model
+				 * @name removeRoutes
+				 * @memberof routes
+				 * @method
+				 * @param {String} keyModel model to remove routes to
+				 * @param {Array} routes to remove to the model
+				 * @returns {Array} all the active routes
+				 * @public
+				 */
+				remove: removeRoutes
+			}
 		}
 	});
 	
-})(jQuery, window);
-
-/**
- * App routing
- *
- * @fileoverview Utility
- *
- * @author Deux Huit Huit <https://deuxhuithuit.com>
- * @license MIT <https://deuxhuithuit.mit-license.org>
- *
- * @namespace routing
- * @memberof App
- * @requires App
- */
-(function ($, global, undefined) {
-	'use strict';
-
-	/**
-	 * Factory for the query string parser
-	 * @return {Object} accessible methods
-	 */
-	var queryStringParser = (function () {
-		var a = /\+/g; // Regex for replacing addition symbol with a space
-		var r = /([^&=]+)=?([^&]*)/gi;
-		var d = function (s) {
-			return decodeURIComponent(s.replace(a, ' '));
-		};
-
-		/**
-		 * Parses the querystring into an object
-		 * @name parse
-		 * @memberof querystring
-		 * @method
-		 * @param {String} qs
-		 * @returns {Object}
-		 * @public
-		 */
-		var parse = function (qs) {
-			var u = {};
-			var e, q;
-
-			//if we dont have the parameter qs, use the window location search value
-			if (qs !== '' && !qs) {
-				qs = window.location.search;
-			}
-
-			//remove the first caracter (?)
-			q = qs.substring(1);
-
-			while ((e = r.exec(q))) {
-				u[d(e[1])] = d(e[2]);
-			}
-
-			return u;
-		};
-
-		/**
-		 * Format the object into a valid query string
-		 * @name stringify
-		 * @memberof querystring
-		 * @method
-		 * @param {Object} qs Object needed to be transformed into a string
-		 * @returns {String} Result
-		 * @public
-		 */
-		var stringify = function (qs) {
-			var aqs = Object.entries(qs).filter(function (e) {
-				return !!e[1];
-			}).map(function (e) {
-				return e[0] + '=' + global.encodeURIComponent(e[1]);
-			});
-			if (!aqs.length) {
-				return '';
-			}
-			return '?' + aqs.join('&');
-		};
-
-		return {
-			parse: parse,
-			stringify: stringify
-		};
-	})();
-
-	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
-		routing: {
-
-			/**
-			 * Facade to parse and stringify a query string
-			 * @namespace querystring
-			 * @constant
-			 * @property {Function} parse Parse the current queryString or the
-			 *   provided one returns an object
-			 * @property {Function} stringify Stringify the provided queryString
-			 *   and returns a String
-			 * @memberof routing
-			 * @public
-			 */
-			querystring: queryStringParser
-		}
-	});
-
-})(jQuery, window);
+})(window);
 
 /**
  * Facade to access the browser's localStorage and sessionStorage
@@ -3351,10 +2813,10 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
-	var storage = function (storage) {
+	const storage = function (storage) {
 		return {
 
 			/**
@@ -3385,7 +2847,7 @@
 			 * @public
 			 */
 			set: function (key, value) {
-				var result = false;
+				let result = false;
 				if (!!key) {
 					key += ''; // make it a string
 					try {
@@ -3413,7 +2875,7 @@
 			 * @public
 			 */
 			remove: function (key) {
-				var result = false;
+				let result = false;
 				if (!!key) {
 					key += ''; // make it a string
 					try {
@@ -3442,19 +2904,19 @@
 			 * @public
 			 */
 			clear: function (regexp) {
-				var result = false;
+				let result = false;
 				try {
 					if (!regexp) {
 						storage.clear();
 					} else {
-						var remove = [];
-						for (var i = 0; i < storage.length; i++) {
-							var key = storage.key(i);
+						const remove = [];
+						for (let i = 0; i < storage.length; i++) {
+							const key = storage.key(i);
 							if (regexp.test(key)) {
 								remove.push(key);
 							}
 						}
-						for (i = 0; i < remove.length; i++) {
+						for (let i = 0; i < remove.length; i++) {
 							storage.removeItem(remove[i]);
 						}
 					}
@@ -3472,7 +2934,7 @@
 		};
 	};
 
-	var safeLocalStorage = function () {
+	const safeLocalStorage = function () {
 		try {
 			return storage(window.localStorage);
 		} catch (e) {
@@ -3485,7 +2947,7 @@
 		return storage({});
 	};
 
-	var safeSessionStorage = function () {
+	const safeSessionStorage = function () {
 		try {
 			return storage(window.sessionStorage);
 		} catch (e) {
@@ -3498,7 +2960,7 @@
 		return storage({});
 	};
 
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		storage: {
 
 			/**
@@ -3531,7 +2993,7 @@
 		}
 	});
 	
-})(jQuery, window);
+})(window);
 
 /**
  * Superlight App Framework
@@ -3541,14 +3003,13 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	//Default value
-	var ROOT = 'body';
+	let ROOT = 'body';
 	
 	/**
 	 * Init All the applications
@@ -3562,20 +3023,28 @@
 	 * @param {String} root CSS selector
 	 * @private
 	 */
-	var initApplication = function (root) {
+	const initApplication = function (root) {
 		// assure root node
-		if (!!root && !!$(root).length) {
+		if (!!root && !!document.querySelector(root)) {
 			ROOT = root;
 		}
-		
+
 		// init each Modules
 		Object.values(App.modules.models()).forEach(function initModule (m) {
 			m.init();
 		});
-		
-		// init each Page already loaded
+
+		const firstPage = App.pages.getPageForHref(window.location.href);
+
+		if (!!firstPage && !!App.pages.loaded(firstPage.key())) {
+			firstPage.init({firstTime: true});
+			firstPage.setInited();
+			App.mediator.init(firstPage);
+		}
+
+		// init each Page already loaded and with body set page instance
 		Object.values(App.pages.instances()).forEach(function initPage (page) {
-			if (!!page.loaded()) {
+			if (!!App.pages.loaded(page.key()) && page.key() !== firstPage.key()) {
 				// init page
 				page.init({firstTime: true});
 				page.setInited();
@@ -3583,11 +3052,11 @@
 				App.mediator.init(page);
 			}
 		});
-		
+
 		App.mediator.notify('app.init', {
 			page: App.mediator.getCurrentPage()
 		});
-		
+
 		if (!App.mediator.getCurrentPage()) {
 			App.modules.notify('app.pageNotFound');
 			App.log({ fx: 'error', args: 'No current page set, pages will not work.' });
@@ -3602,13 +3071,13 @@
 	 * @param {String} root CSS selector
 	 * @private
 	 */
-	var run = function (root) {
+	const run = function (root) {
 		initApplication(root);
 		return global.App;
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * Get the root css selector
 		 * @name root
@@ -3632,7 +3101,7 @@
 		run: run
 	});
 	
-})(jQuery, window);
+})(window);
 
 /**
  * General customization alongside the framework
@@ -3640,28 +3109,24 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 
 	if (!!global.App && !!global.App.device) {
 		(function (h, deviceClasses) {
 			deviceClasses.forEach(function (c) {
 				if (!!App.device[c]) {
-					h.addClass(c);
+					h.classList.add(c);
 				}
 			});
-		})($('html'), [
+		})(document.querySelector('html'), [
 			'iphone', 'ipad', 'ios',
 			'android',
 			'mobile', 'phone', 'tablet', 'touch',
 			'chrome', 'firefox', 'safari', 'internetexplorer', 'edge'
 		]);
-
-		// easing support
-		$.easing.def = (App.device.mobile ? 'linear' : 'easeOutQuad');
 	}
 
 	/**
@@ -3681,7 +3146,7 @@
 	}
 
 	consoleFx.forEach(function (key) {
-		global.console[key] = global.console[key] || $.noop;
+		global.console[key] = global.console[key] || (() => {});
 	});
 
 	/**
@@ -3696,14 +3161,39 @@
 	 */
 	global.pd = function (e, stopPropagation) {
 		if (!!e) {
-			if ($.isFunction(e.preventDefault)) {
+			if (typeof e.preventDefault === 'function') {
 				e.preventDefault();
 			}
-			if (stopPropagation !== false && $.isFunction(e.stopPropagation)) {
+			if (stopPropagation !== false && typeof e.stopPropagation === 'function') {
 				e.stopPropagation();
 			}
 		}
 		return false;
 	};
-	
-})(jQuery, window);
+
+	const sorry = (type) => {
+		const orig = window.history[type];
+		return function () {
+			let data = {};
+
+			if (!!arguments.length && typeof arguments[0] === 'object') {
+				data = arguments[0].data || {};
+				delete(arguments[0].data);
+			}
+
+			const rv = orig.apply(this, arguments);
+			const e = new window.Event(type);
+
+			e.arguments = arguments;
+			e.state = arguments[0] || undefined;
+			e.data = data;
+			window.dispatchEvent(e);
+
+			return rv;
+		};
+	};
+
+	global.history.pushState = sorry('pushState');
+	global.history.replaceState = sorry('replaceState');
+
+})(window);

@@ -6,14 +6,13 @@
  * @author Deux Huit Huit <https://deuxhuithuit.com>
  * @license MIT <https://deuxhuithuit.mit-license.org>
  *
- * @requires jQuery
  * @namespace App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	//Default value
-	var ROOT = 'body';
+	let ROOT = 'body';
 	
 	/**
 	 * Init All the applications
@@ -27,20 +26,28 @@
 	 * @param {String} root CSS selector
 	 * @private
 	 */
-	var initApplication = function (root) {
+	const initApplication = function (root) {
 		// assure root node
-		if (!!root && !!$(root).length) {
+		if (!!root && !!document.querySelector(root)) {
 			ROOT = root;
 		}
-		
+
 		// init each Modules
 		Object.values(App.modules.models()).forEach(function initModule (m) {
 			m.init();
 		});
-		
-		// init each Page already loaded
+
+		const firstPage = App.pages.getPageForHref(window.location.href);
+
+		if (!!firstPage && !!App.pages.loaded(firstPage.key())) {
+			firstPage.init({firstTime: true});
+			firstPage.setInited();
+			App.mediator.init(firstPage);
+		}
+
+		// init each Page already loaded and with body set page instance
 		Object.values(App.pages.instances()).forEach(function initPage (page) {
-			if (!!page.loaded()) {
+			if (!!App.pages.loaded(page.key()) && page.key() !== firstPage.key()) {
 				// init page
 				page.init({firstTime: true});
 				page.setInited();
@@ -48,11 +55,11 @@
 				App.mediator.init(page);
 			}
 		});
-		
+
 		App.mediator.notify('app.init', {
 			page: App.mediator.getCurrentPage()
 		});
-		
+
 		if (!App.mediator.getCurrentPage()) {
 			App.modules.notify('app.pageNotFound');
 			App.log({ fx: 'error', args: 'No current page set, pages will not work.' });
@@ -67,13 +74,13 @@
 	 * @param {String} root CSS selector
 	 * @private
 	 */
-	var run = function (root) {
+	const run = function (root) {
 		initApplication(root);
 		return global.App;
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		/**
 		 * Get the root css selector
 		 * @name root
@@ -97,4 +104,4 @@
 		run: run
 	});
 	
-})(jQuery, window);
+})(window);

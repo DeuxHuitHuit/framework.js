@@ -10,7 +10,7 @@
  * @memberof App
  * @requires App
  */
-(function ($, global, undefined) {
+(function (global, undefined) {
 	'use strict';
 	
 	/**
@@ -22,15 +22,14 @@
 	 * @return {Array}
 	 * @private
 	 */
-	var argsToArray = function (args) {
-		var isNull = (args === null);
-		var isNotUndefined = (args !== undefined);
-		var isNotAnArray = !$.isArray(args);
-		var noLength = !!args && !$.isNumeric(args.length);
-		var isString = $.type(args) === 'string';
-		var isjQuery = !!args && !!args.jquery;
-		
-		if (isNull || (isNotUndefined && isNotAnArray && (noLength || isString || isjQuery))) {
+	const argsToArray = function (args) {
+		const isNull = (args === null);
+		const isNotUndefined = (args !== undefined);
+		const isNotAnArray = !Array.isArray(args);
+		const noLength = !!args && !isNaN(args.length);
+		const isString = typeof args === 'string';
+
+		if (isNull || (isNotUndefined && isNotAnArray && (noLength || isString))) {
 			// put single parameter inside an array
 			args = [args];
 		}
@@ -49,20 +48,20 @@
 	 * @return {*}
 	 * @private
 	 */
-	var callback = function (fx, args) {
+	const callback = function (fx, args) {
 		try {
 			args = argsToArray(args);
 			
-			if ($.isFunction(fx)) {
+			if (typeof fx === 'function') {
 				// IE8 does not allow null/undefined args
 				return fx.apply(this, args || []);
 				
-			} else if ($.isPlainObject(fx)) {
+			} else if (typeof fx === 'object') {
 				return fx;
 			}
 		} catch (err) {
-			var stack = err.stack;
-			var msg = (err.message || err) + '\n' + (stack || '');
+			const stack = err.stack;
+			const msg = (err.message || err) + '\n' + (stack || '');
 			
 			App.log({args: [msg, err], fx: 'error'});
 		}
@@ -70,7 +69,7 @@
 	};
 	
 	/** Public Interfaces **/
-	global.App = $.extend(true, global.App, {
+	global.App = Object.assign({}, global.App, {
 		
 		/**
 		 * Execute the method received with the arguments received
@@ -86,4 +85,4 @@
 		callback: callback
 	});
 	
-})(jQuery, window);
+})(window);
