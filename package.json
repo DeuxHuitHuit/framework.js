@@ -40,8 +40,6 @@
     "phantomjs": "~2.1.7"
   },
   "scripts": {
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect",
     "test": "grunt dev test-latest",
     "ci": "grunt ci"
   },
