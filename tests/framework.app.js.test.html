@@ -26,7 +26,7 @@
 	<script src="../src/app-mediator.js"></script>
 	
 	<script>
-		(function ($, w) {
+		(function (w) {
 			'use strict';
 		
 			var initTest = function(assert) {
@@ -74,20 +74,6 @@
 				assert.ok(w.App.device.detector.isIpad('ipad iphone'),'ua contains ipad AND iphone then IS ipad');
 			});
 			
-			QUnit.module('App.routing.querystring');
-			
-			QUnit.test('parse', function QS(assert) {
-				var result;
-				
-				//Test 1
-				result = w.App.routing.querystring.parse('?q=test');
-				assert.ok(result.q === 'test','parse ?q.test is parsed successfully');
-				
-				//Test 2
-				result = w.App.routing.querystring.parse('?q=test&r=2');
-				assert.ok(result.q === 'test' && result.r == 2,'parse ?q=test&r=2 is parsed successfully');
-			});
-			
 			QUnit.module('App.Pages');
 			
 			QUnit.test('exportsPage and createPage', function exportPages(assert) {
@@ -102,7 +88,7 @@
 				
 				assert.ok(!App.pages.exports(1,f), 'key cant be an int');
 				assert.ok(!App.pages.exports({},f), 'key cant be an object');
-				assert.ok(!App.pages.exports($.noop,f), 'key cant be a function');
+				assert.ok(!App.pages.exports(() => {},f), 'key cant be a function');
 				assert.ok(!App.pages.exports(false,f), 'key cant be a boolean');
 				
 				assert.ok(!App.pages.exports(modelKey,f,false), 'page exports dont allow override with false override');
@@ -110,7 +96,7 @@
 				assert.ok(App.pages.exports(modelKey,f,true), 'page exports allow override with true override');
 				
 				assert.ok(App.pages.exports(modelKey+'func', function () {
-					return $.extend({}, f);
+					return Object.assign({}, f);
 				}), 'page exports allow functions');
 				
 				App.pages.exports(modelKey+'int', 1);
@@ -125,7 +111,6 @@
 				
 				var page = App.pages.page('test');
 				assert.ok(page.key() == 'test');
-				assert.ok(page.routes() == routes);
 				
 				assert.ok(!App.pages.create({
 					key: 'test', 
@@ -150,107 +135,16 @@
 				
 				assert.ok(page1 != page2, 'functions creates new scopes');
 			});
-			
-			QUnit.test('matchRoute', function appPagesMatchRouteTest (assert) {
-				var routes = { // can also use array
-					root: '/',
-					contactFR: '/fr/contact/',
-					contactEN: '/en/contact/',
-					wildcard: '/test/*/view',
-					questionWildcard: '/test/*',
-					routeWithQueryString: '/query-string',
-					regex: /^\/[ab]$/
-				},
-				route = '';
-			
-				route = routes.root;
-				assert.equal(App.pages.matchRoute(route, routes), 0, 'root: ' + route);
-				
-				route = routes.contactFR;
-				assert.equal(App.pages.matchRoute(route, routes), 1, 'contactFR: ' + route);
-				
-				route = routes.contactEN;
-				assert.equal(App.pages.matchRoute(route, routes), 2, 'contactEN: ' + route);
-				
-				route = '///kldkslds';
-				assert.equal(App.pages.matchRoute(route, routes), -1, '!: ' + route);
-				
-				route = '/test/super-cheap/view';
-				assert.equal(App.pages.matchRoute(route, routes), 3, 'wildcard: ' + route);
-				
-				route = '/a';
-				assert.equal(App.pages.matchRoute(route, routes), 6, 'regexp: ' + route);
-				
-				route = '/b';
-				assert.equal(App.pages.matchRoute(route, routes), 6, 'regexp: ' + route);
-				
-				route = '/c';
-				assert.equal(App.pages.matchRoute(route, routes), -1, '!regexp: ' + route);
-				
-				route = '/test/?test=test';
-				assert.equal(App.pages.matchRoute(route, routes), 4, 'test/*: ' + route);
-				
-				route = '/test/article/test-test/';
-				assert.equal(App.pages.matchRoute(route, routes), 4, 'test/*: ' + route);
-				
-				route = '/test/article/test-test/#sasasas';
-				assert.equal(App.pages.matchRoute(route, routes), 4, 'test/*: ' + route);
-				
-				route = '/test/?test[super/\]=test#43434';
-				assert.equal(App.pages.matchRoute(route, routes), 4, 'test/*: ' + route);
-				
-				route = '/query-string?with-a-query-string';
-				assert.equal(App.pages.matchRoute(route, routes), 5, 'qs: ' + route);
-				
-				route = '/query-string?with-a-query-string?and=another';
-				assert.equal(App.pages.matchRoute(route, routes), 5, 'qs2: ' + route);
 
-				routes = ['/fr/', '/'];
-				route = '';
-				assert.equal(App.pages.matchRoute(route, routes), -1, 'empty: ' + route);
-
-				route = '/fr/';
-				assert.equal(App.pages.matchRoute(route, routes), 0, 'fr: ' + route);
-
-				route = '/';
-				assert.equal(App.pages.matchRoute(route, routes), 1, '/: ' + route);
-			});
-			
-			QUnit.test('getPageForRoute', function appPages_getPageForRouteTest (assert) {
-				App.pages.exports('page1', {
-					init: initTest(assert)
-				});
-				
-				App.pages.create({key: 'page 1', routes: ['page-1']},'page1');
-				App.pages.create({key: 'page 2', routes: ['page-2']},'page1');
-				
-				var page;
-				
-				page = App.pages.getPageForRoute(null);
-				assert.equal(page, null, 'null page');
-				page = App.pages.getPageForRoute('page-1');
-				assert.equal(page.key(), 'page 1', 'page 1');
-				page = App.pages.getPageForRoute('page-2');
-				assert.equal(page.key(), 'page 2', 'page 2');
-				
-				assert.ok(!page.init(), 'init returns a false-y value');
-				
-				page = App.pages.getPageForRoute('page-3');
-				assert.equal(page, null, 'page 3');
-			});
-			
 			QUnit.test('page properties', function pageProperties(assert) {
 				App.pages.exports('page-properties', {});
 				var page = App.pages.create({
-					key: 'page properties',
-					routes: ['page-1']
+					key: 'page properties'
 				}, 'page-properties');
-				
+
 				assert.ok(page, 'page has a value');
 				assert.ok(page.key(), 'key() returns a value');
-				assert.ok(!page.loaded(), 'loaded() returns false');
-				assert.ok(page.routes(), 'key() returns a value');
-				assert.ok(page.data(), 'data() returns a value');
+				assert.ok(page.selector(), 'selector() returns a value');
 				assert.ok(page.canEnter(), 'canEnter() returns a value');
 				assert.ok(page.canLeave(), 'canLeave() returns a value');
 				assert.ok(page.enter, 'enter is a value');
@@ -330,7 +224,7 @@
 				var counter = 0;
 				
 				var cb = function (key, res) {
-					assert.equal($.type(key), 'number', 'key ' + key + ' is a number');
+					assert.equal(typeof key, 'number', 'key ' + key + ' is a number');
 					assert.equal(res, true, 'res is true');
 					counter++;
 				};
@@ -367,7 +261,7 @@
 				
 				assert.equal(counter, 3, 'Callback was called 3 times');
 			});
-		})(jQuery, window);
+		})(window);
 	</script>
 </body>
 </html>

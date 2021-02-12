@@ -19,7 +19,7 @@
 	<script src="../src/app-storage.js"></script>
 
 	<script>
-		(function ($, w) {
+		(function (w) {
 			'use strict';
 
 			// clean up
@@ -100,7 +100,7 @@
 
 			QUnit.test('session clear', clearTest(App.storage.session, 'session'));
 
-		})(jQuery, window);
+		})(window);
 	</script>
 </body>
 </html>

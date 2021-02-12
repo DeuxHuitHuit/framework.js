@@ -475,43 +475,6 @@
 	};
 
 	/**
-	 * Open the wanted page,
-	 * return to the precedent page if the requested on is already open
-	 * or fallback to a default one
-	 * @name togglePage
-	 * @memberof App
-	 * @method
-	 * @fires App#page:toggleNoPreviousUrl
-	 * @param {String} route Url
-	 * @param {String} fallback Url used for as a fallback
-	 * @private
-	 */
-	const togglePage = function (route, fallback) {
-		if (!!currentPage && validateMediatorState()) {
-
-			const nextPage = App.pages.getPageForRoute(route);
-
-			if (!!nextPage && canEnterNextPage(nextPage)) {
-				if (nextPage !== currentPage) {
-					gotoPage(route);
-				} else if (!!previousUrl && previousUrl !== getCurrentUrl()) {
-					gotoPage(previousUrl);
-				} else if (!!fallback) {
-					gotoPage(fallback);
-				} else {
-					/**
-					 * @event App#page:toggleNoPreviousUrl
-					 * @type {object}
-					 * @property {object} currentPage PageObject
-					 */
-					App.modules.notify('page.toggleNoPreviousUrl', { currentPage: nextPage });
-				}
-			}
-		}
-		return this;
-	};
-
-	/**
 	 * Properly sets the current page on first load
 	 * @name initPage
 	 * @memberof App.mediator
@@ -682,20 +645,6 @@
 			 * @this App
 			 */
 			goto: gotoPage,
-
-			/**
-			 * Open the wanted page,
-			 * return to the precedent page if the requested on is already open
-			 * or fallback to a default one
-			 * @name toggle
-			 * @memberof App.mediator
-			 * @method
-			 * @fires App#page:toggleNoPreviousUrl
-			 * @param {String} route Url
-			 * @param {String} fallback Url used for as a fallback
-			 * @public
-			 */
-			toggle: togglePage,
 
 			/**
 			 * Properly sets the current page on first load

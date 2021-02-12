@@ -28,7 +28,6 @@ module.exports = function fxGruntConfig (grunt) {
 		'/tests/framework.actions.js.test.html',
 		'/tests/framework.fx.js.test.html',
 		'/tests/framework.app.js.test.html',
-		'/tests/framework.loader.js.test.html',
 		'/tests/framework.storage.js.test.html'
 	];
 	
