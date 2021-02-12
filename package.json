@@ -18,7 +18,7 @@
   "license": "MIT",
   "keywords": [],
   "devDependencies": {
-    "@babel/core": "^7.10.5",
+    "@babel/core": "^7.12.16",
     "@babel/preset-env": "^7.12.16",
     "express": "4.17.1",
     "grunt": "~1.1.0",
