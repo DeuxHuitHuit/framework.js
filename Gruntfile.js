@@ -230,9 +230,6 @@ module.exports = function fxGruntConfig (grunt) {
 				preserveComments: false
 			}
 		},
-		curl: {
-			
-		},
 		connect: {
 			server: {
 				options: {
@@ -324,7 +321,7 @@ module.exports = function fxGruntConfig (grunt) {
 		// Default task.
 		grunt.registerTask('test', ['connect', 'qunit:all']);
 		grunt.registerTask('test-latest', ['connect', 'qunit:latest']);
-		grunt.registerTask('test-ci', ['curl', 'connect', 'qunit:ci']);
+		grunt.registerTask('test-ci', ['connect', 'qunit:ci']);
 		grunt.registerTask('dev', ['jshint', 'jscs', 'complexity']);
 		grunt.registerTask('build', [
 			'buildnum',
