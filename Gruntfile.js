@@ -22,7 +22,6 @@ module.exports = function fxGruntConfig (grunt) {
 	var SERVER_PORT = 8081;
 	var SERVER_URI = 'http://localhost:' + SERVER_PORT;
 	var TEST_PATHS = [
-		'/tests/framework.global.js.test.html',
 		'/tests/framework.debug.js.test.html',
 		'/tests/framework.callback.js.test.html',
 		'/tests/framework.actions.js.test.html',
