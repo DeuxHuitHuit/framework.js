@@ -40,7 +40,8 @@
   },
   "scripts": {
     "test": "grunt dev test-latest",
-    "ci": "grunt ci"
+    "ci": "grunt ci",
+    "build": "grunt build"
   },
   "snyk": true,
   "greenkeeper": {
