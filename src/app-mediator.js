@@ -294,6 +294,30 @@
 		 * @param {Object} jqXHR request instance
 		 */
 		const loadSuccess = function (response) {
+
+			// if a redirection was detected by the browser with the original goto replicate it
+			if (!!response.redirected) {
+				window.history.replaceState({
+					data: {
+						mediator: true,
+						type: 'pushState',
+						redirected: true
+					}
+				}, '', response.url);
+
+				nextPage = App.pages.getPageForHref(response.url);
+				route = response.url;
+
+				const node = document.querySelector(nextPage.selector());
+				
+				// If the redirected page already exists re-use it else continue the normal flow.
+				if (!!node) {
+					node.style.opacity = 0;
+					node.style.display = 'none';
+					return enterLeave();
+				}
+			}
+
 			return response.text().then((data) => {
 				const htmldata = safeParseData(data);
 
