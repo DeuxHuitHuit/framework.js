@@ -1,6 +1,6 @@
-/*! framework.js - v3.0.0 - f7fa30e - build 232 - 2020-11-19
+/*! framework.js - v3.0.1 - caa80cc - build 233 - 2021-03-10
  * https://github.com/DeuxHuitHuit/framework.js
- * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
+ * Copyright (c) 2021 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
  * Actions
  *
@@ -1617,6 +1617,30 @@
 		 * @param {Object} jqXHR request instance
 		 */
 		const loadSuccess = function (response) {
+
+			// if a redirection was detected by the browser with the original goto replicate it
+			if (!!response.redirected) {
+				window.history.replaceState({
+					data: {
+						mediator: true,
+						type: 'pushState',
+						redirected: true
+					}
+				}, '', response.url);
+
+				nextPage = App.pages.getPageForHref(response.url);
+				route = response.url;
+
+				const node = document.querySelector(nextPage.selector());
+				
+				// If the redirected page already exists re-use it else continue the normal flow.
+				if (!!node) {
+					node.style.opacity = 0;
+					node.style.display = 'none';
+					return enterLeave();
+				}
+			}
+
 			return response.text().then((data) => {
 				const htmldata = safeParseData(data);
 
@@ -1726,10 +1750,10 @@
 						if (!!changeUrl) {
 							window.history.pushState({
 								data: {
-									mediator: true,
-									type: 'pushState'
+									mediator: true
 								}
 							}, '', obj);
+							pageData.type = 'pushState';
 						}
 
 						/**
@@ -1791,43 +1815,6 @@
 					}
 				} else {
 					App.log({ args: ['Route "%s" is invalid.', obj], fx: 'error' });
-				}
-			}
-		}
-		return this;
-	};
-
-	/**
-	 * Open the wanted page,
-	 * return to the precedent page if the requested on is already open
-	 * or fallback to a default one
-	 * @name togglePage
-	 * @memberof App
-	 * @method
-	 * @fires App#page:toggleNoPreviousUrl
-	 * @param {String} route Url
-	 * @param {String} fallback Url used for as a fallback
-	 * @private
-	 */
-	const togglePage = function (route, fallback) {
-		if (!!currentPage && validateMediatorState()) {
-
-			const nextPage = App.pages.getPageForRoute(route);
-
-			if (!!nextPage && canEnterNextPage(nextPage)) {
-				if (nextPage !== currentPage) {
-					gotoPage(route);
-				} else if (!!previousUrl && previousUrl !== getCurrentUrl()) {
-					gotoPage(previousUrl);
-				} else if (!!fallback) {
-					gotoPage(fallback);
-				} else {
-					/**
-					 * @event App#page:toggleNoPreviousUrl
-					 * @type {object}
-					 * @property {object} currentPage PageObject
-					 */
-					App.modules.notify('page.toggleNoPreviousUrl', { currentPage: nextPage });
 				}
 			}
 		}
@@ -2005,20 +1992,6 @@
 			 * @this App
 			 */
 			goto: gotoPage,
-
-			/**
-			 * Open the wanted page,
-			 * return to the precedent page if the requested on is already open
-			 * or fallback to a default one
-			 * @name toggle
-			 * @memberof App.mediator
-			 * @method
-			 * @fires App#page:toggleNoPreviousUrl
-			 * @param {String} route Url
-			 * @param {String} fallback Url used for as a fallback
-			 * @public
-			 */
-			toggle: togglePage,
 
 			/**
 			 * Properly sets the current page on first load
@@ -3101,99 +3074,4 @@
 		run: run
 	});
 	
-})(window);
-
-/**
- * General customization alongside the framework
- *
- * @author Deux Huit Huit <https://deuxhuithuit.com>
- * @license MIT <https://deuxhuithuit.mit-license.org>
- *
- * @requires App
- */
-(function (global, undefined) {
-	'use strict';
-
-	if (!!global.App && !!global.App.device) {
-		(function (h, deviceClasses) {
-			deviceClasses.forEach(function (c) {
-				if (!!App.device[c]) {
-					h.classList.add(c);
-				}
-			});
-		})(document.querySelector('html'), [
-			'iphone', 'ipad', 'ios',
-			'android',
-			'mobile', 'phone', 'tablet', 'touch',
-			'chrome', 'firefox', 'safari', 'internetexplorer', 'edge'
-		]);
-	}
-
-	/**
-	 * Patching console object.
-	 * @see https://developers.google.com/chrome-developer-tools/docs/console-api
-	 */
-	var consoleFx = ['assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error', 'group',
-		'group', 'group', 'info', 'log', 'profile', 'profile', 'time', 'time', 'time',
-		'trace', 'warn'];
-
-	/**
-	 * Console support
-	 * @global
-	 */
-	if (!global.console) {
-		global.console = {};
-	}
-
-	consoleFx.forEach(function (key) {
-		global.console[key] = global.console[key] || (() => {});
-	});
-
-	/**
-	 * Facade to stop the propagation of events
-	 * @name pd
-	 * @method
-	 * @param {Event} e Event object
-	 * @param {Boolean} stopPropagation Flag to stop the event propagation or not
-	 * @returns {Boolean} false, always.
-	 * @global
-	 * @public
-	 */
-	global.pd = function (e, stopPropagation) {
-		if (!!e) {
-			if (typeof e.preventDefault === 'function') {
-				e.preventDefault();
-			}
-			if (stopPropagation !== false && typeof e.stopPropagation === 'function') {
-				e.stopPropagation();
-			}
-		}
-		return false;
-	};
-
-	const sorry = (type) => {
-		const orig = window.history[type];
-		return function () {
-			let data = {};
-
-			if (!!arguments.length && typeof arguments[0] === 'object') {
-				data = arguments[0].data || {};
-				delete(arguments[0].data);
-			}
-
-			const rv = orig.apply(this, arguments);
-			const e = new window.Event(type);
-
-			e.arguments = arguments;
-			e.state = arguments[0] || undefined;
-			e.data = data;
-			window.dispatchEvent(e);
-
-			return rv;
-		};
-	};
-
-	global.history.pushState = sorry('pushState');
-	global.history.replaceState = sorry('replaceState');
-
 })(window);
