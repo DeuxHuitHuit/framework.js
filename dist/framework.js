@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.2 - 2532fbd - build 240 - 2021-04-13
+/*! framework.js - v3.0.2 - 5b7e4b5 - build 241 - 2021-04-13
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2021 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
