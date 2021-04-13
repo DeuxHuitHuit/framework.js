@@ -2,7 +2,6 @@
 .project
 .settings
 node_modules
-
+.DS_Store
 npm-debug.log
-
 report.xml

@@ -400,6 +400,9 @@
 			return pageInstances[href];
 		}
 
+		// make sure the href does not include the hash
+		href = href.split('#')[0];
+
 		// match with potential model
 		let model = null;
 

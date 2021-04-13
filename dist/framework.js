@@ -1,4 +1,4 @@
-/*! framework.js - v3.0.1 - 15823e3 - build 238 - 2021-04-09
+/*! framework.js - v3.0.2 - 2532fbd - build 240 - 2021-04-13
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2021 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -2578,6 +2578,9 @@
 		if (!!pageInstances[href]) {
 			return pageInstances[href];
 		}
+
+		// make sure the href does not include the hash
+		href = href.split('#')[0];
 
 		// match with potential model
 		let model = null;
