@@ -309,11 +309,10 @@
 				route = response.url;
 
 				const node = document.querySelector(nextPage.selector());
-				
+
 				// If the redirected page already exists re-use it else continue the normal flow.
 				if (!!node) {
-					node.style.opacity = 0;
-					node.style.display = 'none';
+					node.remove();
 					return enterLeave();
 				}
 			}
@@ -348,14 +347,13 @@
 						data: data,
 						url: obj,
 						response: response,
-						status: response.status,
+						status: response.status
 					});
 
 				} else {
-					// append it to the doc, hidden
-					node.style.opacity = 0;
-					node.style.display = 'none';
-
+					// add it to the cache
+					App.pages.setLoadedPage(nextPage.key(), node);
+					// append it to the doc
 					elem.appendChild(node);
 
 					/**
@@ -523,6 +521,11 @@
 		// initialize page variable
 		currentPage = page;
 		previousPage = previousPage || page;
+		// Add current page to cache
+		App.pages.setLoadedPage(
+			currentPage.key(),
+			document.querySelector(currentPage.selector())
+		);
 
 		/**
 		 * @event App#page:entering

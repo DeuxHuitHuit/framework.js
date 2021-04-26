@@ -12,10 +12,11 @@
  */
 (function (global, undefined) {
 	'use strict';
-	
+
 	const pageModels = {};
 	const pageInstances = {};
 	const activeRoutes = {};
+	const loadedPages = {};
 
 	/**
 	 * Creates and a new factory function based on the
@@ -45,7 +46,7 @@
 		const factory = function (pageData) {
 			let modelRef;
 			let isInited = false;
-			
+
 			if (typeof model === 'object') {
 				modelRef = model;
 			} else if (typeof model === 'function') {
@@ -93,9 +94,11 @@
 				canLeave: () => true,
 				model: () => key,
 				enter: (next, data) => {
-					const p = document.querySelector(getSelector());
-					p.style.opacity = 1;
-					p.style.display = 'block';
+					const root = document.querySelector(App.root());
+					const p = loadedPages[pageData.key];
+					if (p) {
+						root.appendChild(p);
+					}
 					if (!!data.firstTime || data.type === 'pushState') {
 						window.scrollTo({
 							top: 0,
@@ -107,8 +110,9 @@
 				},
 				leave: (next) => {
 					const p = document.querySelector(getSelector());
-					p.style.opacity = 0;
-					p.style.display = 'none';
+					if (p) {
+						p.remove();
+					}
 					App.callback(next);
 				}
 			};
@@ -135,7 +139,7 @@
 
 		return factory;
 	};
-	
+
 	/**
 	 * Creates a page with the specified model.
 	 * @name createPage
@@ -151,7 +155,7 @@
 		//Find the page model associated
 		const pageModel = pageModels[keyModel];
 		let pageInst;
-		
+
 		if (!pageModel) {
 			App.log({args: ['Model `%s` not found', keyModel], fx: 'error'});
 		} else {
@@ -205,7 +209,7 @@
 		}
 		return false;
 	};
-	
+
 	/**
 	 * Create a new pageModel, i.e. a function to create a new pages.
 	 * It first calls {@link createPageModel} and then calls {@link registerPageModel}
@@ -227,7 +231,7 @@
 		// Only work with pageModel afterwards
 		return registerPageModel(key, pageModel, override);
 	};
-	
+
 	const routeMatchStrategies = {
 		regexp: function (testRoute, route, cb) {
 			if (testRoute.test(route)) {
@@ -239,32 +243,32 @@
 			let regex;
 			// be sure to escape uri
 			route = decodeURIComponent(route);
-			
+
 			// be sure we do not have hashed in the route
 			route = route.split('#')[0];
-			
+
 			// avoid RegExp if possible
 			if (testRoute === route) {
 				return cb();
 			}
-			
+
 			// assure we are testing from the beginning
 			if (testRoute.indexOf('^') !== 0) {
 				testRoute = '^' + testRoute;
 			}
-			
+
 			// assure we are testing until the end
 			if (testRoute.indexOf('^') !== testRoute.length - 1) {
 				testRoute = testRoute + '$';
 			}
-			
+
 			// wildcard replace
 			// avoid overloading routes with regex
 			if (testRoute.indexOf('*')) {
 				// a-zA-Z0-9 ,:;.=%$|—_/\\-=?&\\[\\]\\\\#
 				testRoute = testRoute.replace(new RegExp('\\*', 'gi'), '.*');
 			}
-			
+
 			try {
 				regex = new RegExp(testRoute);
 			} catch (ex) {
@@ -273,14 +277,14 @@
 					fx: 'error'
 				});
 			}
-			
+
 			if (!!regex && regex.test(route)) {
 				return cb();
 			}
 			return true;
 		}
 	};
-	
+
 	/**
 	 * Tries to match the given route against the given
 	 * array of possible routes.
@@ -299,16 +303,16 @@
 			index = i;
 			return false; // exit every
 		};
-		
+
 		if (typeof route !== 'string') {
 			App.log({args: '`route` must be a string', fx: 'error'});
 			return index;
 		}
-		
+
 		if (!!~route.indexOf('?')) {
 			route = route.split('?')[0];
 		}
-		
+
 		if (!!route && !!routes) {
 			if (!Array.isArray(routes)) {
 				routes = Object.values(routes);
@@ -319,7 +323,7 @@
 				const cb = function () {
 					return found(i);
 				};
-				
+
 				if (typeof routeStrategy === 'function') {
 					return routeStrategy(testRoute, route, cb);
 				} else if (testRoute === route) {
@@ -328,7 +332,7 @@
 				return true;
 			});
 		}
-		
+
 		return index;
 	};
 
@@ -426,7 +430,15 @@
 	};
 
 	const loaded = (url) => {
-		return !!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]');
+		return (
+			!!loadedPages[url] ||
+			// The first loaded page is never in the cache, get it in the DOM.
+			!!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]')
+		);
+	};
+
+	const setLoadedPage = (url, node) => {
+		loadedPages[url] = node;
 	};
 
 	registerPageModel('default', createPageModel('default', {}, true), {});
@@ -491,7 +503,7 @@
 				if (!!!result) {
 					result = getPageForHref(keyOrRoute);
 				}
-				
+
 				return result;
 			},
 
@@ -538,6 +550,18 @@
 			 * @since 3.0.0
 			 */
 			loaded: loaded,
+
+			/**
+			 * Add a page to the memory cache
+			 * @name exports
+			 * @memberof pages
+			 * @method
+			 * @param {String} url the page url, to be used as key
+			 * @param {HTMLElement} node the page html data
+			 * @public
+			 * @since 3.0.0
+			 */
+			setLoadedPage: setLoadedPage,
 
 			/**
 			 * App pages routes
@@ -593,5 +617,5 @@
 			}
 		}
 	});
-	
+
 })(window);
