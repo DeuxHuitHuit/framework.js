@@ -353,8 +353,6 @@
 				} else {
 					// add page node to the cache
 					nextPage.setNode(node);
-					// append it to the doc
-					// elem.appendChild(node);
 
 					/**
 					 * @event App#pages:loaded
