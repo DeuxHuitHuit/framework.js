@@ -351,10 +351,10 @@
 					});
 
 				} else {
-					// add it to the cache
-					App.pages.setLoadedPage(nextPage.key(), node);
+					// add page node to the cache
+					nextPage.setNode(node);
 					// append it to the doc
-					elem.appendChild(node);
+					// elem.appendChild(node);
 
 					/**
 					 * @event App#pages:loaded
@@ -521,11 +521,8 @@
 		// initialize page variable
 		currentPage = page;
 		previousPage = previousPage || page;
-		// Add current page to cache
-		App.pages.setLoadedPage(
-			currentPage.key(),
-			document.querySelector(currentPage.selector())
-		);
+		// Cache initial page node
+		currentPage.setNode(document.querySelector(currentPage.selector()));
 
 		/**
 		 * @event App#page:entering

@@ -16,7 +16,6 @@
 	const pageModels = {};
 	const pageInstances = {};
 	const activeRoutes = {};
-	const loadedPages = {};
 
 	/**
 	 * Creates and a new factory function based on the
@@ -46,6 +45,7 @@
 		const factory = function (pageData) {
 			let modelRef;
 			let isInited = false;
+			let node;
 
 			if (typeof model === 'object') {
 				modelRef = model;
@@ -95,9 +95,8 @@
 				model: () => key,
 				enter: (next, data) => {
 					const root = document.querySelector(App.root());
-					const p = loadedPages[pageData.key];
-					if (p) {
-						root.appendChild(p);
+					if (node) {
+						root.appendChild(node);
 					}
 					if (!!data.firstTime || data.type === 'pushState') {
 						window.scrollTo({
@@ -127,6 +126,10 @@
 				},
 				setInited: () => {
 					isInited = true;
+				},
+				node: () => node,
+				setNode: (htmlData) => {
+					node = htmlData
 				}
 			});
 
@@ -429,16 +432,12 @@
 		return createPage({key: href}, model, true);
 	};
 
-	const loaded = (url) => {
+	const loaded = (href) => {
 		return (
-			!!loadedPages[url] ||
+			!!pageInstances[href]?.node() ||
 			// The first loaded page is never in the cache, get it in the DOM.
-			!!document.querySelector(App.root()).querySelector('[data-page-url="' + url + '"]')
+			!!document.querySelector(App.root()).querySelector('[data-page-url="' + href + '"]')
 		);
-	};
-
-	const setLoadedPage = (url, node) => {
-		loadedPages[url] = node;
 	};
 
 	registerPageModel('default', createPageModel('default', {}, true), {});
@@ -550,18 +549,6 @@
 			 * @since 3.0.0
 			 */
 			loaded: loaded,
-
-			/**
-			 * Add a page to the memory cache
-			 * @name exports
-			 * @memberof pages
-			 * @method
-			 * @param {String} url the page url, to be used as key
-			 * @param {HTMLElement} node the page html data
-			 * @public
-			 * @since 3.0.0
-			 */
-			setLoadedPage: setLoadedPage,
 
 			/**
 			 * App pages routes
