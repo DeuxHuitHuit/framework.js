@@ -312,7 +312,6 @@
 
 				// If the redirected page already exists re-use it else continue the normal flow.
 				if (!!node) {
-					node.remove();
 					return enterLeave();
 				}
 			}
@@ -351,8 +350,8 @@
 					});
 
 				} else {
-					// add page node to the cache
-					nextPage.setNode(node);
+					// Cache page as a dom string
+					nextPage.cache(node.outerHTML);
 
 					/**
 					 * @event App#pages:loaded
@@ -519,8 +518,8 @@
 		// initialize page variable
 		currentPage = page;
 		previousPage = previousPage || page;
-		// Cache initial page node
-		currentPage.setNode(document.querySelector(currentPage.selector()));
+		// Cache initial page as a dom string
+		currentPage.cache(document.querySelector(currentPage.selector()).outerHTML);
 
 		/**
 		 * @event App#page:entering

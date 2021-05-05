@@ -45,7 +45,7 @@
 		const factory = function (pageData) {
 			let modelRef;
 			let isInited = false;
-			let node;
+			let domString;
 
 			if (typeof model === 'object') {
 				modelRef = model;
@@ -94,10 +94,14 @@
 				canLeave: () => true,
 				model: () => key,
 				enter: (next, data) => {
-					const root = document.querySelector(App.root());
-					if (node) {
-						root.appendChild(node);
+					const page = document.querySelector(getSelector());
+					// If the page is already in the DOM, do nothing
+					if (!!page || !domString) {
+						App.callback(next);
+						return;
 					}
+					const root = document.querySelector(App.root());
+					root.innerHTML = domString;
 					if (!!data.firstTime || data.type === 'pushState') {
 						window.scrollTo({
 							top: 0,
@@ -108,10 +112,6 @@
 					App.callback(next);
 				},
 				leave: (next) => {
-					const p = document.querySelector(getSelector());
-					if (p) {
-						p.remove();
-					}
 					App.callback(next);
 				}
 			};
@@ -127,9 +127,12 @@
 				setInited: () => {
 					isInited = true;
 				},
-				node: () => node,
-				setNode: (htmlData) => {
-					node = htmlData
+				loaded: () => !!domString,
+				cache: (htmlData) => {
+					if (!!domString) {
+						return;
+					}
+					domString = htmlData;
 				}
 			});
 
@@ -434,7 +437,7 @@
 
 	const loaded = (href) => {
 		return (
-			!!pageInstances[href]?.node() ||
+			!!pageInstances[href]?.loaded() ||
 			// The first loaded page is never in the cache, get it in the DOM.
 			!!document.querySelector(App.root()).querySelector('[data-page-url="' + href + '"]')
 		);
