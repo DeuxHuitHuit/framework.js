@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>app-callback.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Events</li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:enter">page:enter</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:entering">page:entering</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:leave">page:leave</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:leaving">page:leaving</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:page:toggleNoPreviousUrl">page:toggleNoPreviousUrl</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:failedtoparse">pages:failedtoparse</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loaded">pages:loaded</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loaderror">pages:loaderror</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loadfatalerror">pages:loadfatalerror</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loading">pages:loading</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:loadprogress">pages:loadprogress</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:navigateToCurrent">pages:navigateToCurrent</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:notfound">pages:notfound</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:redirected">pages:redirected</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:requestBeginPageTransition">pages:requestBeginPageTransition</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:requestCancelPageTransition">pages:requestCancelPageTransition</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:requestPageTransition">pages:requestPageTransition</a></span></li><li class="nav-heading"><span class="nav-item-type type-event">E</span><span class="nav-item-name"><a href="App.html#event:pages:routeNotFound">pages:routeNotFound</a></span></li><li class="nav-heading">Namespaces</li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.html">App</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.html#.notifyPage">notifyPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.html#.root">root</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.html#.run">run</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.actions.html">App.actions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.actions.html#.execute">execute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.actions.html#.resolve">resolve</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.actions.html#.stack">stack</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.fx.html">App.fx</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.fx.html#.notify">notify</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.mediator.html">App.mediator</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getCurrentPage">getCurrentPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getCurrentUrl">getCurrentUrl</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getPreviousPage">getPreviousPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.getPreviousUrl">getPreviousUrl</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.goto">goto</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.init">init</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.notify">notify</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.notifyCurrentPage">notifyCurrentPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="App.mediator.html#.toggle">toggle</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="App.modules.html">modules</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="callback.html">callback</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="callback.html#.this">this</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="components.html">components</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="components.html#.create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="components.html#.exports">exports</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="components.html#.models">models</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="debug.html">debug</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="debug.html#.debug">debug</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="device.html">device</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="loaded.html">loaded</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loaded.html#.this">this</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="loader.html">loader</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.inQueue">inQueue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.isLoading">isLoading</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.load">load</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="loader.html#.working">working</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="log.html">log</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="log.html#.logs">logs</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="log.html#.this">this</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="modules.html">modules</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.exports">exports</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.models">models</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.notify">notify</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="modules.html#.resolve">resolve</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="pages.html">pages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.create">create</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.exports">exports</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.getPageForRoute">getPageForRoute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.models">models</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="pages.html#.page">page</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="routing.html">routing</a></span></li><li class="nav-heading"><span class="nav-item-type type-namespace">N</span><span class="nav-item-name"><a href="storage.html">storage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.clear">clear</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.factory">factory</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.get">get</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.remove">remove</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="storage.html#.set">set</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#pd">pd</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">app-callback.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * App Callback functionnality
+ *
+ * @fileoverview Defines and exports callback
+ *
+ * @author Deux Huit Huit &lt;https://deuxhuithuit.com>
+ * @license MIT &lt;https://deuxhuithuit.mit-license.org>
+ *
+ * @namespace callback
+ * @memberof App
+ * @requires App
+ */
+(function ($, global, undefined) {
+	'use strict';
+	
+	/**
+	 * Put the args value in a array if it isn't one already
+	 * @name argsToArray
+	 * @method
+	 * @memberof callback
+	 * @param {*} args
+	 * @return {Array}
+	 * @private
+	 */
+	var argsToArray = function (args) {
+		var isNull = (args === null);
+		var isNotUndefined = (args !== undefined);
+		var isNotAnArray = !$.isArray(args);
+		var noLength = !!args &amp;&amp; !$.isNumeric(args.length);
+		var isString = $.type(args) === 'string';
+		var isjQuery = !!args &amp;&amp; !!args.jquery;
+		
+		if (isNull || (isNotUndefined &amp;&amp; isNotAnArray &amp;&amp; (noLength || isString || isjQuery))) {
+			// put single parameter inside an array
+			args = [args];
+		}
+		return args;
+	};
+	
+	/**
+	 * Execute the method received with the arguments received.
+	 * Returns what the method returned.
+	 * @name callback
+	 * @method
+	 * @memberof callback
+	 * @this App
+	 * @param {function} fx
+	 * @param {*} args
+	 * @return {*}
+	 * @private
+	 */
+	var callback = function (fx, args) {
+		try {
+			args = argsToArray(args);
+			
+			if ($.isFunction(fx)) {
+				// IE8 does not allow null/undefined args
+				return fx.apply(this, args || []);
+				
+			} else if ($.isPlainObject(fx)) {
+				return fx;
+			}
+		} catch (err) {
+			var stack = err.stack;
+			var msg = (err.message || err) + '\n' + (stack || '');
+			
+			App.log({args: [msg, err], fx: 'error'});
+		}
+		return undefined;
+	};
+	
+	/** Public Interfaces **/
+	global.App = $.extend(true, global.App, {
+		
+		/**
+		 * Execute the method received with the arguments received
+		 * @name this
+		 * @method
+		 * @memberof callback
+		 * @this App
+		 * @param {function} fx
+		 * @param {*} args
+		 * @return undefined
+		 * @public
+		 */
+		callback: callback
+	});
+	
+})(jQuery, window);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> on Thu May 26 2022 12:16:21 GMT-0400 (GMT-04:00) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

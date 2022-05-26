@@ -1,6 +1,6 @@
-/*! framework.js - v2.2.4 - 978c748f29 - build 173 - 2020-04-01
+/*! framework.js - v2.2.5 - 5ab75c36d8 - build 175 - 2022-05-26
  * https://github.com/DeuxHuitHuit/framework.js
- * Copyright (c) 2020 Deux Huit Huit (https://deuxhuithuit.com/);
+ * Copyright (c) 2022 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
  * Actions
  *
@@ -2060,8 +2060,12 @@
 				App.modules.notify('pages.requestCancelPageTransition', {
 					currentPage: currentPage,
 					nextPage: nextPage,
-					route: route
+					requestedRoute: route,
+					route: responseUrl
 				});
+
+				//new route is now responseUrl. The old one is not valid anymore
+				route = responseUrl;
 
 				if (!validateNextPage(nextPage)) {
 					/**
@@ -2163,7 +2167,7 @@
 				App.modules.notify('pages.loaded', {
 					elem: elem,
 					data: data,
-					url: obj,
+					url: route,
 					page: nextPage,
 					node: node,
 					xhr: jqXHR,
@@ -2212,6 +2216,7 @@
 				route = obj;
 			} else {
 				nextPage = obj;
+				route = obj.route || '';
 			}
 
 			if (!validateNextPage(nextPage)) {
