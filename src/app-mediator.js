@@ -389,8 +389,12 @@
 				App.modules.notify('pages.requestCancelPageTransition', {
 					currentPage: currentPage,
 					nextPage: nextPage,
-					route: route
+					requestedRoute: route,
+					route: responseUrl
 				});
+
+				//new route is now responseUrl. The old one is not valid anymore
+				route = responseUrl;
 
 				if (!validateNextPage(nextPage)) {
 					/**
@@ -492,7 +496,7 @@
 				App.modules.notify('pages.loaded', {
 					elem: elem,
 					data: data,
-					url: obj,
+					url: route,
 					page: nextPage,
 					node: node,
 					xhr: jqXHR,
@@ -541,6 +545,7 @@
 				route = obj;
 			} else {
 				nextPage = obj;
+				route = obj.route || '';
 			}
 
 			if (!validateNextPage(nextPage)) {
