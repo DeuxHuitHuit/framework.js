@@ -28,7 +28,7 @@
     "grunt-contrib-concat": "~1.0.1",
     "grunt-contrib-connect": "~3.0.0",
     "grunt-contrib-jshint": "~3.0.0",
-    "grunt-contrib-qunit": "^5.0.1",
+    "grunt-contrib-qunit": "^6.1.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-git-revision": "0.0.1",
     "grunt-jscs": "^3.0.1",
