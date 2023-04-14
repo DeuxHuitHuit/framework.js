@@ -1,4 +1,4 @@
-/*! framework.js - v2.2.6 - 441a276626 - build 178 - 2023-04-14
+/*! framework.js - v2.2.7 - f0c7a14c5f - build 179 - 2023-04-14
  * https://github.com/DeuxHuitHuit/framework.js
  * Copyright (c) 2023 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
@@ -2496,6 +2496,18 @@
 			 */
 			getPreviousUrl: function () {
 				return previousUrl;
+			},
+
+			/**
+			 * Set the previous url string
+			 * @name setPreviousUrl
+			 * @memberof App.mediator
+			 * @method
+			 * @param {String} previous url
+			 * @public
+			 */
+			setPreviousUrl: function (url) {
+				previousUrl = url;
 			},
 
 			/**
