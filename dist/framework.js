@@ -1,6 +1,6 @@
-/*! framework.js - v2.2.5 - 5ab75c36d8 - build 175 - 2022-05-26
+/*! framework.js - v2.2.6 - 441a276626 - build 178 - 2023-04-14
  * https://github.com/DeuxHuitHuit/framework.js
- * Copyright (c) 2022 Deux Huit Huit (https://deuxhuithuit.com/);
+ * Copyright (c) 2023 Deux Huit Huit (https://deuxhuithuit.com/);
  * MIT *//**
  * Actions
  *
@@ -2285,6 +2285,23 @@
 								error: function (e) {
 									/**
 									 * @event App#pages:loaderror
+									 * @type {Object}
+									 * @property {Object} event Request event
+									 * @property {String} url Request url
+									 */
+									App.modules.notify('pages.loaderror', {
+										event: e,
+										url: obj
+									});
+								},
+								clienterror: function (e) {
+									// Free the mediator
+									mediatorIsLoadingPage = false;
+
+									App.log({ args: 'Client Error!', me: 'Loader', fx: 'error' });
+
+									/**
+									 * @event App#pages:clienterror
 									 * @type {Object}
 									 * @property {Object} event Request event
 									 * @property {String} url Request url
