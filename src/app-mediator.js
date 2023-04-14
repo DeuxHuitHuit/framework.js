@@ -623,6 +623,23 @@
 										url: obj
 									});
 								},
+								clienterror: function (e) {
+									// Free the mediator
+									mediatorIsLoadingPage = false;
+
+									App.log({ args: 'Client Error!', me: 'Loader', fx: 'error' });
+
+									/**
+									 * @event App#pages:clienterror
+									 * @type {Object}
+									 * @property {Object} event Request event
+									 * @property {String} url Request url
+									 */
+									App.modules.notify('pages.loaderror', {
+										event: e,
+										url: obj
+									});
+								},
 								giveup: function (e) {
 									// Free the mediator
 									mediatorIsLoadingPage = false;
