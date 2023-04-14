@@ -828,6 +828,18 @@
 			},
 
 			/**
+			 * Set the previous url string
+			 * @name setPreviousUrl
+			 * @memberof App.mediator
+			 * @method
+			 * @param {String} previous url
+			 * @public
+			 */
+			setPreviousUrl: function (url) {
+				previousUrl = url;
+			},
+
+			/**
 			 * Get the previousPage object
 			 * @name getPreviousPage
 			 * @memberof App.mediator
